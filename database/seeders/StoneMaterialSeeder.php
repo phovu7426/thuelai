@@ -16,37 +16,37 @@ class StoneMaterialSeeder extends Seeder
         $materials = [
             [
                 'name' => 'Đá ghi sáng',
-                'description' => 'Đá ghi sáng là loại đá có màu sắc ghi trắng, đẹp, bề mặt nhẵn mịn và được ưa chuộng trong nhiều công trình.',
+                'description' => 'Đá ghi sáng tự nhiên, màu sắc tươi sáng, bền đẹp.',
                 'image' => 'stone_materials/da-ghi-sang.jpg',
                 'order' => 1,
             ],
             [
                 'name' => 'Đá xanh đen',
-                'description' => 'Đá xanh đen là loại đá có màu sắc xanh đậm đến đen, đẹp, bề mặt nhẵn mịn và được ưa chuộng trong nhiều công trình.',
+                'description' => 'Đá xanh đen tự nhiên, độ bền cao, màu sắc sang trọng.',
                 'image' => 'stone_materials/da-xanh-den.jpg',
                 'order' => 2,
             ],
             [
                 'name' => 'Đá xanh rêu',
-                'description' => 'Đá xanh rêu là loại đá có màu sắc xanh rêu, đẹp, bề mặt nhẵn mịn và được ưa chuộng trong nhiều công trình.',
+                'description' => 'Đá xanh rêu tự nhiên, màu sắc độc đáo.',
                 'image' => 'stone_materials/da-xanh-reu.jpg',
                 'order' => 3,
             ],
             [
                 'name' => 'Đá bazan',
-                'description' => 'Đá bazan là loại đá có màu sắc đen, đẹp, bề mặt nhẵn mịn và được ưa chuộng trong nhiều công trình.',
+                'description' => 'Đá bazan tự nhiên, độ cứng cao.',
                 'image' => 'stone_materials/da-bazan.jpg',
                 'order' => 4,
             ],
             [
                 'name' => 'Đá ánh kim',
-                'description' => 'Đá ánh kim là loại đá có màu sắc ánh kim, đẹp, bề mặt nhẵn mịn và được ưa chuộng trong nhiều công trình.',
+                'description' => 'Đá ánh kim tự nhiên, lấp lánh, sang trọng.',
                 'image' => 'stone_materials/da-anh-kim.jpg',
                 'order' => 5,
             ],
             [
                 'name' => 'Đá sọc dưa',
-                'description' => 'Đá sọc dưa là loại đá có vân sọc như dưa hấu, đẹp, bề mặt nhẵn mịn và được ưa chuộng trong nhiều công trình.',
+                'description' => 'Đá sọc dưa tự nhiên, vân đẹp.',
                 'image' => 'stone_materials/da-soc-dua.jpg',
                 'order' => 6,
             ],
@@ -105,4 +105,4 @@ class StoneMaterialSeeder extends Seeder
             ]);
         }
     }
-} 
+}

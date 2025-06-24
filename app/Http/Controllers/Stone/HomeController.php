@@ -26,34 +26,33 @@ class HomeController extends Controller
             ->orderBy('order', 'asc')
             ->take(8)
             ->get();
-            
+
         $categories = StoneCategory::where('status', true)
             ->orderBy('order', 'asc')
             ->take(6)
             ->get();
-            
+
         $applications = StoneApplication::where('status', true)
             ->orderBy('order', 'asc')
             ->take(4)
             ->get();
-            
+
         $featuredProjects = StoneProject::where('is_featured', true)
             ->where('status', true)
             ->orderBy('order', 'asc')
             ->take(3)
             ->get();
-            
+
         $featuredVideos = StoneVideo::where('is_featured', true)
             ->where('status', true)
             ->orderBy('order', 'asc')
             ->take(2)
             ->get();
-            
+
         $showrooms = StoneShowroom::where('status', true)
             ->orderBy('order', 'asc')
             ->take(3)
             ->get();
-        
         return view('stone.home', compact(
             'featuredProducts',
             'categories',
@@ -80,7 +79,7 @@ class HomeController extends Controller
         $showrooms = StoneShowroom::where('status', true)
             ->orderBy('order', 'asc')
             ->get();
-            
+
         return view('stone.contact', compact('showrooms'));
     }
-} 
+}

@@ -16,37 +16,37 @@ class StoneSurfaceSeeder extends Seeder
         $surfaces = [
             [
                 'name' => 'Băm nhám',
-                'description' => 'Bề mặt băm nhám tạo độ nhám cho đá, chống trơn trượt và thích hợp cho khu vực ngoài trời.',
+                'description' => 'Bề mặt băm nhám chống trơn trượt.',
                 'image' => 'stone_surfaces/bam-nham.jpg',
                 'order' => 1,
             ],
             [
                 'name' => 'Băm trang trí',
-                'description' => 'Bề mặt băm trang trí tạo họa tiết đẹp mắt, tăng tính thẩm mỹ cho sản phẩm đá.',
+                'description' => 'Bề mặt băm trang trí tạo điểm nhấn.',
                 'image' => 'stone_surfaces/bam-trang-tri.jpg',
                 'order' => 2,
             ],
             [
                 'name' => 'Xẻ thô',
-                'description' => 'Bề mặt xẻ thô là bề mặt đá sau khi cắt xẻ, chưa qua xử lý, giữ nguyên vẻ đẹp tự nhiên của đá.',
+                'description' => 'Bề mặt xẻ thô tự nhiên.',
                 'image' => 'stone_surfaces/xe-tho.jpg',
                 'order' => 3,
             ],
             [
                 'name' => 'Mài thô',
-                'description' => 'Bề mặt mài thô là bề mặt đá được mài nhẹ, vẫn còn độ nhám nhất định, thích hợp cho khu vực ngoài trời.',
+                'description' => 'Bề mặt mài thô.',
                 'image' => 'stone_surfaces/mai-tho.jpg',
                 'order' => 4,
             ],
             [
                 'name' => 'Mài hone',
-                'description' => 'Bề mặt mài hone là bề mặt đá được mài mịn hơn mài thô nhưng chưa bóng, thích hợp cho khu vực trong nhà.',
+                'description' => 'Bề mặt mài hone mịn.',
                 'image' => 'stone_surfaces/mai-hone.jpg',
                 'order' => 5,
             ],
             [
                 'name' => 'Mài bóng',
-                'description' => 'Bề mặt mài bóng là bề mặt đá được mài và đánh bóng, tạo độ bóng sáng cho đá, thích hợp cho khu vực trong nhà.',
+                'description' => 'Bề mặt mài bóng sáng đẹp.',
                 'image' => 'stone_surfaces/mai-bong.jpg',
                 'order' => 6,
             ],
@@ -141,4 +141,4 @@ class StoneSurfaceSeeder extends Seeder
             ]);
         }
     }
-} 
+}
