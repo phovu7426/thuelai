@@ -20,16 +20,16 @@ class StoneProductSeeder extends Seeder
         // Lấy thông tin danh mục
         $daOpLatCategory = StoneCategory::where('name', 'Đá ốp lát')->first();
         $daMyNgheCategory = StoneCategory::where('name', 'Đá mỹ nghệ')->first();
-        
+
         $daNoiThatCategory = StoneCategory::where('name', 'Đá ốp lát nội thất')->first();
         $daNgoaiThatCategory = StoneCategory::where('name', 'Đá ốp lát ngoại thất')->first();
         $daBoViaCategory = StoneCategory::where('name', 'Đá bó vỉa')->first();
         $daCubicCategory = StoneCategory::where('name', 'Đá cubic')->first();
-        
+
         $daLangMoCategory = StoneCategory::where('name', 'Đá mỹ nghệ lăng mộ')->first();
         $daDinhChuaCategory = StoneCategory::where('name', 'Đá mỹ nghệ đình chùa')->first();
         $daNhaThoCatehory = StoneCategory::where('name', 'Đá mỹ nghệ nhà thờ')->first();
-        
+
         // Lấy thông tin chất liệu đá
         $daGhiSang = StoneMaterial::where('name', 'Đá ghi sáng')->first();
         $daXanhDen = StoneMaterial::where('name', 'Đá xanh đen')->first();
@@ -37,7 +37,7 @@ class StoneProductSeeder extends Seeder
         $daBazan = StoneMaterial::where('name', 'Đá bazan')->first();
         $daAanhKim = StoneMaterial::where('name', 'Đá ánh kim')->first();
         $daSocDua = StoneMaterial::where('name', 'Đá sọc dưa')->first();
-        
+
         // Lấy thông tin bề mặt đá
         $bamNham = StoneSurface::where('name', 'Băm nhám')->first();
         $bamTrangTri = StoneSurface::where('name', 'Băm trang trí')->first();
@@ -45,19 +45,19 @@ class StoneProductSeeder extends Seeder
         $maiTho = StoneSurface::where('name', 'Mài thô')->first();
         $maiHone = StoneSurface::where('name', 'Mài hone')->first();
         $maiBong = StoneSurface::where('name', 'Mài bóng')->first();
-        
+
         // Lấy thông tin ứng dụng
         $viaHe = StoneApplication::where('name', 'Vỉa hè')->first();
         $sanVuon = StoneApplication::where('name', 'Sân vườn')->first();
         $quangTruong = StoneApplication::where('name', 'Quảng trường')->first();
         $beBoi = StoneApplication::where('name', 'Bể bơi')->first();
         $bacTamCap = StoneApplication::where('name', 'Bậc tam cấp')->first();
-        
+
         $sanNha = StoneApplication::where('name', 'Sàn nhà')->first();
         $matTien = StoneApplication::where('name', 'Mặt tiền')->first();
         $cauThangBo = StoneApplication::where('name', 'Cầu thang bộ')->first();
         $banBep = StoneApplication::where('name', 'Bàn bếp')->first();
-        
+
         // Tạo các sản phẩm đá ốp lát ngoại thất
         $exteriorProducts = [
             [
@@ -158,7 +158,7 @@ class StoneProductSeeder extends Seeder
                 'applications' => [$sanVuon->id, $quangTruong->id, $bacTamCap->id],
             ],
         ];
-        
+
         // Tạo các sản phẩm đá ốp lát nội thất
         $interiorProducts = [
             [
@@ -231,26 +231,26 @@ class StoneProductSeeder extends Seeder
                 'applications' => [$banBep->id],
             ],
         ];
-        
+
         // Tạo các sản phẩm
         foreach ($exteriorProducts as $product) {
             $applications = $product['applications'];
             unset($product['applications']);
-            
+
             $newProduct = StoneProduct::create($product);
-            
+
             // Gán ứng dụng cho sản phẩm
             $newProduct->applications()->attach($applications);
         }
-        
+
         foreach ($interiorProducts as $product) {
             $applications = $product['applications'];
             unset($product['applications']);
-            
+
             $newProduct = StoneProduct::create($product);
-            
+
             // Gán ứng dụng cho sản phẩm
             $newProduct->applications()->attach($applications);
         }
     }
-} 
+}
