@@ -2,10 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,24 +11,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Chạy Seeder phân quyền trước
-        $this->call(RolePermissionSeeder::class);
+        // \App\Models\User::factory(10)->create();
 
-        // Tạo tài khoản admin
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@gmail.com'],
-            [
-                'password' => Hash::make('12345678'),
-            ]
-        );
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
-        // Gán role admin cho user admin
-        $adminRole = Role::where('name', 'admin')->first();
-        if ($adminRole) {
-            $admin->assignRole($adminRole);
-        }
-        
-        // Seed dữ liệu bài đăng
-        $this->call(PostSeeder::class);
+        $this->call([
+            PermissionSeeder::class,
+            UserSeeder::class,
+            RoleSeeder::class,
+            // Category & Post seeders
+            CategorySeeder::class,
+            SeriesSeeder::class,
+            PostSeeder::class,
+            
+            // Stone seeders
+            StoneCategorySeeder::class,
+            StoneMaterialSeeder::class,
+            StoneSurfaceSeeder::class,
+            StoneApplicationSeeder::class,
+            StoneProductSeeder::class,
+            StoneProjectSeeder::class,
+            StoneShowroomSeeder::class,
+            StoneVideoSeeder::class,
+        ]);
     }
 }

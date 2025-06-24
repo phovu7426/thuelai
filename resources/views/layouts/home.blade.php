@@ -239,7 +239,7 @@
                 <ul class="navbar-nav">
                     @guest
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">
+                            <a class="nav-link" href="{{ route('login.index') }}">
                                 <i class="fas fa-sign-in-alt me-1"></i> Đăng Nhập
                             </a>
                         </li>
@@ -293,7 +293,7 @@
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="{{ url('/') }}" class="text-decoration-none text-muted">Trang Chủ</a></li>
                         <li class="mb-2"><a href="{{ route('home.posts.index') }}" class="text-decoration-none text-muted">Bài Đăng</a></li>
-                        <li class="mb-2"><a href="{{ route('login') }}" class="text-decoration-none text-muted">Đăng Nhập</a></li>
+                        <li class="mb-2"><a href="{{ route('login.index') }}" class="text-decoration-none text-muted">Đăng Nhập</a></li>
                         <li class="mb-2"><a href="{{ route('register') }}" class="text-decoration-none text-muted">Đăng Ký</a></li>
                     </ul>
                 </div>

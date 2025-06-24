@@ -87,7 +87,7 @@
         $('#login_form').on('submit', function(event) {
             event.preventDefault();
             $.ajax({
-                url: '{{ route('login') }}',
+                url: '{{ route('login.post') }}',
                 method: 'POST',
                 data: $(this).serialize(),
                 success: function(response) {

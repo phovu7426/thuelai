@@ -137,7 +137,7 @@
                 <h4 class="border-bottom pb-3 mb-4 fw-bold">Đăng Nhập</h4>
                 <p>Đăng nhập để xem thêm nhiều bài đăng hơn, bao gồm cả nội dung dành riêng cho thành viên.</p>
                 <div class="d-grid gap-2">
-                    <a href="{{ route('login') }}" class="btn btn-primary">
+                    <a href="{{ route('login.index') }}" class="btn btn-primary">
                         <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập ngay
                     </a>
                     <a href="{{ route('register') }}" class="btn btn-outline-primary">
