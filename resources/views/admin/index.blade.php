@@ -74,7 +74,115 @@
 <!--end::Head-->
 <!--begin::Body-->
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-@include('admin.layouts.main')
+@extends('admin.layouts.main')
+
+@section('title', 'Dashboard')
+
+@section('content')
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">Thống kê chung</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 col-12">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-primary">
+                                    <i class="bi bi-people-fill"></i>
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Người dùng</span>
+                                    <span class="info-box-number">{{ \App\Models\User::count() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-12">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-success">
+                                    <i class="bi bi-gem"></i>
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Sản phẩm đá</span>
+                                    <span class="info-box-number">{{ \App\Models\StoneProduct::count() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-12">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-warning">
+                                    <i class="bi bi-building"></i>
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Dự án</span>
+                                    <span class="info-box-number">{{ \App\Models\StoneProject::count() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-12">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-info">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Bài viết</span>
+                                    <span class="info-box-number">{{ \App\Models\Post::count() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">Hoạt động gần đây</h3>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-time">2 phút trước</div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <strong>Admin</strong> đã thêm sản phẩm mới
+                                </div>
+                                <div class="timeline-body">
+                                    Đá Marble trắng Ý cao cấp
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">1 giờ trước</div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <strong>Admin</strong> đã cập nhật thông tin dự án
+                                </div>
+                                <div class="timeline-body">
+                                    Dự án Vinpearl Resort
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-time">Hôm qua</div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <strong>Admin</strong> đã thêm danh mục mới
+                                </div>
+                                <div class="timeline-body">
+                                    Đá Granite nhập khẩu
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
 <!--begin::Script-->
 <!--begin::Third Party Plugin(OverlayScrollbars)-->
 <script src="{{ asset('js/toastr.min.js') }}"></script>

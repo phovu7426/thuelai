@@ -51,13 +51,13 @@
 
             {{-- Quản lý khai báo --}}
             @php
-                $activeGroupDeclaration = isActive(['admin.*'], 'menu-open');
-                $activeLinkDeclaration = isActive(['admin.*']);
+                $activeGroupDeclaration = isActive(['admin.categories.*', 'admin.series.*', 'admin.posts.*'], 'menu-open');
+                $activeLinkDeclaration = isActive(['admin.categories.*', 'admin.series.*', 'admin.posts.*']);
             @endphp
 
             <li class="nav-item {{ $activeGroupDeclaration }}">
                 <a href="#" class="nav-link {{ $activeLinkDeclaration }}">
-                    <i class="nav-icon bi bi-box-seam-fill"></i>
+                    <i class="nav-icon bi bi-file-earmark-text"></i>
                     <p>
                         Quản lý khai báo
                         <i class="nav-arrow bi bi-chevron-right"></i>
@@ -86,6 +86,79 @@
                             </a>
                         </li>
                     @endcanany
+                </ul>
+            </li>
+
+            {{-- Quản lý trang Stone --}}
+            @php
+                $activeGroupStone = isActive(['admin.stone.*'], 'menu-open');
+                $activeLinkStone = isActive(['admin.stone.*']);
+            @endphp
+
+            <li class="nav-item {{ $activeGroupStone }}">
+                <a href="#" class="nav-link {{ $activeLinkStone }}">
+                    <i class="nav-icon bi bi-gem"></i>
+                    <p>
+                        Quản lý trang Stone
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.categories.index') }}" class="nav-link {{ isActive('admin.stone.categories.*') }}">
+                            <i class="nav-icon bi bi-circle"></i>
+                            <p>Danh mục đá</p>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.materials.index') }}" class="nav-link {{ isActive('admin.stone.materials.*') }}">
+                            <i class="nav-icon bi bi-circle"></i>
+                            <p>Chất liệu đá</p>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.surfaces.index') }}" class="nav-link {{ isActive('admin.stone.surfaces.*') }}">
+                            <i class="nav-icon bi bi-circle"></i>
+                            <p>Bề mặt đá</p>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.applications.index') }}" class="nav-link {{ isActive('admin.stone.applications.*') }}">
+                            <i class="nav-icon bi bi-circle"></i>
+                            <p>Ứng dụng đá</p>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.products.index') }}" class="nav-link {{ isActive('admin.stone.products.*') }}">
+                            <i class="nav-icon bi bi-circle"></i>
+                            <p>Sản phẩm đá</p>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.projects.index') }}" class="nav-link {{ isActive('admin.stone.projects.*') }}">
+                            <i class="nav-icon bi bi-circle"></i>
+                            <p>Dự án đá</p>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.showrooms.index') }}" class="nav-link {{ isActive('admin.stone.showrooms.*') }}">
+                            <i class="nav-icon bi bi-circle"></i>
+                            <p>Showroom</p>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.videos.index') }}" class="nav-link {{ isActive('admin.stone.videos.*') }}">
+                            <i class="nav-icon bi bi-circle"></i>
+                            <p>Video</p>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
