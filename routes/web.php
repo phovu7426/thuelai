@@ -67,6 +67,7 @@ Route::prefix('stone')->name('stone.')->group(function () {
     
     // Trang liên hệ
     Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+    Route::post('/contact/submit', [HomeController::class, 'contactSubmit'])->name('contact.submit');
     
     // Sản phẩm đá
     Route::prefix('products')->name('products.')->group(function () {
