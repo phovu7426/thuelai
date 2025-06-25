@@ -3,6 +3,15 @@
     <nav class="mt-2">
         <!--begin::Sidebar Menu-->
         <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <style>
+                /* CSS để khắc phục menu */
+                .sidebar-menu .nav-treeview {
+                    display: none;
+                }
+                .sidebar-menu .menu-open > .nav-treeview {
+                    display: block !important;
+                }
+            </style>
 
             {{-- Quản lý chung --}}
             @php
@@ -167,3 +176,40 @@
     </nav>
 </div>
 <!--end::Sidebar Wrapper-->
+
+<script>
+    // Script khẩn cấp để sửa menu
+    document.addEventListener('DOMContentLoaded', function() {
+        // Xử lý menu đã mở
+        var openMenuItems = document.querySelectorAll('.sidebar-menu .nav-item.menu-open');
+        openMenuItems.forEach(function(item) {
+            var treeview = item.querySelector('.nav-treeview');
+            if (treeview) {
+                treeview.style.display = 'block';
+            }
+        });
+        
+        // Xử lý sự kiện click trên menu
+        document.querySelectorAll('.sidebar-menu .nav-item > a').forEach(function(menuLink) {
+            if (menuLink.nextElementSibling && menuLink.nextElementSibling.classList.contains('nav-treeview')) {
+                menuLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    var navItem = this.parentNode;
+                    var treeview = this.nextElementSibling;
+                    
+                    if (navItem.classList.contains('menu-open')) {
+                        navItem.classList.remove('menu-open');
+                        treeview.style.display = 'none';
+                    } else {
+                        navItem.classList.add('menu-open');
+                        treeview.style.display = 'block';
+                    }
+                    
+                    return false;
+                });
+            }
+        });
+    });
+</script>

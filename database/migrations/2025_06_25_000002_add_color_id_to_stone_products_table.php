@@ -16,7 +16,7 @@ return new class extends Migration
             $table->decimal('discount_price', 15, 2)->nullable()->after('price');
             $table->integer('discount_percent')->nullable()->after('discount_price');
             $table->boolean('is_new')->default(false)->after('is_featured');
-            $table->string('hardness')->nullable()->after('thickness');
+            $table->string('hardness')->nullable()->after('status');
             $table->string('water_absorption')->nullable()->after('hardness');
             $table->string('heat_resistance')->nullable()->after('water_absorption');
             $table->string('meta_title')->nullable()->after('order');

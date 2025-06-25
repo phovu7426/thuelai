@@ -95,20 +95,31 @@ class ProductController extends Controller
         // Convert specifications to JSON
         if (isset($data['specifications'])) {
             $specifications = [];
-            foreach ($data['specifications'] as $key => $value) {
-                if (!empty($key) && !empty($value)) {
-                    $specifications[$key] = $value;
+            if (isset($data['specifications']['key']) && isset($data['specifications']['value'])) {
+                $keys = $data['specifications']['key'];
+                $values = $data['specifications']['value'];
+                
+                for ($i = 0; $i < count($keys); $i++) {
+                    if (!empty($keys[$i]) && isset($values[$i]) && !empty($values[$i])) {
+                        $specifications[$keys[$i]] = $values[$i];
+                    }
                 }
             }
             $data['specifications'] = $specifications;
+        }
+        
+        // Loại bỏ applications khỏi data vì nó được lưu trong bảng trung gian
+        if (isset($data['applications'])) {
+            $applicationIds = $data['applications'];
+            unset($data['applications']);
         }
         
         // Create product
         $product = StoneProduct::create($data);
         
         // Attach applications
-        if (isset($data['applications'])) {
-            $product->applications()->attach($data['applications']);
+        if (isset($applicationIds)) {
+            $product->applications()->attach($applicationIds);
         }
 
         return redirect()->route('admin.stone.products.index')
@@ -183,7 +194,7 @@ class ProductController extends Controller
         }
         
         // Handle gallery images
-        $gallery = $product->gallery ?? [];
+        $gallery = is_array($product->gallery) ? $product->gallery : [];
         
         // Remove selected gallery images
         if (isset($data['remove_gallery']) && !empty($data['remove_gallery'])) {
@@ -209,25 +220,37 @@ class ProductController extends Controller
             }
         }
         
-        $data['gallery'] = array_values($gallery); // Reset array keys
+        // Ensure $gallery is an array before using array_values
+        $data['gallery'] = is_array($gallery) ? array_values($gallery) : [];
         
         // Convert specifications to JSON
         if (isset($data['specifications'])) {
             $specifications = [];
-            foreach ($data['specifications'] as $key => $value) {
-                if (!empty($key) && !empty($value)) {
-                    $specifications[$key] = $value;
+            if (isset($data['specifications']['key']) && isset($data['specifications']['value'])) {
+                $keys = $data['specifications']['key'];
+                $values = $data['specifications']['value'];
+                
+                for ($i = 0; $i < count($keys); $i++) {
+                    if (!empty($keys[$i]) && isset($values[$i]) && !empty($values[$i])) {
+                        $specifications[$keys[$i]] = $values[$i];
+                    }
                 }
             }
             $data['specifications'] = $specifications;
+        }
+        
+        // Loại bỏ applications khỏi data vì nó được lưu trong bảng trung gian
+        if (isset($data['applications'])) {
+            $applicationIds = $data['applications'];
+            unset($data['applications']);
         }
         
         // Update product
         $product->update($data);
         
         // Sync applications
-        if (isset($data['applications'])) {
-            $product->applications()->sync($data['applications']);
+        if (isset($applicationIds)) {
+            $product->applications()->sync($applicationIds);
         } else {
             $product->applications()->detach();
         }

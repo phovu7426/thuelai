@@ -26,7 +26,7 @@
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
-        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
+        integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"
     />
     <!--end::Fonts-->
@@ -69,6 +69,29 @@
     <!-- Thêm CSS cho Select2 -->
     <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet"/>
     <script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
+    
+    <style>
+        /* CSS để sửa hiển thị menu sidebar */
+        .sidebar-menu .nav-item > ul.nav-treeview {
+            display: none; /* Ẩn tất cả submenu mặc định */
+            height: auto !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .sidebar-menu .nav-item.menu-open > ul.nav-treeview {
+            display: block !important; /* Hiển thị submenu khi có class menu-open */
+        }
+        
+        .sidebar-menu .nav-arrow {
+            transition: transform 0.3s;
+        }
+        
+        .sidebar-menu .nav-item.menu-open > a .nav-arrow {
+            transform: rotate(90deg); /* Xoay mũi tên khi menu được mở */
+        }
+    </style>
+    
     @yield('styles')
 </head>
 <!--end::Head-->
@@ -170,6 +193,8 @@
         @endif
     });
 </script>
+
+<script src="{{ asset('js/admin-custom.js') }}"></script>
 
 @yield('scripts')
 <!--end::Script-->

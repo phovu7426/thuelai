@@ -14,43 +14,41 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        // $this->call([
-        //     //PermissionSeeder::class,
-        //     // UserSeeder::class,
-        //     RoleSeeder::class,
-        //     // Category & Post seeders
-        //     CategorySeeder::class,
-        //     SeriesSeeder::class,
-        //     PostSeeder::class,
-            
-        //     // Stone seeders
-        //     StoneCategorySeeder::class,
-        //     StoneMaterialSeeder::class,
-        //     StoneSurfaceSeeder::class,
-        //     StoneApplicationSeeder::class,
-        //     StoneProductSeeder::class,
-        //     StoneProjectSeeder::class,
-        //     StoneShowroomSeeder::class,
-        //     StoneVideoSeeder::class,
-        // ]);
+        // Create admin user
         $admin = User::firstOrCreate(
             ['email' => 'admin@gmail.com'],
             [
                 'password' => Hash::make('12345678'),
+                'status' => 'active',
             ]
         );
 
-        // Gán role admin cho user admin
+        // Run permission seeders
+        $this->call([
+            PermissionSeeder::class,
+            RolePermissionSeeder::class,
+        ]);
+
+        // Assign admin role to admin user
         $adminRole = Role::where('name', 'admin')->first();
         if ($adminRole) {
             $admin->assignRole($adminRole);
         }
+
+        // Run content seeders
+        $this->call([
+            // Blog content
+            StoneCategorySeeder::class,
+            StoneMaterialSeeder::class,
+            StoneSurfaceSeeder::class,
+            StoneApplicationSeeder::class,
+            StoneProductSeeder::class,
+            StoneProjectSeeder::class,
+            StoneShowroomSeeder::class,
+            StoneVideoSeeder::class,
+            
+            // Other content if needed
+            PostSeeder::class,
+        ]);
     }
 }

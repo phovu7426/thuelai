@@ -20,12 +20,12 @@ class StoneProduct extends Model
         'stone_surface_id',
         'stone_color_id',
         'price',
+        'sale_price',
         'discount_price',
         'discount_percent',
         'short_description',
         'description',
         'features',
-        'applications',
         'origin',
         'size',
         'thickness',
@@ -38,7 +38,10 @@ class StoneProduct extends Model
         'order',
         'meta_title',
         'meta_description',
-        'meta_keywords'
+        'meta_keywords',
+        'main_image',
+        'gallery',
+        'specifications'
     ];
 
     protected $casts = [
