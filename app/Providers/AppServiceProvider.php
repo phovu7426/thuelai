@@ -2,29 +2,35 @@
 
 namespace App\Providers;
 
-use Exception;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
+     *
+     * @return void
      */
-    public function register(): void
+    public function register()
     {
         //
     }
 
     /**
      * Bootstrap any application services.
+     *
+     * @return void
      */
-    public function boot(): void
+    public function boot()
     {
-//        try {
-//            DB::connection()->getPdo();
-//        } catch (Exception $e) {
-//            abort(503, $e->getMessage());
-//        }
+        // Use Bootstrap for pagination
+        Paginator::useBootstrap();
+        
+        // Add custom debug directive
+        Blade::directive('debug', function ($expression) {
+            return "<?php if(config('app.debug')): ?><pre><?php print_r($expression); ?></pre><?php endif; ?>";
+        });
     }
 }

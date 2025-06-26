@@ -126,7 +126,17 @@
                                                 <span class="fw-bold">{{ number_format($product->price) }}đ</span>
                                             @endif
                                         </div>
-                                        <a href="{{ url('/stone/products/' . $product->slug) }}" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                                        <div>
+                                            <form action="{{ route('stone.cart.add') }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-sm btn-primary me-1">
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                            </form>
+                                            <a href="{{ url('/stone/products/' . $product->slug) }}" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -179,6 +189,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 text-md-end">
+                                                    <form action="{{ route('stone.cart.add') }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                        <input type="hidden" name="quantity" value="1">
+                                                        <button type="submit" class="btn btn-primary me-2">
+                                                            <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                                                        </button>
+                                                    </form>
                                                     <a href="{{ url('/stone/products/' . $product->slug) }}" class="btn btn-outline-primary me-2">Chi tiết</a>
                                                     <button class="btn btn-sm btn-light rounded-circle me-1" data-bs-toggle="tooltip" title="Yêu thích">
                                                         <i class="far fa-heart"></i>

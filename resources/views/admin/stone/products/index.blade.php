@@ -36,8 +36,8 @@
                             <td>{{ $product->material->name ?? 'N/A' }}</td>
                             <td>{{ $product->surface->name ?? 'N/A' }}</td>
                             <td>
-                                @if($product->image)
-                                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" width="50">
+                                @if($product->main_image)
+                                    <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" width="50">
                                 @else
                                     <span class="text-muted">Không có hình</span>
                                 @endif

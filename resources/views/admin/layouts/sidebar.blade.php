@@ -168,6 +168,13 @@
                             <p>Video</p>
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.orders.index') }}" class="nav-link {{ isActive('admin.stone.orders.*') }}">
+                            <i class="nav-icon bi bi-cart-check"></i>
+                            <p>Đơn hàng</p>
+                        </a>
+                    </li>
                 </ul>
             </li>
 

@@ -5,16 +5,17 @@ use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Posts\PostController;
 use App\Http\Controllers\Admin\Roles\RoleController;
 use App\Http\Controllers\Admin\Series\SeriesController;
-use App\Http\Controllers\Admin\Stone\CategoryController as StoneCategoryController;
-use App\Http\Controllers\Admin\Stone\ProductController as StoneProductController;
-use App\Http\Controllers\Admin\Users\ProfileController;
-use App\Http\Controllers\Admin\Users\UserController;
-use App\Http\Controllers\Admin\Stone\MaterialController;
-use App\Http\Controllers\Admin\Stone\SurfaceController;
 use App\Http\Controllers\Admin\Stone\ApplicationController;
+use App\Http\Controllers\Admin\Stone\CategoryController as StoneCategoryController;
+use App\Http\Controllers\Admin\Stone\MaterialController;
+use App\Http\Controllers\Admin\Stone\OrderController;
+use App\Http\Controllers\Admin\Stone\ProductController as StoneProductController;
 use App\Http\Controllers\Admin\Stone\ProjectController;
 use App\Http\Controllers\Admin\Stone\ShowroomController;
+use App\Http\Controllers\Admin\Stone\SurfaceController;
 use App\Http\Controllers\Admin\Stone\VideoController;
+use App\Http\Controllers\Admin\Users\ProfileController;
+use App\Http\Controllers\Admin\Users\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         return view('admin.index');
     })->name('index');
 
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+
     // Users
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
@@ -42,6 +47,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
         Route::put('/{user}', [UserController::class, 'update'])->name('update');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/info', [UserController::class, 'getUserInfo'])->name('user.info');
     });
 
     // Profile
@@ -90,5 +96,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         
         // Video
         Route::resource('videos', VideoController::class);
+        
+        // Đơn hàng
+        Route::resource('orders', OrderController::class);
     });
 });

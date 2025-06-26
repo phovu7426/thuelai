@@ -13,6 +13,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use App\Models\User;
 
 class UserController extends BaseController
 {
@@ -148,6 +149,15 @@ class UserController extends BaseController
         }
         return redirect()->route('admin.users.index')
             ->with('fail', $return['message'] ?? 'Thay đổi trạng thái tài khoản thất bại.');
+    }
+
+    /**
+     * Get user information for AJAX request
+     */
+    public function getUserInfo($id)
+    {
+        $user = User::with('profile')->findOrFail($id);
+        return response()->json($user);
     }
 
 }

@@ -431,12 +431,41 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('stone/contact') ? 'active' : '' }}" href="{{ url('/stone/contact') }}">Liên hệ</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('stone/cart*') ? 'active' : '' }}" href="{{ route('stone.cart.index') }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            @if(!Cart::isEmpty())
+                                <span class="badge bg-danger rounded-circle">{{ Cart::getTotalQuantity() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('stone/orders*') ? 'active' : '' }}" href="{{ route('stone.orders.index') }}">
+                                <i class="fas fa-clipboard-list"></i>
+                            </a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </div>
     </nav>
 
     <main>
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         @yield('content')
     </main>
 

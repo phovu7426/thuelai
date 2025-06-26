@@ -10,11 +10,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Home\Posts\PostController as HomePostController;
 use App\Http\Controllers\Stone\ApplicationController;
+use App\Http\Controllers\Stone\CartController;
+use App\Http\Controllers\Stone\CheckoutController;
 use App\Http\Controllers\Stone\HomeController;
+use App\Http\Controllers\Stone\OrderController;
 use App\Http\Controllers\Stone\ProductController;
 use App\Http\Controllers\Stone\ProjectController;
 use App\Http\Controllers\Stone\ShowroomController;
 use App\Http\Controllers\Stone\VideoController;
+use App\Http\Controllers\Stone\TestController;
+use App\Http\Controllers\Stone\ShowroomListController;
 
 // Chuyển hướng trang chủ đến trang đá
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -58,7 +63,7 @@ Route::get('/posts/{slug}', [HomePostController::class, 'show'])->name('home.pos
 require __DIR__.'/admin.php';
 
 // Trang web đá
-Route::prefix('stone')->name('stone.')->group(function () {
+Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
     // Trang chủ
     Route::get('/', [HomeController::class, 'index'])->name('home');
     
@@ -77,6 +82,29 @@ Route::prefix('stone')->name('stone.')->group(function () {
         Route::get('/surface/{slug}', [ProductController::class, 'surface'])->name('surface');
         Route::get('/{slug}', [ProductController::class, 'show'])->name('show');
         Route::get('/finish/{slug}', [ProductController::class, 'finish'])->name('finish');
+    });
+    
+    // Giỏ hàng
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('/add', [CartController::class, 'add'])->name('add');
+        Route::post('/update', [CartController::class, 'update'])->name('update');
+        Route::post('/remove', [CartController::class, 'remove'])->name('remove');
+        Route::post('/clear', [CartController::class, 'clear'])->name('clear');
+    });
+    
+    // Thanh toán
+    Route::prefix('checkout')->name('checkout.')->middleware('auth')->group(function () {
+        Route::get('/', [CheckoutController::class, 'index'])->name('index');
+        Route::post('/process', [CheckoutController::class, 'process'])->name('process');
+        Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
+    });
+    
+    // Đơn hàng
+    Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+        Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
     });
     
     // Ứng dụng đá
@@ -101,5 +129,11 @@ Route::prefix('stone')->name('stone.')->group(function () {
     Route::prefix('videos')->name('videos.')->group(function () {
         Route::get('/', [VideoController::class, 'index'])->name('index');
     });
+    
+    // Test route
+    Route::get('/test', [TestController::class, 'index'])->name('test');
+    
+    // New showroom list route
+    Route::get('/showrooms-list', [ShowroomListController::class, 'index'])->name('showrooms.list');
 });
 

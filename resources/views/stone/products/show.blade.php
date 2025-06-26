@@ -305,7 +305,7 @@
                         @if($product->surface)
                             <div class="product-meta-item">
                                 <div class="product-meta-label">Bề mặt:</div>
-                                <div class="product-meta-value">{{ $product->surface }}</div>
+                                <div class="product-meta-value">{{ $product->surface->name }}</div>
                             </div>
                         @endif
                     </div>
@@ -314,27 +314,32 @@
                         <p>{{ $product->short_description ?? 'Không có mô tả ngắn' }}</p>
                     </div>
                     
-                    <div class="product-actions d-flex flex-wrap align-items-center">
-                        <div class="quantity-input me-3 mb-3">
-                            <div class="input-group">
-                                <button class="btn btn-outline-secondary" type="button" id="decrease-qty">-</button>
-                                <input type="number" class="form-control text-center" id="quantity" value="1" min="1">
-                                <button class="btn btn-outline-secondary" type="button" id="increase-qty">+</button>
+                    <form action="{{ route('stone.cart.add') }}" method="POST" class="product-actions">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        
+                        <div class="d-flex flex-wrap align-items-center">
+                            <div class="quantity-input me-3 mb-3">
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary" type="button" id="decrease-qty">-</button>
+                                    <input type="number" class="form-control text-center" id="quantity" name="quantity" value="1" min="1">
+                                    <button class="btn btn-outline-secondary" type="button" id="increase-qty">+</button>
+                                </div>
                             </div>
+                            
+                            <button type="submit" class="btn btn-primary me-2 mb-3">
+                                <i class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ hàng
+                            </button>
+                            
+                            <button type="button" class="btn btn-outline-primary me-2 mb-3">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            
+                            <button type="button" class="btn btn-outline-primary mb-3">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
                         </div>
-                        
-                        <button class="btn btn-primary me-2 mb-3">
-                            <i class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ hàng
-                        </button>
-                        
-                        <button class="btn btn-outline-primary me-2 mb-3">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        
-                        <button class="btn btn-outline-primary mb-3">
-                            <i class="fas fa-exchange-alt"></i>
-                        </button>
-                    </div>
+                    </form>
                     
                     <div class="mt-4">
                         <a href="{{ url('/stone/contact') }}" class="btn btn-outline-secondary">
@@ -421,7 +426,7 @@
                                 </tr>
                                 <tr>
                                     <th>Bề mặt</th>
-                                    <td>{{ $product->surface ?? 'N/A' }}</td>
+                                    <td>{{ $product->surface->name ?? 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Độ cứng</th>
