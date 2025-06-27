@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('customer_email')->nullable();
             $table->string('customer_phone');
             $table->text('customer_address');
-            $table->decimal('total_amount', 12, 2);
+            $table->decimal('total_amount', 15, 2);
             $table->text('note')->nullable();
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
             $table->boolean('is_admin_created')->default(false);
