@@ -36,8 +36,10 @@ class OrderController extends Controller
     /**
      * Cancel an order (only if it's still pending).
      */
-    public function cancel(Order $order)
+    public function cancel($id)
     {
+        $order = Order::findOrFail($id);
+        
         // Ensure the user can only cancel their own orders
         if (Auth::id() != $order->user_id) {
             abort(403);

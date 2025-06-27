@@ -8,6 +8,32 @@
     .select2-container {
         width: 100% !important;
     }
+    
+    /* Fix for Select2 inside Bootstrap modal */
+    .select2-dropdown {
+        z-index: 1056 !important;
+    }
+    
+    /* Ensure buttons are visible */
+    .btn-primary, .btn-danger {
+        cursor: pointer;
+    }
+    
+    /* Make sure the add product button is clearly visible */
+    #add-product-row {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        border-radius: 0.25rem;
+    }
+    
+    #add-product-row:hover {
+        background-color: #0069d9;
+        border-color: #0062cc;
+    }
 </style>
 @endsection
 
@@ -125,7 +151,6 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div id="products-container">
-                                            <!-- Dòng sản phẩm đầu tiên -->
                                             <div class="product-row mb-3">
                                                 <div class="form-group">
                                                     <label>Sản phẩm <span class="text-danger">*</span></label>
@@ -140,27 +165,36 @@
                                                         @endforelse
                                                     </select>
                                                 </div>
-
-                                                <div class="form-row">
-                                                    <div class="form-group col-md-6">
-                                                        <label>Số lượng <span class="text-danger">*</span></label>
-                                                        <input type="number" class="form-control product-quantity" name="products[0][quantity]" min="1" value="1" required>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Số lượng <span class="text-danger">*</span></label>
+                                                            <input type="number" class="form-control product-quantity" name="products[0][quantity]" min="1" value="1" required>
+                                                        </div>
                                                     </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label>Thành tiền</label>
-                                                        <div class="input-group">
-                                                            <input type="text" class="form-control product-subtotal" value="0" readonly>
-                                                            <div class="input-group-append">
-                                                                <span class="input-group-text">đ</span>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Thành tiền</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control product-subtotal" value="0" readonly>
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">đ</span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="text-right mb-2">
+                                                    <button type="button" class="btn btn-sm btn-danger remove-product-row" disabled>
+                                                        <i class="mdi mdi-trash-can"></i> Xóa
+                                                    </button>
+                                                </div>
+                                                <hr>
                                             </div>
                                         </div>
 
                                         <div class="text-left">
-                                            <button type="button" class="btn btn-primary" id="add-product-row">
+                                            <button type="button" class="btn btn-primary" id="add-product-row" onclick="addNewProductRow()">
                                                 <i class="mdi mdi-plus"></i> Thêm sản phẩm
                                             </button>
                                         </div>
@@ -184,18 +218,87 @@
         </div>
     </div>
 </div>
+
+<!-- Simple inline script to ensure the button works -->
+<script>
+    // Direct function to add a new product row
+    function addNewProductRow() {
+        console.log('Add product button clicked (direct)');
+        
+        // Get the current number of product rows
+        const productRows = document.querySelectorAll('.product-row');
+        const productIndex = productRows.length;
+        
+        // Create a new product row
+        const newRow = document.createElement('div');
+        newRow.className = 'product-row mb-3';
+        newRow.innerHTML = `
+            <div class="form-group">
+                <label>Sản phẩm <span class="text-danger">*</span></label>
+                <select class="form-control product-select" name="products[${productIndex}][id]" required>
+                    <option value="">Chọn sản phẩm</option>
+                    @forelse($products as $product)
+                        <option value="{{ $product->id }}" data-price="{{ $product->price }}">
+                            {{ $product->name }} ({{ $product->code }}) - {{ number_format($product->price) }}đ
+                        </option>
+                    @empty
+                        <option value="" disabled>Không có sản phẩm nào</option>
+                    @endforelse
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Số lượng <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control product-quantity" name="products[${productIndex}][quantity]" min="1" value="1" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Thành tiền</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control product-subtotal" value="0" readonly>
+                            <div class="input-group-append">
+                                <span class="input-group-text">đ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right mb-2">
+                <button type="button" class="btn btn-sm btn-danger remove-product-row" onclick="removeProductRow(this)">
+                    <i class="mdi mdi-trash-can"></i> Xóa
+                </button>
+            </div>
+            <hr>
+        `;
+        
+        // Add the new row to the container
+        document.getElementById('products-container').appendChild(newRow);
+        
+        // Initialize Select2 for the new dropdown
+        if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
+            $(newRow).find('.product-select').select2({
+                width: '100%'
+            });
+        }
+    }
+    
+    // Function to remove a product row
+    function removeProductRow(button) {
+        const productRows = document.querySelectorAll('.product-row');
+        if (productRows.length > 1) {
+            button.closest('.product-row').remove();
+        }
+    }
+</script>
 @endsection
 
 @section('js')
-<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
-<script src="{{ asset('js/select2.min.js') }}"></script>
 <script>
     $(document).ready(function() {
         // Khởi tạo Select2 cho select box đầu tiên
         initializeSelect2();
-        
-        // Biến đếm số dòng sản phẩm
-        let productIndex = 0;
         
         // Khởi tạo Select2 cho tất cả select box
         function initializeSelect2() {
@@ -250,65 +353,6 @@
             return new Intl.NumberFormat('vi-VN', { style: 'decimal' }).format(amount) + ' đ';
         }
         
-        // Thêm dòng sản phẩm mới
-        $('#add-product-row').click(function() {
-            productIndex++;
-            
-            const newRow = `
-                <div class="product-row mb-3">
-                    <div class="form-group">
-                        <label>Sản phẩm <span class="text-danger">*</span></label>
-                        <select class="form-control product-select" name="products[${productIndex}][id]" required>
-                            <option value="">Chọn sản phẩm</option>
-                            @forelse($products as $product)
-                                <option value="{{ $product->id }}" data-price="{{ $product->price }}">
-                                    {{ $product->name }} ({{ $product->code }}) - {{ number_format($product->price) }}đ
-                                </option>
-                            @empty
-                                <option value="" disabled>Không có sản phẩm nào</option>
-                            @endforelse
-                        </select>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>Số lượng <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control product-quantity" name="products[${productIndex}][quantity]" min="1" value="1" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Thành tiền</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control product-subtotal" value="0" readonly>
-                                <div class="input-group-append">
-                                    <span class="input-group-text">đ</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="text-right">
-                        <button type="button" class="btn btn-sm btn-danger remove-product-row">
-                            <i class="mdi mdi-trash-can"></i> Xóa
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            // Thêm dòng mới vào container
-            $('#products-container').append(newRow);
-            
-            // Khởi tạo Select2 cho select box mới
-            $('#products-container .product-select').last().select2({
-                width: '100%'
-            });
-        });
-        
-        // Xóa dòng sản phẩm
-        $(document).on('click', '.remove-product-row', function() {
-            $(this).closest('.product-row').remove();
-            updateTotalAmount();
-        });
-        
         // Cập nhật thành tiền khi thay đổi sản phẩm hoặc số lượng
         $(document).on('change', '.product-select, .product-quantity', function() {
             const row = $(this).closest('.product-row');
@@ -336,6 +380,11 @@
         $('.product-row').each(function() {
             updateRowSubtotal($(this));
         });
+        
+        // Make functions available globally
+        window.updateRowSubtotal = updateRowSubtotal;
+        window.updateTotalAmount = updateTotalAmount;
+        window.formatCurrency = formatCurrency;
     });
 </script>
 @endsection 
