@@ -41,7 +41,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 mb-4 mb-lg-0">
-                <img src="{{ asset('images/default/default_image.png') }}" alt="Về chúng tôi" class="img-fluid rounded shadow">
+                <img src="{{ get_image_url('about_image.jpg') }}" alt="Về chúng tôi" class="img-fluid rounded shadow">
             </div>
             <div class="col-lg-6">
                 <h2 class="mb-4">Thanh Tùng Stone</h2>
@@ -232,7 +232,7 @@
                 @foreach($showrooms as $showroom)
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100 border-0 shadow-sm">
-                            <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top" alt="{{ $showroom->name }}" style="height: 250px; object-fit: cover;">
+                            <img src="{{ get_image_url($showroom->image) }}" class="card-img-top" alt="{{ $showroom->name }}" style="height: 250px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">{{ $showroom->name }}</h5>
                                 <p class="mb-2"><i class="fas fa-map-marker-alt text-primary me-2"></i> {{ $showroom->address }}</p>

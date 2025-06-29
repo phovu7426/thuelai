@@ -36,11 +36,7 @@
                             <td>{{ $product->material->name ?? 'N/A' }}</td>
                             <td>{{ $product->surface->name ?? 'N/A' }}</td>
                             <td>
-                                @if($product->main_image)
-                                    <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" width="50">
-                                @else
-                                    <span class="text-muted">Không có hình</span>
-                                @endif
+                                <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}" width="50" height="50" class="img-thumbnail">
                             </td>
                             <td>{{ number_format($product->price) }} VNĐ</td>
                             <td>

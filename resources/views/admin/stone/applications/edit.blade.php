@@ -41,7 +41,7 @@
                     
                     @if($application->image)
                         <div class="mt-2">
-                            <img src="{{ asset('storage/' . $application->image) }}" alt="{{ $application->name }}" class="img-thumbnail" style="max-height: 200px">
+                            <img src="{{ get_image_url($application->image) }}" alt="{{ $application->name }}" class="img-thumbnail" style="max-height: 200px">
                         </div>
                     @endif
                 </div>

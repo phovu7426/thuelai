@@ -11,7 +11,7 @@
             @foreach($applications as $application)
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src="{{ $application->image ? asset($application->image) : asset('images/default/default_image.png') }}" class="card-img-top" alt="{{ $application->name }}">
+                        <img src="{{ get_image_url($application->image) }}" class="card-img-top" alt="{{ $application->name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $application->name }}</h5>
                             <p class="card-text">{{ \Illuminate\Support\Str::limit($application->description, 100) }}</p>

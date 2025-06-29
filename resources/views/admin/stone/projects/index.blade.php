@@ -32,8 +32,8 @@
                             <td>{{ $project->name }}</td>
                             <td>{{ $project->location }}</td>
                             <td>
-                                @if($project->image)
-                                    <img src="{{ asset($project->image) }}" alt="{{ $project->name }}" width="50">
+                                @if($project->main_image)
+                                    <img src="{{ get_image_url($project->main_image) }}" alt="{{ $project->name }}" width="50" class="img-thumbnail">
                                 @else
                                     <span class="text-muted">Không có hình</span>
                                 @endif

@@ -33,7 +33,7 @@
                             <td>{{ $application->slug }}</td>
                             <td>
                                 @if($application->image)
-                                    <img src="{{ asset($application->image) }}" alt="{{ $application->name }}" width="50">
+                                    <img src="{{ get_image_url($application->image) }}" alt="{{ $application->name }}" width="50" class="img-thumbnail">
                                 @else
                                     <span class="text-muted">Không có hình</span>
                                 @endif

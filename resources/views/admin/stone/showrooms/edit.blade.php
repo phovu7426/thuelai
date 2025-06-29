@@ -85,7 +85,7 @@
                             @enderror
                             <div class="mt-2" id="image-preview">
                                 @if($showroom->image)
-                                    <img src="{{ asset('storage/' . $showroom->image) }}" alt="{{ $showroom->name }}" class="img-thumbnail" style="max-height: 200px">
+                                    <img src="{{ get_image_url($showroom->image) }}" alt="{{ $showroom->name }}" class="img-thumbnail" style="max-height: 200px">
                                 @endif
                             </div>
                         </div>
@@ -105,7 +105,7 @@
                                         @foreach($showroom->gallery as $image)
                                             <div class="col-md-6 mb-2">
                                                 <div class="position-relative">
-                                                    <img src="{{ asset('storage/' . $image) }}" alt="Gallery" class="img-thumbnail" style="max-height: 100px">
+                                                    <img src="{{ get_image_url($image) }}" alt="Gallery" class="img-thumbnail" style="max-height: 100px">
                                                     <div class="form-check position-absolute" style="top: 5px; right: 5px;">
                                                         <input type="checkbox" name="remove_gallery[]" value="{{ $image }}" id="remove-{{ $loop->index }}" class="form-check-input">
                                                         <label class="form-check-label" for="remove-{{ $loop->index }}">Xóa</label>

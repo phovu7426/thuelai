@@ -53,7 +53,7 @@
                             @enderror
                             <div class="mt-2" id="image-preview">
                                 @if($surface->image)
-                                    <img src="{{ asset($surface->image) }}" alt="{{ $surface->name }}" class="img-thumbnail" style="max-height: 200px">
+                                    <img src="{{ get_image_url($surface->image) }}" alt="{{ $surface->name }}" class="img-thumbnail" style="max-height: 200px">
                                 @endif
                             </div>
                         </div>

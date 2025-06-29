@@ -33,7 +33,7 @@
                             <td>{{ Str::limit($video->embed_code, 50) }}</td>
                             <td>
                                 @if($video->thumbnail)
-                                    <img src="{{ asset($video->thumbnail) }}" alt="{{ $video->title }}" width="50">
+                                    <img src="{{ get_image_url($video->thumbnail) }}" alt="{{ $video->title }}" width="50" class="img-thumbnail">
                                 @else
                                     <span class="text-muted">Không có hình</span>
                                 @endif

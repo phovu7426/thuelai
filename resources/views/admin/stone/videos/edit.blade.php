@@ -83,7 +83,7 @@
                             @enderror
                             <div class="mt-2" id="thumbnail-preview">
                                 @if($video->thumbnail)
-                                    <img src="{{ asset('storage/' . $video->thumbnail) }}" alt="{{ $video->title }}" class="img-thumbnail" style="max-height: 200px">
+                                    <img src="{{ get_image_url($video->thumbnail) }}" alt="{{ $video->title }}" class="img-thumbnail" style="max-height: 200px">
                                 @endif
                             </div>
                         </div>

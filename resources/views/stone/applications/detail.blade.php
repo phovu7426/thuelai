@@ -19,7 +19,7 @@
             <div class="col-md-8">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <img src="{{ asset('images/default/default_image.png') }}" class="img-fluid mb-4" alt="{{ $application->name }}">
+                        <img src="{{ get_image_url($application->image) }}" class="img-fluid mb-4" alt="{{ $application->name }}">
                         
                         <div class="content">
                             {!! $application->content !!}

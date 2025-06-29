@@ -34,7 +34,7 @@
                             <td>{{ $showroom->phone }}</td>
                             <td>
                                 @if($showroom->image)
-                                    <img src="{{ asset($showroom->image) }}" alt="{{ $showroom->name }}" width="50">
+                                    <img src="{{ get_image_url($showroom->image) }}" alt="{{ $showroom->name }}" width="50" class="img-thumbnail">
                                 @else
                                     <span class="text-muted">Không có hình</span>
                                 @endif

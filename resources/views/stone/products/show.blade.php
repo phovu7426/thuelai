@@ -199,18 +199,21 @@
                             @if($product->images && count($product->images) > 0)
                                 @foreach($product->images as $image)
                                     <div class="swiper-slide">
-                                        <img src="{{ asset($image->path) }}" alt="{{ $product->name }}">
+                                        <img src="{{ get_image_url($image->path) }}" alt="{{ $product->name }}">
+                                    </div>
+                                @endforeach
+                            @elseif($product->gallery && is_array($product->gallery) && count($product->gallery) > 0)
+                                <div class="swiper-slide">
+                                    <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}">
+                                </div>
+                                @foreach($product->gallery as $galleryImage)
+                                    <div class="swiper-slide">
+                                        <img src="{{ get_image_url($galleryImage) }}" alt="{{ $product->name }}">
                                     </div>
                                 @endforeach
                             @else
                                 <div class="swiper-slide">
-                                    <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $product->name }}">
-                                </div>
-                                <div class="swiper-slide">
-                                    <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $product->name }}">
-                                </div>
-                                <div class="swiper-slide">
-                                    <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $product->name }}">
+                                    <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}">
                                 </div>
                             @endif
                         </div>
@@ -224,18 +227,21 @@
                             @if($product->images && count($product->images) > 0)
                                 @foreach($product->images as $image)
                                     <div class="swiper-slide">
-                                        <img src="{{ asset($image->path) }}" alt="{{ $product->name }}">
+                                        <img src="{{ get_image_url($image->path) }}" alt="{{ $product->name }}">
+                                    </div>
+                                @endforeach
+                            @elseif($product->gallery && is_array($product->gallery) && count($product->gallery) > 0)
+                                <div class="swiper-slide">
+                                    <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}">
+                                </div>
+                                @foreach($product->gallery as $galleryImage)
+                                    <div class="swiper-slide">
+                                        <img src="{{ get_image_url($galleryImage) }}" alt="{{ $product->name }}">
                                     </div>
                                 @endforeach
                             @else
                                 <div class="swiper-slide">
-                                    <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $product->name }}">
-                                </div>
-                                <div class="swiper-slide">
-                                    <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $product->name }}">
-                                </div>
-                                <div class="swiper-slide">
-                                    <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $product->name }}">
+                                    <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}">
                                 </div>
                             @endif
                         </div>
@@ -477,7 +483,7 @@
                                             <a href="{{ url('/stone/projects/' . $project->slug) }}" class="list-group-item list-group-item-action border-0 px-0">
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0">
-                                                        <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $project->name }}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                        <img src="{{ get_image_url($project->main_image) }}" alt="{{ $project->name }}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
                                                     </div>
                                                     <div class="flex-grow-1 ms-3">
                                                         <h6 class="mb-1">{{ $project->name }}</h6>
@@ -552,7 +558,7 @@
                     <div class="col-lg-3 col-md-6 mb-4">
                         <div class="product-card card h-100">
                             <div class="position-relative">
-                                <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top" alt="{{ $relatedProduct->name }}">
+                                <img src="{{ get_image_url($relatedProduct->main_image) }}" class="card-img-top" alt="{{ $relatedProduct->name }}">
                                 @if($relatedProduct->is_new)
                                     <span class="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded-pill">Mới</span>
                                 @endif

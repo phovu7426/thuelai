@@ -161,7 +161,7 @@
                             <div class="card border-0 shadow-sm h-100">
                                 <div class="row g-0">
                                     <div class="col-md-3 position-relative">
-                                        <img src="{{ asset('images/default/default_image.png') }}" class="img-fluid h-100" style="object-fit: cover;" alt="{{ $product->name }}">
+                                        <img src="{{ get_image_url($product->main_image) }}" class="img-fluid h-100" style="object-fit: cover;" alt="{{ $product->name }}">
                                         @if($product->is_new)
                                             <span class="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded-pill">Mới</span>
                                         @endif

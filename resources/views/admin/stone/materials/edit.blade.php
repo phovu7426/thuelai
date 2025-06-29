@@ -53,7 +53,7 @@
                             @enderror
                             <div class="mt-2" id="image-preview">
                                 @if($material->image)
-                                    <img src="{{ asset($material->image) }}" alt="{{ $material->name }}" class="img-thumbnail" style="max-height: 200px">
+                                    <img src="{{ get_image_url($material->image) }}" alt="{{ $material->name }}" class="img-thumbnail" style="max-height: 200px">
                                 @endif
                             </div>
                         </div>
