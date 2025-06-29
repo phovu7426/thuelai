@@ -1,5 +1,9 @@
 @extends('admin.layouts.main')
 
+@section('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endsection
+
 @section('content')
 <div class="container-fluid">
     <div class="card">
@@ -79,6 +83,21 @@
                         </div>
                         
                         <div class="form-group mb-3">
+                            <label for="stone_color_id">Màu sắc</label>
+                            <select name="stone_color_id" id="stone_color_id" class="form-control @error('stone_color_id') is-invalid @enderror">
+                                <option value="">-- Chọn màu sắc --</option>
+                                @foreach($colors as $color)
+                                    <option value="{{ $color->id }}" {{ old('stone_color_id', $product->stone_color_id) == $color->id ? 'selected' : '' }}>
+                                        {{ $color->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('stone_color_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div class="form-group mb-3">
                             <label for="price">Giá</label>
                             <input type="number" name="price" id="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $product->price) }}" min="0" step="0.01">
                             @error('price')
@@ -151,17 +170,15 @@
                         </div>
                         
                         <div class="form-group mb-3">
-                            <label>Ứng dụng</label>
-                            <div>
+                            <label for="applications">Ứng dụng</label>
+                            <select name="applications[]" id="applications" class="form-control @error('applications') is-invalid @enderror" multiple>
                                 @foreach($applications as $application)
-                                    <div class="form-check form-check-inline">
-                                        <input type="checkbox" name="applications[]" id="application-{{ $application->id }}" 
-                                               value="{{ $application->id }}" class="form-check-input"
-                                               {{ in_array($application->id, $productApplicationIds ?? []) ? 'checked' : '' }}>
-                                        <label for="application-{{ $application->id }}" class="form-check-label">{{ $application->name }}</label>
-                                    </div>
+                                    <option value="{{ $application->id }}" {{ in_array($application->id, $productApplicationIds ?? []) ? 'selected' : '' }}>
+                                        {{ $application->name }}
+                                    </option>
                                 @endforeach
-                            </div>
+                            </select>
+                            <small class="form-text text-muted">Giữ phím Ctrl (Windows) hoặc Command (Mac) để chọn nhiều ứng dụng</small>
                             @error('applications')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -255,7 +272,17 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+    // Khởi tạo Select2 cho ứng dụng
+    $(document).ready(function() {
+        $('#applications').select2({
+            placeholder: "Chọn ứng dụng",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+
     // Hiển thị ảnh chính xem trước khi upload
     document.getElementById('main_image').addEventListener('change', function(e) {
         const preview = document.getElementById('main-image-preview');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Stone;
 use App\Http\Controllers\Controller;
 use App\Models\StoneApplication;
 use App\Models\StoneCategory;
+use App\Models\StoneColor;
 use App\Models\StoneMaterial;
 use App\Models\StoneProduct;
 use App\Models\StoneSurface;
@@ -31,15 +32,17 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = StoneCategory::whereNotNull('parent_id')->get();
+        $categories = StoneCategory::all();
         $materials = StoneMaterial::all();
         $surfaces = StoneSurface::all();
+        $colors = StoneColor::all();
         $applications = StoneApplication::all();
         
         return view('admin.stone.products.create', compact(
             'categories',
             'materials',
             'surfaces',
+            'colors',
             'applications'
         ));
     }
@@ -63,6 +66,7 @@ class ProductController extends Controller
             'stone_category_id' => 'required|exists:stone_categories,id',
             'stone_material_id' => 'required|exists:stone_materials,id',
             'stone_surface_id' => 'required|exists:stone_surfaces,id',
+            'stone_color_id' => 'nullable|exists:stone_colors,id',
             'is_featured' => 'boolean',
             'status' => 'required|boolean',
             'order' => 'nullable|integer',
@@ -131,9 +135,10 @@ class ProductController extends Controller
      */
     public function edit(StoneProduct $product)
     {
-        $categories = StoneCategory::whereNotNull('parent_id')->get();
+        $categories = StoneCategory::all();
         $materials = StoneMaterial::all();
         $surfaces = StoneSurface::all();
+        $colors = StoneColor::all();
         $applications = StoneApplication::all();
         
         // Get current application IDs
@@ -144,6 +149,7 @@ class ProductController extends Controller
             'categories',
             'materials',
             'surfaces',
+            'colors',
             'applications',
             'productApplicationIds'
         ));
@@ -168,6 +174,7 @@ class ProductController extends Controller
             'stone_category_id' => 'required|exists:stone_categories,id',
             'stone_material_id' => 'required|exists:stone_materials,id',
             'stone_surface_id' => 'required|exists:stone_surfaces,id',
+            'stone_color_id' => 'nullable|exists:stone_colors,id',
             'is_featured' => 'boolean',
             'status' => 'required|boolean',
             'order' => 'nullable|integer',
