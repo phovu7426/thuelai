@@ -46,6 +46,11 @@ class ApplicationController extends Controller
             ->where('status', 1)
             ->firstOrFail();
             
+        // Đảm bảo nội dung HTML hiển thị đúng
+        if (!$application->content) {
+            $application->content = '<p>' . $application->description . '</p>';
+        }
+            
         // Lấy sản phẩm thuộc ứng dụng này
         $products = $application->products()
             ->where('stone_products.status', 1)
@@ -61,5 +66,54 @@ class ApplicationController extends Controller
             ->get();
             
         return view('stone.applications.show', compact('application', 'products', 'relatedApplications'));
+    }
+    
+    /**
+     * Test hiển thị HTML
+     */
+    public function testHtml($slug)
+    {
+        $application = StoneApplication::where('slug', $slug)
+            ->where('status', 1)
+            ->firstOrFail();
+            
+        return view('stone.applications.test_html', compact('application'));
+    }
+    
+    /**
+     * Test đơn giản
+     */
+    public function simpleTest($slug)
+    {
+        $application = StoneApplication::where('slug', $slug)
+            ->where('status', 1)
+            ->firstOrFail();
+            
+        // Đảm bảo nội dung HTML hiển thị đúng
+        if (!$application->content) {
+            $application->content = '<p>' . $application->description . '</p>';
+        }
+            
+        return view('stone.applications.simple_test', compact('application'));
+    }
+    
+    /**
+     * Test tối giản
+     */
+    public function testMinimal($slug)
+    {
+        $application = StoneApplication::where('slug', $slug)
+            ->where('status', 1)
+            ->firstOrFail();
+            
+        return view('stone.applications.test_minimal', compact('application'));
+    }
+    
+    /**
+     * Trang Via hè tùy chỉnh
+     */
+    public function viaHe()
+    {
+        return view('stone.applications.via_he_custom');
     }
 } 

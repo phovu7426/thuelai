@@ -1,8 +1,8 @@
-@extends('stone.layouts.main')
+@extends("stone.layouts.main")
 
-@section('title', $application->name)
+@section("title", $application->name)
 
-@section('content')
+@section("content")
 <div class="container py-5">
     <div class="row">
         <div class="col-md-12">

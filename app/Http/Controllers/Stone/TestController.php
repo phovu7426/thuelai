@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Stone;
 
 use App\Http\Controllers\Controller;
+use App\Models\StoneApplication;
 use App\Models\StoneShowroom;
 use Illuminate\Http\Request;
 
@@ -13,10 +14,8 @@ class TestController extends Controller
      */
     public function index()
     {
-        $showrooms = StoneShowroom::where('status', 1)
-            ->orderBy('order', 'asc')
-            ->paginate(12);
-            
-        return view('stone.test', compact('showrooms'));
+        $application = StoneApplication::where('slug', 'via-he')->first();
+        
+        return view('stone.test', compact('application'));
     }
 } 

@@ -175,6 +175,13 @@
                             <p>Đơn hàng</p>
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.contacts.index') }}" class="nav-link {{ isActive('admin.stone.contacts.*') }}">
+                            <i class="nav-icon bi bi-cart-check"></i>
+                            <p>Liên hệ</p>
+                        </a>
+                    </li>
                 </ul>
             </li>
 

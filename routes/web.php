@@ -20,6 +20,8 @@ use App\Http\Controllers\Stone\ShowroomController;
 use App\Http\Controllers\Stone\VideoController;
 use App\Http\Controllers\Stone\TestController;
 use App\Http\Controllers\Stone\ShowroomListController;
+use App\Http\Controllers\Stone\ApplicationDetailController;
+use App\Http\Controllers\Stone\ContactController;
 
 // Chuyển hướng trang chủ đến trang đá
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -71,8 +73,8 @@ Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
     Route::get('/about', [HomeController::class, 'about'])->name('about');
     
     // Trang liên hệ
-    Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-    Route::post('/contact/submit', [HomeController::class, 'contactSubmit'])->name('contact.submit');
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
     
     // Sản phẩm đá
     Route::prefix('products')->name('products.')->group(function () {
@@ -110,6 +112,11 @@ Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
     // Ứng dụng đá
     Route::prefix('applications')->name('applications.')->group(function () {
         Route::get('/', [ApplicationController::class, 'index'])->name('index');
+        Route::get('/test-html/{slug}', [ApplicationController::class, 'testHtml'])->name('test_html');
+        Route::get('/simple-test/{slug}', [ApplicationController::class, 'simpleTest'])->name('simple_test');
+        Route::get('/minimal-test/{slug}', [ApplicationController::class, 'testMinimal'])->name('minimal_test');
+        Route::get('/via-he-custom', [ApplicationController::class, 'viaHe'])->name('via_he_custom');
+        Route::get('/detail/{slug}', [ApplicationDetailController::class, 'show'])->name('detail');
         Route::get('/{slug}', [ApplicationController::class, 'show'])->name('show');
     });
     
@@ -135,5 +142,10 @@ Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
     
     // New showroom list route
     Route::get('/showrooms-list', [ShowroomListController::class, 'index'])->name('showrooms.list');
+});
+
+// Test Blade rendering
+Route::get('/test-blade', function () {
+    return view('test_blade');
 });
 

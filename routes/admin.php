@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Roles\RoleController;
 use App\Http\Controllers\Admin\Series\SeriesController;
 use App\Http\Controllers\Admin\Stone\ApplicationController;
 use App\Http\Controllers\Admin\Stone\CategoryController as StoneCategoryController;
+use App\Http\Controllers\Admin\Stone\ContactController;
 use App\Http\Controllers\Admin\Stone\MaterialController;
 use App\Http\Controllers\Admin\Stone\OrderController;
 use App\Http\Controllers\Admin\Stone\ProductController as StoneProductController;
@@ -99,5 +100,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         
         // Đơn hàng
         Route::resource('orders', OrderController::class);
+
+        // Stone - Quản lý liên hệ
+        Route::prefix('contacts')->name('contacts.')->group(function () {
+            Route::get('/', [ContactController::class, 'index'])->name('index');
+            Route::get('/{id}', [ContactController::class, 'show'])->name('show');
+            Route::delete('/{id}', [ContactController::class, 'destroy'])->name('destroy');
+            Route::post('/mark-as-read', [ContactController::class, 'markAsRead'])->name('mark-as-read');
+            Route::post('/bulk-delete', [ContactController::class, 'bulkDelete'])->name('bulk-delete');
+        });
     });
 });
