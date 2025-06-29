@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="mb-0">Chi tiết đơn hàng #{{ $order->id }}</h1>
+                <h1 class="mb-0">Chi tiết đơn hàng #{{ $order->order_number }}</h1>
                 <a href="{{ route('stone.orders.index') }}" class="btn btn-outline-secondary">
                     <i class="fa fa-arrow-left"></i> Quay lại danh sách
                 </a>
@@ -26,85 +26,148 @@
             @endif
             
             <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Thông tin đơn hàng</h5>
-                        <div>{!! $order->status_label !!}</div>
-                    </div>
-                </div>
                 <div class="card-body">
-                    <div class="row mb-4">
+                    <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-muted">Thông tin khách hàng</h6>
-                            <p><strong>Họ tên:</strong> {{ $order->customer_name }}</p>
-                            <p><strong>Email:</strong> {{ $order->customer_email }}</p>
-                            <p><strong>Số điện thoại:</strong> {{ $order->customer_phone }}</p>
-                            <p><strong>Địa chỉ:</strong> {{ $order->customer_address }}</p>
+                            <h5 class="card-title">Thông tin đơn hàng</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th style="width: 200px;">Mã đơn hàng:</th>
+                                    <td><strong>{{ $order->order_number }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Ngày đặt:</th>
+                                    <td>{{ $order->formatted_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Trạng thái:</th>
+                                    <td>
+                                        {!! $order->status_label !!}
+                                        @if($order->status == 'pending')
+                                            <br>
+                                            <small class="text-muted">Bạn có thể hủy đơn hàng này</small>
+                                        @elseif($order->status == 'processing')
+                                            <br>
+                                            <small class="text-muted">Đơn hàng đang được xử lý</small>
+                                        @elseif($order->status == 'completed')
+                                            <br>
+                                            <small class="text-muted">Đơn hàng đã hoàn thành</small>
+                                        @else
+                                            <br>
+                                            <small class="text-muted">Đơn hàng đã bị hủy</small>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Tổng tiền:</th>
+                                    <td><strong class="text-danger">{{ number_format($order->total_amount) }} đ</strong></td>
+                                </tr>
+                            </table>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted">Thông tin đơn hàng</h6>
-                            <p><strong>Mã đơn hàng:</strong> #{{ $order->id }}</p>
-                            <p><strong>Ngày đặt:</strong> {{ $order->formatted_date }}</p>
-                            <p><strong>Trạng thái:</strong> {!! $order->status_label !!}</p>
-                            <p><strong>Ghi chú:</strong> {{ $order->note ?? 'Không có' }}</p>
+                            <h5 class="card-title">Thông tin giao hàng</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th style="width: 200px;">Họ tên:</th>
+                                    <td>{{ $order->customer_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Số điện thoại:</th>
+                                    <td>{{ $order->customer_phone }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>{{ $order->customer_email ?: 'Không có' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Địa chỉ:</th>
+                                    <td>{{ $order->customer_address }}</td>
+                                </tr>
+                                @if($order->note)
+                                <tr>
+                                    <th>Ghi chú:</th>
+                                    <td>{{ $order->note }}</td>
+                                </tr>
+                                @endif
+                            </table>
                         </div>
                     </div>
-                    
-                    <h6 class="text-muted mb-3">Chi tiết đơn hàng</h6>
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Sản phẩm</th>
-                                    <th>Đơn giá</th>
-                                    <th>Số lượng</th>
-                                    <th class="text-right">Thành tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($order->items as $item)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                @if($item->product->image)
-                                                    <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" class="img-thumbnail mr-3" style="width: 60px; height: 60px; object-fit: cover;">
-                                                @else
-                                                    <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $item->product->name }}" class="img-thumbnail mr-3" style="width: 60px; height: 60px; object-fit: cover;">
-                                                @endif
-                                                <div>
-                                                    <h6 class="mb-0">{{ $item->product->name }}</h6>
-                                                    <a href="{{ route('stone.products.show', $item->product->id) }}" class="text-primary">Xem sản phẩm</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>{{ number_format((float)$item->price) }} đ</td>
-                                        <td>{{ $item->quantity }}</td>
-                                        <td class="text-right">{{ number_format((float)$item->subtotal) }} đ</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" class="text-right">Tổng cộng:</th>
-                                    <th class="text-right">{{ number_format((float)$order->total_amount) }} đ</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5 class="card-title">Chi tiết đơn hàng</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Sản phẩm</th>
+                                            <th style="width: 150px;">Đơn giá</th>
+                                            <th style="width: 100px;">Số lượng</th>
+                                            <th style="width: 150px;" class="text-right">Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($order->items as $item)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        @if($item->product && $item->product->main_image)
+                                                            <img src="{{ asset('storage/' . $item->product->main_image) }}" 
+                                                                 alt="{{ $item->product->name }}" 
+                                                                 class="img-thumbnail mr-3" 
+                                                                 style="width: 60px; height: 60px; object-fit: cover;">
+                                                        @else
+                                                            <img src="{{ asset('images/default/default_image.png') }}" 
+                                                                 alt="{{ $item->product ? $item->product->name : 'Sản phẩm' }}" 
+                                                                 class="img-thumbnail mr-3" 
+                                                                 style="width: 60px; height: 60px; object-fit: cover;">
+                                                        @endif
+                                                        <div>
+                                                            <h6 class="mb-0">{{ $item->product ? $item->product->name : 'Sản phẩm không còn tồn tại' }}</h6>
+                                                            @if($item->product)
+                                                                <small class="text-muted">Mã: {{ $item->product->code }}</small><br>
+                                                                <a href="{{ route('stone.products.show', $item->product->id) }}" class="text-primary">Xem sản phẩm</a>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ number_format($item->price) }} đ</td>
+                                                <td class="text-center">{{ $item->quantity }}</td>
+                                                <td class="text-right">{{ number_format($item->subtotal) }} đ</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="3" class="text-right">Tổng cộng:</th>
+                                            <th class="text-right">{{ number_format($order->total_amount) }} đ</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="card-footer">
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('stone.products.index') }}" class="btn btn-outline-primary">
-                            <i class="fa fa-shopping-bag"></i> Tiếp tục mua sắm
-                        </a>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="{{ route('stone.products.index') }}" class="btn btn-primary">
+                                <i class="fa fa-shopping-bag"></i> Tiếp tục mua sắm
+                            </a>
+                        </div>
                         
                         @if($order->status == 'pending')
-                            <form action="{{ route('stone.orders.cancel', $order->id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
-                                    <i class="fa fa-times"></i> Hủy đơn hàng
-                                </button>
-                            </form>
+                            <div>
+                                <form action="{{ route('stone.orders.cancel', $order->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="btn btn-danger"
+                                            onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
+                                        <i class="fa fa-times"></i> Hủy đơn hàng
+                                    </button>
+                                </form>
+                            </div>
                         @endif
                     </div>
                 </div>

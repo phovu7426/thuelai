@@ -21,72 +21,92 @@
 
     <div class="row">
         <div class="col-12">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    {{ session('success') }}
-                </div>
-            @endif
-            
             <div class="card">
                 <div class="card-body">
-                    <div class="row mb-3">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    <div class="row">
                         <div class="col-md-6">
-                            <div class="mb-4">
-                                <h5>Thông tin khách hàng</h5>
-                                <address class="mb-0 font-14 address-lg">
-                                    <strong>{{ $order->customer_name }}</strong><br>
-                                    {{ $order->customer_address }}<br>
-                                    <abbr title="Điện thoại">SĐT:</abbr> {{ $order->customer_phone }}<br>
-                                    @if($order->customer_email)
-                                        <abbr title="Email">Email:</abbr> {{ $order->customer_email }}
-                                    @endif
-                                </address>
-                            </div>
+                            <h5 class="card-title">Thông tin đơn hàng</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th style="width: 200px;">Mã đơn hàng:</th>
+                                    <td><strong>{{ $order->order_number }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Ngày đặt:</th>
+                                    <td>{{ $order->formatted_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Trạng thái:</th>
+                                    <td>
+                                        {!! $order->status_label !!}
+                                        @if($order->status == 'pending')
+                                            <br>
+                                            <small class="text-muted">Có thể chuyển sang: Đang xử lý, Đã hủy</small>
+                                        @elseif($order->status == 'processing')
+                                            <br>
+                                            <small class="text-muted">Có thể chuyển sang: Hoàn thành, Đã hủy</small>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Tổng tiền:</th>
+                                    <td><strong class="text-danger">{{ number_format($order->total_amount) }} đ</strong></td>
+                                </tr>
+                            </table>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-4">
-                                <h5>Thông tin đơn hàng</h5>
-                                <div class="font-14">
-                                    <strong>Mã đơn hàng:</strong> {{ $order->order_number }}<br>
-                                    <strong>Ngày đặt:</strong> {{ $order->created_at->format('d/m/Y H:i') }}<br>
-                                    <strong>Trạng thái:</strong> 
-                                    @if($order->status == 'pending')
-                                        <span class="badge badge-warning">Chờ duyệt</span>
-                                    @elseif($order->status == 'approved')
-                                        <span class="badge badge-info">Đã duyệt</span>
-                                    @elseif($order->status == 'completed')
-                                        <span class="badge badge-success">Hoàn thành</span>
-                                    @elseif($order->status == 'cancelled')
-                                        <span class="badge badge-danger">Đã hủy</span>
-                                    @endif
-                                    <br>
-                                    <strong>Nguồn:</strong> 
-                                    @if($order->is_admin_created)
-                                        <span class="badge badge-primary">Admin</span>
-                                    @else
-                                        <span class="badge badge-light">Khách hàng</span>
-                                    @endif
-                                    <br>
-                                    <strong>Ghi chú:</strong> {{ $order->note ?? 'Không có' }}
-                                </div>
-                            </div>
+                            <h5 class="card-title">Thông tin khách hàng</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th style="width: 200px;">Họ tên:</th>
+                                    <td>{{ $order->customer_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Số điện thoại:</th>
+                                    <td>{{ $order->customer_phone }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>{{ $order->customer_email ?: 'Không có' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Địa chỉ:</th>
+                                    <td>{{ $order->customer_address }}</td>
+                                </tr>
+                                @if($order->note)
+                                <tr>
+                                    <th>Ghi chú:</th>
+                                    <td>{{ $order->note }}</td>
+                                </tr>
+                                @endif
+                            </table>
                         </div>
                     </div>
-                    
-                    <div class="row">
+
+                    <div class="row mt-4">
                         <div class="col-12">
+                            <h5 class="card-title">Chi tiết đơn hàng</h5>
                             <div class="table-responsive">
                                 <table class="table table-centered table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
+                                            <th style="width: 50px;">#</th>
                                             <th>Sản phẩm</th>
-                                            <th>Giá</th>
-                                            <th>Số lượng</th>
-                                            <th class="text-right">Thành tiền</th>
+                                            <th style="width: 150px;">Giá</th>
+                                            <th style="width: 100px;">Số lượng</th>
+                                            <th style="width: 150px;" class="text-right">Thành tiền</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -95,7 +115,7 @@
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>
                                                     <div>
-                                                        <strong>{{ $item->product_name }}</strong>
+                                                        <strong>{{ $item->product->name }}</strong>
                                                         @if($item->product)
                                                             <p class="text-muted mb-0">Mã: {{ $item->product->code }}</p>
                                                         @endif
@@ -121,32 +141,58 @@
                     <div class="row mt-4">
                         <div class="col-md-6">
                             <h5>Cập nhật trạng thái</h5>
-                            <form action="{{ route('admin.stone.orders.update-status', $order->id) }}" method="POST" class="form-inline">
-                                @csrf
-                                <div class="form-group mr-2">
-                                    <select name="status" class="form-control">
-                                        <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ duyệt</option>
-                                        <option value="approved" {{ $order->status == 'approved' ? 'selected' : '' }}>Đã duyệt</option>
-                                        <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Hoàn thành</option>
-                                        <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
-                                    </select>
+                            @if($order->status != 'completed' && $order->status != 'cancelled')
+                                <div class="btn-group">
+                                    @if($order->status == 'pending')
+                                        <form action="{{ route('admin.stone.orders.update', $order->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="status" value="processing">
+                                            <button type="submit" class="btn btn-primary mr-2">
+                                                <i class="mdi mdi-progress-check"></i> Chuyển sang đang xử lý
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    @if($order->status == 'processing')
+                                        <form action="{{ route('admin.stone.orders.update', $order->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="status" value="completed">
+                                            <button type="submit" class="btn btn-success mr-2">
+                                                <i class="mdi mdi-check-circle"></i> Đánh dấu hoàn thành
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    <form action="{{ route('admin.stone.orders.update', $order->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="cancelled">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
+                                            <i class="mdi mdi-close-circle"></i> Hủy đơn hàng
+                                        </button>
+                                    </form>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                            </form>
+                            @else
+                                <div class="alert alert-info">
+                                    Đơn hàng đã {{ $order->status == 'completed' ? 'hoàn thành' : 'bị hủy' }}, không thể thay đổi trạng thái.
+                                </div>
+                            @endif
                         </div>
                         <div class="col-md-6 text-right">
-                            <div class="btn-group">
-                                <a href="{{ route('admin.stone.orders.edit', $order->id) }}" class="btn btn-secondary">
-                                    <i class="mdi mdi-square-edit-outline"></i> Sửa
-                                </a>
-                                <form action="{{ route('admin.stone.orders.destroy', $order->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')">
+                            <a href="{{ route('admin.stone.orders.index') }}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left"></i> Quay lại danh sách
+                            </a>
+                            @if($order->status == 'completed' || $order->status == 'cancelled')
+                                <form action="{{ route('admin.stone.orders.destroy', $order->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger ml-1">
-                                        <i class="mdi mdi-delete"></i> Xóa
+                                    <button type="submit" class="btn btn-danger ml-1" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')">
+                                        <i class="mdi mdi-delete"></i> Xóa đơn hàng
                                     </button>
                                 </form>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
