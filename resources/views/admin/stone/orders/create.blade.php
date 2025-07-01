@@ -34,6 +34,11 @@
         background-color: #0069d9;
         border-color: #0062cc;
     }
+    
+    /* Ẩn hàng mẫu */
+    #product-template {
+        display: none;
+    }
 </style>
 @endsection
 
@@ -66,6 +71,7 @@
 
                     <form action="{{ route('admin.stone.orders.store') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="total_amount" id="total_amount_input" value="0">
 
                         <div class="row">
                             <div class="col-md-6">
@@ -151,6 +157,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div id="products-container">
+                                            <!-- Sản phẩm 1 -->
                                             <div class="product-row mb-3">
                                                 <div class="form-group">
                                                     <label>Sản phẩm <span class="text-danger">*</span></label>
@@ -194,7 +201,7 @@
                                         </div>
 
                                         <div class="text-left">
-                                            <button type="button" class="btn btn-primary" id="add-product-row" onclick="addNewProductRow()">
+                                            <button type="button" class="btn btn-primary" id="add-product-row">
                                                 <i class="mdi mdi-plus"></i> Thêm sản phẩm
                                             </button>
                                         </div>
@@ -218,89 +225,19 @@
         </div>
     </div>
 </div>
-
-<!-- Simple inline script to ensure the button works -->
-<script>
-    // Direct function to add a new product row
-    function addNewProductRow() {
-        console.log('Add product button clicked (direct)');
-        
-        // Get the current number of product rows
-        const productRows = document.querySelectorAll('.product-row');
-        const productIndex = productRows.length;
-        
-        // Create a new product row
-        const newRow = document.createElement('div');
-        newRow.className = 'product-row mb-3';
-        newRow.innerHTML = `
-            <div class="form-group">
-                <label>Sản phẩm <span class="text-danger">*</span></label>
-                <select class="form-control product-select" name="products[${productIndex}][id]" required>
-                    <option value="">Chọn sản phẩm</option>
-                    @forelse($products as $product)
-                        <option value="{{ $product->id }}" data-price="{{ $product->price }}">
-                            {{ $product->name }} ({{ $product->code }}) - {{ number_format($product->price) }}đ
-                        </option>
-                    @empty
-                        <option value="" disabled>Không có sản phẩm nào</option>
-                    @endforelse
-                </select>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Số lượng <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control product-quantity" name="products[${productIndex}][quantity]" min="1" value="1" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Thành tiền</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control product-subtotal" value="0" readonly>
-                            <div class="input-group-append">
-                                <span class="input-group-text">đ</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="text-right mb-2">
-                <button type="button" class="btn btn-sm btn-danger remove-product-row" onclick="removeProductRow(this)">
-                    <i class="mdi mdi-trash-can"></i> Xóa
-                </button>
-            </div>
-            <hr>
-        `;
-        
-        // Add the new row to the container
-        document.getElementById('products-container').appendChild(newRow);
-        
-        // Initialize Select2 for the new dropdown
-        if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
-            $(newRow).find('.product-select').select2({
-                width: '100%'
-            });
-        }
-    }
-    
-    // Function to remove a product row
-    function removeProductRow(button) {
-        const productRows = document.querySelectorAll('.product-row');
-        if (productRows.length > 1) {
-            button.closest('.product-row').remove();
-        }
-    }
-</script>
 @endsection
 
 @section('js')
+<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ asset('js/select2.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        // Khởi tạo Select2 cho select box đầu tiên
-        initializeSelect2();
+        // Biến đếm số lượng sản phẩm
+        let productCount = 1;
         
         // Khởi tạo Select2 cho tất cả select box
+        initializeSelect2();
+        
         function initializeSelect2() {
             $('.product-select').select2({
                 width: '100%'
@@ -309,6 +246,71 @@
             $('#user_id, #status').select2({
                 width: '100%'
             });
+        }
+        
+        // Thêm sản phẩm mới
+        $('#add-product-row').on('click', function() {
+            console.log('Thêm sản phẩm mới');
+            
+            // Lấy HTML của hàng đầu tiên
+            const firstRow = $('#products-container .product-row:first').clone();
+            
+            // Cập nhật index cho các input và select
+            firstRow.find('select, input').each(function() {
+                const name = $(this).attr('name');
+                if (name) {
+                    $(this).attr('name', name.replace(/\[\d+\]/, '[' + productCount + ']'));
+                }
+            });
+            
+            // Reset giá trị và xóa Select2
+            const select = firstRow.find('.product-select');
+            select.val('').removeAttr('data-select2-id');
+            select.find('option').removeAttr('data-select2-id');
+            firstRow.find('.select2-container').remove();
+            
+            // Copy lại tất cả options từ select box đầu tiên
+            const originalSelect = $('#products-container .product-row:first .product-select');
+            select.html(originalSelect.html());
+            
+            // Reset các giá trị khác
+            firstRow.find('.product-quantity').val(1);
+            firstRow.find('.product-subtotal').val(0);
+            firstRow.find('.remove-product-row').prop('disabled', false);
+            
+            // Tăng biến đếm
+            productCount++;
+            
+            // Thêm hàng mới vào container
+            $('#products-container').append(firstRow);
+            
+            // Khởi tạo Select2 cho dropdown mới
+            select.select2({
+                width: '100%'
+            });
+            
+            // Cập nhật trạng thái các nút xóa
+            updateRemoveButtons();
+        });
+        
+        // Xóa sản phẩm (sử dụng event delegation)
+        $(document).on('click', '.remove-product-row', function() {
+            const productRows = $('#products-container .product-row');
+            if (productRows.length > 1) {
+                $(this).closest('.product-row').remove();
+                updateTotalAmount();
+                updateRemoveButtons();
+            }
+        });
+        
+        // Cập nhật trạng thái các nút xóa
+        function updateRemoveButtons() {
+            const productRows = $('#products-container .product-row');
+            if (productRows.length <= 1) {
+                $('.remove-product-row').prop('disabled', true);
+            } else {
+                $('.remove-product-row').prop('disabled', false);
+            }
         }
         
         // Cập nhật thành tiền cho một dòng sản phẩm
@@ -332,7 +334,7 @@
         function updateTotalAmount() {
             let total = 0;
             
-            $('.product-row').each(function() {
+            $('#products-container .product-row').each(function() {
                 const select = $(this).find('.product-select');
                 const quantity = $(this).find('.product-quantity');
                 
@@ -346,6 +348,7 @@
             });
             
             $('#total-amount').text(formatCurrency(total));
+            $('#total_amount_input').val(total);
         }
         
         // Định dạng tiền tệ
@@ -377,14 +380,9 @@
         });
         
         // Khởi tạo tính toán ban đầu
-        $('.product-row').each(function() {
+        $('#products-container .product-row').each(function() {
             updateRowSubtotal($(this));
         });
-        
-        // Make functions available globally
-        window.updateRowSubtotal = updateRowSubtotal;
-        window.updateTotalAmount = updateTotalAmount;
-        window.formatCurrency = formatCurrency;
     });
 </script>
 @endsection 

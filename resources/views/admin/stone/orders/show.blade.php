@@ -201,3 +201,39 @@
     </div>
 </div>
 @endsection 
+
+@section('js')
+<script>
+function updateStatus(orderId, status) {
+    // Create form element
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ url("admin/stone/orders") }}/' + orderId;
+    
+    // Add CSRF token
+    var csrf = document.createElement('input');
+    csrf.type = 'hidden';
+    csrf.name = '_token';
+    csrf.value = '{{ csrf_token() }}';
+    form.appendChild(csrf);
+    
+    // Add method override
+    var method = document.createElement('input');
+    method.type = 'hidden';
+    method.name = '_method';
+    method.value = 'PUT';
+    form.appendChild(method);
+    
+    // Add status
+    var statusInput = document.createElement('input');
+    statusInput.type = 'hidden';
+    statusInput.name = 'status';
+    statusInput.value = status;
+    form.appendChild(statusInput);
+    
+    // Add form to body and submit
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
+@endsection 
