@@ -53,7 +53,7 @@
                             @enderror
                             <div class="mt-2" id="image-preview">
                                 @if($category->image)
-                                    <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="img-thumbnail" style="max-height: 200px">
+                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="img-thumbnail" style="max-height: 200px">
                                 @endif
                             </div>
                         </div>

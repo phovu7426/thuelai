@@ -187,43 +187,46 @@
                                         </a>
 
                                         @if($order->status == 'pending')
-                                            <button type="button" 
-                                                    class="btn btn-primary btn-sm"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Chuyển sang đang xử lý"
-                                                    onclick="updateStatus('{{ $order->id }}', 'processing')">
-                                                <i class="fas fa-play"></i>
-                                            </button>
+                                            <form action="{{ route('admin.stone.orders.update', $order->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="processing">
+                                                <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Chuyển sang đang xử lý">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                            </form>
                                         @endif
 
                                         @if($order->status == 'processing')
-                                            <button type="button" 
-                                                    class="btn btn-success btn-sm"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Đánh dấu hoàn thành"
-                                                    onclick="updateStatus('{{ $order->id }}', 'completed')">
-                                                <i class="fas fa-check"></i>
-                                            </button>
+                                            <form action="{{ route('admin.stone.orders.update', $order->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="completed">
+                                                <button type="submit" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Đánh dấu hoàn thành">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
                                         @endif
 
                                         @if(in_array($order->status, ['pending', 'processing']))
-                                            <button type="button" 
-                                                    class="btn btn-danger btn-sm"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Hủy đơn hàng"
-                                                    onclick="if(confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) updateStatus('{{ $order->id }}', 'cancelled')">
-                                                <i class="fas fa-times"></i>
-                                            </button>
+                                            <form action="{{ route('admin.stone.orders.update', $order->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="cancelled">
+                                                <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hủy đơn hàng" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
                                         @endif
 
                                         @if($order->status == 'completed' || $order->status == 'cancelled')
-                                            <button type="button" 
-                                                    class="btn btn-danger btn-sm"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Xóa đơn hàng"
-                                                    onclick="if(confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) deleteOrder('{{ $order->id }}')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <form action="{{ route('admin.stone.orders.destroy', $order->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Xóa đơn hàng" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         @endif
                                     </div>
                                 </td>
@@ -252,15 +255,18 @@
 
 @section('js')
 <script>
-$(document).ready(function() {
+document.addEventListener("DOMContentLoaded", function() {
     // Enable tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    });
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    }
 });
 
-function updateStatus(orderId, status) {
+// Function to update order status
+window.updateStatus = function(orderId, status) {
     // Create form element
     var form = document.createElement('form');
     form.method = 'POST';
@@ -292,7 +298,8 @@ function updateStatus(orderId, status) {
     form.submit();
 }
 
-function deleteOrder(orderId) {
+// Function to delete order
+window.deleteOrder = function(orderId) {
     // Create form element
     var form = document.createElement('form');
     form.method = 'POST';

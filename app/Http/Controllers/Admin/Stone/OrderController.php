@@ -101,31 +101,45 @@ class OrderController extends Controller
             $order->is_admin_created = true;
             $order->order_number = Order::generateOrderNumber();
             
-            // Calculate total amount
+            // Calculate total amount from products
             $totalAmount = 0;
+            
+            // Create order items and calculate total
+            if (isset($request->products) && is_array($request->products)) {
+                foreach ($request->products as $key => $productData) {
+                    if (!empty($productData['id'])) {
+                        $product = StoneProduct::findOrFail($productData['id']);
+                        $quantity = intval($productData['quantity']);
+                        $price = $product->price;
+                        
+                        $totalAmount += $price * $quantity;
+                    }
+                }
+            }
+            
+            // Set total amount
+            $order->total_amount = $totalAmount;
             
             // Save order first to get ID
             $order->save();
             
             // Create order items
-            foreach ($request->products as $key => $productData) {
-                $product = StoneProduct::findOrFail($productData['id']);
-                $quantity = $productData['quantity'];
-                $price = $product->price;
-                
-                $orderItem = new OrderItem();
-                $orderItem->order_id = $order->id;
-                $orderItem->stone_product_id = $product->id;
-                $orderItem->quantity = $quantity;
-                $orderItem->price = $price;
-                $orderItem->save();
-                
-                $totalAmount += $price * $quantity;
+            if (isset($request->products) && is_array($request->products)) {
+                foreach ($request->products as $key => $productData) {
+                    if (!empty($productData['id'])) {
+                        $product = StoneProduct::findOrFail($productData['id']);
+                        $quantity = intval($productData['quantity']);
+                        $price = $product->price;
+                        
+                        $orderItem = new OrderItem();
+                        $orderItem->order_id = $order->id;
+                        $orderItem->stone_product_id = $product->id;
+                        $orderItem->quantity = $quantity;
+                        $orderItem->price = $price;
+                        $orderItem->save();
+                    }
+                }
             }
-            
-            // Update order with total amount
-            $order->total_amount = $totalAmount;
-            $order->save();
             
             DB::commit();
             
@@ -134,8 +148,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
-                ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage())
-                ->withInput();
+                ->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
     }
 
