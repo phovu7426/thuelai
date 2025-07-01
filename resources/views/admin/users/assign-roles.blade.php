@@ -1,6 +1,6 @@
 @extends('admin.index')
 
-@section('title', 'Gán Vai Trò')
+@section('page_title', 'Gán Vai Trò')
 
 @section('page_title', 'Gán Vai Trò Cho Người Dùng')
 
@@ -30,16 +30,13 @@
 
                             <div class="mb-3">
                                 <label class="form-label"><strong>Vai trò:</strong></label>
-                                <select class="form-control select2" name="roles[]"
-                                        multiple
-                                        data-field="name"
-                                        data-display-field="title"
-                                        data-selected='@json($userRoles ?? [])'
-                                        data-url="{{ route('admin.roles.autocomplete') }}">
+                                <select class="form-control select2" name="roles[]" multiple data-field="name"
+                                    data-display-field="title" data-selected='@json($userRoles ?? [])'
+                                    data-url="{{ route('admin.roles.autocomplete') }}">
                                     <option value="">Chọn vai trò</option>
                                 </select>
                                 @error('roles')
-                                <span class="text-danger">{{ $message }}</span>
+                                    <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
 

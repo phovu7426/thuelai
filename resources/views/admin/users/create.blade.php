@@ -1,6 +1,6 @@
 @extends('admin.index')
 
-@section('title', 'Thêm mới tài khoản')
+@section('page_title', 'Thêm mới tài khoản')
 
 @section('page_title', 'Thêm mới tài khoản')
 
@@ -23,9 +23,10 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="email" name="email" class="form-control" placeholder="Nhập email..." value="{{ old('email') }}" required>
+                                        <input type="email" name="email" class="form-control"
+                                            placeholder="Nhập email..." value="{{ old('email') }}" required>
                                         @error('email')
-                                        <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
@@ -33,9 +34,10 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="password" class="form-label">Mật khẩu</label>
-                                        <input type="password" name="password"  class="form-control" placeholder="Nhập mật khẩu..." required>
+                                        <input type="password" name="password" class="form-control"
+                                            placeholder="Nhập mật khẩu..." required>
                                         @error('password')
-                                        <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
@@ -43,9 +45,10 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="password_confirmation" class="form-label">Xác nhận mật khẩu</label>
-                                        <input type="password" name="password_confirmation" class="form-control" placeholder="Nhập lại mật khẩu..." required>
+                                        <input type="password" name="password_confirmation" class="form-control"
+                                            placeholder="Nhập lại mật khẩu..." required>
                                         @error('password_confirmation')
-                                        <span class="text-danger">{{ $message }}</span>
+                                            <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>

@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Use Bootstrap for pagination
         Paginator::useBootstrap();
-        
+
         // Add custom debug directive
         Blade::directive('debug', function ($expression) {
             return "<?php if(config('app.debug')): ?><pre><?php print_r($expression); ?></pre><?php endif; ?>";

@@ -1,6 +1,6 @@
 @extends('stone.layouts.main')
 
-@section('title', 'Sản phẩm - Thanh Tùng Stone')
+@section('page_title', 'Sản phẩm - Thanh Tùng Stone')
 
 @section('content')
     <!-- Hero Section -->

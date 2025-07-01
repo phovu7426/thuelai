@@ -1,7 +1,5 @@
 @extends('admin.index')
 
-@section('title', 'Thêm quyền')
-
 @section('page_title', 'Thêm quyền')
 
 @section('breadcrumb')
@@ -24,10 +22,10 @@
                             <div class="mb-3">
                                 <label for="title" class="form-label">Ý nghĩa quyền</label>
                                 <input type="text" name="title" id="title"
-                                       class="form-control @error('title') is-invalid @enderror"
-                                       value="{{ old('title') }}" required>
+                                    class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}"
+                                    required>
                                 @error('title')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -35,10 +33,10 @@
                             <div class="mb-3">
                                 <label for="name" class="form-label">Tên quyền</label>
                                 <input type="text" name="name" id="name"
-                                       class="form-control @error('name') is-invalid @enderror"
-                                       value="{{ old('name') }}" required>
+                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
+                                    required>
                                 @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -46,13 +44,12 @@
                             <div class="mb-3">
                                 <label for="parent_id" class="form-label">Quyền cha</label>
                                 <select class="form-control select2 @error('parent_id') is-invalid @enderror"
-                                        name="parent_id"
-                                        data-selected="{{ old('parent_id') }}"
-                                        data-url="{{ route('admin.permissions.autocomplete') }}">
+                                    name="parent_id" data-selected="{{ old('parent_id') }}"
+                                    data-url="{{ route('admin.permissions.autocomplete') }}">
                                     <option value="">Chọn quyền cha</option>
                                 </select>
                                 @error('parent_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
