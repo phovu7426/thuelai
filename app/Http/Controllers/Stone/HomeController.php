@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Stone;
 
 use App\Http\Controllers\Controller;
+use App\Models\Slide;
 use App\Models\StoneApplication;
 use App\Models\StoneCategory;
 use App\Models\StoneColor;
@@ -20,6 +21,11 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // Lấy dữ liệu slide từ database
+        $slides = Slide::where('status', 1)
+            ->orderBy('id', 'desc')
+            ->get();
+
         // Lấy dữ liệu cho trang chủ
         $featuredProducts = StoneProduct::with(['category', 'material'])
             ->where('is_featured', true)
@@ -27,41 +33,42 @@ class HomeController extends Controller
             ->orderBy('order', 'asc')
             ->take(8)
             ->get();
-            
+
         $categories = StoneCategory::where('status', true)
             ->orderBy('order', 'asc')
             ->take(6)
             ->get();
-            
+
         $applications = StoneApplication::where('status', true)
             ->orderBy('order', 'asc')
             ->take(4)
             ->get();
-            
+
         $featuredProjects = StoneProject::where('is_featured', true)
             ->where('status', true)
             ->orderBy('order', 'asc')
             ->take(3)
             ->get();
-            
+
         $featuredVideos = StoneVideo::where('is_featured', true)
             ->where('status', true)
             ->orderBy('order', 'asc')
             ->take(2)
             ->get();
-            
+
         $showrooms = StoneShowroom::where('status', true)
             ->orderBy('order', 'asc')
             ->take(3)
             ->get();
-        
+
         // Thêm dữ liệu màu sắc
         $colors = StoneColor::where('status', true)
             ->orderBy('order', 'asc')
             ->take(8)
             ->get();
-        
+
         return view('stone.home', compact(
+            'slides',
             'featuredProducts',
             'categories',
             'applications',
@@ -88,7 +95,7 @@ class HomeController extends Controller
             'mission' => 'Mang đến những sản phẩm đá tự nhiên cao cấp, đáp ứng mọi nhu cầu thiết kế và trang trí của khách hàng.',
             'vision' => 'Trở thành đơn vị hàng đầu trong lĩnh vực cung cấp và thi công đá tự nhiên tại Việt Nam và khu vực Đông Nam Á.'
         ];
-        
+
         $team = [
             [
                 'name' => 'Nguyễn Văn A',
@@ -109,11 +116,16 @@ class HomeController extends Controller
                 'description' => 'Chuyên gia thi công với hơn 10 năm kinh nghiệm'
             ]
         ];
-        
+
         $partners = [
-            'Vingroup', 'Sungroup', 'FLC', 'Masterise Homes', 'Capital Land', 'BRG Group'
+            'Vingroup',
+            'Sungroup',
+            'FLC',
+            'Masterise Homes',
+            'Capital Land',
+            'BRG Group'
         ];
-        
+
         return view('stone.about', compact('companyInfo', 'team', 'partners'));
     }
 
@@ -125,7 +137,7 @@ class HomeController extends Controller
         $showrooms = StoneShowroom::where('status', true)
             ->orderBy('order', 'asc')
             ->get();
-            
+
         $contactInfo = [
             'address' => '123 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng',
             'phone' => '0123.456.789',
@@ -134,10 +146,10 @@ class HomeController extends Controller
             'working_hours' => 'Thứ 2 - Thứ 7: 8:00 - 17:30, Chủ nhật: 8:00 - 12:00',
             'map_url' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.1104354055627!2d108.20760867580728!3d16.060856084632177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142177f2ced6d8b%3A0xeac35f2960ca74a4!2zTmd1eeG7hW4gVsSDbiBMaW5oLCDEkMOgIE7hurVuZywgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1687759471120!5m2!1svi!2s'
         ];
-            
+
         return view('stone.contact', compact('showrooms', 'contactInfo'));
     }
-    
+
     /**
      * Xử lý gửi form liên hệ
      */
@@ -149,10 +161,10 @@ class HomeController extends Controller
             'phone' => 'required|string|max:20',
             'message' => 'required|string',
         ]);
-        
+
         // Xử lý gửi email hoặc lưu thông tin liên hệ vào database
         // ...
-        
+
         return redirect()->back()->with('success', 'Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong thời gian sớm nhất!');
     }
-} 
+}

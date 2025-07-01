@@ -46,7 +46,8 @@ class DatabaseSeeder extends Seeder
             StoneProjectSeeder::class,
             StoneShowroomSeeder::class,
             StoneVideoSeeder::class,
-            
+            SlideSeeder::class,
+
             // Other content if needed
             PostSeeder::class,
         ]);

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\Stone\SurfaceController;
 use App\Http\Controllers\Admin\Stone\VideoController;
 use App\Http\Controllers\Admin\Users\ProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
+use App\Http\Controllers\Admin\Slides\SlideController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -71,33 +72,33 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Posts
     Route::resource('posts', PostController::class);
-    
+
     // Stone - Quản lý đá
     Route::prefix('stone')->name('stone.')->group(function () {
         // Danh mục đá
         Route::resource('categories', StoneCategoryController::class);
-        
+
         // Chất liệu đá
         Route::resource('materials', MaterialController::class);
-        
+
         // Bề mặt đá
         Route::resource('surfaces', SurfaceController::class);
-        
+
         // Ứng dụng đá
         Route::resource('applications', ApplicationController::class);
-        
+
         // Sản phẩm đá
         Route::resource('products', StoneProductController::class);
-        
+
         // Dự án đá
         Route::resource('projects', ProjectController::class);
-        
+
         // Showroom
         Route::resource('showrooms', ShowroomController::class);
-        
+
         // Video
         Route::resource('videos', VideoController::class);
-        
+
         // Đơn hàng
         Route::resource('orders', OrderController::class);
 
@@ -110,4 +111,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
             Route::post('/bulk-delete', [ContactController::class, 'bulkDelete'])->name('bulk-delete');
         });
     });
+
+    // Slides
+    Route::resource('slides', SlideController::class);
 });

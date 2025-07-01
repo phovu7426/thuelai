@@ -22,6 +22,7 @@ use App\Http\Controllers\Stone\TestController;
 use App\Http\Controllers\Stone\ShowroomListController;
 use App\Http\Controllers\Stone\ApplicationDetailController;
 use App\Http\Controllers\Stone\ContactController;
+use App\Http\Controllers\Home\SlideController as HomeSlideController;
 
 // Chuyển hướng trang chủ đến trang đá
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -62,20 +63,20 @@ Route::get('/posts', [HomePostController::class, 'index'])->name('home.posts.ind
 Route::get('/posts/{slug}', [HomePostController::class, 'show'])->name('home.posts.show');
 
 // Admin routes
-require __DIR__.'/admin.php';
+require __DIR__ . '/admin.php';
 
 // Trang web đá
 Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
     // Trang chủ
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    
+
     // Trang giới thiệu
     Route::get('/about', [HomeController::class, 'about'])->name('about');
-    
+
     // Trang liên hệ
     Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
     Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-    
+
     // Sản phẩm đá
     Route::prefix('products')->name('products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
@@ -85,7 +86,7 @@ Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
         Route::get('/{slug}', [ProductController::class, 'show'])->name('show');
         Route::get('/finish/{slug}', [ProductController::class, 'finish'])->name('finish');
     });
-    
+
     // Giỏ hàng
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
@@ -94,21 +95,21 @@ Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
         Route::post('/remove', [CartController::class, 'remove'])->name('remove');
         Route::post('/clear', [CartController::class, 'clear'])->name('clear');
     });
-    
+
     // Thanh toán
     Route::prefix('checkout')->name('checkout.')->middleware('auth')->group(function () {
         Route::get('/', [CheckoutController::class, 'index'])->name('index');
         Route::post('/process', [CheckoutController::class, 'process'])->name('process');
         Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
     });
-    
+
     // Đơn hàng
     Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
         Route::get('/{id}', [OrderController::class, 'show'])->name('show');
         Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
     });
-    
+
     // Ứng dụng đá
     Route::prefix('applications')->name('applications.')->group(function () {
         Route::get('/', [ApplicationController::class, 'index'])->name('index');
@@ -119,27 +120,27 @@ Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
         Route::get('/detail/{slug}', [ApplicationDetailController::class, 'show'])->name('detail');
         Route::get('/{slug}', [ApplicationController::class, 'show'])->name('show');
     });
-    
+
     // Dự án đá
     Route::prefix('projects')->name('projects.')->group(function () {
         Route::get('/', [ProjectController::class, 'index'])->name('index');
         Route::get('/{slug}', [ProjectController::class, 'show'])->name('show');
     });
-    
+
     // Showroom
     Route::prefix('showrooms')->name('showrooms.')->group(function () {
         Route::get('/', [ShowroomController::class, 'index'])->name('index');
         Route::get('/{slug}', [ShowroomController::class, 'show'])->name('show');
     });
-    
+
     // Video
     Route::prefix('videos')->name('videos.')->group(function () {
         Route::get('/', [VideoController::class, 'index'])->name('index');
     });
-    
+
     // Test route
     Route::get('/test', [TestController::class, 'index'])->name('test');
-    
+
     // New showroom list route
     Route::get('/showrooms-list', [ShowroomListController::class, 'index'])->name('showrooms.list');
 });
@@ -149,3 +150,4 @@ Route::get('/test-blade', function () {
     return view('test_blade');
 });
 
+Route::get('/slides', [HomeSlideController::class, 'index'])->name('home.slides');

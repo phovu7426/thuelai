@@ -9,7 +9,8 @@
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center">
                     <h1 class="mb-4">Sản phẩm đá tự nhiên cao cấp</h1>
-                    <p class="lead">Khám phá bộ sưu tập đá tự nhiên đa dạng và cao cấp của chúng tôi, được nhập khẩu từ các mỏ đá nổi tiếng trên thế giới.</p>
+                    <p class="lead">Khám phá bộ sưu tập đá tự nhiên đa dạng và cao cấp của chúng tôi, được nhập khẩu từ các
+                        mỏ đá nổi tiếng trên thế giới.</p>
                 </div>
             </div>
         </div>
@@ -25,8 +26,9 @@
                             <label for="category-filter" class="form-label mb-1">Danh mục:</label>
                             <select class="form-select" id="category-filter">
                                 <option value="">Tất cả danh mục</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ request('category_id') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
                                 @endforeach
@@ -36,8 +38,9 @@
                             <label for="material-filter" class="form-label mb-1">Chất liệu:</label>
                             <select class="form-select" id="material-filter">
                                 <option value="">Tất cả chất liệu</option>
-                                @foreach($materials as $material)
-                                    <option value="{{ $material->id }}" {{ request('material_id') == $material->id ? 'selected' : '' }}>
+                                @foreach ($materials as $material)
+                                    <option value="{{ $material->id }}"
+                                        {{ request('material_id') == $material->id ? 'selected' : '' }}>
                                         {{ $material->name }}
                                     </option>
                                 @endforeach
@@ -47,8 +50,9 @@
                             <label for="color-filter" class="form-label mb-1">Màu sắc:</label>
                             <select class="form-select" id="color-filter">
                                 <option value="">Tất cả màu sắc</option>
-                                @foreach($colors as $color)
-                                    <option value="{{ $color->id }}" {{ request('color_id') == $color->id ? 'selected' : '' }}>
+                                @foreach ($colors as $color)
+                                    <option value="{{ $color->id }}"
+                                        {{ request('color_id') == $color->id ? 'selected' : '' }}>
                                         {{ $color->name }}
                                     </option>
                                 @endforeach
@@ -62,10 +66,14 @@
                             <label for="sort-by" class="form-label mb-1">Sắp xếp theo:</label>
                             <select class="form-select" id="sort-by">
                                 <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Mới nhất</option>
-                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá tăng dần</option>
-                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Giá giảm dần</option>
-                                <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Tên A-Z</option>
-                                <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Tên Z-A</option>
+                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá tăng
+                                    dần</option>
+                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Giá giảm
+                                    dần</option>
+                                <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Tên A-Z
+                                </option>
+                                <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Tên Z-A
+                                </option>
                             </select>
                         </div>
                         <div>
@@ -89,39 +97,49 @@
     <section class="section">
         <div class="container">
             <div class="row" id="products-grid">
-                @if(count($products) > 0)
-                    @foreach($products as $product)
+                @if (count($products) > 0)
+                    @foreach ($products as $product)
                         <div class="col-lg-3 col-md-6 mb-4">
                             <div class="product-card card h-100">
                                 <div class="position-relative">
-                                    <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top" alt="{{ $product->name }}">
-                                    @if($product->is_new)
-                                        <span class="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded-pill">Mới</span>
+                                    <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top"
+                                        alt="{{ $product->name }}">
+                                    @if ($product->is_new)
+                                        <span
+                                            class="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded-pill">Mới</span>
                                     @endif
-                                    @if($product->discount_percent > 0)
-                                        <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded-pill">-{{ $product->discount_percent }}%</span>
+                                    @if ($product->discount_percent > 0)
+                                        <span
+                                            class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded-pill">-{{ $product->discount_percent }}%</span>
                                     @endif
                                     <div class="product-actions position-absolute bottom-0 end-0 m-2">
-                                        <button class="btn btn-sm btn-light rounded-circle me-1" data-bs-toggle="tooltip" title="Yêu thích">
+                                        <button class="btn btn-sm btn-light rounded-circle me-1" data-bs-toggle="tooltip"
+                                            title="Yêu thích">
                                             <i class="far fa-heart"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-light rounded-circle" data-bs-toggle="tooltip" title="So sánh">
+                                        <button class="btn btn-sm btn-light rounded-circle" data-bs-toggle="tooltip"
+                                            title="So sánh">
                                             <i class="fas fa-exchange-alt"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="badge bg-light text-dark">{{ $product->category->name ?? 'Không có danh mục' }}</span>
+                                        <span
+                                            class="badge bg-light text-dark">{{ $product->category->name ?? 'Không có danh mục' }}</span>
                                         <span class="text-primary fw-bold">{{ $product->material->name ?? '' }}</span>
                                     </div>
                                     <h5 class="card-title">{{ $product->name }}</h5>
-                                    <p class="card-text small">{{ \Illuminate\Support\Str::limit($product->description ?? 'Không có mô tả', 60) }}</p>
+                                    <p class="card-text small">
+                                        {{ \Illuminate\Support\Str::limit($product->description ?? 'Không có mô tả', 60) }}
+                                    </p>
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <div>
-                                            @if($product->discount_price)
-                                                <span class="text-decoration-line-through text-muted me-2">{{ number_format($product->price) }}đ</span>
-                                                <span class="fw-bold text-danger">{{ number_format($product->discount_price) }}đ</span>
+                                            @if ($product->discount_price)
+                                                <span
+                                                    class="text-decoration-line-through text-muted me-2">{{ number_format($product->price) }}đ</span>
+                                                <span
+                                                    class="fw-bold text-danger">{{ number_format($product->discount_price) }}đ</span>
                                             @else
                                                 <span class="fw-bold">{{ number_format($product->price) }}đ</span>
                                             @endif
@@ -135,7 +153,8 @@
                                                     <i class="fas fa-cart-plus"></i>
                                                 </button>
                                             </form>
-                                            <a href="{{ url('/stone/products/' . $product->slug) }}" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                                            <a href="{{ url('/stone/products/' . $product->slug) }}"
+                                                class="btn btn-sm btn-outline-primary">Chi tiết</a>
                                         </div>
                                     </div>
                                 </div>
@@ -153,55 +172,70 @@
                     </div>
                 @endif
             </div>
-            
+
             <div class="row d-none" id="products-list">
-                @if(count($products) > 0)
-                    @foreach($products as $product)
+                @if (count($products) > 0)
+                    @foreach ($products as $product)
                         <div class="col-12 mb-4">
                             <div class="card border-0 shadow-sm h-100">
                                 <div class="row g-0">
                                     <div class="col-md-3 position-relative">
-                                        <img src="{{ get_image_url($product->main_image) }}" class="img-fluid h-100" style="object-fit: cover;" alt="{{ $product->name }}">
-                                        @if($product->is_new)
-                                            <span class="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded-pill">Mới</span>
+                                        <img src="{{ get_image_url($product->main_image) }}" class="img-fluid h-100"
+                                            style="object-fit: cover;" alt="{{ $product->name }}">
+                                        @if ($product->is_new)
+                                            <span
+                                                class="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded-pill">Mới</span>
                                         @endif
-                                        @if($product->discount_percent > 0)
-                                            <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded-pill">-{{ $product->discount_percent }}%</span>
+                                        @if ($product->discount_percent > 0)
+                                            <span
+                                                class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded-pill">-{{ $product->discount_percent }}%</span>
                                         @endif
                                     </div>
                                     <div class="col-md-9">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <span class="badge bg-light text-dark">{{ $product->category->name ?? 'Không có danh mục' }}</span>
-                                                <span class="text-primary fw-bold">{{ $product->material->name ?? '' }}</span>
+                                                <span
+                                                    class="badge bg-light text-dark">{{ $product->category->name ?? 'Không có danh mục' }}</span>
+                                                <span
+                                                    class="text-primary fw-bold">{{ $product->material->name ?? '' }}</span>
                                             </div>
                                             <h4 class="card-title">{{ $product->name }}</h4>
-                                            <p class="card-text">{{ \Illuminate\Support\Str::limit($product->description ?? 'Không có mô tả', 150) }}</p>
+                                            <p class="card-text">
+                                                {{ \Illuminate\Support\Str::limit($product->description ?? 'Không có mô tả', 150) }}
+                                            </p>
                                             <div class="row align-items-center mt-4">
                                                 <div class="col-md-6">
                                                     <div class="mb-3 mb-md-0">
-                                                        @if($product->discount_price)
-                                                            <span class="text-decoration-line-through text-muted me-2">{{ number_format($product->price) }}đ</span>
-                                                            <span class="fw-bold text-danger fs-5">{{ number_format($product->discount_price) }}đ</span>
+                                                        @if ($product->discount_price)
+                                                            <span
+                                                                class="text-decoration-line-through text-muted me-2">{{ number_format($product->price) }}đ</span>
+                                                            <span
+                                                                class="fw-bold text-danger fs-5">{{ number_format($product->discount_price) }}đ</span>
                                                         @else
-                                                            <span class="fw-bold fs-5">{{ number_format($product->price) }}đ</span>
+                                                            <span
+                                                                class="fw-bold fs-5">{{ number_format($product->price) }}đ</span>
                                                         @endif
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 text-md-end">
-                                                    <form action="{{ route('stone.cart.add') }}" method="POST" class="d-inline">
+                                                    <form action="{{ route('stone.cart.add') }}" method="POST"
+                                                        class="d-inline">
                                                         @csrf
-                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                        <input type="hidden" name="product_id"
+                                                            value="{{ $product->id }}">
                                                         <input type="hidden" name="quantity" value="1">
                                                         <button type="submit" class="btn btn-primary me-2">
                                                             <i class="fas fa-cart-plus"></i> Thêm vào giỏ
                                                         </button>
                                                     </form>
-                                                    <a href="{{ url('/stone/products/' . $product->slug) }}" class="btn btn-outline-primary me-2">Chi tiết</a>
-                                                    <button class="btn btn-sm btn-light rounded-circle me-1" data-bs-toggle="tooltip" title="Yêu thích">
+                                                    <a href="{{ url('/stone/products/' . $product->slug) }}"
+                                                        class="btn btn-outline-primary me-2">Chi tiết</a>
+                                                    <button class="btn btn-sm btn-light rounded-circle me-1"
+                                                        data-bs-toggle="tooltip" title="Yêu thích">
                                                         <i class="far fa-heart"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-light rounded-circle" data-bs-toggle="tooltip" title="So sánh">
+                                                    <button class="btn btn-sm btn-light rounded-circle"
+                                                        data-bs-toggle="tooltip" title="So sánh">
                                                         <i class="fas fa-exchange-alt"></i>
                                                     </button>
                                                 </div>
@@ -214,9 +248,9 @@
                     @endforeach
                 @endif
             </div>
-            
+
             <!-- Pagination -->
-            @if($products->hasPages())
+            @if ($products->hasPages())
                 <div class="d-flex justify-content-center mt-5">
                     {{ $products->links() }}
                 </div>
@@ -229,15 +263,16 @@
         <div class="container">
             <h2 class="text-center mb-5">Danh mục sản phẩm</h2>
             <div class="row">
-                @foreach($categories as $category)
+                @foreach ($categories as $category)
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="category-card">
                             <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $category->name }}">
                             <div class="overlay">
                                 <div class="category-content">
                                     <h3 class="category-title">{{ $category->name }}</h3>
-                                    <p class="text-white mb-3">{{ $category->product_count ?? 0 }} sản phẩm</p>
-                                    <a href="{{ url('/stone/products/category/' . $category->slug) }}" class="btn btn-sm btn-primary">Xem sản phẩm</a>
+                                    <p class="text-white mb-3">{{ $category->products_count ?? 0 }} sản phẩm</p>
+                                    <a href="{{ url('/stone/products/category/' . $category->slug) }}"
+                                        class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                 </div>
                             </div>
                         </div>
@@ -262,57 +297,57 @@
 @endsection
 
 @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-        
-        // View mode switching
-        const gridView = document.getElementById('products-grid');
-        const listView = document.getElementById('products-list');
-        const viewButtons = document.querySelectorAll('[data-bs-view]');
-        
-        viewButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const viewMode = this.getAttribute('data-bs-view');
-                
-                viewButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                
-                if (viewMode === 'grid') {
-                    gridView.classList.remove('d-none');
-                    listView.classList.add('d-none');
-                } else {
-                    gridView.classList.add('d-none');
-                    listView.classList.remove('d-none');
-                }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
             });
+
+            // View mode switching
+            const gridView = document.getElementById('products-grid');
+            const listView = document.getElementById('products-list');
+            const viewButtons = document.querySelectorAll('[data-bs-view]');
+
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const viewMode = this.getAttribute('data-bs-view');
+
+                    viewButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    if (viewMode === 'grid') {
+                        gridView.classList.remove('d-none');
+                        listView.classList.add('d-none');
+                    } else {
+                        gridView.classList.add('d-none');
+                        listView.classList.remove('d-none');
+                    }
+                });
+            });
+
+            // Filter handling
+            const categoryFilter = document.getElementById('category-filter');
+            const materialFilter = document.getElementById('material-filter');
+            const colorFilter = document.getElementById('color-filter');
+            const sortBy = document.getElementById('sort-by');
+
+            function applyFilters() {
+                const params = new URLSearchParams();
+
+                if (categoryFilter.value) params.append('category_id', categoryFilter.value);
+                if (materialFilter.value) params.append('material_id', materialFilter.value);
+                if (colorFilter.value) params.append('color_id', colorFilter.value);
+                if (sortBy.value) params.append('sort', sortBy.value);
+
+                window.location.href = `${window.location.pathname}?${params.toString()}`;
+            }
+
+            categoryFilter.addEventListener('change', applyFilters);
+            materialFilter.addEventListener('change', applyFilters);
+            colorFilter.addEventListener('change', applyFilters);
+            sortBy.addEventListener('change', applyFilters);
         });
-        
-        // Filter handling
-        const categoryFilter = document.getElementById('category-filter');
-        const materialFilter = document.getElementById('material-filter');
-        const colorFilter = document.getElementById('color-filter');
-        const sortBy = document.getElementById('sort-by');
-        
-        function applyFilters() {
-            const params = new URLSearchParams();
-            
-            if (categoryFilter.value) params.append('category_id', categoryFilter.value);
-            if (materialFilter.value) params.append('material_id', materialFilter.value);
-            if (colorFilter.value) params.append('color_id', colorFilter.value);
-            if (sortBy.value) params.append('sort', sortBy.value);
-            
-            window.location.href = `${window.location.pathname}?${params.toString()}`;
-        }
-        
-        categoryFilter.addEventListener('change', applyFilters);
-        materialFilter.addEventListener('change', applyFilters);
-        colorFilter.addEventListener('change', applyFilters);
-        sortBy.addEventListener('change', applyFilters);
-    });
-</script>
-@endsection 
+    </script>
+@endsection

@@ -8,7 +8,8 @@
                 .sidebar-menu .nav-treeview {
                     display: none;
                 }
-                .sidebar-menu .menu-open > .nav-treeview {
+
+                .sidebar-menu .menu-open>.nav-treeview {
                     display: block !important;
                 }
             </style>
@@ -48,7 +49,8 @@
 
                     @canany(['view_permissions', 'create_permissions', 'edit_permissions', 'delete_permissions'])
                         <li class="nav-item">
-                            <a href="{{ route('admin.permissions.index') }}" class="nav-link {{ isActive('admin.permissions.*') }}">
+                            <a href="{{ route('admin.permissions.index') }}"
+                                class="nav-link {{ isActive('admin.permissions.*') }}">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Quản lý quyền</p>
                             </a>
@@ -60,7 +62,10 @@
 
             {{-- Quản lý khai báo --}}
             @php
-                $activeGroupDeclaration = isActive(['admin.categories.*', 'admin.series.*', 'admin.posts.*'], 'menu-open');
+                $activeGroupDeclaration = isActive(
+                    ['admin.categories.*', 'admin.series.*', 'admin.posts.*'],
+                    'menu-open',
+                );
                 $activeLinkDeclaration = isActive(['admin.categories.*', 'admin.series.*', 'admin.posts.*']);
             @endphp
 
@@ -75,7 +80,8 @@
                 <ul class="nav nav-treeview">
                     @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
                         <li class="nav-item">
-                            <a href="{{ route('admin.categories.index') }}" class="nav-link {{ isActive('admin.categories.*') }}">
+                            <a href="{{ route('admin.categories.index') }}"
+                                class="nav-link {{ isActive('admin.categories.*') }}">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Quản lý danh mục</p>
                             </a>
@@ -98,6 +104,18 @@
                 </ul>
             </li>
 
+            {{-- Quản lý slide --}}
+            @php
+                $activeGroupSlide = isActive(['admin.slides.*'], 'menu-open');
+                $activeLinkSlide = isActive(['admin.slides.*']);
+            @endphp
+            <li class="nav-item {{ $activeGroupSlide }}">
+                <a href="{{ route('admin.slides.index') }}" class="nav-link {{ $activeLinkSlide }}">
+                    <i class="nav-icon bi bi-images"></i>
+                    <p>Quản lý slide</p>
+                </a>
+            </li>
+
             {{-- Quản lý trang Stone --}}
             @php
                 $activeGroupStone = isActive(['admin.stone.*'], 'menu-open');
@@ -114,70 +132,80 @@
                 </a>
                 <ul class="nav nav-treeview">
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.categories.index') }}" class="nav-link {{ isActive('admin.stone.categories.*') }}">
+                        <a href="{{ route('admin.stone.categories.index') }}"
+                            class="nav-link {{ isActive('admin.stone.categories.*') }}">
                             <i class="nav-icon bi bi-circle"></i>
                             <p>Danh mục đá</p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.materials.index') }}" class="nav-link {{ isActive('admin.stone.materials.*') }}">
+                        <a href="{{ route('admin.stone.materials.index') }}"
+                            class="nav-link {{ isActive('admin.stone.materials.*') }}">
                             <i class="nav-icon bi bi-circle"></i>
                             <p>Chất liệu đá</p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.surfaces.index') }}" class="nav-link {{ isActive('admin.stone.surfaces.*') }}">
+                        <a href="{{ route('admin.stone.surfaces.index') }}"
+                            class="nav-link {{ isActive('admin.stone.surfaces.*') }}">
                             <i class="nav-icon bi bi-circle"></i>
                             <p>Bề mặt đá</p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.applications.index') }}" class="nav-link {{ isActive('admin.stone.applications.*') }}">
+                        <a href="{{ route('admin.stone.applications.index') }}"
+                            class="nav-link {{ isActive('admin.stone.applications.*') }}">
                             <i class="nav-icon bi bi-circle"></i>
                             <p>Ứng dụng đá</p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.products.index') }}" class="nav-link {{ isActive('admin.stone.products.*') }}">
+                        <a href="{{ route('admin.stone.products.index') }}"
+                            class="nav-link {{ isActive('admin.stone.products.*') }}">
                             <i class="nav-icon bi bi-circle"></i>
                             <p>Sản phẩm đá</p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.projects.index') }}" class="nav-link {{ isActive('admin.stone.projects.*') }}">
+                        <a href="{{ route('admin.stone.projects.index') }}"
+                            class="nav-link {{ isActive('admin.stone.projects.*') }}">
                             <i class="nav-icon bi bi-circle"></i>
                             <p>Dự án đá</p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.showrooms.index') }}" class="nav-link {{ isActive('admin.stone.showrooms.*') }}">
+                        <a href="{{ route('admin.stone.showrooms.index') }}"
+                            class="nav-link {{ isActive('admin.stone.showrooms.*') }}">
                             <i class="nav-icon bi bi-circle"></i>
                             <p>Showroom</p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.videos.index') }}" class="nav-link {{ isActive('admin.stone.videos.*') }}">
+                        <a href="{{ route('admin.stone.videos.index') }}"
+                            class="nav-link {{ isActive('admin.stone.videos.*') }}">
                             <i class="nav-icon bi bi-circle"></i>
                             <p>Video</p>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.orders.index') }}" class="nav-link {{ isActive('admin.stone.orders.*') }}">
+                        <a href="{{ route('admin.stone.orders.index') }}"
+                            class="nav-link {{ isActive('admin.stone.orders.*') }}">
                             <i class="nav-icon bi bi-cart-check"></i>
                             <p>Đơn hàng</p>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('admin.stone.contacts.index') }}" class="nav-link {{ isActive('admin.stone.contacts.*') }}">
+                        <a href="{{ route('admin.stone.contacts.index') }}"
+                            class="nav-link {{ isActive('admin.stone.contacts.*') }}">
                             <i class="nav-icon bi bi-cart-check"></i>
                             <p>Liên hệ</p>
                         </a>
@@ -202,17 +230,18 @@
                 treeview.style.display = 'block';
             }
         });
-        
+
         // Xử lý sự kiện click trên menu
         document.querySelectorAll('.sidebar-menu .nav-item > a').forEach(function(menuLink) {
-            if (menuLink.nextElementSibling && menuLink.nextElementSibling.classList.contains('nav-treeview')) {
+            if (menuLink.nextElementSibling && menuLink.nextElementSibling.classList.contains(
+                    'nav-treeview')) {
                 menuLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
                     var navItem = this.parentNode;
                     var treeview = this.nextElementSibling;
-                    
+
                     if (navItem.classList.contains('menu-open')) {
                         navItem.classList.remove('menu-open');
                         treeview.style.display = 'none';
@@ -220,7 +249,7 @@
                         navItem.classList.add('menu-open');
                         treeview.style.display = 'block';
                     }
-                    
+
                     return false;
                 });
             }
