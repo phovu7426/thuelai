@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Stone;
 
 use App\Http\Controllers\Controller;
 use App\Models\StoneContact;
+use App\Models\ContactInfo;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -13,7 +14,8 @@ class ContactController extends Controller
      */
     public function index()
     {
-        return view('stone.contact');
+        $contactInfo = ContactInfo::first();
+        return view('stone.contact', compact('contactInfo'));
     }
 
     /**

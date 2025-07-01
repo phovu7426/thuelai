@@ -213,6 +213,14 @@
                 </ul>
             </li>
 
+            <li class="nav-item">
+                <a href="{{ route('admin.contact-info.edit') }}"
+                    class="nav-link {{ isActive('admin.contact-info.*') }}">
+                    <i class="nav-icon bi bi-telephone"></i>
+                    <p>Cấu hình liên hệ</p>
+                </a>
+            </li>
+
         </ul>
         <!--end::Sidebar Menu-->
     </nav>

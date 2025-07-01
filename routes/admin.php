@@ -114,4 +114,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     // Slides
     Route::resource('slides', SlideController::class);
+
+    // Cấu hình thông tin liên hệ
+    Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->name('contact-info.edit');
+    Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->name('contact-info.update');
 });

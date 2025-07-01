@@ -10,6 +10,7 @@ use App\Models\StoneMaterial;
 use App\Models\StoneProduct;
 use App\Models\StoneProject;
 use App\Models\StoneSurface;
+use App\Models\ContactInfo;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -81,13 +82,15 @@ class ProductController extends Controller
         $surfaces = StoneSurface::where('status', 1)->orderBy('order', 'asc')->get();
         $applications = StoneApplication::where('status', 1)->orderBy('order', 'asc')->get();
 
+        $contactInfo = ContactInfo::first();
         return view('stone.products.index', compact(
             'products',
             'categories',
             'materials',
             'colors',
             'surfaces',
-            'applications'
+            'applications',
+            'contactInfo'
         ));
     }
 

@@ -1,6 +1,6 @@
 @extends('stone.layouts.main')
 
-@section('title', 'Trang chủ - Đá tự nhiên cao cấp')
+@section('page_title', 'Trang chủ - Đá tự nhiên cao cấp')
 
 @section('content')
     <!-- Hero Slider -->

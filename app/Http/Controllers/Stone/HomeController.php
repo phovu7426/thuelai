@@ -12,6 +12,7 @@ use App\Models\StoneProduct;
 use App\Models\StoneProject;
 use App\Models\StoneShowroom;
 use App\Models\StoneVideo;
+use App\Models\ContactInfo;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -67,6 +68,8 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
+        $contactInfo = ContactInfo::first();
+
         return view('stone.home', compact(
             'slides',
             'featuredProducts',
@@ -75,7 +78,8 @@ class HomeController extends Controller
             'featuredProjects',
             'featuredVideos',
             'showrooms',
-            'colors'
+            'colors',
+            'contactInfo'
         ));
     }
 
@@ -138,14 +142,7 @@ class HomeController extends Controller
             ->orderBy('order', 'asc')
             ->get();
 
-        $contactInfo = [
-            'address' => '123 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng',
-            'phone' => '0123.456.789',
-            'email' => 'info@thanhtungstone.com',
-            'website' => 'www.thanhtungstone.com',
-            'working_hours' => 'Thứ 2 - Thứ 7: 8:00 - 17:30, Chủ nhật: 8:00 - 12:00',
-            'map_url' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3834.1104354055627!2d108.20760867580728!3d16.060856084632177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142177f2ced6d8b%3A0xeac35f2960ca74a4!2zTmd1eeG7hW4gVsSDbiBMaW5oLCDEkMOgIE7hurVuZywgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1687759471120!5m2!1svi!2s'
-        ];
+        $contactInfo = ContactInfo::first(); // Lấy bản ghi đầu tiên từ bảng contact_infos
 
         return view('stone.contact', compact('showrooms', 'contactInfo'));
     }
