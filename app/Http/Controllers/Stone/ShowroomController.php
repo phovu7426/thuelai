@@ -6,9 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\StoneShowroom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
 
 class ShowroomController extends Controller
 {
+    /**
+     * Helper function to get image URL
+     */
+    private function getImageUrl($path = null, $default = 'images/default/default_image.png')
+    {
+        if ($path && Storage::disk('public')->exists($path)) {
+            return asset('storage/' . $path);
+        }
+        
+        return asset($default);
+    }
     /**
      * Hiển thị danh sách showroom
      */
@@ -65,7 +77,7 @@ class ShowroomController extends Controller
                 $html .= '
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img src="' . asset('images/default/default_image.png') . '" class="card-img-top" alt="' . htmlspecialchars($showroom->name) . '">
+                    <img src="' . $this->getImageUrl($showroom->image) . '" class="card-img-top" alt="' . htmlspecialchars($showroom->name) . '">
                     <div class="card-body">
                         <h5 class="card-title">' . htmlspecialchars($showroom->name) . '</h5>
                         <p class="card-text"><i class="fas fa-map-marker-alt me-2"></i> ' . htmlspecialchars($showroom->address) . '</p>
