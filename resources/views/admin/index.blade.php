@@ -54,8 +54,6 @@
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     @extends('admin.layouts.main')
 
-    @section('page_title', 'Dashboard')
-
     @section('content')
         <div class="container-fluid">
             <div class="row">
@@ -199,13 +197,13 @@
             }
         });
     </script>
-    @if (session('error'))
+    {{-- @if (session('error'))
         toastr.error("{{ session('error') }}");
     @endif
 
     @if (session('success'))
         toastr.success("{{ session('success') }}");
-    @endif
+    @endif --}}
     @yield('scripts')
     <!--end::OverlayScrollbars Configure-->
     <!-- OPTIONAL SCRIPTS -->
