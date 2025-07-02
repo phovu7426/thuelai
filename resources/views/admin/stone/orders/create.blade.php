@@ -59,7 +59,7 @@
                                 <h5 class="mb-3">Thông tin khách hàng</h5>
                                 <div class="form-group">
                                         <label>Tài khoản</label>
-                                                                <select class="form-control select2" name="order[user_id]" id="user_id">
+                                                                <select class="form-control select2" name="user_id" id="user_id">
                             <option value="">Chọn tài khoản</option>
                             @foreach ($users as $user)
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -69,27 +69,36 @@
 
                                 <div class="form-group">
                         <label>Họ tên <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="order[customer_name]" required>
+                        <input type="text" class="form-control" name="customer_name" required>
                                 </div>
 
                                 <div class="form-group">
                         <label>Email</label>
-                        <input type="email" class="form-control" name="order[customer_email]">
+                        <input type="email" class="form-control" name="customer_email">
                                 </div>
 
                                 <div class="form-group">
                         <label>Số điện thoại <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="order[customer_phone]" required>
+                        <input type="text" class="form-control" name="customer_phone" required>
                                 </div>
 
                                 <div class="form-group">
                         <label>Địa chỉ <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="order[customer_address]" rows="3" required></textarea>
+                        <textarea class="form-control" name="customer_address" rows="3" required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                        <label>Trạng thái <span class="text-danger">*</span></label>
+                        <select class="form-control" name="status">
+                            @foreach(\App\Models\Order::getStatuses() as $key => $label)
+                                <option value="{{ $key }}" @if($key == \App\Models\Order::STATUS_PENDING) selected @endif>{{ $label }}</option>
+                            @endforeach
+                        </select>
                                 </div>
 
                                 <div class="form-group">
                         <label>Ghi chú</label>
-                        <textarea class="form-control" name="order[note]" rows="3"></textarea>
+                        <textarea class="form-control" name="note" rows="3"></textarea>
                                     </div>
                                 </div>
 
@@ -111,7 +120,7 @@
                                                                             <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">Tổng tiền:</h5>
                                     <h5 class="mb-0" id="totalAmount">0đ</h5>
-                                    <input type="hidden" name="order[total_amount]" id="hiddenTotalAmount" value="0">
+                                    <input type="hidden" name="total_amount" id="hiddenTotalAmount" value="0">
                                 </div>
                                     </div>
                                 </div>
@@ -236,9 +245,9 @@
 
                     var html = `
                         <div class="product-row" data-product-id="${id}">
-                            <input type="hidden" name="order[products][${productCount}][product_id]" value="${id}">
-                            <input type="hidden" name="order[products][${productCount}][quantity]" value="${qty}">
-                            <input type="hidden" name="order[products][${productCount}][price]" value="${price}">
+                            <input type="hidden" name="products[${productCount}][id]" value="${id}">
+                            <input type="hidden" name="products[${productCount}][quantity]" value="${qty}">
+                            <input type="hidden" name="products[${productCount}][price]" value="${price}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div><b>${name}</b> - SL: ${qty} - Đơn giá: ${Number(price).toLocaleString()}đ</div>
                                 <button type="button" class="btn btn-danger btn-sm btn-remove-product">
