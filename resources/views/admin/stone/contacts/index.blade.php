@@ -41,6 +41,39 @@
                             </div>
                         </div>
 
+                        <form action="{{ route('admin.stone.contacts.index') }}" method="GET" class="mb-3">
+                            <div class="row g-2">
+                                <div class="col-md-2">
+                                    <input type="text" name="name" class="form-control" placeholder="Họ tên"
+                                        value="{{ request('name') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" name="email" class="form-control" placeholder="Email"
+                                        value="{{ request('email') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" name="phone" class="form-control" placeholder="Số điện thoại"
+                                        value="{{ request('phone') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" name="subject" class="form-control" placeholder="Tiêu đề"
+                                        value="{{ request('subject') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="is_read" class="form-control">
+                                        <option value="">-- Trạng thái --</option>
+                                        <option value="0" {{ request('is_read') === '0' ? 'selected' : '' }}>Chưa đọc
+                                        </option>
+                                        <option value="1" {{ request('is_read') === '1' ? 'selected' : '' }}>Đã đọc</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 d-flex gap-1">
+                                    <button type="submit" class="btn btn-primary">Lọc</button>
+                                    <a href="{{ route('admin.stone.contacts.index') }}" class="btn btn-secondary">Reset</a>
+                                </div>
+                            </div>
+                        </form>
+
                         @if (session('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
@@ -122,7 +155,8 @@
                     <div class="text-center">
                         <i class="dripicons-warning h1 text-danger"></i>
                         <h4 class="mt-2">Xác nhận xóa</h4>
-                        <p class="mt-3">Bạn có chắc chắn muốn xóa liên hệ này không? Hành động này không thể hoàn tác.</p>
+                        <p class="mt-3">Bạn có chắc chắn muốn xóa liên hệ này không? Hành động này không thể hoàn tác.
+                        </p>
                         <form id="delete-form" action="" method="POST">
                             @csrf
                             @method('DELETE')

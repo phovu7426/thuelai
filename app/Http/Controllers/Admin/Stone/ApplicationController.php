@@ -13,9 +13,19 @@ class ApplicationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $applications = StoneApplication::orderBy('type')->orderBy('order', 'asc')->paginate(10);
+        $query = StoneApplication::query();
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->filled('slug')) {
+            $query->where('slug', 'like', '%' . $request->slug . '%');
+        }
+        if ($request->filled('description')) {
+            $query->where('description', 'like', '%' . $request->description . '%');
+        }
+        $applications = $query->orderBy('order', 'asc')->paginate(10)->appends($request->all());
         return view('admin.stone.applications.index', compact('applications'));
     }
 
@@ -43,7 +53,7 @@ class ApplicationController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload image if exists
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -82,14 +92,14 @@ class ApplicationController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload image if exists
         if ($request->hasFile('image')) {
             // Delete old image
             if ($application->image && Storage::disk('public')->exists($application->image)) {
                 Storage::disk('public')->delete($application->image);
             }
-            
+
             $image = $request->file('image');
             $filename = 'stone_applications/' . time() . '_' . $image->getClientOriginalName();
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
@@ -112,15 +122,15 @@ class ApplicationController extends Controller
             return redirect()->route('admin.stone.applications.index')
                 ->with('error', 'Không thể xóa ứng dụng này vì có sản phẩm liên kết.');
         }
-        
+
         // Delete image
         if ($application->image && Storage::disk('public')->exists($application->image)) {
             Storage::disk('public')->delete($application->image);
         }
-        
+
         $application->delete();
 
         return redirect()->route('admin.stone.applications.index')
             ->with('success', 'Ứng dụng đá đã được xóa thành công.');
     }
-} 
+}

@@ -13,9 +13,19 @@ class VideoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $videos = StoneVideo::orderBy('order', 'asc')->paginate(10);
+        $query = StoneVideo::query();
+        if ($request->filled('title')) {
+            $query->where('title', 'like', '%' . $request->title . '%');
+        }
+        if ($request->filled('embed_code')) {
+            $query->where('embed_code', 'like', '%' . $request->embed_code . '%');
+        }
+        if ($request->filled('description')) {
+            $query->where('description', 'like', '%' . $request->description . '%');
+        }
+        $videos = $query->orderBy('order', 'asc')->paginate(10)->appends($request->all());
         return view('admin.stone.videos.index', compact('videos'));
     }
 
@@ -44,7 +54,7 @@ class VideoController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->title);
-        
+
         // Upload thumbnail if exists
         if ($request->hasFile('thumbnail')) {
             $image = $request->file('thumbnail');
@@ -84,14 +94,14 @@ class VideoController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->title);
-        
+
         // Upload thumbnail if exists
         if ($request->hasFile('thumbnail')) {
             // Delete old thumbnail
             if ($video->thumbnail && Storage::disk('public')->exists($video->thumbnail)) {
                 Storage::disk('public')->delete($video->thumbnail);
             }
-            
+
             $image = $request->file('thumbnail');
             $filename = 'stone_videos/' . time() . '_' . $image->getClientOriginalName();
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
@@ -113,10 +123,10 @@ class VideoController extends Controller
         if ($video->thumbnail && Storage::disk('public')->exists($video->thumbnail)) {
             Storage::disk('public')->delete($video->thumbnail);
         }
-        
+
         $video->delete();
 
         return redirect()->route('admin.stone.videos.index')
             ->with('success', 'Video đã được xóa thành công.');
     }
-} 
+}

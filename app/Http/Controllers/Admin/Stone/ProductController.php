@@ -18,12 +18,19 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = StoneProduct::with(['category', 'material', 'surface'])
-            ->orderBy('order', 'asc')
-            ->paginate(10);
-            
+        $query = StoneProduct::query();
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->filled('code')) {
+            $query->where('code', 'like', '%' . $request->code . '%');
+        }
+        if ($request->filled('description')) {
+            $query->where('description', 'like', '%' . $request->description . '%');
+        }
+        $products = $query->orderBy('order', 'asc')->paginate(10)->appends($request->all());
         return view('admin.stone.products.index', compact('products'));
     }
 
@@ -37,7 +44,7 @@ class ProductController extends Controller
         $surfaces = StoneSurface::all();
         $colors = StoneColor::all();
         $applications = StoneApplication::all();
-        
+
         return view('admin.stone.products.create', compact(
             'categories',
             'materials',
@@ -76,7 +83,7 @@ class ProductController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload main image
         if ($request->hasFile('main_image')) {
             $image = $request->file('main_image');
@@ -84,7 +91,7 @@ class ProductController extends Controller
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
             $data['main_image'] = $filename;
         }
-        
+
         // Upload gallery images
         $gallery = [];
         if ($request->hasFile('gallery')) {
@@ -95,14 +102,14 @@ class ProductController extends Controller
             }
         }
         $data['gallery'] = $gallery;
-        
+
         // Convert specifications to JSON
         if (isset($data['specifications'])) {
             $specifications = [];
             if (isset($data['specifications']['key']) && isset($data['specifications']['value'])) {
                 $keys = $data['specifications']['key'];
                 $values = $data['specifications']['value'];
-                
+
                 for ($i = 0; $i < count($keys); $i++) {
                     if (!empty($keys[$i]) && isset($values[$i]) && !empty($values[$i])) {
                         $specifications[$keys[$i]] = $values[$i];
@@ -111,16 +118,16 @@ class ProductController extends Controller
             }
             $data['specifications'] = $specifications;
         }
-        
+
         // Loại bỏ applications khỏi data vì nó được lưu trong bảng trung gian
         if (isset($data['applications'])) {
             $applicationIds = $data['applications'];
             unset($data['applications']);
         }
-        
+
         // Create product
         $product = StoneProduct::create($data);
-        
+
         // Attach applications
         if (isset($applicationIds)) {
             $product->applications()->attach($applicationIds);
@@ -140,10 +147,10 @@ class ProductController extends Controller
         $surfaces = StoneSurface::all();
         $colors = StoneColor::all();
         $applications = StoneApplication::all();
-        
+
         // Get current application IDs
         $productApplicationIds = $product->applications()->pluck('stone_applications.id')->toArray();
-        
+
         return view('admin.stone.products.edit', compact(
             'product',
             'categories',
@@ -186,23 +193,23 @@ class ProductController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload main image
         if ($request->hasFile('main_image')) {
             // Delete old main image
             if ($product->main_image && Storage::disk('public')->exists($product->main_image)) {
                 Storage::disk('public')->delete($product->main_image);
             }
-            
+
             $image = $request->file('main_image');
             $filename = 'stone_products/' . time() . '_' . $image->getClientOriginalName();
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
             $data['main_image'] = $filename;
         }
-        
+
         // Handle gallery images
         $gallery = is_array($product->gallery) ? $product->gallery : [];
-        
+
         // Remove selected gallery images
         if (isset($data['remove_gallery']) && !empty($data['remove_gallery'])) {
             foreach ($data['remove_gallery'] as $removeImage) {
@@ -211,13 +218,13 @@ class ProductController extends Controller
                     if (Storage::disk('public')->exists($removeImage)) {
                         Storage::disk('public')->delete($removeImage);
                     }
-                    
+
                     // Remove from gallery array
                     $gallery = array_diff($gallery, [$removeImage]);
                 }
             }
         }
-        
+
         // Upload new gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
@@ -226,17 +233,17 @@ class ProductController extends Controller
                 $gallery[] = $filename;
             }
         }
-        
+
         // Ensure $gallery is an array before using array_values
         $data['gallery'] = is_array($gallery) ? array_values($gallery) : [];
-        
+
         // Convert specifications to JSON
         if (isset($data['specifications'])) {
             $specifications = [];
             if (isset($data['specifications']['key']) && isset($data['specifications']['value'])) {
                 $keys = $data['specifications']['key'];
                 $values = $data['specifications']['value'];
-                
+
                 for ($i = 0; $i < count($keys); $i++) {
                     if (!empty($keys[$i]) && isset($values[$i]) && !empty($values[$i])) {
                         $specifications[$keys[$i]] = $values[$i];
@@ -245,16 +252,16 @@ class ProductController extends Controller
             }
             $data['specifications'] = $specifications;
         }
-        
+
         // Loại bỏ applications khỏi data vì nó được lưu trong bảng trung gian
         if (isset($data['applications'])) {
             $applicationIds = $data['applications'];
             unset($data['applications']);
         }
-        
+
         // Update product
         $product->update($data);
-        
+
         // Sync applications
         if (isset($applicationIds)) {
             $product->applications()->sync($applicationIds);
@@ -275,7 +282,7 @@ class ProductController extends Controller
         if ($product->main_image && Storage::disk('public')->exists($product->main_image)) {
             Storage::disk('public')->delete($product->main_image);
         }
-        
+
         // Delete gallery images
         if ($product->gallery) {
             foreach ($product->gallery as $image) {
@@ -284,14 +291,14 @@ class ProductController extends Controller
                 }
             }
         }
-        
+
         // Detach applications
         $product->applications()->detach();
-        
+
         // Delete product
         $product->delete();
 
         return redirect()->route('admin.stone.products.index')
             ->with('success', 'Sản phẩm đá đã được xóa thành công.');
     }
-} 
+}

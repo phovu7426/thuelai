@@ -15,12 +15,22 @@ class OrderController extends Controller
     /**
      * Display a listing of the orders.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-            
+        $query = Order::with('user');
+        if ($request->filled('order_number')) {
+            $query->where('order_number', 'like', '%' . $request->order_number . '%');
+        }
+        if ($request->filled('customer_name')) {
+            $query->where('customer_name', 'like', '%' . $request->customer_name . '%');
+        }
+        if ($request->filled('customer_phone')) {
+            $query->where('customer_phone', 'like', '%' . $request->customer_phone . '%');
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        $orders = $query->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
         return view('admin.stone.orders.index', compact('orders'));
     }
 
@@ -30,12 +40,12 @@ class OrderController extends Controller
     public function create()
     {
         $users = User::all();
-        
+
         // Lấy tất cả sản phẩm 
         $products = StoneProduct::select('id', 'name', 'code', 'price', 'status')
             ->orderBy('name')
             ->get();
-            
+
         // Nếu không có sản phẩm, thêm dữ liệu mẫu cho demo
         if ($products->isEmpty()) {
             $dummyProducts = collect([
@@ -61,10 +71,10 @@ class OrderController extends Controller
                     'status' => true
                 ],
             ]);
-            
+
             $products = $dummyProducts;
         }
-        
+
         return view('admin.stone.orders.create', compact('users', 'products'));
     }
 
@@ -88,7 +98,7 @@ class OrderController extends Controller
 
         try {
             DB::beginTransaction();
-            
+
             // Create order
             $order = new Order();
             $order->user_id = $request->user_id;
@@ -97,7 +107,7 @@ class OrderController extends Controller
             $order->customer_phone = $request->customer_phone;
             $order->customer_address = $request->customer_address;
             $order->note = $request->note;
-            
+
             // Đảm bảo status là một chuỗi hợp lệ từ các hằng số đã định nghĩa
             switch ($request->status) {
                 case 'pending':
@@ -119,13 +129,13 @@ class OrderController extends Controller
                 default:
                     $order->status = Order::STATUS_PENDING; // Mặc định là pending
             }
-            
+
             $order->is_admin_created = true;
             $order->order_number = Order::generateOrderNumber();
-            
+
             // Calculate total amount from products
             $totalAmount = 0;
-            
+
             // Create order items and calculate total
             if (isset($request->products) && is_array($request->products)) {
                 foreach ($request->products as $key => $productData) {
@@ -133,18 +143,18 @@ class OrderController extends Controller
                         $product = StoneProduct::findOrFail($productData['id']);
                         $quantity = intval($productData['quantity']);
                         $price = $product->price;
-                        
+
                         $totalAmount += $price * $quantity;
                     }
                 }
             }
-            
+
             // Set total amount
             $order->total_amount = $totalAmount;
-            
+
             // Save order first to get ID
             $order->save();
-            
+
             // Create order items
             if (isset($request->products) && is_array($request->products)) {
                 foreach ($request->products as $key => $productData) {
@@ -152,7 +162,7 @@ class OrderController extends Controller
                         $product = StoneProduct::findOrFail($productData['id']);
                         $quantity = intval($productData['quantity']);
                         $price = $product->price;
-                        
+
                         $orderItem = new OrderItem();
                         $orderItem->order_id = $order->id;
                         $orderItem->stone_product_id = $product->id;
@@ -162,9 +172,9 @@ class OrderController extends Controller
                     }
                 }
             }
-            
+
             DB::commit();
-            
+
             return redirect()->route('admin.stone.orders.index')
                 ->with('success', 'Đơn hàng đã được tạo thành công.');
         } catch (\Exception $e) {
@@ -181,14 +191,14 @@ class OrderController extends Controller
     {
         try {
             $order = Order::with(['items.product', 'user'])->findOrFail($id);
-            
+
             // Đảm bảo tất cả các items đều có subtotal
             foreach ($order->items as $item) {
                 if (!isset($item->subtotal)) {
                     $item->subtotal = $item->price * $item->quantity;
                 }
             }
-            
+
             return view('admin.stone.orders.show', compact('order'));
         } catch (\Exception $e) {
             return redirect()->route('admin.stone.orders.index')
@@ -204,7 +214,7 @@ class OrderController extends Controller
         $order = Order::with(['items.product', 'user'])->findOrFail($id);
         $users = User::all();
         $products = StoneProduct::all();
-        
+
         return view('admin.stone.orders.edit', compact('order', 'users', 'products'));
     }
 
@@ -226,20 +236,20 @@ class OrderController extends Controller
 
         try {
             DB::beginTransaction();
-            
+
             $order = Order::findOrFail($id);
             $oldStatus = $order->status;
-            
+
             // Kiểm tra trạng thái mới có hợp lệ không
             if ($oldStatus !== $request->status && !$order->canTransitionTo($request->status)) {
                 DB::rollBack();
                 return redirect()->back()
-                    ->with('error', 'Không thể chuyển trạng thái đơn hàng từ ' . 
-                        Order::getStatuses()[$oldStatus] . ' sang ' . 
+                    ->with('error', 'Không thể chuyển trạng thái đơn hàng từ ' .
+                        Order::getStatuses()[$oldStatus] . ' sang ' .
                         Order::getStatuses()[$request->status])
                     ->withInput();
             }
-            
+
             // Sử dụng raw SQL query để cập nhật
             DB::update('
                 UPDATE orders 
@@ -264,9 +274,9 @@ class OrderController extends Controller
                 now(),
                 $id
             ]);
-            
+
             DB::commit();
-            
+
             $statusMessage = '';
             switch ($request->status) {
                 case Order::STATUS_PROCESSING:
@@ -281,7 +291,7 @@ class OrderController extends Controller
                 default:
                     $statusMessage = 'Đơn hàng đã được cập nhật thành công';
             }
-            
+
             return redirect()->route('admin.stone.orders.show', $order->id)
                 ->with('success', $statusMessage);
         } catch (\Exception $e) {
@@ -299,17 +309,17 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             $order = Order::findOrFail($id);
-            
+
             // Delete order items first
             $order->items()->delete();
-            
+
             // Delete order
             $order->delete();
-            
+
             DB::commit();
-            
+
             return redirect()->route('admin.stone.orders.index')
                 ->with('success', 'Đơn hàng đã được xóa thành công.');
         } catch (\Exception $e) {
@@ -352,7 +362,6 @@ class OrderController extends Controller
                 'success' => true,
                 'message' => 'Cập nhật trạng thái thành công'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -360,4 +369,4 @@ class OrderController extends Controller
             ], 500);
         }
     }
-} 
+}

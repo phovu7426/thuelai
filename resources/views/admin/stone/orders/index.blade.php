@@ -72,22 +72,52 @@
 
         <!-- Card -->
         <div class="card shadow">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <div>
-                    <a href="{{ route('admin.stone.orders.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus-circle"></i> Tạo đơn hàng mới
-                    </a>
-                </div>
-                <div class="d-flex gap-2">
-                    <form action="{{ route('admin.stone.orders.index') }}" method="GET">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Tìm theo mã đơn, tên khách hàng..."
-                                name="search" value="{{ request('search') }}">
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </form>
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-md-9">
+                        <form action="{{ route('admin.stone.orders.index') }}" method="GET" class="mb-0">
+                            <div class="row g-2">
+                                <div class="col-md-3">
+                                    <input type="text" name="order_number" class="form-control" placeholder="Mã đơn hàng"
+                                        value="{{ request('order_number') }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" name="customer_name" class="form-control"
+                                        placeholder="Tên khách hàng" value="{{ request('customer_name') }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" name="customer_phone" class="form-control"
+                                        placeholder="Số điện thoại" value="{{ request('customer_phone') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="status" class="form-control">
+                                        <option value="">-- Trạng thái --</option>
+                                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Chờ
+                                            xử lý
+                                        </option>
+                                        <option value="processing"
+                                            {{ request('status') == 'processing' ? 'selected' : '' }}>Đang
+                                            xử lý</option>
+                                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
+                                            Hoàn
+                                            thành</option>
+                                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>
+                                            Đã huỷ
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1 d-flex gap-1">
+                                    <button type="submit" class="btn btn-primary">Lọc</button>
+                                    <a href="{{ route('admin.stone.orders.index') }}" class="btn btn-secondary">Reset</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-3 text-end">
+                        <a href="{{ route('admin.stone.orders.create') }}" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Tạo đơn hàng mới
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -120,12 +150,7 @@
                         <tbody>
                             @forelse($orders as $order)
                                 <tr>
-                                    <td>
-                                        <a href="{{ route('admin.stone.orders.show', $order->id) }}"
-                                            class="text-primary fw-bold">
-                                            #{{ $order->order_number }}
-                                        </a>
-                                    </td>
+                                    <td>{{ $order->order_number }}</td>
                                     <td>
                                         <div class="d-flex flex-column">
                                             <span class="fw-bold">{{ $order->customer_name }}</span>
@@ -146,7 +171,7 @@
                                         @php
                                             $totalAmount = $order->total_amount;
                                             if ($totalAmount == 0 && $order->items->count() > 0) {
-                                                $totalAmount = $order->items->sum(function($item) {
+                                                $totalAmount = $order->items->sum(function ($item) {
                                                     return $item->price * $item->quantity;
                                                 });
                                             }
@@ -187,48 +212,29 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="btn-group float-end">
-                                            <a href="{{ route('admin.stone.orders.show', $order->id) }}"
-                                                class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Xem chi tiết">
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            <button type="button"
+                                                onclick="window.location.href='{{ route('admin.stone.orders.show', $order->id) }}'"
+                                                class="btn btn-sm btn-link px-2" title="Xem chi tiết">
                                                 <i class="fas fa-eye"></i>
-                                            </a>
-
+                                            </button>
                                             @if ($order->status == 'pending')
-                                                <button type="button" class="btn btn-primary btn-sm"
-                                                    data-bs-toggle="tooltip" title="Chuyển sang đang xử lý"
+                                                <button type="button" class="btn btn-sm btn-link px-2"
+                                                    title="Chuyển sang đang xử lý"
                                                     onclick="updateStatus({{ $order->id }}, 'processing')">
                                                     <i class="fas fa-play"></i>
                                                 </button>
                                             @endif
-
-                                            @if ($order->status == 'processing')
-                                                <button type="button" class="btn btn-success btn-sm"
-                                                    data-bs-toggle="tooltip" title="Đánh dấu hoàn thành"
-                                                    onclick="updateStatus({{ $order->id }}, 'completed')">
-                                                    <i class="fas fa-check"></i>
+                                            <form action="{{ route('admin.stone.orders.destroy', $order->id) }}"
+                                                method="POST" style="display:inline-block;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-link px-2 text-danger"
+                                                    title="Xóa"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
+                                                    <i class="fas fa-trash-alt"></i>
                                                 </button>
-                                            @endif
-
-                                            @if (in_array($order->status, ['pending', 'processing']))
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    data-bs-toggle="tooltip" title="Hủy đơn hàng"
-                                                    onclick="if(confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) updateStatus({{ $order->id }}, 'cancelled')">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            @endif
-
-                                            @if ($order->status == 'completed' || $order->status == 'cancelled')
-                                                <form action="{{ route('admin.stone.orders.destroy', $order->id) }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm"
-                                                        data-bs-toggle="tooltip" title="Xóa đơn hàng"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -255,43 +261,43 @@
 @endsection
 
 @section('scripts')
-<script>
-    // Initialize orderData object to store order information
-    const orderData = {};
+    <script>
+        // Initialize orderData object to store order information
+        const orderData = {};
 
-    function updateStatus(orderId, newStatus) {
-        // Create form data
-        const formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}');
-        formData.append('status', newStatus);
+        function updateStatus(orderId, newStatus) {
+            // Create form data
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('status', newStatus);
 
-        // Send AJAX request
-        fetch(`{{ url('admin/stone/orders') }}/${orderId}/status`, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Reload the page to show updated status
-                window.location.reload();
-            } else {
-                // Show error message
-                alert(data.message || 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
+            // Send AJAX request
+            fetch(`{{ url('admin/stone/orders') }}/${orderId}/status`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Reload the page to show updated status
+                        window.location.reload();
+                    } else {
+                        // Show error message
+                        alert(data.message || 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
+                });
+        }
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
         });
-    }
-
-    // Initialize tooltips
-    document.addEventListener('DOMContentLoaded', function() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    });
-</script>
+    </script>
 @endsection
