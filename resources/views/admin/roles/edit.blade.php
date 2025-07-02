@@ -18,6 +18,8 @@
                     <div class="card-body">
                         <form action="{{ route('admin.roles.update', $role->id) }}" method="POST">
                             @csrf
+                            @method('PUT')
+                            
 
                             {{-- Tên hiển thị --}}
                             <div class="mb-3">

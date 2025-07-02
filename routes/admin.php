@@ -41,15 +41,45 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         return view('admin.dashboard');
     })->name('dashboard');
 
-    // Users
-    Route::prefix('users')->name('users.')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::get('/create', [UserController::class, 'create'])->name('create');
-        Route::post('/', [UserController::class, 'store'])->name('store');
-        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
-        Route::put('/{user}', [UserController::class, 'update'])->name('update');
-        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
-        Route::get('/{id}/info', [UserController::class, 'getUserInfo'])->name('user.info');
+    Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
+        Route::get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
+        Route::get('/create', [UserController::class, 'create'])->name('create'); // Hiển thị form tạo tài khoản
+        Route::post('/store', [UserController::class, 'store'])->name('store'); // Xử lý tạo tài khoản
+        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit'); // Hiển thị form chỉnh sửa
+        Route::post('/update/{id}', [UserController::class, 'update'])->name('update'); // Xử lý chỉnh sửa
+        Route::post('/delete/{id}', [UserController::class, 'delete'])->name('delete'); // Xử lý xóa
+        // 🚀 Hiển thị giao diện phân vai trò
+        Route::get('/assign-roles/{id}', [UserController::class, 'showAssignRolesForm'])->name('showAssignRolesForm');
+        // 🚀 Xử lý gán vai trò cho người dùng
+        Route::post('/assign-roles/{id}', [UserController::class, 'assignRoles'])->name('assignRoles');
+        Route::post('/toggle-block/{id}', [UserController::class, 'changeStatus'])->name('toggleBlock');
+        Route::get('/autocomplete', [UserController::class, 'autocomplete'])->name('autocomplete'); // Lấy vai trò theo từ
+    });
+
+    Route::prefix('profiles')->name('profiles.')->group(function () { // Chức năng quản lý hồ sơ
+        Route::get('/edit/{user_id}', [ProfileController::class, 'edit'])->name('edit'); // Hiển thị form chỉnh sửa
+        Route::post('/update/{user_id}', [ProfileController::class, 'update'])->name('update'); // Xử lý chỉnh sửa
+    });
+
+    Route::prefix('roles')->name('roles.')->group(function () { // Chức năng quản lý vai trò
+        Route::get('/index', [RoleController::class, 'index'])->name('index'); // Hiển thị danh sách vai trò
+        Route::get('/create', [RoleController::class, 'create'])->name('create'); // Hiển thị form tạo mới vai trò
+        Route::post('/store', [RoleController::class, 'store'])->name('store'); // Xử lý thêm mới vai trò
+        Route::get('/edit/{id}', [RoleController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [RoleController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [RoleController::class, 'delete'])->name('delete');
+        Route::get('/autocomplete', [RoleController::class, 'autocomplete'])->name('autocomplete'); // Lấy vai trò theo từ
+    });
+
+    // Chức năng quản lý quyền
+    Route::prefix('permissions')->name('permissions.')->group(function () {
+        Route::get('/index', [PermissionController::class, 'index'])->name('index'); // Hiển thị danh sách quyền
+        Route::get('/create', [PermissionController::class, 'create'])->name('create'); // Hiển thị form tạo mới quyền
+        Route::post('/store', [PermissionController::class, 'store'])->name('store'); // Xử lý thêm mới quyền
+        Route::get('/edit/{id}', [PermissionController::class, 'edit'])->name('edit'); // Hiển thị form sửa quyền
+        Route::put('/update/{id}', [PermissionController::class, 'update'])->name('update'); // Xử lý sửa quyền
+        Route::delete('/delete/{id}', [PermissionController::class, 'delete'])->name('delete'); // Xử lý xóa quyền
+        Route::get('/autocomplete', [PermissionController::class, 'autocomplete'])->name('autocomplete'); // Lấy quyền theo từ
     });
 
     // Profile
@@ -58,11 +88,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::put('/', [ProfileController::class, 'update'])->name('update');
     });
 
-    // Roles
-    Route::resource('roles', RoleController::class);
+    // Roles - Using resource routes
+    // Route::resource('roles', RoleController::class);
 
-    // Permissions
-    Route::resource('permissions', PermissionController::class);
+    // Permissions - Using resource routes
+    // Route::resource('permissions', PermissionController::class);
 
     // Categories
     Route::resource('categories', CategoryController::class);
