@@ -395,9 +395,17 @@
                     <span class="ms-3"><i class="fas fa-envelope me-2"></i> Email: info@thanhtungstone.com</span>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="{{ url('/stone/about') }}" class="me-3"><i class="fas fa-info-circle me-1"></i> Giới
-                        thiệu</a>
-                    <a href="{{ url('/stone/contact') }}"><i class="fas fa-map-marker-alt me-1"></i> Liên hệ</a>
+                    @guest
+                        <a href="{{ route('login') }}" class="me-3"><i class="fas fa-sign-in-alt me-1"></i> Đăng nhập</a>
+                        <a href="{{ route('register') }}"><i class="fas fa-user-plus me-1"></i> Đăng ký</a>
+                    @else
+                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-link p-0 text-white" style="text-decoration: none;">
+                                <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+                            </button>
+                        </form>
+                    @endguest
                 </div>
             </div>
         </div>

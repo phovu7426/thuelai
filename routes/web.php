@@ -29,7 +29,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login.index'); // Hiển thị form login
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post'); // Xử lý đăng nhập
-Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('login.logout'); // Xử lý đăng xuất
+Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout'); // Xử lý đăng xuất
 Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.login'); // Hiển thị form đăng nhập với google
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']); // Xử lý đăng nhập với google
 
