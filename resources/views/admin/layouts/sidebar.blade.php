@@ -12,7 +12,47 @@
                 .sidebar-menu .menu-open>.nav-treeview {
                     display: block !important;
                 }
+                
+                /* CSS mới cho menu */
+                .sidebar-menu .nav-item {
+                    margin-bottom: 5px;
+                }
+                
+                .sidebar-menu .nav-link {
+                    border-radius: 8px;
+                    transition: all 0.3s ease;
+                }
+                
+                .sidebar-menu .nav-link:hover {
+                    background-color: rgba(255, 255, 255, 0.1);
+                }
+                
+                .sidebar-menu .nav-link.active {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+                
+                .sidebar-menu .nav-icon {
+                    margin-right: 10px;
+                }
+                
+                .sidebar-menu .nav-treeview .nav-link {
+                    padding-left: 35px;
+                }
+                
+                .nav-badge {
+                    float: right;
+                    margin-top: 3px;
+                }
             </style>
+
+            {{-- Tổng quan --}}
+            <li class="nav-item">
+                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ isActive('admin.dashboard') }}">
+                    <i class="nav-icon bi bi-speedometer2"></i>
+                    <p>Tổng quan</p>
+                </a>
+            </li>
 
             {{-- Quản lý chung --}}
             @php
@@ -22,7 +62,7 @@
 
             <li class="nav-item {{ $activeGroupGeneral }}">
                 <a href="#" class="nav-link {{ $activeLinkGeneral }}">
-                    <i class="nav-icon bi bi-box-seam-fill"></i>
+                    <i class="nav-icon bi bi-gear-fill"></i>
                     <p>
                         Quản lý chung
                         <i class="nav-arrow bi bi-chevron-right"></i>
@@ -32,7 +72,7 @@
                     @canany(['view_users', 'create_users', 'edit_users', 'delete_users', 'assign_users'])
                         <li class="nav-item">
                             <a href="{{ route('admin.users.index') }}" class="nav-link {{ isActive('admin.users.*') }}">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="nav-icon bi bi-people-fill"></i>
                                 <p>Quản lý tài khoản</p>
                             </a>
                         </li>
@@ -41,7 +81,7 @@
                     @canany(['view_roles', 'create_roles', 'edit_roles', 'delete_roles'])
                         <li class="nav-item">
                             <a href="{{ route('admin.roles.index') }}" class="nav-link {{ isActive('admin.roles.*') }}">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="nav-icon bi bi-person-badge-fill"></i>
                                 <p>Quản lý vai trò</p>
                             </a>
                         </li>
@@ -51,7 +91,7 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.permissions.index') }}"
                                 class="nav-link {{ isActive('admin.permissions.*') }}">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="nav-icon bi bi-shield-lock-fill"></i>
                                 <p>Quản lý quyền</p>
                             </a>
                         </li>
@@ -66,7 +106,7 @@
             @endphp
             <li class="nav-item {{ $activeGroupSlide }}">
                 <a href="{{ route('admin.slides.index') }}" class="nav-link {{ $activeLinkSlide }}">
-                    <i class="nav-icon bi bi-images"></i>
+                    <i class="nav-icon bi bi-sliders"></i>
                     <p>Quản lý slide</p>
                 </a>
             </li>
@@ -75,6 +115,19 @@
             @php
                 $activeGroupStone = isActive(['admin.stone.*'], 'menu-open');
                 $activeLinkStone = isActive(['admin.stone.*']);
+                
+                // Đảm bảo tránh lỗi khi truy cập model
+                try {
+                    $pendingOrders = \App\Models\Order::where('status', 'pending')->count();
+                } catch (\Exception $e) {
+                    $pendingOrders = 0;
+                }
+                
+                try {
+                    $pendingContacts = \App\Models\StoneContact::where('is_read', 0)->count();
+                } catch (\Exception $e) {
+                    $pendingContacts = 0;
+                }
             @endphp
 
             <li class="nav-item {{ $activeGroupStone }}">
@@ -83,13 +136,16 @@
                     <p>
                         Quản lý trang Stone
                         <i class="nav-arrow bi bi-chevron-right"></i>
+                        @if($pendingOrders > 0 || $pendingContacts > 0)
+                            <span class="badge bg-danger nav-badge">{{ $pendingOrders + $pendingContacts }}</span>
+                        @endif
                     </p>
                 </a>
                 <ul class="nav nav-treeview">
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.categories.index') }}"
                             class="nav-link {{ isActive('admin.stone.categories.*') }}">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon bi bi-folder2"></i>
                             <p>Danh mục đá</p>
                         </a>
                     </li>
@@ -97,7 +153,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.materials.index') }}"
                             class="nav-link {{ isActive('admin.stone.materials.*') }}">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon bi bi-box-seam"></i>
                             <p>Chất liệu đá</p>
                         </a>
                     </li>
@@ -105,7 +161,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.surfaces.index') }}"
                             class="nav-link {{ isActive('admin.stone.surfaces.*') }}">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon bi bi-layers"></i>
                             <p>Bề mặt đá</p>
                         </a>
                     </li>
@@ -113,7 +169,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.applications.index') }}"
                             class="nav-link {{ isActive('admin.stone.applications.*') }}">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon bi bi-tools"></i>
                             <p>Ứng dụng đá</p>
                         </a>
                     </li>
@@ -121,7 +177,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.products.index') }}"
                             class="nav-link {{ isActive('admin.stone.products.*') }}">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon bi bi-grid"></i>
                             <p>Sản phẩm đá</p>
                         </a>
                     </li>
@@ -129,7 +185,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.projects.index') }}"
                             class="nav-link {{ isActive('admin.stone.projects.*') }}">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon bi bi-building"></i>
                             <p>Dự án đá</p>
                         </a>
                     </li>
@@ -137,7 +193,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.showrooms.index') }}"
                             class="nav-link {{ isActive('admin.stone.showrooms.*') }}">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon bi bi-shop"></i>
                             <p>Showroom</p>
                         </a>
                     </li>
@@ -145,7 +201,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.videos.index') }}"
                             class="nav-link {{ isActive('admin.stone.videos.*') }}">
-                            <i class="nav-icon bi bi-circle"></i>
+                            <i class="nav-icon bi bi-play-circle"></i>
                             <p>Video</p>
                         </a>
                     </li>
@@ -154,25 +210,36 @@
                         <a href="{{ route('admin.stone.orders.index') }}"
                             class="nav-link {{ isActive('admin.stone.orders.*') }}">
                             <i class="nav-icon bi bi-cart-check"></i>
-                            <p>Đơn hàng</p>
+                            <p>
+                                Đơn hàng
+                                @if($pendingOrders > 0)
+                                    <span class="badge bg-danger float-end">{{ $pendingOrders }}</span>
+                                @endif
+                            </p>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a href="{{ route('admin.stone.contacts.index') }}"
                             class="nav-link {{ isActive('admin.stone.contacts.*') }}">
-                            <i class="nav-icon bi bi-cart-check"></i>
-                            <p>Liên hệ</p>
+                            <i class="nav-icon bi bi-envelope"></i>
+                            <p>
+                                Liên hệ
+                                @if($pendingContacts > 0)
+                                    <span class="badge bg-danger float-end">{{ $pendingContacts }}</span>
+                                @endif
+                            </p>
                         </a>
                     </li>
                 </ul>
             </li>
 
+            {{-- Cấu hình --}}
             <li class="nav-item">
                 <a href="{{ route('admin.contact-info.edit') }}"
                     class="nav-link {{ isActive('admin.contact-info.*') }}">
-                    <i class="nav-icon bi bi-telephone"></i>
-                    <p>Cấu hình liên hệ</p>
+                    <i class="nav-icon bi bi-gear"></i>
+                    <p>Cấu hình hệ thống</p>
                 </a>
             </li>
 

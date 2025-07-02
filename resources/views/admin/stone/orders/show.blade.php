@@ -172,7 +172,13 @@
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')
-                                                <input type="hidden" name="status" value="processing">
+                                                <input type="hidden" name="status" value='processing'>
+                                                <input type="hidden" name="customer_name" value="{{ $order->customer_name }}">
+                                                <input type="hidden" name="customer_email" value="{{ $order->customer_email }}">
+                                                <input type="hidden" name="customer_phone" value="{{ $order->customer_phone }}">
+                                                <input type="hidden" name="customer_address" value="{{ $order->customer_address }}">
+                                                <input type="hidden" name="note" value="{{ $order->note }}">
+                                                <input type="hidden" name="user_id" value="{{ $order->user_id }}">
                                                 <button type="submit" class="btn btn-primary mr-2">
                                                     <i class="mdi mdi-progress-check"></i> Chuyển sang đang xử lý
                                                 </button>
@@ -184,7 +190,13 @@
                                                 method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')
-                                                <input type="hidden" name="status" value="completed">
+                                                <input type="hidden" name="status" value='completed'>
+                                                <input type="hidden" name="customer_name" value="{{ $order->customer_name }}">
+                                                <input type="hidden" name="customer_email" value="{{ $order->customer_email }}">
+                                                <input type="hidden" name="customer_phone" value="{{ $order->customer_phone }}">
+                                                <input type="hidden" name="customer_address" value="{{ $order->customer_address }}">
+                                                <input type="hidden" name="note" value="{{ $order->note }}">
+                                                <input type="hidden" name="user_id" value="{{ $order->user_id }}">
                                                 <button type="submit" class="btn btn-success mr-2">
                                                     <i class="mdi mdi-check-circle"></i> Đánh dấu hoàn thành
                                                 </button>
@@ -195,7 +207,13 @@
                                             class="d-inline">
                                             @csrf
                                             @method('PUT')
-                                            <input type="hidden" name="status" value="cancelled">
+                                            <input type="hidden" name="status" value='cancelled'>
+                                            <input type="hidden" name="customer_name" value="{{ $order->customer_name }}">
+                                            <input type="hidden" name="customer_email" value="{{ $order->customer_email }}">
+                                            <input type="hidden" name="customer_phone" value="{{ $order->customer_phone }}">
+                                            <input type="hidden" name="customer_address" value="{{ $order->customer_address }}">
+                                            <input type="hidden" name="note" value="{{ $order->note }}">
+                                            <input type="hidden" name="user_id" value="{{ $order->user_id }}">
                                             <button type="submit" class="btn btn-danger"
                                                 onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
                                                 <i class="mdi mdi-close-circle"></i> Hủy đơn hàng
@@ -255,12 +273,60 @@
             method.value = 'PUT';
             form.appendChild(method);
 
-            // Add status
+            // Add status with proper value from constants
             var statusInput = document.createElement('input');
             statusInput.type = 'hidden';
             statusInput.name = 'status';
-            statusInput.value = status;
+            
+            // Sử dụng các chuỗi trực tiếp thay vì các hằng số
+            if (status === 'processing') {
+                statusInput.value = 'processing';
+            } else if (status === 'completed') {
+                statusInput.value = 'completed';
+            } else if (status === 'cancelled') {
+                statusInput.value = 'cancelled';
+            } else if (status === 'pending') {
+                statusInput.value = 'pending';
+            }
+            
             form.appendChild(statusInput);
+            
+            // Thêm các trường bắt buộc
+            var customerName = document.createElement('input');
+            customerName.type = 'hidden';
+            customerName.name = 'customer_name';
+            customerName.value = '{{ $order->customer_name }}';
+            form.appendChild(customerName);
+            
+            var customerEmail = document.createElement('input');
+            customerEmail.type = 'hidden';
+            customerEmail.name = 'customer_email';
+            customerEmail.value = '{{ $order->customer_email }}';
+            form.appendChild(customerEmail);
+            
+            var customerPhone = document.createElement('input');
+            customerPhone.type = 'hidden';
+            customerPhone.name = 'customer_phone';
+            customerPhone.value = '{{ $order->customer_phone }}';
+            form.appendChild(customerPhone);
+            
+            var customerAddress = document.createElement('input');
+            customerAddress.type = 'hidden';
+            customerAddress.name = 'customer_address';
+            customerAddress.value = '{{ $order->customer_address }}';
+            form.appendChild(customerAddress);
+            
+            var note = document.createElement('input');
+            note.type = 'hidden';
+            note.name = 'note';
+            note.value = '{{ $order->note }}';
+            form.appendChild(note);
+            
+            var userId = document.createElement('input');
+            userId.type = 'hidden';
+            userId.name = 'user_id';
+            userId.value = '{{ $order->user_id }}';
+            form.appendChild(userId);
 
             // Add form to body and submit
             document.body.appendChild(form);
