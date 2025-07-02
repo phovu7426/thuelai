@@ -79,21 +79,10 @@
                     </a>
                 </div>
                 <div class="d-flex gap-2">
-                    <form action="{{ route('admin.stone.orders.index') }}" method="GET" class="d-flex gap-2">
+                    <form action="{{ route('admin.stone.orders.index') }}" method="GET">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Tìm theo mã đơn, tên khách hàng..."
                                 name="search" value="{{ request('search') }}">
-                            <select class="form-select" name="status" style="min-width: 150px;">
-                                <option value="">Tất cả trạng thái</option>
-                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Chờ xử lý
-                                </option>
-                                <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Đang xử
-                                    lý</option>
-                                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Hoàn
-                                    thành</option>
-                                <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Đã hủy
-                                </option>
-                            </select>
                             <button class="btn btn-primary" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
