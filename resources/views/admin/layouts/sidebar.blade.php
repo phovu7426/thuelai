@@ -59,51 +59,6 @@
                 </ul>
             </li>
 
-
-            {{-- Quản lý khai báo --}}
-            @php
-                $activeGroupDeclaration = isActive(
-                    ['admin.categories.*', 'admin.series.*', 'admin.posts.*'],
-                    'menu-open',
-                );
-                $activeLinkDeclaration = isActive(['admin.categories.*', 'admin.series.*', 'admin.posts.*']);
-            @endphp
-
-            <li class="nav-item {{ $activeGroupDeclaration }}">
-                <a href="#" class="nav-link {{ $activeLinkDeclaration }}">
-                    <i class="nav-icon bi bi-file-earmark-text"></i>
-                    <p>
-                        Quản lý khai báo
-                        <i class="nav-arrow bi bi-chevron-right"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    @canany(['view_declarations', 'create_declarations', 'edit_declarations', 'delete_declarations'])
-                        <li class="nav-item">
-                            <a href="{{ route('admin.categories.index') }}"
-                                class="nav-link {{ isActive('admin.categories.*') }}">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Quản lý danh mục</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.series.index') }}" class="nav-link {{ isActive('admin.series.*') }}">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Quản lý series</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.posts.index') }}" class="nav-link {{ isActive('admin.posts.*') }}">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Quản lý bài đăng</p>
-                            </a>
-                        </li>
-                    @endcanany
-                </ul>
-            </li>
-
             {{-- Quản lý slide --}}
             @php
                 $activeGroupSlide = isActive(['admin.slides.*'], 'menu-open');
