@@ -80,20 +80,6 @@
                 </a>
             </li>
 
-            @php
-                try {
-                    $pendingOrders = \App\Models\Order::where('status', 'pending')->count();
-                } catch (\Exception $e) {
-                    $pendingOrders = 0;
-                }
-                
-                try {
-                    $pendingContacts = \App\Models\StoneContact::where('is_read', 0)->count();
-                } catch (\Exception $e) {
-                    $pendingContacts = 0;
-                }
-            @endphp
-
             {{-- Danh mục đá --}}
             <li class="nav-item">
                 <a href="{{ route('admin.stone.categories.index') }}" class="nav-link {{ isActive('admin.stone.categories.*') }}">
@@ -164,9 +150,6 @@
                     <i class="nav-icon bi bi-cart-check"></i>
                     <p>
                         Đơn hàng
-                        @if($pendingOrders > 0)
-                            <span class="badge bg-danger float-end">{{ $pendingOrders }}</span>
-                        @endif
                     </p>
                 </a>
             </li>
@@ -177,9 +160,6 @@
                     <i class="nav-icon bi bi-envelope"></i>
                     <p>
                         Liên hệ
-                        @if($pendingContacts > 0)
-                            <span class="badge bg-danger float-end">{{ $pendingContacts }}</span>
-                        @endif
                     </p>
                 </a>
             </li>
