@@ -32,5 +32,9 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('debug', function ($expression) {
             return "<?php if(config('app.debug')): ?><pre><?php print_r($expression); ?></pre><?php endif; ?>";
         });
+
+        // Chia sẻ biến contactInfo cho tất cả view
+        $contactInfo = \App\Models\ContactInfo::first();
+        view()->share('contactInfo', $contactInfo);
     }
 }
