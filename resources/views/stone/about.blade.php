@@ -209,7 +209,7 @@
                 <div class="col-lg-8 mx-auto text-center">
                     <h2 class="mb-4">Bạn muốn tìm hiểu thêm?</h2>
                     <p class="lead mb-4">Hãy liên hệ ngay với chúng tôi để được tư vấn chi tiết và báo giá tốt nhất.</p>
-                    <a href="{{ route('stone.contact') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
+                    <a href="{{ route('stone.contact.index') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
                 </div>
             </div>
         </div>
