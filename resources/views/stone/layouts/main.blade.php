@@ -391,20 +391,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <span><i class="fas fa-phone-alt me-2"></i> Hotline: 0123.456.789</span>
-                    <span class="ms-3"><i class="fas fa-envelope me-2"></i> Email: info@thanhtungstone.com</span>
+        
+                    <span><i class="fas fa-phone-alt me-2"></i> Hotline: {{$contactInfo->phone ?? ''}}</span>
+                    <span class="ms-3"><i class="fas fa-envelope me-2"></i> Email: {{$contactInfo->email ?? ''}}</span>
                 </div>
                 <div class="col-md-6 text-end">
                     @guest
                         <a href="{{ route('login') }}" class="me-3"><i class="fas fa-sign-in-alt me-1"></i> Đăng nhập</a>
                         <a href="{{ route('register') }}"><i class="fas fa-user-plus me-1"></i> Đăng ký</a>
                     @else
-                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-link p-0 text-white" style="text-decoration: none;">
-                                <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
-                            </button>
-                        </form>
+                        <a href="{{ route('logout') }}" class="text-white" style="text-decoration: none;">
+                            <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+                        </a>
                     @endguest
                 </div>
             </div>

@@ -60,7 +60,7 @@
         <div class="swiper-button-prev"></div>
     </div>
 
-    <!-- Intro Section -->
+    {{-- <!-- Intro Section -->
     <section class="section bg-light">
         <div class="container">
             <div class="row align-items-center">
@@ -101,7 +101,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Categories Section -->
     <section class="section">
