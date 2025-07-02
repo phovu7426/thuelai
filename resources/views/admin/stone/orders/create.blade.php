@@ -239,8 +239,9 @@
                 $('.product-checkbox:checked').each(function() {
                     var id = $(this).data('id');
                     var name = $(this).closest('tr').find('td:nth-child(2)').text();
-                    var price = $(this).closest('tr').find('td:nth-child(3)').text().replace('đ',
-                        '').replace(/,/g, '');
+                    var priceText = $(this).closest('tr').find('td:nth-child(3)').text();
+                    // Ensure we correctly parse the price by removing đ and commas
+                    var price = Number(priceText.replace(/[^\d]/g, ''));
                     var qty = $('.product-qty[data-id="' + id + '"]').val();
 
                     var html = `
@@ -249,14 +250,14 @@
                             <input type="hidden" name="products[${productCount}][quantity]" value="${qty}">
                             <input type="hidden" name="products[${productCount}][price]" value="${price}">
                             <div class="d-flex justify-content-between align-items-center">
-                                <div><b>${name}</b> - SL: ${qty} - Đơn giá: ${Number(price).toLocaleString()}đ</div>
+                                <div><b>${name}</b> - SL: ${qty} - Đơn giá: ${Number(price).toLocaleString('vi-VN')}đ</div>
                                 <button type="button" class="btn btn-danger btn-sm btn-remove-product">
                                     <i class="mdi mdi-trash-can"></i> Xóa
                                 </button>
                             </div>
                         </div>
                     `;
-            productCount++;
+                    productCount++;
                     $('#productList').append(html);
                 });
                 
@@ -286,17 +287,16 @@
             function updateTotal() {
                 let total = 0;
                 $('#productList .product-row').each(function() {
-                    var priceText = $(this).find('div').text().match(/Đơn giá: ([\d,]+)/);
-                    var qtyText = $(this).find('div').text().match(/SL: (\d+)/);
-                    var price = priceText ? parseInt(priceText[1].replace(/,/g, '')) : 0;
-                    var qty = qtyText ? parseInt(qtyText[1]) : 0;
+                    // Get the hidden price input value directly rather than parsing the display text
+                    var price = Number($(this).find('input[name$="[price]"]').val());
+                    var qty = Number($(this).find('input[name$="[quantity]"]').val());
                     total += price * qty;
-            });
+                });
                 $('#totalAmount').text(formatMoney(total));
                 $('#hiddenTotalAmount').val(total);
-        }
-        
-        // Định dạng tiền tệ
+            }
+            
+            // Định dạng tiền tệ
             function formatMoney(amount) {
                 return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
             }
