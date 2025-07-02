@@ -104,6 +104,37 @@ class Order extends Model
     }
 
     /**
+     * Set the status attribute.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setStatusAttribute($value)
+    {
+        // Đảm bảo giá trị status là một chuỗi hợp lệ
+        switch ($value) {
+            case 'pending':
+            case self::STATUS_PENDING:
+                $this->attributes['status'] = self::STATUS_PENDING;
+                break;
+            case 'processing':
+            case self::STATUS_PROCESSING:
+                $this->attributes['status'] = self::STATUS_PROCESSING;
+                break;
+            case 'completed':
+            case self::STATUS_COMPLETED:
+                $this->attributes['status'] = self::STATUS_COMPLETED;
+                break;
+            case 'cancelled':
+            case self::STATUS_CANCELLED:
+                $this->attributes['status'] = self::STATUS_CANCELLED;
+                break;
+            default:
+                $this->attributes['status'] = self::STATUS_PENDING;
+        }
+    }
+
+    /**
      * Check if status transition is valid
      */
     public function canTransitionTo(string $newStatus): bool

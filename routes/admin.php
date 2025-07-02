@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Categories\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Posts\PostController;
 use App\Http\Controllers\Admin\Roles\RoleController;
@@ -37,9 +38,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         return view('admin.index');
     })->name('index');
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
         Route::get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
@@ -131,6 +130,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
         // Đơn hàng
         Route::resource('orders', OrderController::class);
+        Route::post('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
         // Stone - Quản lý liên hệ
         Route::prefix('contacts')->name('contacts.')->group(function () {
