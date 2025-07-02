@@ -15,7 +15,7 @@ class MaterialController extends Controller
      */
     public function index()
     {
-        $materials = StoneMaterial::orderBy('order', 'asc')->get();
+        $materials = StoneMaterial::orderBy('order', 'asc')->paginate(10);
         return view('admin.stone.materials.index', compact('materials'));
     }
 

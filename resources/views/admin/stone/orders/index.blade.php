@@ -153,7 +153,17 @@
                                                 class="text-muted small">{{ \Carbon\Carbon::parse($order->created_at)->format('H:i:s') }}</span>
                                         </div>
                                     </td>
-                                    <td class="fw-bold">{{ number_format($order->total_amount) }}đ</td>
+                                    <td class="fw-bold">
+                                        @php
+                                            $totalAmount = $order->total_amount;
+                                            if ($totalAmount == 0 && $order->items->count() > 0) {
+                                                $totalAmount = $order->items->sum(function($item) {
+                                                    return $item->price * $item->quantity;
+                                                });
+                                            }
+                                        @endphp
+                                        {{ number_format($totalAmount) }}đ
+                                    </td>
                                     <td>
                                         @php
                                             $statusConfig = [

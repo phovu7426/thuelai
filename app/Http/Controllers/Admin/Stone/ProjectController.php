@@ -15,7 +15,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = StoneProject::orderBy('order', 'asc')->paginate(20);
+        $projects = StoneProject::orderBy('order', 'asc')->paginate(10);
         return view('admin.stone.projects.index', compact('projects'));
     }
 

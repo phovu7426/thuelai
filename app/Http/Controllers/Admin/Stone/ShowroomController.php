@@ -15,7 +15,7 @@ class ShowroomController extends Controller
      */
     public function index()
     {
-        $showrooms = StoneShowroom::orderBy('order', 'asc')->paginate(20);
+        $showrooms = StoneShowroom::orderBy('order', 'asc')->paginate(10);
         return view('admin.stone.showrooms.index', compact('showrooms'));
     }
 

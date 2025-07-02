@@ -19,7 +19,7 @@ class OrderController extends Controller
     {
         $orders = Order::with('user')
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(10);
             
         return view('admin.stone.orders.index', compact('orders'));
     }

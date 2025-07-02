@@ -63,7 +63,17 @@
                                     </tr>
                                     <tr>
                                         <th>Tổng tiền:</th>
-                                        <td><strong class="text-danger">{{ number_format($order->total_amount) }} đ</strong>
+                                        <td>
+                                            @php
+                                                // If total_amount is zero, calculate from items
+                                                $totalAmount = $order->total_amount;
+                                                if ($totalAmount == 0 && count($order->items) > 0) {
+                                                    $totalAmount = $order->items->sum(function($item) {
+                                                        return $item->price * $item->quantity;
+                                                    });
+                                                }
+                                            @endphp
+                                            <strong class="text-danger">{{ number_format($totalAmount) }} đ</strong>
                                         </td>
                                     </tr>
                                 </table>
@@ -133,7 +143,18 @@
                                         <tfoot>
                                             <tr>
                                                 <th colspan="4" class="text-right">Tổng cộng</th>
-                                                <th class="text-right">{{ number_format($order->total_amount) }} đ</th>
+                                                <th class="text-right">
+                                                    @php
+                                                        // If total_amount is zero, calculate from items
+                                                        $totalAmount = $order->total_amount;
+                                                        if ($totalAmount == 0 && count($order->items) > 0) {
+                                                            $totalAmount = $order->items->sum(function($item) {
+                                                                return $item->price * $item->quantity;
+                                                            });
+                                                        }
+                                                    @endphp
+                                                    {{ number_format($totalAmount) }} đ
+                                                </th>
                                             </tr>
                                         </tfoot>
                                     </table>

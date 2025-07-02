@@ -22,7 +22,7 @@ class ProductController extends Controller
     {
         $products = StoneProduct::with(['category', 'material', 'surface'])
             ->orderBy('order', 'asc')
-            ->paginate(20);
+            ->paginate(10);
             
         return view('admin.stone.products.index', compact('products'));
     }

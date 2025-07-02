@@ -15,7 +15,7 @@ class SurfaceController extends Controller
      */
     public function index()
     {
-        $surfaces = StoneSurface::orderBy('order', 'asc')->get();
+        $surfaces = StoneSurface::orderBy('order', 'asc')->paginate(10);
         return view('admin.stone.surfaces.index', compact('surfaces'));
     }
 

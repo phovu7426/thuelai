@@ -15,7 +15,7 @@ class VideoController extends Controller
      */
     public function index()
     {
-        $videos = StoneVideo::orderBy('order', 'asc')->paginate(20);
+        $videos = StoneVideo::orderBy('order', 'asc')->paginate(10);
         return view('admin.stone.videos.index', compact('videos'));
     }
 

@@ -15,7 +15,7 @@ class ApplicationController extends Controller
      */
     public function index()
     {
-        $applications = StoneApplication::orderBy('type')->orderBy('order', 'asc')->get();
+        $applications = StoneApplication::orderBy('type')->orderBy('order', 'asc')->paginate(10);
         return view('admin.stone.applications.index', compact('applications'));
     }
 

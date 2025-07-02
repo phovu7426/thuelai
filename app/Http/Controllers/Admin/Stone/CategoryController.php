@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = StoneCategory::with('parent')->orderBy('order', 'asc')->get();
+        $categories = StoneCategory::with('parent')->orderBy('order', 'asc')->paginate(10);
         return view('admin.stone.categories.index', compact('categories'));
     }
 
