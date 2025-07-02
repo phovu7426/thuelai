@@ -16,77 +16,28 @@
         </div>
     </section>
 
-    <!-- Filter Section -->
+    <!-- Search Section -->
     <section class="py-4 border-bottom">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <div class="d-flex flex-wrap">
-                        <div class="me-4 mb-3 mb-lg-0">
-                            <label for="category-filter" class="form-label mb-1">Danh mục:</label>
-                            <select class="form-select" id="category-filter">
-                                <option value="">Tất cả danh mục</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}"
-                                        {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                    <form action="" method="GET" class="d-flex gap-2">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="search" placeholder="Tìm kiếm sản phẩm..." value="{{ request('search') }}">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i> Tìm kiếm
+                            </button>
                         </div>
-                        <div class="me-4 mb-3 mb-lg-0">
-                            <label for="material-filter" class="form-label mb-1">Chất liệu:</label>
-                            <select class="form-select" id="material-filter">
-                                <option value="">Tất cả chất liệu</option>
-                                @foreach ($materials as $material)
-                                    <option value="{{ $material->id }}"
-                                        {{ request('material_id') == $material->id ? 'selected' : '' }}>
-                                        {{ $material->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="me-4 mb-3 mb-lg-0">
-                            <label for="color-filter" class="form-label mb-1">Màu sắc:</label>
-                            <select class="form-select" id="color-filter">
-                                <option value="">Tất cả màu sắc</option>
-                                @foreach ($colors as $color)
-                                    <option value="{{ $color->id }}"
-                                        {{ request('color_id') == $color->id ? 'selected' : '' }}>
-                                        {{ $color->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                    <div class="d-flex justify-content-lg-end">
-                        <div class="me-3">
-                            <label for="sort-by" class="form-label mb-1">Sắp xếp theo:</label>
-                            <select class="form-select" id="sort-by">
-                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Mới nhất</option>
-                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá tăng
-                                    dần</option>
-                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Giá giảm
-                                    dần</option>
-                                <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Tên A-Z
-                                </option>
-                                <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Tên Z-A
-                                </option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="view-mode" class="form-label mb-1">Hiển thị:</label>
-                            <div class="btn-group" role="group" id="view-mode">
-                                <button type="button" class="btn btn-outline-primary active" data-bs-view="grid">
-                                    <i class="fas fa-th"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-primary" data-bs-view="list">
-                                    <i class="fas fa-list"></i>
-                                </button>
-                            </div>
-                        </div>
+                    <div class="btn-group" role="group" id="view-mode">
+                        <button type="button" class="btn btn-outline-primary active" data-bs-view="grid">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" data-bs-view="list">
+                            <i class="fas fa-list"></i>
+                        </button>
                     </div>
                 </div>
             </div>
