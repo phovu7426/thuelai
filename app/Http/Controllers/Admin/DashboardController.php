@@ -128,10 +128,37 @@ class DashboardController extends Controller
     private function getProductsByCategory()
     {
         try {
-            $categories = StoneCategory::withCount('products')->get();
+            // Lấy tất cả danh mục (bao gồm cả danh mục con)
+            $categories = StoneCategory::all();
             
-            $labels = $categories->pluck('name');
-            $data = $categories->pluck('products_count');
+            $labels = collect([]);
+            $data = collect([]);
+            
+            foreach ($categories as $category) {
+                // Đếm số lượng sản phẩm trong category
+                $productCount = StoneProduct::where('stone_category_id', $category->id)
+                    ->where('status', true) // Chỉ đếm sản phẩm đang hoạt động
+                    ->count();
+                
+                // Chỉ thêm vào biểu đồ nếu có sản phẩm
+                if ($productCount > 0) {
+                    // Thêm tên danh mục cha vào nếu có
+                    $categoryName = $category->parent 
+                        ? $category->parent->name . ' - ' . $category->name 
+                        : $category->name;
+                        
+                    $labels->push($categoryName);
+                    $data->push($productCount);
+                }
+            }
+            
+            // Nếu không có dữ liệu
+            if ($labels->isEmpty()) {
+                return [
+                    'labels' => ['Không có dữ liệu'],
+                    'data' => [0]
+                ];
+            }
             
             return [
                 'labels' => $labels,
@@ -147,7 +174,6 @@ class DashboardController extends Controller
     
     /**
      * Lấy thống kê truy cập theo ngày (7 ngày gần nhất)
-     * Lưu ý: Đây là dữ liệu mẫu, bạn cần tích hợp với hệ thống theo dõi truy cập thực tế
      */
     private function getDailyVisits()
     {
@@ -163,9 +189,12 @@ class DashboardController extends Controller
                 
                 $days->push($shortDay);
                 
-                // Dữ liệu mẫu - thay thế bằng dữ liệu thực tế từ hệ thống theo dõi truy cập
-                $randomVisits = rand(50, 150);
-                $visits->push($randomVisits);
+                // Đếm số lượt truy cập trong ngày
+                $dailyVisits = \App\Models\PageVisit::whereDate('created_at', $date)
+                    ->distinct('ip_address')
+                    ->count('ip_address');
+                
+                $visits->push($dailyVisits);
             }
             
             return [
