@@ -143,7 +143,7 @@
                             <a href="{{ route('login.index') }}" class="btn btn-primary">
                                 <i class="fas fa-sign-in-alt me-1"></i> Đăng nhập ngay
                             </a>
-                            <a href="{{ route('register') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('register.index') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-user-plus me-1"></i> Đăng ký tài khoản
                             </a>
                         </div>

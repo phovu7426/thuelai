@@ -244,7 +244,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">
+                            <a class="nav-link" href="{{ route('register.index') }}">
                                 <i class="fas fa-user-plus me-1"></i> Đăng Ký
                             </a>
                         </li>
@@ -294,7 +294,7 @@
                         <li class="mb-2"><a href="{{ url('/') }}" class="text-decoration-none text-muted">Trang Chủ</a></li>
                         <li class="mb-2"><a href="{{ route('home.posts.index') }}" class="text-decoration-none text-muted">Bài Đăng</a></li>
                         <li class="mb-2"><a href="{{ route('login.index') }}" class="text-decoration-none text-muted">Đăng Nhập</a></li>
-                        <li class="mb-2"><a href="{{ route('register') }}" class="text-decoration-none text-muted">Đăng Ký</a></li>
+                        <li class="mb-2"><a href="{{ route('register.index') }}" class="text-decoration-none text-muted">Đăng Ký</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">

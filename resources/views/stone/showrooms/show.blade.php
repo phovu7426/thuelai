@@ -1,6 +1,6 @@
 @extends('stone.layouts.main')
 
-@section('page_title', $showroom->name)
+@section('title', $showroom->name)
 
 @section('content')
     <div class="container py-5">
@@ -8,7 +8,7 @@
 
         <div class="row mt-4">
             <div class="col-md-8">
-                <img src="{{ asset('images/default/default_image.png') }}" class="img-fluid mb-4" alt="{{ $showroom->name }}">
+                <img src="{{ $showroom->image ? asset('storage/' . $showroom->image) : asset('images/default/default_image.png') }}" class="img-fluid mb-4" alt="{{ $showroom->name }}">
 
                 <div class="content">
                     {!! $showroom->description !!}
@@ -30,12 +30,12 @@
                         <h5>Thông tin liên hệ</h5>
                     </div>
                     <div class="card-body">
-                        <p><i class="fas fa-map-marker-alt"></i> <strong>Địa chỉ:</strong> {{ $showroom->address }}</p>
-                        <p><i class="fas fa-phone"></i> <strong>Điện thoại:</strong> {{ $showroom->phone }}</p>
-                        <p><i class="fas fa-clock"></i> <strong>Giờ làm việc:</strong> {{ $showroom->working_hours }}</p>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> <strong>Địa chỉ:</strong> {{ $showroom->address }}</p>
+                        <p><i class="fas fa-phone me-2"></i> <strong>Điện thoại:</strong> {{ $showroom->phone }}</p>
+                        <p><i class="fas fa-clock me-2"></i> <strong>Giờ làm việc:</strong> {{ $showroom->working_hours }}</p>
 
                         @if ($showroom->email)
-                            <p><i class="fas fa-envelope"></i> <strong>Email:</strong> {{ $showroom->email }}</p>
+                            <p><i class="fas fa-envelope me-2"></i> <strong>Email:</strong> {{ $showroom->email }}</p>
                         @endif
 
                         @if ($showroom->google_map)

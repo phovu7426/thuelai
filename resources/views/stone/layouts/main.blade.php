@@ -397,8 +397,8 @@
                 </div>
                 <div class="col-md-6 text-end">
                     @guest
-                        <a href="{{ route('login') }}" class="me-3"><i class="fas fa-sign-in-alt me-1"></i> Đăng nhập</a>
-                        <a href="{{ route('register') }}"><i class="fas fa-user-plus me-1"></i> Đăng ký</a>
+                        <a href="{{ route('login.index') }}" class="me-3"><i class="fas fa-sign-in-alt me-1"></i> Đăng nhập</a>
+                        <a href="{{ route('register.index') }}" class="me-3"><i class="fas fa-user-plus me-1"></i> Đăng ký</a>
                     @else
                         <a href="{{ route('logout') }}" class="text-white" style="text-decoration: none;">
                             <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
