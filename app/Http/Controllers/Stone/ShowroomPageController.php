@@ -30,10 +30,11 @@ class ShowroomPageController extends Controller
             ->where('status', 1)
             ->firstOrFail();
             
-        // Lấy các showroom khác
+        // Lấy 4 showroom khác ngẫu nhiên
         $otherShowrooms = StoneShowroom::where('status', 1)
             ->where('id', '!=', $showroom->id)
-            ->orderBy('order', 'asc')
+            ->inRandomOrder()
+            ->take(4)
             ->get();
             
         return view('stone.showrooms.show', compact('showroom', 'otherShowrooms'));
