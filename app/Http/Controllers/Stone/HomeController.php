@@ -35,10 +35,15 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        $categories = StoneCategory::where('status', true)
-            ->orderBy('order', 'asc')
-            ->take(6)
-            ->get();
+        $categories = cache()->store('file')->remember('home_stone_categories', 3600, function () {
+            return StoneCategory::where('status', true)
+                ->whereNull('parent_id') // Chỉ lấy danh mục chính
+                ->withCount('products')
+                ->withCount('children')
+                ->orderBy('order', 'asc')
+                ->take(6)
+                ->get();
+        });
 
         $applications = StoneApplication::where('status', true)
             ->orderBy('order', 'asc')

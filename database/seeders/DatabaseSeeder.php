@@ -14,6 +14,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Check if we're running large data seeder
+        if (app()->environment('local') && $this->command->confirm('Would you like to seed 1000 records for each table?', false)) {
+            $seeder = new LargeDataSeeder();
+            if ($this->command) {
+                $seeder->setCommand($this->command);
+            }
+            $seeder->run();
+            return;
+        }
+        
         // Create admin user
         $admin = User::firstOrCreate(
             ['email' => 'admin@gmail.com'],

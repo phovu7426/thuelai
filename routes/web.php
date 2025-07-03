@@ -129,8 +129,8 @@ Route::prefix('stone')->name('stone.')->middleware('web')->group(function () {
 
     // Showroom
     Route::prefix('showrooms')->name('showrooms.')->group(function () {
-        Route::get('/', [ShowroomController::class, 'index'])->name('index');
-        Route::get('/{slug}', [ShowroomController::class, 'show'])->name('show');
+        Route::get('/', [App\Http\Controllers\Stone\ShowroomPageController::class, 'index'])->name('index');
+        Route::get('/{slug}', [App\Http\Controllers\Stone\ShowroomPageController::class, 'show'])->name('show');
     });
 
     // Video
@@ -151,3 +151,6 @@ Route::get('/test-blade', function () {
 });
 
 Route::get('/slides', [HomeSlideController::class, 'index'])->name('home.slides');
+
+// Test showroom page
+Route::get('/test-showroom', [App\Http\Controllers\TestShowroomController::class, 'index'])->name('test.showroom');

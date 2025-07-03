@@ -5,22 +5,10 @@ namespace App\Http\Controllers\Stone;
 use App\Http\Controllers\Controller;
 use App\Models\StoneShowroom;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Storage;
 
-class ShowroomController extends Controller
+class ShowroomPageController extends Controller
 {
-    /**
-     * Helper function to get image URL
-     */
-    private function getImageUrl($path = null, $default = 'images/default/default_image.png')
-    {
-        if ($path && Storage::disk('public')->exists($path)) {
-            return asset('storage/' . $path);
-        }
-        
-        return asset($default);
-    }
     /**
      * Hiển thị danh sách showroom
      */
@@ -30,7 +18,7 @@ class ShowroomController extends Controller
             ->orderBy('order', 'asc')
             ->paginate(12);
             
-        return response()->view('stone.showrooms.index', compact('showrooms'));
+        return view('stone.showrooms.list', compact('showrooms'));
     }
     
     /**
@@ -42,10 +30,11 @@ class ShowroomController extends Controller
             ->where('status', 1)
             ->firstOrFail();
             
-        // Lấy các showroom khác
+        // Lấy 4 showroom khác ngẫu nhiên
         $otherShowrooms = StoneShowroom::where('status', 1)
             ->where('id', '!=', $showroom->id)
-            ->orderBy('order', 'asc')
+            ->inRandomOrder()
+            ->take(4)
             ->get();
             
         return view('stone.showrooms.show', compact('showroom', 'otherShowrooms'));

@@ -216,12 +216,16 @@
             <div class="row">
                 @foreach ($categories as $category)
                     <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="category-card">
-                            <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $category->name }}">
+                        <div class="category-card shadow-sm rounded overflow-hidden">
+                            <img src="{{ $category->image ? asset($category->image) : asset('images/default/default_image.png') }}" 
+                                alt="{{ $category->name }}" class="img-fluid w-100" style="height: 250px; object-fit: cover;">
                             <div class="overlay">
                                 <div class="category-content">
                                     <h3 class="category-title">{{ $category->name }}</h3>
-                                    <p class="text-white mb-3">{{ $category->products_count ?? 0 }} sản phẩm</p>
+                                    <p class="text-white mb-2">{{ $category->products_count ?? 0 }} sản phẩm</p>
+                                    @if($category->children_count > 0)
+                                        <p class="text-white-50 small mb-3">{{ $category->children_count }} danh mục con</p>
+                                    @endif
                                     <a href="{{ url('/stone/products/category/' . $category->slug) }}"
                                         class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                 </div>

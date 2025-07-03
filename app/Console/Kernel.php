@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\CheckDatabase::class,
+        Commands\SeedLargeDataCommand::class,
+        Commands\SeedTableCommand::class,
     ];
 
     /**

@@ -22,6 +22,22 @@ class ProductController extends Controller
     {
         $query = StoneProduct::with(['category', 'material'])->where('status', 1);
 
+        // Tìm kiếm theo từ khóa
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('code', 'like', "%{$search}%")
+                  ->orWhere('short_description', 'like', "%{$search}%")
+                  ->orWhereHas('category', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('material', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
         // Lọc theo danh mục
         if ($request->has('category_id') && $request->category_id) {
             $query->where('stone_category_id', $request->category_id);
@@ -73,14 +89,31 @@ class ProductController extends Controller
         $products = $query->paginate(12)->withQueryString();
 
         // Lấy danh mục, chất liệu, màu sắc, bề mặt, ứng dụng để hiển thị filter
-        $categories = StoneCategory::where('status', 1)
-            ->withCount('products')
-            ->orderBy('order', 'asc')
-            ->get();
-        $materials = StoneMaterial::where('status', 1)->orderBy('order', 'asc')->get();
-        $colors = StoneColor::where('status', 1)->orderBy('order', 'asc')->get();
-        $surfaces = StoneSurface::where('status', 1)->orderBy('order', 'asc')->get();
-        $applications = StoneApplication::where('status', 1)->orderBy('order', 'asc')->get();
+        $categories = cache()->store('file')->remember('stone_categories', 3600, function () {
+            return StoneCategory::where('status', 1)
+                ->whereNull('parent_id') // Chỉ lấy danh mục chính
+                ->withCount('products')
+                ->withCount('children')
+                ->orderBy('order', 'asc')
+                ->take(6)  // Chỉ lấy 6 danh mục
+                ->get();
+        });
+
+        $materials = cache()->store('file')->remember('stone_materials', 3600, function () {
+            return StoneMaterial::where('status', 1)->orderBy('order', 'asc')->get();
+        });
+        
+        $colors = cache()->store('file')->remember('stone_colors', 3600, function () {
+            return StoneColor::where('status', 1)->orderBy('order', 'asc')->get();
+        });
+        
+        $surfaces = cache()->store('file')->remember('stone_surfaces', 3600, function () {
+            return StoneSurface::where('status', 1)->orderBy('order', 'asc')->get();
+        });
+        
+        $applications = cache()->store('file')->remember('stone_applications', 3600, function () {
+            return StoneApplication::where('status', 1)->orderBy('order', 'asc')->get();
+        });
 
         $contactInfo = ContactInfo::first();
         return view('stone.products.index', compact(
