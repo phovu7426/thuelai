@@ -166,8 +166,10 @@ class OrderController extends Controller
                         $orderItem = new OrderItem();
                         $orderItem->order_id = $order->id;
                         $orderItem->stone_product_id = $product->id;
+                        $orderItem->product_name = $product->name;
                         $orderItem->quantity = $quantity;
                         $orderItem->price = $price;
+                        $orderItem->total = $price * $quantity;
                         $orderItem->save();
                     }
                 }

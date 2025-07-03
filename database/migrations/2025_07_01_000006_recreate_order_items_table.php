@@ -9,10 +9,11 @@ return new class extends Migration
     public function up()
     {
         Schema::dropIfExists('order_items');
-        
+
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
+            $table->unsignedBigInteger('stone_product_id')->nullable();
             $table->string('product_name');
             $table->decimal('price', 15, 2);
             $table->integer('quantity');
@@ -24,10 +25,11 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('order_items');
-        
+
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
+            $table->unsignedBigInteger('stone_product_id')->nullable();
             $table->string('product_name');
             $table->decimal('price', 10, 2);
             $table->integer('quantity');
@@ -35,4 +37,4 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-}; 
+};

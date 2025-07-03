@@ -57,7 +57,7 @@
                                 <!-- Cột thông tin khách hàng -->
                                 <div class="col-md-5">
                                 <h5 class="mb-3">Thông tin khách hàng</h5>
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                         <label>Tài khoản</label>
                                                                 <select class="form-control select2" name="user_id" id="user_id">
                             <option value="">Chọn tài khoản</option>
@@ -65,7 +65,7 @@
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
                                         @endforeach
                                     </select>
-                                </div>
+                                </div> --}}
 
                                 <div class="form-group">
                         <label>Họ tên <span class="text-danger">*</span></label>
