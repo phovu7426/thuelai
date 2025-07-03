@@ -14,6 +14,7 @@ use App\Models\StoneShowroom;
 use App\Models\StoneVideo;
 use App\Models\ContactInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller
 {
@@ -73,7 +74,10 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        $contactInfo = ContactInfo::first();
+        $contactInfo = null;
+        if (Schema::hasTable('contact_infos')) {
+            $contactInfo = ContactInfo::first();
+        }
 
         return view('stone.home', compact(
             'slides',
@@ -147,7 +151,10 @@ class HomeController extends Controller
             ->orderBy('order', 'asc')
             ->get();
 
-        $contactInfo = ContactInfo::first(); // Lấy bản ghi đầu tiên từ bảng contact_infos
+        $contactInfo = null;
+        if (Schema::hasTable('contact_infos')) {
+            $contactInfo = ContactInfo::first();
+        }
 
         return view('stone.contact', compact('showrooms', 'contactInfo'));
     }

@@ -12,8 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Đổi tên cột status_new thành status sử dụng raw SQL
-        DB::statement('ALTER TABLE orders CHANGE status_new status VARCHAR(255) NOT NULL DEFAULT "pending"');
+        // Đảm bảo cột status tồn tại và có default là 'pending'
+        if (Schema::hasColumn('orders', 'status')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->string('status')->default('pending')->change();
+            });
+        } else {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->string('status')->default('pending');
+            });
+        }
     }
 
     /**
@@ -21,7 +29,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Đổi tên cột status thành status_new sử dụng raw SQL
-        DB::statement('ALTER TABLE orders CHANGE status status_new VARCHAR(255) NOT NULL DEFAULT "pending"');
+        // Nếu muốn rollback, có thể xóa default hoặc xóa cột nếu cần
+        if (Schema::hasColumn('orders', 'status')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
     }
-}; 
+};

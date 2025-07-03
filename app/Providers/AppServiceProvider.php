@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,8 +34,11 @@ class AppServiceProvider extends ServiceProvider
             return "<?php if(config('app.debug')): ?><pre><?php print_r($expression); ?></pre><?php endif; ?>";
         });
 
-        // Chia sẻ biến contactInfo cho tất cả view
-        $contactInfo = \App\Models\ContactInfo::first();
+        // Chia sẻ biến contactInfo cho tất cả view, chỉ khi bảng tồn tại
+        $contactInfo = null;
+        if (Schema::hasTable('contact_infos')) {
+            $contactInfo = \App\Models\ContactInfo::first();
+        }
         view()->share('contactInfo', $contactInfo);
     }
 }

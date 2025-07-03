@@ -51,92 +51,92 @@ class SeedTableCommand extends Command
     {
         $table = $this->argument('table');
         $count = (int) $this->argument('count');
-        
+
         $this->info("Starting to seed {$count} records for table {$table}...");
-        
+
         $faker = Faker::create();
         $start = microtime(true);
-        
+
         switch ($table) {
             case 'users':
                 $this->seedUsers($count, $faker);
                 break;
-                
+
             case 'stone_showrooms':
                 $this->seedShowrooms($count, $faker);
                 break;
-                
+
             case 'stone_categories':
                 $this->seedStoneCategories($count, $faker);
                 break;
-                
+
             case 'stone_materials':
                 $this->seedStoneMaterials($count, $faker);
                 break;
-                
+
             case 'stone_surfaces':
                 $this->seedStoneSurfaces($count, $faker);
                 break;
-                
+
             case 'stone_applications':
                 $this->seedStoneApplications($count, $faker);
                 break;
-                
+
             case 'stone_products':
                 $this->seedStoneProducts($count, $faker);
                 break;
-                
+
             case 'stone_projects':
                 $this->seedStoneProjects($count, $faker);
                 break;
-                
+
             case 'stone_videos':
                 $this->seedStoneVideos($count, $faker);
                 break;
-                
+
             case 'stone_contacts':
                 $this->seedStoneContacts($count, $faker);
                 break;
-                
+
             case 'posts':
                 $this->seedPosts($count, $faker);
                 break;
-                
+
             case 'categories':
                 $this->seedCategories($count, $faker);
                 break;
-                
+
             case 'authors':
                 $this->seedAuthors($count, $faker);
                 break;
-                
+
             case 'books':
                 $this->seedBooks($count, $faker);
                 break;
-                
+
             case 'areas':
                 $this->seedAreas($count, $faker);
                 break;
-                
+
             case 'slides':
                 $this->seedSlides($count, $faker);
                 break;
-                
+
             case 'contact_infos':
                 $this->seedContactInfos($count, $faker);
                 break;
-                
+
             default:
                 $this->error("Table {$table} is not supported for seeding.");
                 return Command::FAILURE;
         }
-        
+
         $time = microtime(true) - $start;
         $this->info("Seeded {$count} records for table {$table} in {$time} seconds!");
-        
+
         return Command::SUCCESS;
     }
-    
+
     private function seedUsers($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -148,13 +148,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} users");
             }
         }
     }
-    
+
     private function seedShowrooms($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -176,13 +176,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} showrooms");
             }
         }
     }
-    
+
     private function seedStoneCategories($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -197,13 +197,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} stone categories");
             }
         }
     }
-    
+
     private function seedStoneMaterials($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -218,13 +218,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} stone materials");
             }
         }
     }
-    
+
     private function seedStoneSurfaces($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -239,13 +239,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} stone surfaces");
             }
         }
     }
-    
+
     private function seedStoneApplications($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -261,35 +261,35 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} stone applications");
             }
         }
     }
-    
+
     private function seedStoneProducts($count, $faker)
     {
         $categoryIds = StoneCategory::pluck('id')->toArray();
         $materialIds = StoneMaterial::pluck('id')->toArray();
         $surfaceIds = StoneSurface::pluck('id')->toArray();
-        
+
         // Check if we need to create categories, materials and surfaces first
         if (empty($categoryIds)) {
             $this->seedStoneCategories(10, $faker);
             $categoryIds = StoneCategory::pluck('id')->toArray();
         }
-        
+
         if (empty($materialIds)) {
             $this->seedStoneMaterials(10, $faker);
             $materialIds = StoneMaterial::pluck('id')->toArray();
         }
-        
+
         if (empty($surfaceIds)) {
             $this->seedStoneSurfaces(10, $faker);
             $surfaceIds = StoneSurface::pluck('id')->toArray();
         }
-        
+
         for ($i = 0; $i < $count; $i++) {
             $name = $faker->word . ' Product ' . ($i + 1);
             StoneProduct::create([
@@ -308,13 +308,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} stone products");
             }
         }
     }
-    
+
     private function seedStoneProjects($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -334,13 +334,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} stone projects");
             }
         }
     }
-    
+
     private function seedStoneVideos($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -356,13 +356,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} stone videos");
             }
         }
     }
-    
+
     private function seedStoneContacts($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -376,13 +376,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} stone contacts");
             }
         }
     }
-    
+
     private function seedPosts($count, $faker)
     {
         $users = User::all()->pluck('id')->toArray();
@@ -409,13 +409,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} posts");
             }
         }
     }
-    
+
     private function seedCategories($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -430,13 +430,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} blog categories");
             }
         }
     }
-    
+
     private function seedAuthors($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -449,13 +449,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} authors");
             }
         }
     }
-    
+
     private function seedBooks($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -471,13 +471,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} books");
             }
         }
     }
-    
+
     private function seedAreas($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -490,13 +490,13 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} areas");
             }
         }
     }
-    
+
     private function seedSlides($count, $faker)
     {
         for ($i = 0; $i < $count; $i++) {
@@ -511,15 +511,19 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} slides");
             }
         }
     }
-    
+
     private function seedContactInfos($count, $faker)
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('contact_infos')) {
+            $this->error('Bảng contact_infos không tồn tại.');
+            return;
+        }
         for ($i = 0; $i < $count; $i++) {
             $name = $faker->company . ' Contact ' . ($i + 1);
             ContactInfo::create([
@@ -531,7 +535,7 @@ class SeedTableCommand extends Command
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
-            
+
             if ($i % 100 === 0) {
                 $this->info("Generated {$i} contact infos");
             }

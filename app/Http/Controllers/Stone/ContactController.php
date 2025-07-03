@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\StoneContact;
 use App\Models\ContactInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class ContactController extends Controller
 {
@@ -14,7 +15,10 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contactInfo = ContactInfo::first();
+        $contactInfo = null;
+        if (Schema::hasTable('contact_infos')) {
+            $contactInfo = ContactInfo::first();
+        }
         return view('stone.contact', compact('contactInfo'));
     }
 
@@ -36,4 +40,4 @@ class ContactController extends Controller
         return redirect()->route('stone.contact.index')
             ->with('success', 'Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong thời gian sớm nhất!');
     }
-} 
+}
