@@ -80,7 +80,7 @@ class ProjectController extends Controller
                 $gallery[] = $filename;
             }
         }
-        $data['gallery'] = $gallery;
+        $data['gallery'] = is_array($gallery) ? $gallery : (empty($gallery) ? [] : (array)json_decode($gallery, true));
 
         StoneProject::create($data);
 
@@ -139,6 +139,9 @@ class ProjectController extends Controller
 
         // Handle gallery images
         $gallery = $project->gallery ?? [];
+        if (!is_array($gallery)) {
+            $gallery = empty($gallery) ? [] : (array)json_decode($gallery, true);
+        }
 
         // Remove selected gallery images
         if (isset($data['remove_gallery']) && !empty($data['remove_gallery'])) {
