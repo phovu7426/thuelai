@@ -45,7 +45,7 @@ class LargeDataSeeder extends Seeder
         
         // Generate 1000 users
         $this->log('Generating 1000 users...');
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             User::create([
                 'name' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
@@ -180,13 +180,17 @@ class LargeDataSeeder extends Seeder
                 'name' => $name,
                 'slug' => Str::slug($name),
                 'code' => strtoupper(Str::random(6)),
+                'short_description' => $faker->sentence,
                 'description' => $faker->paragraph,
-                'content' => $faker->paragraphs(5, true),
-                'category_id' => $faker->randomElement($categoryIds),
-                'material_id' => $faker->randomElement($materialIds),
-                'surface_id' => $faker->randomElement($surfaceIds),
+                'specifications' => $faker->paragraphs(3, true),
+                'main_image' => 'default/default_image.png',
+                'gallery' => json_encode(['default/default_image.png']),
                 'price' => $faker->randomFloat(2, 100, 10000),
-                'image' => 'default/default_image.png',
+                'sale_price' => $faker->optional(0.3)->randomFloat(2, 50, 9000),
+                'stone_category_id' => $faker->randomElement($categoryIds),
+                'stone_material_id' => $faker->randomElement($materialIds),
+                'stone_surface_id' => $faker->randomElement($surfaceIds),
+                'is_featured' => $faker->boolean(20),
                 'status' => $faker->randomElement([0, 1]),
                 'order' => $i + 1,
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
@@ -207,12 +211,16 @@ class LargeDataSeeder extends Seeder
                 'slug' => Str::slug($name),
                 'description' => $faker->paragraph,
                 'content' => $faker->paragraphs(5, true),
-                'address' => $faker->address,
-                'province' => $faker->state,
                 'client' => $faker->company,
-                'area' => $faker->randomFloat(2, 100, 10000),
-                'image' => 'default/default_image.png',
+                'location' => $faker->address,
+                'province' => $faker->state,
+                'region' => $faker->randomElement(['Bắc', 'Trung', 'Nam']),
+                'budget' => $faker->randomFloat(2, 10000, 1000000),
+                'completed_date' => $faker->dateTimeBetween('-2 years', 'now'),
+                'main_image' => 'default/default_image.png',
+                'gallery' => json_encode(['default/default_image.png']),
                 'status' => $faker->randomElement([0, 1]),
+                'is_featured' => $faker->boolean(20),
                 'order' => $i + 1,
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
@@ -253,7 +261,7 @@ class LargeDataSeeder extends Seeder
                 'phone' => $faker->phoneNumber,
                 'subject' => $faker->sentence,
                 'message' => $faker->paragraph,
-                'status' => $faker->randomElement([0, 1]),
+                'is_read' => $faker->boolean,
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
             ]);
@@ -263,37 +271,37 @@ class LargeDataSeeder extends Seeder
             }
         }
         
-        // Generate 1000 posts
-        $this->log('Generating 1000 posts...');
-        $users = User::all()->pluck('id')->toArray();
-        // Nếu không có user nào, tạo một user mới
-        if (empty($users)) {
-            $userId = User::create([
-                'name' => 'Admin User',
-                'email' => 'admin' . time() . '@example.com',
-                'password' => bcrypt('password'),
-                'status' => 'active',
-            ])->id;
-            $users = [$userId];
-        }
+        // // Generate 1000 posts
+        // $this->log('Generating 1000 posts...');
+        // $users = User::all()->pluck('id')->toArray();
+        // // Nếu không có user nào, tạo một user mới
+        // if (empty($users)) {
+        //     $userId = User::create([
+        //         'name' => 'Admin User',
+        //         'email' => 'admin' . time() . '@example.com',
+        //         'password' => bcrypt('password'),
+        //         'status' => 'active',
+        //     ])->id;
+        //     $users = [$userId];
+        // }
         
-        for ($i = 0; $i < 1000; $i++) {
-            $name = 'Post ' . ($i + 1) . ': ' . $faker->sentence;
-            Post::create([
-                'name' => $name,
-                'slug' => Str::slug($name),
-                'content' => $faker->paragraphs(5, true),
-                'image' => 'default/default_image.png',
-                'status' => $faker->randomElement(BasicStatus::values()),
-                'user_id' => $faker->randomElement($users),
-                'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
-                'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
-            ]);
+        // for ($i = 0; $i < 1000; $i++) {
+        //     $name = 'Post ' . ($i + 1) . ': ' . $faker->sentence;
+        //     Post::create([
+        //         'name' => $name,
+        //         'slug' => Str::slug($name),
+        //         'content' => $faker->paragraphs(5, true),
+        //         'image' => 'default/default_image.png',
+        //         'status' => $faker->randomElement(BasicStatus::values()),
+        //         'user_id' => $faker->randomElement($users),
+        //         'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
+        //         'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
+        //     ]);
             
-            if ($i % 100 === 0) {
-                $this->log("Generated {$i} posts");
-            }
-        }
+        //     if ($i % 100 === 0) {
+        //         $this->log("Generated {$i} posts");
+        //     }
+        // }
         
         // Generate 1000 blog categories
         $this->log('Generating 1000 blog categories...');
@@ -337,15 +345,18 @@ class LargeDataSeeder extends Seeder
             }
         }
         
-        // Generate 1000 contact infos
-        $this->log('Generating 1000 contact infos...');
-        for ($i = 0; $i < 1000; $i++) {
-            $name = $faker->company . ' Contact ' . ($i + 1);
+        // Generate contact infos
+        $this->log('Generating contact infos...');
+        for ($i = 0; $i < 1; $i++) {
             ContactInfo::create([
-                'name' => $name,
                 'address' => $faker->address,
                 'phone' => $faker->phoneNumber,
                 'email' => $faker->companyEmail,
+                'working_time' => 'Thứ 2 - Thứ 6: 8:00 - 17:00',
+                'facebook' => 'https://facebook.com/example',
+                'instagram' => 'https://instagram.com/example',
+                'youtube' => 'https://youtube.com/example',
+                'linkedin' => 'https://linkedin.com/example',
                 'map_embed' => '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0966477015896!2d105.78273007499855!3d21.02887358062036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab4cd0c66f05%3A0xea31563511af2e54!2zOCBQaOG7kSBU4buNIEjhu691LCBUcnVuZyBWxINuLCBD4bqndSBHaeG6pXksIEjDoCBO4buZaSwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1701923823839!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>',
                 'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-1 month', 'now'),
