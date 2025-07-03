@@ -114,12 +114,14 @@
             <div class="row">
                 @if (count($categories) > 0)
                     @foreach ($categories as $category)
-                        <div class="col-lg-4 col-md-6">
-                            <div class="category-card">
-                                <img src="{{ asset('images/default/default_image.png') }}" alt="{{ $category->name }}">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="category-card shadow-sm rounded overflow-hidden">
+                                <img src="{{ $category->image ? asset($category->image) : asset('images/default/default_image.png') }}" 
+                                    alt="{{ $category->name }}" class="img-fluid w-100" style="height: 250px; object-fit: cover;">
                                 <div class="overlay">
                                     <div class="category-content">
                                         <h3 class="category-title">{{ $category->name }}</h3>
+                                        <p class="text-white small mb-3">{{ \Illuminate\Support\Str::limit($category->description, 80) }}</p>
                                         <a href="{{ url('/stone/products/category/' . $category->slug) }}"
                                             class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                     </div>
@@ -132,6 +134,10 @@
                         <p>Không có danh mục nào.</p>
                     </div>
                 @endif
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url('/stone/products') }}" class="btn btn-primary">Xem tất cả danh mục</a>
             </div>
         </div>
     </section>
