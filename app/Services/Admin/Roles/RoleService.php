@@ -23,9 +23,10 @@ class RoleService extends BaseService
     /**
      * Lấy thông tin vai trò theo ID
      * @param $id
+     * @param array $options
      * @return Model|null
      */
-    public function findById($id): ?Model
+    public function findById($id, array $options = []): ?Model
     {
         $options['relations'] = ['permissions'];
         return $this->getRepository()->findById($id, $options);

@@ -13,9 +13,19 @@ class ShowroomController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $showrooms = StoneShowroom::orderBy('order', 'asc')->paginate(20);
+        $query = StoneShowroom::query();
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->filled('address')) {
+            $query->where('address', 'like', '%' . $request->address . '%');
+        }
+        if ($request->filled('phone')) {
+            $query->where('phone', 'like', '%' . $request->phone . '%');
+        }
+        $showrooms = $query->orderBy('order', 'asc')->paginate(10)->appends($request->all());
         return view('admin.stone.showrooms.index', compact('showrooms'));
     }
 
@@ -49,7 +59,7 @@ class ShowroomController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload image
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -57,7 +67,7 @@ class ShowroomController extends Controller
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
             $data['image'] = $filename;
         }
-        
+
         // Upload gallery images
         $gallery = [];
         if ($request->hasFile('gallery')) {
@@ -107,23 +117,23 @@ class ShowroomController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload image
         if ($request->hasFile('image')) {
             // Delete old image
             if ($showroom->image && Storage::disk('public')->exists($showroom->image)) {
                 Storage::disk('public')->delete($showroom->image);
             }
-            
+
             $image = $request->file('image');
             $filename = 'stone_showrooms/' . time() . '_' . $image->getClientOriginalName();
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
             $data['image'] = $filename;
         }
-        
+
         // Handle gallery images
         $gallery = $showroom->gallery ?? [];
-        
+
         // Remove selected gallery images
         if (isset($data['remove_gallery']) && !empty($data['remove_gallery'])) {
             foreach ($data['remove_gallery'] as $removeImage) {
@@ -132,13 +142,13 @@ class ShowroomController extends Controller
                     if (Storage::disk('public')->exists($removeImage)) {
                         Storage::disk('public')->delete($removeImage);
                     }
-                    
+
                     // Remove from gallery array
                     $gallery = array_diff($gallery, [$removeImage]);
                 }
             }
         }
-        
+
         // Upload new gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
@@ -147,7 +157,7 @@ class ShowroomController extends Controller
                 $gallery[] = $filename;
             }
         }
-        
+
         $data['gallery'] = array_values($gallery); // Reset array keys
 
         $showroom->update($data);
@@ -165,7 +175,7 @@ class ShowroomController extends Controller
         if ($showroom->image && Storage::disk('public')->exists($showroom->image)) {
             Storage::disk('public')->delete($showroom->image);
         }
-        
+
         // Delete gallery images
         if ($showroom->gallery) {
             foreach ($showroom->gallery as $image) {
@@ -174,10 +184,10 @@ class ShowroomController extends Controller
                 }
             }
         }
-        
+
         $showroom->delete();
 
         return redirect()->route('admin.stone.showrooms.index')
             ->with('success', 'Showroom đá đã được xóa thành công.');
     }
-} 
+}

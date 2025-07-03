@@ -17,20 +17,22 @@ class PermissionSeeder extends Seeder
         ];
         // Tạo từng quyền
         foreach ($permissions as $module => $actions) {
-            $manage = Permission::create([
-                'title' => 'Quyền manage' . '_' . "{$module}",
-                'name' => "manage_{$module}",
-                'guard_name' => 'web',
-                'is_default' => true
-            ]);
-            foreach ($actions as $action) {
-                Permission::create([
-                    'title' => 'Quyền ' . "{$action}" . '_' . "{$module}",
-                    'name' => "{$action}" . '_' . "{$module}",
-                    'guard_name' => 'web',
-                    'parent_id' => $manage->id,
+            $manage = Permission::firstOrCreate(
+                ['name' => "manage_{$module}", 'guard_name' => 'web'],
+                [
+                    'title' => 'Quyền manage' . '_' . "{$module}",
                     'is_default' => true
-                ]);
+                ]
+            );
+            foreach ($actions as $action) {
+                Permission::firstOrCreate(
+                    ['name' => "{$action}_{$module}", 'guard_name' => 'web'],
+                    [
+                        'title' => 'Quyền ' . "{$action}" . '_' . "{$module}",
+                        'parent_id' => $manage->id,
+                        'is_default' => true
+                    ]
+                );
             }
         }
         echo "Đã tạo các quyền thành công!\n";

@@ -1,6 +1,6 @@
 @extends('admin.index')
 
-@section('title', 'Chỉnh sửa tài khoản')
+@section('page_title', 'Chỉnh sửa tài khoản')
 
 @section('content')
     <h2>Chỉnh sửa tài khoản</h2>

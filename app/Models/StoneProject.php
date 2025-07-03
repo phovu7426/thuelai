@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StoneProject extends Model
 {
@@ -54,5 +55,13 @@ class StoneProject extends Model
         }
         
         return number_format($this->budget, 0, ',', '.') . ' đ';
+    }
+
+    /**
+     * Lấy các sản phẩm được sử dụng trong dự án
+     */
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(StoneProduct::class, 'stone_project_products');
     }
 } 

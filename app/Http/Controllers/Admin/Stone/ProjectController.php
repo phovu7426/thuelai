@@ -13,9 +13,19 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = StoneProject::orderBy('order', 'asc')->paginate(20);
+        $query = StoneProject::query();
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->filled('location')) {
+            $query->where('location', 'like', '%' . $request->location . '%');
+        }
+        if ($request->filled('description')) {
+            $query->where('description', 'like', '%' . $request->description . '%');
+        }
+        $projects = $query->orderBy('order', 'asc')->paginate(10)->appends($request->all());
         return view('admin.stone.projects.index', compact('projects'));
     }
 
@@ -52,7 +62,7 @@ class ProjectController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload main image
         if ($request->hasFile('main_image')) {
             $image = $request->file('main_image');
@@ -60,7 +70,7 @@ class ProjectController extends Controller
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
             $data['main_image'] = $filename;
         }
-        
+
         // Upload gallery images
         $gallery = [];
         if ($request->hasFile('gallery')) {
@@ -113,23 +123,23 @@ class ProjectController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload main image
         if ($request->hasFile('main_image')) {
             // Delete old main image
             if ($project->main_image && Storage::disk('public')->exists($project->main_image)) {
                 Storage::disk('public')->delete($project->main_image);
             }
-            
+
             $image = $request->file('main_image');
             $filename = 'stone_projects/' . time() . '_' . $image->getClientOriginalName();
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
             $data['main_image'] = $filename;
         }
-        
+
         // Handle gallery images
         $gallery = $project->gallery ?? [];
-        
+
         // Remove selected gallery images
         if (isset($data['remove_gallery']) && !empty($data['remove_gallery'])) {
             foreach ($data['remove_gallery'] as $removeImage) {
@@ -138,13 +148,13 @@ class ProjectController extends Controller
                     if (Storage::disk('public')->exists($removeImage)) {
                         Storage::disk('public')->delete($removeImage);
                     }
-                    
+
                     // Remove from gallery array
                     $gallery = array_diff($gallery, [$removeImage]);
                 }
             }
         }
-        
+
         // Upload new gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
@@ -153,7 +163,7 @@ class ProjectController extends Controller
                 $gallery[] = $filename;
             }
         }
-        
+
         $data['gallery'] = array_values($gallery); // Reset array keys
 
         $project->update($data);
@@ -171,7 +181,7 @@ class ProjectController extends Controller
         if ($project->main_image && Storage::disk('public')->exists($project->main_image)) {
             Storage::disk('public')->delete($project->main_image);
         }
-        
+
         // Delete gallery images
         if ($project->gallery) {
             foreach ($project->gallery as $image) {
@@ -180,10 +190,10 @@ class ProjectController extends Controller
                 }
             }
         }
-        
+
         $project->delete();
 
         return redirect()->route('admin.stone.projects.index')
             ->with('success', 'Dự án đá đã được xóa thành công.');
     }
-} 
+}

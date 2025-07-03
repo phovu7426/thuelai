@@ -14,6 +14,7 @@ class StoneApplication extends Model
         'name',
         'slug',
         'description',
+        'content',
         'image',
         'type',
         'status',

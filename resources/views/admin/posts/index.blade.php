@@ -16,27 +16,13 @@
                             <div class="col-sm-9">
                                 <form action="{{ route('admin.posts.index') }}" method="GET">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="text" name="name" class="form-control" placeholder="Tìm theo tiêu đề"
-                                                   value="{{ request('name') }}">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select name="status" class="form-select">
-                                                <option value="">-- Trạng thái --</option>
-                                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Hoạt động</option>
-                                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select name="require_login" class="form-select">
-                                                <option value="">-- Yêu cầu đăng nhập --</option>
-                                                <option value="1" {{ request('require_login') == '1' ? 'selected' : '' }}>Yêu cầu</option>
-                                                <option value="0" {{ request('require_login') == '0' ? 'selected' : '' }}>Không yêu cầu</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Reset</a>
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input type="text" name="name" class="form-control" placeholder="Tìm theo tiêu đề"
+                                                       value="{{ request('name') }}">
+                                                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                                <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Reset</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>

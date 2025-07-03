@@ -75,6 +75,15 @@ $(document).ready(function () {
         childList: true,
         subtree: true
     });
+    
+    // Khởi tạo Select2 cho các phần tử được thêm vào sau
+    $(document).on('DOMNodeInserted', function(e) {
+        $(e.target).find('.select2').each(function() {
+            if (!$(this).data('select2')) {
+                initializeSelect2();
+            }
+        });
+    });
 });
 
 function sendAjaxRequest(url, method, data, successCallback) {
@@ -148,12 +157,6 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("CKEDITOR is not loaded!");
         }
     });
-
-
-
-
-
-
 
     // Xử lý upload ảnh và cập nhật URL vào input tương ứng
     document.querySelectorAll('.upload-field').forEach((input) => {

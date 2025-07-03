@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -11,23 +14,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Create admin user
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'password' => Hash::make('12345678'),
+                'status' => 'active',
+            ]
+        );
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
+        // Run permission seeders
         $this->call([
             PermissionSeeder::class,
-            UserSeeder::class,
-            RoleSeeder::class,
-            // Category & Post seeders
-            CategorySeeder::class,
-            SeriesSeeder::class,
-            PostSeeder::class,
-            
-            // Stone seeders
+            RolePermissionSeeder::class,
+        ]);
+
+        // Assign admin role to admin user
+        $adminRole = Role::where('name', 'admin')->first();
+        if ($adminRole) {
+            $admin->assignRole($adminRole);
+        }
+
+        // Run content seeders
+        $this->call([
+            // Blog content
             StoneCategorySeeder::class,
             StoneMaterialSeeder::class,
             StoneSurfaceSeeder::class,
@@ -36,6 +46,10 @@ class DatabaseSeeder extends Seeder
             StoneProjectSeeder::class,
             StoneShowroomSeeder::class,
             StoneVideoSeeder::class,
+            SlideSeeder::class,
+
+            // Other content if needed
+            PostSeeder::class,
         ]);
     }
 }

@@ -62,6 +62,7 @@ class StoneProductSeeder extends Seeder
         $exteriorProducts = [
             [
                 'name' => 'Đá xanh đen băm toàn phần 30x60',
+                'slug' => Str::slug('Đá xanh đen băm toàn phần 30x60'),
                 'code' => 'XD-BTP-3060',
                 'short_description' => 'Đá xanh đen băm toàn phần kích thước 30x60cm, chất lượng cao, bền đẹp.',
                 'description' => 'Đá xanh đen băm toàn phần kích thước 30x60cm là sản phẩm cao cấp, được sử dụng phổ biến trong các công trình vỉa hè, sân vườn, quảng trường. Với kích thước 30x60cm và bề mặt băm toàn phần, sản phẩm tạo độ nhám, chống trơn trượt hiệu quả. Đá có độ bền cao, chịu được thời tiết khắc nghiệt, dễ dàng lau chùi và bảo dưỡng.',
@@ -87,6 +88,7 @@ class StoneProductSeeder extends Seeder
             ],
             [
                 'name' => 'Đá xanh đen băm toàn phần 40x40',
+                'slug' => Str::slug('Đá xanh đen băm toàn phần 40x40'),
                 'code' => 'XD-BTP-4040',
                 'short_description' => 'Đá xanh đen băm toàn phần kích thước 40x40cm, chất lượng cao, bền đẹp.',
                 'description' => 'Đá xanh đen băm toàn phần kích thước 40x40cm là sản phẩm cao cấp, được sử dụng phổ biến trong các công trình vỉa hè, sân vườn, quảng trường. Với kích thước 40x40cm và bề mặt băm toàn phần, sản phẩm tạo độ nhám, chống trơn trượt hiệu quả. Đá có độ bền cao, chịu được thời tiết khắc nghiệt, dễ dàng lau chùi và bảo dưỡng.',
@@ -111,6 +113,7 @@ class StoneProductSeeder extends Seeder
             ],
             [
                 'name' => 'Đá xanh đen băm trừ viền hone',
+                'slug' => Str::slug('Đá xanh đen băm trừ viền hone'),
                 'code' => 'XD-BTVH',
                 'short_description' => 'Đá xanh đen băm trừ viền hone, chất lượng cao, bền đẹp.',
                 'description' => 'Đá xanh đen băm trừ viền hone là sản phẩm cao cấp, được chế tác tinh xảo với phần viền được mài hone mịn, phần giữa được băm nhám tạo độ nhám, chống trơn trượt hiệu quả. Sản phẩm được sử dụng phổ biến trong các công trình vỉa hè, sân vườn, quảng trường. Đá có độ bền cao, chịu được thời tiết khắc nghiệt, dễ dàng lau chùi và bảo dưỡng.',
@@ -135,6 +138,7 @@ class StoneProductSeeder extends Seeder
             ],
             [
                 'name' => 'Đá xanh rêu thô tinh',
+                'slug' => Str::slug('Đá xanh rêu thô tinh'),
                 'code' => 'XR-TT',
                 'short_description' => 'Đá xanh rêu thô tinh, chất lượng cao, bền đẹp.',
                 'description' => 'Đá xanh rêu thô tinh là sản phẩm cao cấp, được chế tác với bề mặt thô tự nhiên nhưng đã được xử lý tinh tế, tạo vẻ đẹp tự nhiên cho công trình. Sản phẩm được sử dụng phổ biến trong các công trình sân vườn, quảng trường, bậc tam cấp. Đá có độ bền cao, chịu được thời tiết khắc nghiệt, dễ dàng lau chùi và bảo dưỡng.',
@@ -163,6 +167,7 @@ class StoneProductSeeder extends Seeder
         $interiorProducts = [
             [
                 'name' => 'Đá granite tự nhiên đen ốp cầu thang',
+                'slug' => Str::slug('Đá granite tự nhiên đen ốp cầu thang'),
                 'code' => 'GR-DEN-CT',
                 'short_description' => 'Đá granite tự nhiên đen ốp cầu thang, chất lượng cao, bền đẹp.',
                 'description' => 'Đá granite tự nhiên đen ốp cầu thang là sản phẩm cao cấp, được chế tác tinh xảo với bề mặt mài bóng tạo vẻ đẹp sang trọng cho công trình. Sản phẩm được sử dụng phổ biến trong các công trình cầu thang bộ, sàn nhà, mặt tiền. Đá có độ bền cao, dễ dàng lau chùi và bảo dưỡng.',
@@ -186,6 +191,7 @@ class StoneProductSeeder extends Seeder
             ],
             [
                 'name' => 'Đá ghi sáng mài bóng ốp mặt tiền',
+                'slug' => Str::slug('Đá ghi sáng mài bóng ốp mặt tiền'),
                 'code' => 'GS-MB-MT',
                 'short_description' => 'Đá ghi sáng mài bóng ốp mặt tiền, chất lượng cao, bền đẹp.',
                 'description' => 'Đá ghi sáng mài bóng ốp mặt tiền là sản phẩm cao cấp, được chế tác tinh xảo với bề mặt mài bóng tạo vẻ đẹp sang trọng cho công trình. Sản phẩm được sử dụng phổ biến trong các công trình mặt tiền, sàn nhà. Đá có độ bền cao, dễ dàng lau chùi và bảo dưỡng.',
@@ -209,6 +215,7 @@ class StoneProductSeeder extends Seeder
             ],
             [
                 'name' => 'Đá marble trắng ốp bàn bếp',
+                'slug' => Str::slug('Đá marble trắng ốp bàn bếp'),
                 'code' => 'MB-TR-BB',
                 'short_description' => 'Đá marble trắng ốp bàn bếp, chất lượng cao, bền đẹp.',
                 'description' => 'Đá marble trắng ốp bàn bếp là sản phẩm cao cấp, được chế tác tinh xảo với bề mặt mài bóng tạo vẻ đẹp sang trọng cho công trình. Sản phẩm được sử dụng phổ biến trong các công trình bàn bếp. Đá có độ bền cao, chống thấm, chịu nhiệt tốt, dễ dàng lau chùi và bảo dưỡng.',
@@ -236,8 +243,9 @@ class StoneProductSeeder extends Seeder
         foreach ($exteriorProducts as $product) {
             $applications = $product['applications'];
             unset($product['applications']);
-            $product['slug'] = Str::slug($product['name']);
+
             $newProduct = StoneProduct::create($product);
+
             // Gán ứng dụng cho sản phẩm
             $newProduct->applications()->attach($applications);
         }
@@ -245,8 +253,9 @@ class StoneProductSeeder extends Seeder
         foreach ($interiorProducts as $product) {
             $applications = $product['applications'];
             unset($product['applications']);
-            $product['slug'] = Str::slug($product['name']);
+
             $newProduct = StoneProduct::create($product);
+
             // Gán ứng dụng cho sản phẩm
             $newProduct->applications()->attach($applications);
         }

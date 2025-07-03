@@ -13,9 +13,22 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = StoneCategory::with('parent')->orderBy('order', 'asc')->get();
+        $query = StoneCategory::with('parent');
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->filled('slug')) {
+            $query->where('slug', 'like', '%' . $request->slug . '%');
+        }
+        if ($request->filled('description')) {
+            $query->where('description', 'like', '%' . $request->description . '%');
+        }
+        if ($request->filled('code')) {
+            $query->where('code', 'like', '%' . $request->code . '%');
+        }
+        $categories = $query->orderBy('order', 'asc')->paginate(10)->appends($request->all());
         return view('admin.stone.categories.index', compact('categories'));
     }
 
@@ -45,7 +58,7 @@ class CategoryController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload image if exists
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -68,7 +81,7 @@ class CategoryController extends Controller
         $parentCategories = StoneCategory::whereNull('parent_id')
             ->where('id', '!=', $category->id)
             ->get();
-            
+
         return view('admin.stone.categories.edit', compact('category', 'parentCategories'));
     }
 
@@ -89,14 +102,14 @@ class CategoryController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload image if exists
         if ($request->hasFile('image')) {
             // Delete old image
             if ($category->image && Storage::disk('public')->exists($category->image)) {
                 Storage::disk('public')->delete($category->image);
             }
-            
+
             $image = $request->file('image');
             $filename = 'stone_categories/' . time() . '_' . $image->getClientOriginalName();
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
@@ -119,21 +132,21 @@ class CategoryController extends Controller
             return redirect()->route('admin.stone.categories.index')
                 ->with('error', 'Không thể xóa danh mục này vì có sản phẩm liên kết.');
         }
-        
+
         // Check if category has children
         if ($category->children()->count() > 0) {
             return redirect()->route('admin.stone.categories.index')
                 ->with('error', 'Không thể xóa danh mục này vì có danh mục con.');
         }
-        
+
         // Delete image
         if ($category->image && Storage::disk('public')->exists($category->image)) {
             Storage::disk('public')->delete($category->image);
         }
-        
+
         $category->delete();
 
         return redirect()->route('admin.stone.categories.index')
             ->with('success', 'Danh mục đá đã được xóa thành công.');
     }
-} 
+}

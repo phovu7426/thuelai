@@ -15,19 +15,33 @@ class StoneProduct extends Model
         'name',
         'slug',
         'code',
-        'short_description',
-        'description',
-        'specifications',
-        'main_image',
-        'gallery',
-        'price',
-        'sale_price',
         'stone_category_id',
         'stone_material_id',
         'stone_surface_id',
+        'stone_color_id',
+        'price',
+        'sale_price',
+        'discount_price',
+        'discount_percent',
+        'short_description',
+        'description',
+        'features',
+        'origin',
+        'size',
+        'thickness',
+        'hardness',
+        'water_absorption',
+        'heat_resistance',
         'is_featured',
+        'is_new',
         'status',
-        'order'
+        'order',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+        'main_image',
+        'gallery',
+        'specifications'
     ];
 
     protected $casts = [
@@ -36,24 +50,52 @@ class StoneProduct extends Model
         'is_featured' => 'boolean',
     ];
 
+    /**
+     * Lấy danh mục của sản phẩm
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(StoneCategory::class, 'stone_category_id')
             ->withDefault(['name' => 'N/A']);
     }
 
+    /**
+     * Lấy chất liệu của sản phẩm
+     */
     public function material(): BelongsTo
     {
         return $this->belongsTo(StoneMaterial::class, 'stone_material_id')
             ->withDefault(['name' => 'N/A']);
     }
 
+    /**
+     * Lấy bề mặt của sản phẩm
+     */
     public function surface(): BelongsTo
     {
         return $this->belongsTo(StoneSurface::class, 'stone_surface_id')
             ->withDefault(['name' => 'N/A']);
     }
 
+    /**
+     * Lấy màu sắc của sản phẩm
+     */
+    public function color(): BelongsTo
+    {
+        return $this->belongsTo(StoneColor::class, 'stone_color_id');
+    }
+
+    /**
+     * Lấy các hình ảnh của sản phẩm
+     */
+    public function images()
+    {
+        return $this->hasMany(StoneProductImage::class);
+    }
+
+    /**
+     * Lấy các ứng dụng của sản phẩm
+     */
     public function applications(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -62,5 +104,13 @@ class StoneProduct extends Model
             'stone_product_id',
             'stone_application_id'
         )->withTimestamps();
+    }
+
+    /**
+     * Lấy các dự án sử dụng sản phẩm này
+     */
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(StoneProject::class, 'stone_project_products');
     }
 } 

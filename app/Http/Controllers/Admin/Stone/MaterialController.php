@@ -13,9 +13,19 @@ class MaterialController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $materials = StoneMaterial::orderBy('order', 'asc')->get();
+        $query = StoneMaterial::query();
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->filled('slug')) {
+            $query->where('slug', 'like', '%' . $request->slug . '%');
+        }
+        if ($request->filled('description')) {
+            $query->where('description', 'like', '%' . $request->description . '%');
+        }
+        $materials = $query->orderBy('order', 'asc')->paginate(10)->appends($request->all());
         return view('admin.stone.materials.index', compact('materials'));
     }
 
@@ -42,7 +52,7 @@ class MaterialController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload image if exists
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -80,14 +90,14 @@ class MaterialController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         // Upload image if exists
         if ($request->hasFile('image')) {
             // Delete old image
             if ($material->image && Storage::disk('public')->exists($material->image)) {
                 Storage::disk('public')->delete($material->image);
             }
-            
+
             $image = $request->file('image');
             $filename = 'stone_materials/' . time() . '_' . $image->getClientOriginalName();
             $path = Storage::disk('public')->putFileAs('', $image, $filename);
@@ -110,15 +120,15 @@ class MaterialController extends Controller
             return redirect()->route('admin.stone.materials.index')
                 ->with('error', 'Không thể xóa chất liệu này vì có sản phẩm liên kết.');
         }
-        
+
         // Delete image
         if ($material->image && Storage::disk('public')->exists($material->image)) {
             Storage::disk('public')->delete($material->image);
         }
-        
+
         $material->delete();
 
         return redirect()->route('admin.stone.materials.index')
             ->with('success', 'Chất liệu đá đã được xóa thành công.');
     }
-} 
+}

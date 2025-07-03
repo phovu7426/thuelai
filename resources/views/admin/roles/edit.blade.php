@@ -1,6 +1,6 @@
 @extends('admin.index')
 
-@section('title', 'Cập nhật vai trò')
+@section('page_title', 'Cập nhật vai trò')
 @section('page_title', 'Cập nhật vai trò')
 
 @section('breadcrumb')
@@ -18,15 +18,17 @@
                     <div class="card-body">
                         <form action="{{ route('admin.roles.update', $role->id) }}" method="POST">
                             @csrf
+                            @method('PUT')
+                            
 
                             {{-- Tên hiển thị --}}
                             <div class="mb-3">
                                 <label for="title" class="form-label">Tên hiển thị</label>
                                 <input type="text" id="title" name="title"
-                                       class="form-control @error('title') is-invalid @enderror"
-                                       value="{{ old('title', $role->title) }}" required>
+                                    class="form-control @error('title') is-invalid @enderror"
+                                    value="{{ old('title', $role->title) }}" required>
                                 @error('title')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -34,10 +36,10 @@
                             <div class="mb-3">
                                 <label for="name" class="form-label">Tên hệ thống</label>
                                 <input type="text" id="name" name="name"
-                                       class="form-control @error('name') is-invalid @enderror"
-                                       value="{{ old('name', $role->name) }}" required>
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    value="{{ old('name', $role->name) }}" required>
                                 @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -45,14 +47,13 @@
                             <div class="mb-3">
                                 <label class="form-label">Quyền được gán</label>
                                 <select class="form-control select2 @error('permissions') is-invalid @enderror"
-                                        name="permissions[]" multiple
-                                        data-field="name"
-                                        data-selected='@json($role->permissions->pluck("name")->toArray())'
-                                        data-url="{{ route('admin.permissions.autocomplete') }}">
+                                    name="permissions[]" multiple data-field="name"
+                                    data-selected='@json($role->permissions->pluck('name')->toArray())'
+                                    data-url="{{ route('admin.permissions.autocomplete') }}">
                                     <option value="">Chọn quyền</option>
                                 </select>
                                 @error('permissions')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
