@@ -84,13 +84,22 @@
                                     <p class="card-text small">
                                         {!! \Illuminate\Support\Str::limit(strip_tags($product->description) ?? 'Không có mô tả', 60) !!}
                                     </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="text-muted small">
+                                            @if($product->quantity > 0)
+                                                <span class="text-success">Còn {{ $product->quantity }} sản phẩm</span>
+                                            @else
+                                                <span class="text-danger">Hết hàng</span>
+                                            @endif
+                                        </div>
+                                    </div>
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <div>
-                                            @if ($product->discount_price)
+                                            @if ($product->sale_price > 0)
                                                 <span
                                                     class="text-decoration-line-through text-muted me-2">{{ number_format($product->price) }}đ</span>
                                                 <span
-                                                    class="fw-bold text-danger">{{ number_format($product->discount_price) }}đ</span>
+                                                    class="fw-bold text-danger">{{ number_format($product->sale_price) }}đ</span>
                                             @else
                                                 <span class="fw-bold">{{ number_format($product->price) }}đ</span>
                                             @endif
@@ -100,7 +109,7 @@
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                 <input type="hidden" name="quantity" value="1">
-                                                <button type="submit" class="btn btn-sm btn-primary me-1">
+                                                <button type="submit" class="btn btn-sm btn-primary me-1" {{ $product->quantity == 0 ? 'disabled' : '' }}>
                                                     <i class="fas fa-cart-plus"></i>
                                                 </button>
                                             </form>
@@ -154,14 +163,23 @@
                                             <p class="card-text">
                                                 {!! \Illuminate\Support\Str::limit(strip_tags($product->description) ?? 'Không có mô tả', 150) !!}
                                             </p>
+                                            <div class="d-flex align-items-center mt-3 mb-3">
+                                                <div class="text-muted">
+                                                    @if($product->quantity > 0)
+                                                        <span class="text-success">Còn {{ $product->quantity }} sản phẩm</span>
+                                                    @else
+                                                        <span class="text-danger">Hết hàng</span>
+                                                    @endif
+                                                </div>
+                                            </div>
                                             <div class="row align-items-center mt-4">
                                                 <div class="col-md-6">
                                                     <div class="mb-3 mb-md-0">
-                                                        @if ($product->discount_price)
+                                                        @if ($product->sale_price > 0)
                                                             <span
                                                                 class="text-decoration-line-through text-muted me-2">{{ number_format($product->price) }}đ</span>
                                                             <span
-                                                                class="fw-bold text-danger fs-5">{{ number_format($product->discount_price) }}đ</span>
+                                                                class="fw-bold text-danger fs-5">{{ number_format($product->sale_price) }}đ</span>
                                                         @else
                                                             <span
                                                                 class="fw-bold fs-5">{{ number_format($product->price) }}đ</span>
@@ -175,7 +193,7 @@
                                                         <input type="hidden" name="product_id"
                                                             value="{{ $product->id }}">
                                                         <input type="hidden" name="quantity" value="1">
-                                                        <button type="submit" class="btn btn-primary me-2">
+                                                        <button type="submit" class="btn btn-primary me-2" {{ $product->quantity == 0 ? 'disabled' : '' }}>
                                                             <i class="fas fa-cart-plus"></i> Thêm vào giỏ
                                                         </button>
                                                     </form>

@@ -1,24 +1,25 @@
 <?php
 
-use App\Http\Controllers\Admin\Categories\CategoryController;
+use App\Http\Controllers\Admin\Stone\InventoryController;
+use App\Http\Controllers\Admin\Stone\CategoryController as StoneCategoryController;
+use App\Http\Controllers\Admin\Stone\MaterialController;
+use App\Http\Controllers\Admin\Stone\ProductController;
+use App\Http\Controllers\Admin\Stone\SurfaceController;
+use App\Http\Controllers\Admin\Stone\ApplicationController;
+use App\Http\Controllers\Admin\Stone\ProjectController;
+use App\Http\Controllers\Admin\Stone\ShowroomController;
+use App\Http\Controllers\Admin\Stone\VideoController;
+use App\Http\Controllers\Admin\Stone\OrderController;
+use App\Http\Controllers\Admin\Stone\ContactController;
+use App\Http\Controllers\Admin\ContactInfoController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Posts\PostController;
 use App\Http\Controllers\Admin\Roles\RoleController;
 use App\Http\Controllers\Admin\Series\SeriesController;
-use App\Http\Controllers\Admin\Stone\ApplicationController;
-use App\Http\Controllers\Admin\Stone\CategoryController as StoneCategoryController;
-use App\Http\Controllers\Admin\Stone\ContactController;
-use App\Http\Controllers\Admin\Stone\MaterialController;
-use App\Http\Controllers\Admin\Stone\OrderController;
-use App\Http\Controllers\Admin\Stone\ProductController as StoneProductController;
-use App\Http\Controllers\Admin\Stone\ProjectController;
-use App\Http\Controllers\Admin\Stone\ShowroomController;
-use App\Http\Controllers\Admin\Stone\SurfaceController;
-use App\Http\Controllers\Admin\Stone\VideoController;
+use App\Http\Controllers\Admin\Slides\SlideController;
 use App\Http\Controllers\Admin\Users\ProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
-use App\Http\Controllers\Admin\Slides\SlideController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,6 +40,50 @@ Route::prefix('admin')->name('admin.')->group(function () {
     })->name('index');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Stone routes
+    Route::prefix('stone')->name('stone.')->group(function () {
+        // Inventory routes
+        Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
+        Route::put('inventory/{id}/update-quantity', [InventoryController::class, 'updateQuantity'])->name('inventory.update-quantity');
+
+        // Danh mục đá
+        Route::resource('categories', StoneCategoryController::class);
+
+        // Chất liệu đá
+        Route::resource('materials', MaterialController::class);
+
+        // Bề mặt đá
+        Route::resource('surfaces', SurfaceController::class);
+
+        // Ứng dụng đá
+        Route::resource('applications', ApplicationController::class);
+
+        // Sản phẩm đá
+        Route::resource('products', ProductController::class);
+
+        // Dự án đá
+        Route::resource('projects', ProjectController::class);
+
+        // Showroom
+        Route::resource('showrooms', ShowroomController::class);
+
+        // Video
+        Route::resource('videos', VideoController::class);
+
+        // Đơn hàng
+        Route::resource('orders', OrderController::class);
+        Route::post('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
+        // Stone - Quản lý liên hệ
+        Route::prefix('contacts')->name('contacts.')->group(function () {
+            Route::get('/', [ContactController::class, 'index'])->name('index');
+            Route::get('/{id}', [ContactController::class, 'show'])->name('show');
+            Route::delete('/{id}', [ContactController::class, 'destroy'])->name('destroy');
+            Route::post('/mark-as-read', [ContactController::class, 'markAsRead'])->name('mark-as-read');
+            Route::post('/bulk-delete', [ContactController::class, 'bulkDelete'])->name('bulk-delete');
+        });
+    });
 
     Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
         Route::get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
@@ -101,46 +146,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Posts
     Route::resource('posts', PostController::class);
-
-    // Stone - Quản lý đá
-    Route::prefix('stone')->name('stone.')->group(function () {
-        // Danh mục đá
-        Route::resource('categories', StoneCategoryController::class);
-
-        // Chất liệu đá
-        Route::resource('materials', MaterialController::class);
-
-        // Bề mặt đá
-        Route::resource('surfaces', SurfaceController::class);
-
-        // Ứng dụng đá
-        Route::resource('applications', ApplicationController::class);
-
-        // Sản phẩm đá
-        Route::resource('products', StoneProductController::class);
-
-        // Dự án đá
-        Route::resource('projects', ProjectController::class);
-
-        // Showroom
-        Route::resource('showrooms', ShowroomController::class);
-
-        // Video
-        Route::resource('videos', VideoController::class);
-
-        // Đơn hàng
-        Route::resource('orders', OrderController::class);
-        Route::post('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-
-        // Stone - Quản lý liên hệ
-        Route::prefix('contacts')->name('contacts.')->group(function () {
-            Route::get('/', [ContactController::class, 'index'])->name('index');
-            Route::get('/{id}', [ContactController::class, 'show'])->name('show');
-            Route::delete('/{id}', [ContactController::class, 'destroy'])->name('destroy');
-            Route::post('/mark-as-read', [ContactController::class, 'markAsRead'])->name('mark-as-read');
-            Route::post('/bulk-delete', [ContactController::class, 'bulkDelete'])->name('bulk-delete');
-        });
-    });
 
     // Slides
     Route::resource('slides', SlideController::class);

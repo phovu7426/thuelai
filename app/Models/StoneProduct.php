@@ -21,6 +21,7 @@ class StoneProduct extends Model
         'stone_surface_id',
         'stone_color_id',
         'price',
+        'quantity',
         'sale_price',
         'discount_price',
         'discount_percent',

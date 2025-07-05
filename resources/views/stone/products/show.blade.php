@@ -198,53 +198,43 @@
                         <!-- Main Gallery -->
                         <div class="swiper product-gallery-main">
                             <div class="swiper-wrapper">
-                                @if ($product->images && count($product->images) > 0)
-                                    @foreach ($product->images as $image)
+                                <!-- Main image -->
+                                @if ($product->main_image)
+                                    <div class="swiper-slide">
+                                        <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}">
+                                    </div>
+                                @endif
+
+                                <!-- Gallery images -->
+                                @if ($product->gallery && is_array($product->gallery))
+                                    @foreach ($product->gallery as $image)
                                         <div class="swiper-slide">
-                                            <img src="{{ get_image_url($image->path) }}" alt="{{ $product->name }}">
+                                            <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}">
                                         </div>
                                     @endforeach
-                                @elseif($product->gallery && is_array($product->gallery) && count($product->gallery) > 0)
-                                    <div class="swiper-slide">
-                                        <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}">
-                                    </div>
-                                    @foreach ($product->gallery as $galleryImage)
-                                        <div class="swiper-slide">
-                                            <img src="{{ get_image_url($galleryImage) }}" alt="{{ $product->name }}">
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div class="swiper-slide">
-                                        <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}">
-                                    </div>
                                 @endif
                             </div>
                             <div class="swiper-button-next"></div>
                             <div class="swiper-button-prev"></div>
                         </div>
 
-                        <!-- Thumbs -->
+                        <!-- Thumbnails -->
                         <div class="swiper product-gallery-thumbs">
                             <div class="swiper-wrapper">
-                                @if ($product->images && count($product->images) > 0)
-                                    @foreach ($product->images as $image)
+                                <!-- Main image thumbnail -->
+                                @if ($product->main_image)
+                                    <div class="swiper-slide">
+                                        <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}">
+                                    </div>
+                                @endif
+
+                                <!-- Gallery thumbnails -->
+                                @if ($product->gallery && is_array($product->gallery))
+                                    @foreach ($product->gallery as $image)
                                         <div class="swiper-slide">
-                                            <img src="{{ get_image_url($image->path) }}" alt="{{ $product->name }}">
+                                            <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}">
                                         </div>
                                     @endforeach
-                                @elseif($product->gallery && is_array($product->gallery) && count($product->gallery) > 0)
-                                    <div class="swiper-slide">
-                                        <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}">
-                                    </div>
-                                    @foreach ($product->gallery as $galleryImage)
-                                        <div class="swiper-slide">
-                                            <img src="{{ get_image_url($galleryImage) }}" alt="{{ $product->name }}">
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div class="swiper-slide">
-                                        <img src="{{ get_image_url($product->main_image) }}" alt="{{ $product->name }}">
-                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -256,23 +246,34 @@
                     <div class="product-info">
                         <h1>{{ $product->name }}</h1>
 
+                        @if ($product->code)
+                            <div class="product-meta-item">
+                                <div class="product-meta-label">Mã sản phẩm:</div>
+                                <div class="product-meta-value">{{ $product->code }}</div>
+                            </div>
+                        @endif
+
+                        <div class="product-meta-item">
+                            <div class="product-meta-label">Tình trạng:</div>
+                            <div class="product-meta-value">
+                                @if($product->quantity > 0)
+                                    <span class="text-success">Còn hàng ({{ $product->quantity }} sản phẩm)</span>
+                                @else
+                                    <span class="text-danger">Hết hàng</span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="product-price">
-                            @if ($product->discount_price)
+                            @if ($product->sale_price > 0)
                                 <span class="old-price">{{ number_format($product->price) }}đ</span>
-                                <span>{{ number_format($product->discount_price) }}đ</span>
+                                <span class="current-price">{{ number_format($product->sale_price) }}đ</span>
                             @else
-                                <span>{{ number_format($product->price) }}đ</span>
+                                <span class="current-price">{{ number_format($product->price) }}đ</span>
                             @endif
                         </div>
 
                         <div class="product-meta">
-                            @if ($product->code)
-                                <div class="product-meta-item">
-                                    <div class="product-meta-label">Mã sản phẩm:</div>
-                                    <div class="product-meta-value">{{ $product->code }}</div>
-                                </div>
-                            @endif
-
                             @if ($product->category)
                                 <div class="product-meta-item">
                                     <div class="product-meta-label">Danh mục:</div>

@@ -172,6 +172,31 @@
                 </a>
             </li>
 
+            <!-- Stone Management -->
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon bi bi-gem"></i>
+                    <p>
+                        Quản lý đá
+                        <i class="right bi bi-chevron-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.inventory.index') }}" class="nav-link {{ request()->routeIs('admin.stone.inventory.*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-box"></i>
+                            <p>Quản lý kho hàng</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.stone.categories.index') }}" class="nav-link {{ request()->routeIs('admin.stone.categories.*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-list"></i>
+                            <p>Danh mục</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
         </ul>
         <!--end::Sidebar Menu-->
     </nav>

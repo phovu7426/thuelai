@@ -12,6 +12,7 @@ class OrderItem extends Model
 
     protected $fillable = [
         'order_id',
+        'product_id',
         'product_name',
         'quantity',
         'price',
@@ -24,6 +25,14 @@ class OrderItem extends Model
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    /**
+     * Get the product associated with this item.
+     */
+    public function product()
+    {
+        return $this->belongsTo(StoneProduct::class, 'product_id');
     }
 
     /**
