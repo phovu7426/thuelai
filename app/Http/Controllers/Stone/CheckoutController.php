@@ -75,11 +75,15 @@ class CheckoutController extends Controller
 
         // Create order items
         foreach (Cart::getContent() as $item) {
+            $product = StoneProduct::find($item->id);
+            $productName = $product ? $product->name : 'Unknown Product';
+            
             $orderItem = new OrderItem();
             $orderItem->order_id = $order->id;
-            $orderItem->stone_product_id = $item->id;
+            $orderItem->product_name = $productName;
             $orderItem->quantity = $item->quantity;
             $orderItem->price = $item->price;
+            $orderItem->total = $item->price * $item->quantity;
             $orderItem->save();
         }
 
@@ -95,7 +99,7 @@ class CheckoutController extends Controller
      */
     public function success($orderId)
     {
-        $order = Order::with('items.product')->findOrFail($orderId);
+        $order = Order::with('items')->findOrFail($orderId);
         
         // Check if the order belongs to the current user
         if (Auth::check() && $order->user_id != Auth::id()) {

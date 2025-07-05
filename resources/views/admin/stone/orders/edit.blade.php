@@ -124,10 +124,6 @@
                                                         <td>
                                                             <div>
                                                                 <strong>{{ $item->product_name }}</strong>
-                                                                @if ($item->product)
-                                                                    <p class="text-muted mb-0">Mã:
-                                                                        {{ $item->product->code }}</p>
-                                                                @endif
                                                             </div>
                                                         </td>
                                                         <td>{{ number_format($item->price) }} đ</td>

@@ -82,7 +82,7 @@
                                     </div>
                                     <h5 class="card-title">{{ $product->name }}</h5>
                                     <p class="card-text small">
-                                        {{ \Illuminate\Support\Str::limit($product->description ?? 'Không có mô tả', 60) }}
+                                        {!! \Illuminate\Support\Str::limit(strip_tags($product->description) ?? 'Không có mô tả', 60) !!}
                                     </p>
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <div>
@@ -152,7 +152,7 @@
                                             </div>
                                             <h4 class="card-title">{{ $product->name }}</h4>
                                             <p class="card-text">
-                                                {{ \Illuminate\Support\Str::limit($product->description ?? 'Không có mô tả', 150) }}
+                                                {!! \Illuminate\Support\Str::limit(strip_tags($product->description) ?? 'Không có mô tả', 150) !!}
                                             </p>
                                             <div class="row align-items-center mt-4">
                                                 <div class="col-md-6">

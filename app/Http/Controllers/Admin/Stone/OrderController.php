@@ -165,9 +165,10 @@ class OrderController extends Controller
 
                         $orderItem = new OrderItem();
                         $orderItem->order_id = $order->id;
-                        $orderItem->stone_product_id = $product->id;
+                        $orderItem->product_name = $product->name;
                         $orderItem->quantity = $quantity;
                         $orderItem->price = $price;
+                        $orderItem->total = $price * $quantity;
                         $orderItem->save();
                     }
                 }
@@ -190,7 +191,7 @@ class OrderController extends Controller
     public function show($id)
     {
         try {
-            $order = Order::with(['items.product', 'user'])->findOrFail($id);
+            $order = Order::with(['items', 'user'])->findOrFail($id);
 
             // Đảm bảo tất cả các items đều có subtotal
             foreach ($order->items as $item) {
@@ -211,7 +212,7 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        $order = Order::with(['items.product', 'user'])->findOrFail($id);
+        $order = Order::with(['items', 'user'])->findOrFail($id);
         $users = User::all();
         $products = StoneProduct::all();
 

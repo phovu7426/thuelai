@@ -15,18 +15,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Check if we're running large data seeder
-        if (app()->environment('local') && $this->command->confirm('Would you like to seed 1000 records for each table?', false)) {
-            $seeder = new LargeDataSeeder();
-            if ($this->command) {
-                $seeder->setCommand($this->command);
-            }
-            $seeder->run();
-            return;
-        }
+        // if (app()->environment('local') && $this->command->confirm('Would you like to seed 1000 records for each table?', false)) {
+        //     $seeder = new LargeDataSeeder();
+        //     if ($this->command) {
+        //         $seeder->setCommand($this->command);
+        //     }
+        //     $seeder->run();
+        //     return;
+        // }
         
         // Create admin user
         $admin = User::firstOrCreate(
-            ['email' => 'admin@gmail.com'],
+            ['email' => 'admin@gmail.com', 'name' => 'Admin'],
             [
                 'password' => Hash::make('12345678'),
                 'status' => 'active',
@@ -46,20 +46,20 @@ class DatabaseSeeder extends Seeder
         }
 
         // Run content seeders
-        $this->call([
-            // Blog content
-            StoneCategorySeeder::class,
-            StoneMaterialSeeder::class,
-            StoneSurfaceSeeder::class,
-            StoneApplicationSeeder::class,
-            StoneProductSeeder::class,
-            StoneProjectSeeder::class,
-            StoneShowroomSeeder::class,
-            StoneVideoSeeder::class,
-            SlideSeeder::class,
+        // $this->call([
+        //     // Blog content
+        //     StoneCategorySeeder::class,
+        //     StoneMaterialSeeder::class,
+        //     StoneSurfaceSeeder::class,
+        //     StoneApplicationSeeder::class,
+        //     StoneProductSeeder::class,
+        //     StoneProjectSeeder::class,
+        //     StoneShowroomSeeder::class,
+        //     StoneVideoSeeder::class,
+        //     SlideSeeder::class,
 
-            // Other content if needed
-            PostSeeder::class,
-        ]);
+        //     // Other content if needed
+        //     PostSeeder::class,
+        // ]);
     }
 }
