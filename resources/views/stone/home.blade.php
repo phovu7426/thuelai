@@ -116,7 +116,7 @@
                     @foreach ($categories as $category)
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="category-card shadow-sm rounded overflow-hidden">
-                                <img src="{{ $category->image ? asset($category->image) : asset('images/default/default_image.png') }}" 
+                                <img src="{{ get_image_url($category->image) }}" 
                                     alt="{{ $category->name }}" class="img-fluid w-100" style="height: 250px; object-fit: cover;">
                                 <div class="overlay">
                                     <div class="category-content">
@@ -155,7 +155,7 @@
                     @foreach ($featuredProducts as $product)
                         <div class="col-lg-3 col-md-6">
                             <div class="product-card card h-100">
-                                <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top"
+                                <img src="{{ get_image_url($product->image) }}" class="card-img-top"
                                     alt="{{ $product->name }}">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $product->name }}</h5>
@@ -197,7 +197,7 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="row g-0">
                                     <div class="col-md-5">
-                                        <img src="{{ asset('images/default/default_image.png') }}"
+                                        <img src="{{ get_image_url($application->image) }}"
                                             class="img-fluid h-100" style="object-fit: cover;"
                                             alt="{{ $application->name }}">
                                     </div>
@@ -237,7 +237,7 @@
                     @foreach ($featuredProjects as $project)
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100 border-0 shadow-sm overflow-hidden">
-                                <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top"
+                                <img src="{{ get_image_url($project->image) }}" class="card-img-top"
                                     alt="{{ $project->name }}" style="height: 250px; object-fit: cover;">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $project->name }}</h5>
@@ -303,7 +303,7 @@
 
     <!-- CTA Section -->
     <section class="section bg-dark text-white"
-        style="background-image: url('{{ asset('images/default/default_image.png') }}'); background-size: cover; background-position: center; position: relative;">
+        style="background-image: url('{{ get_image_url(null, 'images/default/default_image.png') }}'); background-size: cover; background-position: center; position: relative;">
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7);">
         </div>
         <div class="container position-relative">

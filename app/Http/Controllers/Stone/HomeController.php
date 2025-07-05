@@ -23,60 +23,81 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Lấy dữ liệu slide từ database
-        $slides = Slide::where('status', 1)
-            ->orderBy('id', 'desc')
-            ->get();
+        // Lấy dữ liệu slide từ database với cache
+        $slides = cache()->remember('home_slides', 300, function () {
+            return Slide::where('status', 1)
+                ->orderBy('id', 'desc')
+                ->get();
+        });
 
-        // Lấy dữ liệu cho trang chủ
-        $featuredProducts = StoneProduct::with(['category', 'material'])
-            ->where('is_featured', true)
-            ->where('status', true)
-            ->orderBy('order', 'asc')
-            ->take(8)
-            ->get();
+        // Lấy dữ liệu sản phẩm nổi bật với cache
+        $featuredProducts = cache()->remember('home_featured_products', 300, function () {
+            return StoneProduct::with(['category', 'material'])
+                ->where('is_featured', true)
+                ->where('status', true)
+                ->orderBy('order', 'asc')
+                ->take(8)
+                ->get();
+        });
 
-        // $categories = cache()->store('file')->remember('home_stone_categories', 3600, function () {
-        //     return StoneCategory::where('status', true)
-        //         ->whereNull('parent_id') // Chỉ lấy danh mục chính
-        //         ->withCount('products')
-        //         ->withCount('children')
-        //         ->orderBy('order', 'asc')
-        //         ->take(6)
-        //         ->get();
-        // });
+        // Lấy danh mục sản phẩm với cache
+        $categories = cache()->remember('home_categories', 300, function () {
+            return StoneCategory::where('status', true)
+                ->whereNull('parent_id') // Chỉ lấy danh mục chính
+                ->withCount('products')
+                ->withCount('children')
+                ->orderBy('order', 'asc')
+                ->take(6)
+                ->get();
+        });
+        
+        // Lấy ứng dụng với cache
+        $applications = cache()->remember('home_applications', 300, function () {
+            return StoneApplication::where('status', true)
+                ->orderBy('order', 'asc')
+                ->take(4)
+                ->get();
+        });
 
-        $applications = StoneApplication::where('status', true)
-            ->orderBy('order', 'asc')
-            ->take(4)
-            ->get();
+        // Lấy dự án nổi bật với cache
+        $featuredProjects = cache()->remember('home_featured_projects', 300, function () {
+            return StoneProject::where('is_featured', true)
+                ->where('status', true)
+                ->orderBy('order', 'asc')
+                ->take(3)
+                ->get();
+        });
 
-        $featuredProjects = StoneProject::where('is_featured', true)
-            ->where('status', true)
-            ->orderBy('order', 'asc')
-            ->take(3)
-            ->get();
+        // Lấy video nổi bật với cache
+        $featuredVideos = cache()->remember('home_featured_videos', 300, function () {
+            return StoneVideo::where('is_featured', true)
+                ->where('status', true)
+                ->orderBy('order', 'asc')
+                ->take(2)
+                ->get();
+        });
 
-        $featuredVideos = StoneVideo::where('is_featured', true)
-            ->where('status', true)
-            ->orderBy('order', 'asc')
-            ->take(2)
-            ->get();
+        // Lấy showroom với cache
+        $showrooms = cache()->remember('home_showrooms', 300, function () {
+            return StoneShowroom::where('status', true)
+                ->orderBy('order', 'asc')
+                ->take(3)
+                ->get();
+        });
 
-        $showrooms = StoneShowroom::where('status', true)
-            ->orderBy('order', 'asc')
-            ->take(3)
-            ->get();
-
-        // Thêm dữ liệu màu sắc
-        $colors = StoneColor::where('status', true)
-            ->orderBy('order', 'asc')
-            ->take(8)
-            ->get();
+        // Lấy màu sắc với cache
+        $colors = cache()->remember('home_colors', 300, function () {
+            return StoneColor::where('status', true)
+                ->orderBy('order', 'asc')
+                ->take(8)
+                ->get();
+        });
 
         $contactInfo = null;
         if (Schema::hasTable('contact_infos')) {
-            $contactInfo = ContactInfo::first();
+            $contactInfo = cache()->remember('home_contact_info', 300, function () {
+                return ContactInfo::first();
+            });
         }
 
         return view('stone.home', compact(
@@ -175,5 +196,28 @@ class HomeController extends Controller
         // ...
 
         return redirect()->back()->with('success', 'Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong thời gian sớm nhất!');
+    }
+    
+    /**
+     * Xóa cache của trang chủ
+     * Gọi phương thức này khi có cập nhật dữ liệu liên quan đến trang chủ
+     */
+    public static function clearHomeCache()
+    {
+        $cacheKeys = [
+            'home_slides',
+            'home_featured_products',
+            'home_categories',
+            'home_applications',
+            'home_featured_projects',
+            'home_featured_videos',
+            'home_showrooms',
+            'home_colors',
+            'home_contact_info'
+        ];
+        
+        foreach ($cacheKeys as $key) {
+            cache()->forget($key);
+        }
     }
 }
