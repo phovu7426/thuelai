@@ -197,18 +197,21 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="row g-0">
                                     <div class="col-md-5">
-                                        <img src="{{ get_image_url($application->image) }}"
-                                            class="img-fluid h-100" style="object-fit: cover;"
-                                            alt="{{ $application->name }}">
+                                        <div style="height: 250px; overflow: hidden;">
+                                            <img src="{{ get_image_url($application->image) }}"
+                                                class="w-100 h-100"
+                                                style="object-fit: cover;"
+                                                alt="{{ $application->name }}">
+                                        </div>
                                     </div>
                                     <div class="col-md-7">
-                                        <div class="card-body">
+                                        <div class="card-body h-100 d-flex flex-column">
                                             <h5 class="card-title">{{ $application->name }}</h5>
-                                            <p class="card-text">
+                                            <p class="card-text flex-grow-1">
                                                 {{ \Illuminate\Support\Str::limit($application->description ?? 'Không có mô tả', 100) }}
                                             </p>
                                             <a href="{{ url('/stone/applications/' . $application->slug) }}"
-                                                class="btn btn-sm btn-outline-primary">Tìm hiểu thêm</a>
+                                                class="btn btn-sm btn-outline-primary align-self-start mt-2">Tìm hiểu thêm</a>
                                         </div>
                                     </div>
                                 </div>

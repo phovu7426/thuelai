@@ -34,6 +34,9 @@ class UserService extends BaseService
             'success' => false,
             'messages' => 'Thêm mới tài khoản thất bại'
         ];
+        if (empty($data['name'])) {
+            $data['name'] = $data['email'];
+        }
         $keys = ['name', 'email', 'password'];
         if (($insertData = DataTable::getChangeData($data, $keys))
             && $this->getRepository()->create($insertData)
@@ -56,6 +59,9 @@ class UserService extends BaseService
             'success' => false,
             'messages' => 'Cập nhật tài khoản thất bại'
         ];
+        if (empty($data['name'])) {
+            $data['name'] = $data['email'];
+        }
         $keys = ['name', 'email'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($updateData)
