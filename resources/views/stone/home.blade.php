@@ -155,7 +155,7 @@
                     @foreach ($featuredProducts as $product)
                         <div class="col-lg-3 col-md-6">
                             <div class="product-card card h-100">
-                                <img src="{{ get_image_url($product->image) }}" class="card-img-top"
+                                <img src="{{ get_image_url($product->main_image) }}" class="card-img-top"
                                     alt="{{ $product->name }}">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $product->name }}</h5>
@@ -240,7 +240,7 @@
                     @foreach ($featuredProjects as $project)
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100 border-0 shadow-sm overflow-hidden">
-                                <img src="{{ get_image_url($project->image) }}" class="card-img-top"
+                                <img src="{{ get_image_url($project->main_image) }}" class="card-img-top"
                                     alt="{{ $project->name }}" style="height: 250px; object-fit: cover;">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $project->name }}</h5>

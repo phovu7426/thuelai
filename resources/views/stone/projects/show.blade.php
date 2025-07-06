@@ -8,7 +8,7 @@
 
         <div class="row mt-4">
             <div class="col-md-8">
-                <img src="{{ asset('images/default/default_image.png') }}" class="img-fluid mb-4" alt="{{ $project->name }}">
+                <img src="{{ get_image_url($project->main_image) }}" class="img-fluid mb-4" alt="{{ $project->name }}">
 
                 <div class="content">
                     {!! $project->content !!}

@@ -53,7 +53,7 @@
                         <div class="col-lg-3 col-md-6 mb-4">
                             <div class="product-card card h-100">
                                 <div class="position-relative">
-                                    <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top"
+                                    <img src="{{ get_image_url($product->main_image) }}" class="card-img-top"
                                         alt="{{ $product->name }}">
                                     @if ($product->is_new)
                                         <span
@@ -235,7 +235,7 @@
                 @foreach ($categories as $category)
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="category-card shadow-sm rounded overflow-hidden">
-                            <img src="{{ $category->image ? asset($category->image) : asset('images/default/default_image.png') }}" 
+                            <img src="{{ get_image_url($category->image) }}" 
                                 alt="{{ $category->name }}" class="img-fluid w-100" style="height: 250px; object-fit: cover;">
                             <div class="overlay">
                                 <div class="category-content">
