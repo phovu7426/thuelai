@@ -16,7 +16,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- jQuery -->
-    <script src="{{ secure_asset('js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 
     <!--end::Primary Meta Tags-->
     <!--begin::Fonts-->
@@ -32,7 +32,7 @@
         integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
     <!--end::Third Party Plugin(Bootstrap Icons)-->
     <!--begin::Required Plugin(AdminLTE)-->
-    <link rel="stylesheet" href="{{ secure_asset('adminlte/css/adminlte.css') }}" />
+    <link rel="stylesheet" href="{{ asset('adminlte/css/adminlte.css') }}" />
     <!--end::Required Plugin(AdminLTE)-->
     <!-- apexcharts -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
@@ -42,10 +42,10 @@
         integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Toastr CSS -->
-    <link rel="stylesheet" href="{{ secure_asset('css/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/toastr.min.css') }}">
     <!-- Thêm CSS cho Select2 -->
-    <link href="{{ secure_asset('css/select2.min.css') }}" rel="stylesheet" />
-    <script src="{{ secure_asset('js/ckeditor/ckeditor.js') }}"></script>
+    <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
     @yield('styles')
 </head>
 <!--end::Head-->
@@ -161,9 +161,9 @@
     @endsection
     <!--begin::Script-->
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
-    <script src="{{ secure_asset('js/toastr.min.js') }}"></script>
-    <script src="{{ secure_asset('js/main.js') }}"></script>
-    <script src="{{ secure_asset('js/select2.min.js') }}"></script>
+    <script src="{{ asset('js/toastr.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
         integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
     <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
@@ -175,7 +175,7 @@
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous">
     </script>
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
-    <script src="{{ secure_asset('adminlte/js/adminlte.js') }}"></script>
+    <script src="{{ asset('adminlte/js/adminlte.js') }}"></script>
     <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
     <script>
         const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
