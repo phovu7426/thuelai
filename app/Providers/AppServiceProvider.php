@@ -28,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
+        
         try {
             // Chỉ thực hiện nếu kết nối thành công
             if (DB::connection()->getPdo() && Schema::hasTable('contact_infos')) {
