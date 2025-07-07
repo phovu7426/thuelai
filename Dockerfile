@@ -1,6 +1,6 @@
-FROM php:8.2-cli
+FROM php:8.2-apache
 
-# Cài các extension cần thiết
+# Cài extension Laravel cần
 RUN apt-get update && apt-get install -y \
     unzip zip git libzip-dev libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql zip
@@ -8,23 +8,23 @@ RUN apt-get update && apt-get install -y \
 # Cài Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Đặt thư mục làm việc
+# Copy project
 WORKDIR /var/www/html
-
-# Copy toàn bộ mã nguồn
 COPY . .
 
-# Cài đặt Composer
+# Cài Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Laravel cache config
-RUN php artisan config:clear && php artisan config:cache
+# Laravel config + quyền
+RUN php artisan config:clear && php artisan config:cache && \
+    chmod -R 777 storage bootstrap/cache
 
-# Chmod để Laravel không lỗi quyền
-RUN chmod -R 777 storage bootstrap/cache
+# Cấu hình Apache dùng thư mục public/
+RUN a2enmod rewrite
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Mở port 8000
-EXPOSE 8000
+# Mở cổng Apache
+EXPOSE 80
 
-# ⚠️ ⚠️ ⚠️ CHẠY PORT CỐ ĐỊNH (KHÔNG DÙNG ${PORT})
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Chạy Apache
+CMD ["apache2-foreground"]
