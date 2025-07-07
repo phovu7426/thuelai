@@ -1,6 +1,6 @@
 FROM php:8.2-cli
 
-# Cài tiện ích
+# Cài các extension cần thiết
 RUN apt-get update && apt-get install -y \
     unzip zip git libzip-dev libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql zip
@@ -8,20 +8,23 @@ RUN apt-get update && apt-get install -y \
 # Cài Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Tạo thư mục làm việc
+# Đặt thư mục làm việc
 WORKDIR /var/www/html
 
-# Copy toàn bộ project
+# Copy toàn bộ mã nguồn
 COPY . .
 
-# Cài Laravel
+# Cài đặt Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Laravel cache
+# Laravel cache config
 RUN php artisan config:clear && php artisan config:cache
 
-# Mở cổng port
+# Chmod để Laravel không lỗi quyền
+RUN chmod -R 777 storage bootstrap/cache
+
+# Mở port 8000
 EXPOSE 8000
 
-# Chạy Laravel
+# ⚠️ ⚠️ ⚠️ CHẠY PORT CỐ ĐỊNH (KHÔNG DÙNG ${PORT})
 CMD php artisan serve --host=0.0.0.0 --port=8000
