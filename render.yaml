@@ -1,7 +1,16 @@
 services:
   - type: web
     name: laravel-app
-    env: docker
+    runtime: docker
     plan: free
-    dockerfilePath: ./Dockerfile
-    healthCheckPath: /
+    branch: main
+    dockerContext: .
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: mysql
+        # các biến khác bạn có thể để trống nếu dùng .env trong Git

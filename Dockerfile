@@ -5,26 +5,29 @@ RUN apt-get update && apt-get install -y \
     unzip zip git libzip-dev libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql zip
 
-# Cài Composer
+# Cài composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy project
+# Set working dir
 WORKDIR /var/www/html
+
+# Copy code
 COPY . .
 
 # Cài Composer
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --optimize-autoloader
 
-# Laravel config + quyền
-RUN php artisan config:clear && php artisan config:cache && \
-    chmod -R 777 storage bootstrap/cache
+# Chmod
+RUN chmod -R 777 storage bootstrap/cache
 
-# Cấu hình Apache dùng thư mục public/
+# Apache config: dùng public làm document root
 RUN a2enmod rewrite
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Mở cổng Apache
+# Tạo startup script
+COPY docker-start.sh /docker-start.sh
+RUN chmod +x /docker-start.sh
+
 EXPOSE 80
 
-# Chạy Apache
-CMD ["apache2-foreground"]
+CMD ["/docker-start.sh"]
