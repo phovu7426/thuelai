@@ -23,6 +23,17 @@ use App\Http\Controllers\Stone\ShowroomListController;
 use App\Http\Controllers\Stone\ApplicationDetailController;
 use App\Http\Controllers\Stone\ContactController;
 use App\Http\Controllers\Home\SlideController as HomeSlideController;
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/_setup', function () {
+    Artisan::call('key:generate');
+    Artisan::call('migrate', ['--force' => true]);
+    Artisan::call('storage:link');
+    return '✅ Laravel initialized';
+});
+Route::get('/_log', function () {
+    return nl2br(file_get_contents(storage_path('logs/laravel.log')));
+});
 
 // Chuyển hướng trang chủ đến trang đá
 Route::get('/', [HomeController::class, 'index'])->name('home');
