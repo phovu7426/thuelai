@@ -24,6 +24,7 @@ use App\Http\Controllers\Stone\ApplicationDetailController;
 use App\Http\Controllers\Stone\ContactController;
 use App\Http\Controllers\Home\SlideController as HomeSlideController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/_setup', function () {
     Artisan::call('key:generate');
@@ -165,3 +166,11 @@ Route::get('/slides', [HomeSlideController::class, 'index'])->name('home.slides'
 
 // Test showroom page
 Route::get('/test-showroom', [App\Http\Controllers\TestShowroomController::class, 'index'])->name('test.showroom');
+
+Route::get('/test-send-mail', function() {
+    Mail::raw('Đây là email test gửi từ hệ thống Laravel.', function($message) {
+        $message->to('vumanhhoang140799@gmail.com')
+                ->subject('Test gửi mail từ Laravel');
+    });
+    return 'Đã gửi mail test!';
+});
