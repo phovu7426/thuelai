@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanh Tùng Stone - @yield('title', 'Đá tự nhiên cao cấp')</title>
+    <title>Cơ sở sản xuất đá ốp lát DN - @yield('title', 'Đá tự nhiên cao cấp')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -413,7 +413,7 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/stone') }}">
-                <img src="{{ asset('images/default/default_image.png') }}" alt="Thanh Tùng Stone Logo">
+                <img src="{{ asset('images/default/default_image.png') }}" alt="Cơ sở sản xuất đá ốp lát DN Logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -494,7 +494,7 @@
             <div class="row">
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h5>Về chúng tôi</h5>
-                    <p class="mb-4">Thanh Tùng Stone - Đơn vị hàng đầu cung cấp và thi công đá tự nhiên cao cấp tại
+                    <p class="mb-4">Cơ sở sản xuất đá ốp lát DN - Đơn vị hàng đầu cung cấp và thi công đá tự nhiên cao cấp tại
                         Việt Nam với hơn 10 năm kinh nghiệm.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -538,7 +538,7 @@
 
         <div class="copyright">
             <div class="container">
-                <p class="mb-0">&copy; {{ date('Y') }} Thanh Tùng Stone. All rights reserved.</p>
+                <p class="mb-0">&copy; {{ date('Y') }} Cơ sở sản xuất đá ốp lát DN. All rights reserved.</p>
             </div>
         </div>
     </footer>

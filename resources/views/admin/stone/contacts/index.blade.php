@@ -96,6 +96,7 @@
                                         <th>Số điện thoại</th>
                                         <th>Tiêu đề</th>
                                         <th>Trạng thái</th>
+                                        <th>Đã gửi mail</th>
                                         <th>Ngày gửi</th>
                                         <th>Thao tác</th>
                                     </tr>
@@ -119,6 +120,13 @@
                                                     <span class="badge bg-success">Đã đọc</span>
                                                 @else
                                                     <span class="badge bg-warning">Chưa đọc</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($contact->mail_sent)
+                                                    <span class="badge bg-success">Đã gửi</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Chưa gửi</span>
                                                 @endif
                                             </td>
                                             <td>{{ $contact->created_at->format('d/m/Y H:i') }}</td>

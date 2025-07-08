@@ -1,6 +1,6 @@
 @extends('stone.layouts.main')
 
-@section('page_title', 'Sản phẩm - Thanh Tùng Stone')
+@section('page_title', 'Sản phẩm - Cơ sở sản xuất đá ốp lát DN')
 
 @section('content')
     <!-- Hero Section -->

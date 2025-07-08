@@ -1,6 +1,6 @@
 @extends('stone.layouts.main')
 
-@section('page_title', $product->name . ' - Thanh Tùng Stone')
+@section('page_title', $product->name . ' - Cơ sở sản xuất đá ốp lát DN')
 
 @section('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />

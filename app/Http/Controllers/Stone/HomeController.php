@@ -120,12 +120,12 @@ class HomeController extends Controller
     {
         // Thêm dữ liệu cho trang giới thiệu
         $companyInfo = [
-            'name' => 'Thanh Tùng Stone',
+            'name' => 'Cơ sở sản xuất đá ốp lát DN',
             'established' => '2010',
             'experience' => '10+ năm',
             'employees' => '100+',
             'projects' => '500+',
-            'description' => 'Thanh Tùng Stone là đơn vị hàng đầu trong lĩnh vực cung cấp và thi công đá tự nhiên cao cấp tại Việt Nam. Với hơn 10 năm kinh nghiệm, chúng tôi tự hào mang đến cho khách hàng những sản phẩm đá tự nhiên chất lượng cao, mẫu mã đa dạng với giá cả cạnh tranh nhất thị trường.',
+            'description' => 'Cơ sở sản xuất đá ốp lát DN là đơn vị hàng đầu trong lĩnh vực cung cấp và thi công đá tự nhiên cao cấp tại Việt Nam. Với hơn 10 năm kinh nghiệm, chúng tôi tự hào mang đến cho khách hàng những sản phẩm đá tự nhiên chất lượng cao, mẫu mã đa dạng với giá cả cạnh tranh nhất thị trường.',
             'mission' => 'Mang đến những sản phẩm đá tự nhiên cao cấp, đáp ứng mọi nhu cầu thiết kế và trang trí của khách hàng.',
             'vision' => 'Trở thành đơn vị hàng đầu trong lĩnh vực cung cấp và thi công đá tự nhiên tại Việt Nam và khu vực Đông Nam Á.'
         ];

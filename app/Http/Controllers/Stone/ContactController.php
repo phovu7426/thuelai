@@ -35,7 +35,23 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        StoneContact::create($request->all());
+        $contactData = $request->only(['name', 'email', 'phone', 'subject', 'message']);
+        $contact = StoneContact::create($contactData);
+
+        // Lấy email admin từ cấu hình
+        $adminEmail = null;
+        if (Schema::hasTable('contact_infos')) {
+            $contactInfo = ContactInfo::first();
+            $adminEmail = $contactInfo?->email;
+        }
+        if ($adminEmail) {
+            try {
+                \App\Jobs\SendContactNotification::dispatch($adminEmail, $contactData);
+                $contact->update(['mail_sent' => true]);
+            } catch (\Throwable $e) {
+                // Có thể log lỗi nếu cần
+            }
+        }
 
         return redirect()->route('stone.contact.index')
             ->with('success', 'Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong thời gian sớm nhất!');

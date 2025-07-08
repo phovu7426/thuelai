@@ -21,6 +21,7 @@ class CreateStoneContactsTable extends Migration
             $table->string('subject')->nullable();
             $table->text('message');
             $table->boolean('is_read')->default(false);
+            $table->boolean('mail_sent')->default(false);
             $table->timestamps();
         });
     }
