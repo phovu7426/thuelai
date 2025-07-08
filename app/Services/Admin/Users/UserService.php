@@ -84,7 +84,7 @@ class UserService extends BaseService
     {
         $user = $this->getRepository()->findById($id);
         // Chặn phân quyền cho tài khoản admin
-        if ($user->email === 'admin@gmail.com' || $user->hasRole('admin')) {
+        if ($user->email === 'admin@gmail.com') {
             throw new \Exception('Không thể phân quyền cho tài khoản admin!');
         }
         $user->syncRoles($roles);

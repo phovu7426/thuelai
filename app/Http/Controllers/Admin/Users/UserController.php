@@ -123,7 +123,7 @@ class UserController extends BaseController
     {
         $user = $this->getService()->findById($id);
         $roles = Role::all();
-        $userRoles = $user->roles->pluck('name')->toArray();
+        $userRoles = $user->roles->pluck('name')->unique()->toArray(); // Loại bỏ duplicate
         return view('admin.users.assign-roles', compact('user', 'roles', 'userRoles'));
     }
 

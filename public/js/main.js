@@ -31,26 +31,29 @@ $(document).ready(function () {
                 allowClear: true
             });
 
-            // Nếu có dữ liệu đã chọn, thêm vào Select2
-            if (selectedValues) {
+            // Nếu có dữ liệu đã chọn, đảm bảo option tồn tại rồi mới set giá trị
+            if (selectedValues && selectedValues.length > 0) {
                 $.ajax({
                     url: url,
                     dataType: 'json',
                     success: function (data) {
-                        console.log(data);
                         if (isMultiple) {
-                            let selectedOptions = selectedValues.map(value => {
-                                let item = data.find(item => item[field] == value);
-                                console.log(value, item);
-                                let text = item ? item[displayField] : value; // Nếu không tìm thấy thì dùng chính giá trị
-                                return new Option(text, value, true, true);
+                            selectedValues.forEach(function(value) {
+                                if (selectElement.find("option[value='" + value + "']").length === 0) {
+                                    let item = data.find(item => item[field] == value);
+                                    let text = item ? item[displayField] : value;
+                                    selectElement.append(new Option(text, value, true, true));
+                                }
                             });
-                            selectElement.append(selectedOptions).trigger('change');
+                            selectElement.val(selectedValues).trigger('change');
                         } else {
-                            let item = data.find(item => item[field] == selectedValues);
-                            let text = item ? item[displayField] : selectedValues;
-                            let option = new Option(text, selectedValues, true, true);
-                            selectElement.append(option).trigger('change');
+                            let value = selectedValues;
+                            if (selectElement.find("option[value='" + value + "']").length === 0) {
+                                let item = data.find(item => item[field] == value);
+                                let text = item ? item[displayField] : value;
+                                selectElement.append(new Option(text, value, true, true));
+                            }
+                            selectElement.val(value).trigger('change');
                         }
                     }
                 });

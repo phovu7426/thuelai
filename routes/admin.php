@@ -36,8 +36,61 @@ use App\Http\Controllers\Admin\Categories\CategoryController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::middleware('canAny:access_dashboard')->get('/', function () {
-        return view('admin.index');
+    Route::middleware('canAny:access_dashboard,access_users,access_roles,access_permissions,access_slides,access_stone.categories,access_stone.materials,access_stone.surfaces,access_stone.applications,access_stone.products,access_stone.inventory,access_stone.projects,access_stone.showrooms,access_stone.videos,access_stone.orders,access_stone.contacts,access_contact-info')->get('/', function () {
+        // Ưu tiên dashboard
+        if (auth()->user()->can('access_dashboard')) {
+            return redirect()->route('admin.dashboard');
+        }
+        if (auth()->user()->can('access_users')) {
+            return redirect()->route('admin.users.index');
+        }
+        if (auth()->user()->can('access_roles')) {
+            return redirect()->route('admin.roles.index');
+        }
+        if (auth()->user()->can('access_permissions')) {
+            return redirect()->route('admin.permissions.index');
+        }
+        if (auth()->user()->can('access_slides')) {
+            return redirect()->route('admin.slides.index');
+        }
+        if (auth()->user()->can('access_stone.categories')) {
+            return redirect()->route('admin.stone.categories.index');
+        }
+        if (auth()->user()->can('access_stone.materials')) {
+            return redirect()->route('admin.stone.materials.index');
+        }
+        if (auth()->user()->can('access_stone.surfaces')) {
+            return redirect()->route('admin.stone.surfaces.index');
+        }
+        if (auth()->user()->can('access_stone.applications')) {
+            return redirect()->route('admin.stone.applications.index');
+        }
+        if (auth()->user()->can('access_stone.products')) {
+            return redirect()->route('admin.stone.products.index');
+        }
+        if (auth()->user()->can('access_stone.inventory')) {
+            return redirect()->route('admin.stone.inventory.index');
+        }
+        if (auth()->user()->can('access_stone.projects')) {
+            return redirect()->route('admin.stone.projects.index');
+        }
+        if (auth()->user()->can('access_stone.showrooms')) {
+            return redirect()->route('admin.stone.showrooms.index');
+        }
+        if (auth()->user()->can('access_stone.videos')) {
+            return redirect()->route('admin.stone.videos.index');
+        }
+        if (auth()->user()->can('access_stone.orders')) {
+            return redirect()->route('admin.stone.orders.index');
+        }
+        if (auth()->user()->can('access_stone.contacts')) {
+            return redirect()->route('admin.stone.contacts.index');
+        }
+        if (auth()->user()->can('access_contact-info')) {
+            return redirect()->route('admin.contact-info.edit');
+        }
+        // Nếu không có quyền nào thì về dashboard hoặc trang báo lỗi
+        return abort(403, 'Bạn không có quyền truy cập!');
     })->name('index');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
