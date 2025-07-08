@@ -40,9 +40,9 @@
                                 </form>
                             </div>
                             <div class="col-sm-3 d-flex">
-                                @canany(['manage_permissions', 'create_permissions'])
+                                @can('access_permissions')
                                     <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary ms-auto">Thêm quyền</a>
-                                @endcanany
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -73,13 +73,11 @@
                                     <td>{{ $permission->parent->title ?? 'Không có' }}</td>
                                     <td>{{ $permission->is_default ? 'Có' : 'Không' }}</td>
                                     <td class="text-center">
-                                        @canany(['manage_permissions', 'edit_permissions'])
+                                        @can('access_permissions')
                                             <a href="{{ route('admin.permissions.edit', $permission->id) }}"
                                                class="btn btn-sm btn-warning" title="Chỉnh sửa">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                        @endcanany
-                                        @canany(['manage_permissions', 'delete_permissions'])
                                             <form action="{{ route('admin.permissions.delete', $permission->id) }}" method="POST"
                                                   style="display:inline-block;"
                                                   onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
@@ -89,7 +87,7 @@
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </form>
-                                        @endcanany
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

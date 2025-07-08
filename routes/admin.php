@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\Slides\SlideController;
 use App\Http\Controllers\Admin\Users\ProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\Categories\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,48 +36,50 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::get('/', function () {
+    Route::middleware('canAny:access_dashboard')->get('/', function () {
         return view('admin.index');
     })->name('index');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('canAny:access_dashboard')
+        ->name('dashboard');
 
     // Stone routes
-    Route::prefix('stone')->name('stone.')->group(function () {
+    Route::prefix('stone')->name('stone.')->middleware('canAny:access_stone.categories,access_stone.materials,access_stone.surfaces,access_stone.applications,access_stone.products,access_stone.projects,access_stone.showrooms,access_stone.videos,access_stone.orders,access_stone.contacts,access_stone.inventory')->group(function () {
         // Inventory routes
-        Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
-        Route::put('inventory/{id}/update-quantity', [InventoryController::class, 'updateQuantity'])->name('inventory.update-quantity');
+        Route::get('inventory', [InventoryController::class, 'index'])->middleware('canAny:access_stone.inventory')->name('inventory.index');
+        Route::put('inventory/{id}/update-quantity', [InventoryController::class, 'updateQuantity'])->middleware('canAny:access_stone.inventory')->name('inventory.update-quantity');
 
         // Danh mục đá
-        Route::resource('categories', StoneCategoryController::class);
+        Route::resource('categories', StoneCategoryController::class)->middleware('canAny:access_stone.categories');
 
         // Chất liệu đá
-        Route::resource('materials', MaterialController::class);
+        Route::resource('materials', MaterialController::class)->middleware('canAny:access_stone.materials');
 
         // Bề mặt đá
-        Route::resource('surfaces', SurfaceController::class);
+        Route::resource('surfaces', SurfaceController::class)->middleware('canAny:access_stone.surfaces');
 
         // Ứng dụng đá
-        Route::resource('applications', ApplicationController::class);
+        Route::resource('applications', ApplicationController::class)->middleware('canAny:access_stone.applications');
 
         // Sản phẩm đá
-        Route::resource('products', ProductController::class);
+        Route::resource('products', ProductController::class)->middleware('canAny:access_stone.products');
 
         // Dự án đá
-        Route::resource('projects', ProjectController::class);
+        Route::resource('projects', ProjectController::class)->middleware('canAny:access_stone.projects');
 
         // Showroom
-        Route::resource('showrooms', ShowroomController::class);
+        Route::resource('showrooms', ShowroomController::class)->middleware('canAny:access_stone.showrooms');
 
         // Video
-        Route::resource('videos', VideoController::class);
+        Route::resource('videos', VideoController::class)->middleware('canAny:access_stone.videos');
 
         // Đơn hàng
-        Route::resource('orders', OrderController::class);
-        Route::post('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::resource('orders', OrderController::class)->middleware('canAny:access_stone.orders');
+        Route::post('orders/{order}/status', [OrderController::class, 'updateStatus'])->middleware('canAny:access_stone.orders')->name('orders.updateStatus');
 
         // Stone - Quản lý liên hệ
-        Route::prefix('contacts')->name('contacts.')->group(function () {
+        Route::prefix('contacts')->name('contacts.')->middleware('canAny:access_stone.contacts')->group(function () {
             Route::get('/', [ContactController::class, 'index'])->name('index');
             Route::get('/{id}', [ContactController::class, 'show'])->name('show');
             Route::delete('/{id}', [ContactController::class, 'destroy'])->name('destroy');
@@ -85,7 +88,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
     });
 
-    Route::prefix('users')->name('users.')->group(function () { // Chức năng quản lý tài khoản
+    Route::prefix('users')->name('users.')->middleware('canAny:access_users')->group(function () { // Chức năng quản lý tài khoản
         Route::get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
         Route::get('/create', [UserController::class, 'create'])->name('create'); // Hiển thị form tạo tài khoản
         Route::post('/store', [UserController::class, 'store'])->name('store'); // Xử lý tạo tài khoản
@@ -105,7 +108,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/update/{user_id}', [ProfileController::class, 'update'])->name('update'); // Xử lý chỉnh sửa
     });
 
-    Route::prefix('roles')->name('roles.')->group(function () { // Chức năng quản lý vai trò
+    Route::prefix('roles')->name('roles.')->middleware('canAny:access_roles')->group(function () { // Chức năng quản lý vai trò
         Route::get('/index', [RoleController::class, 'index'])->name('index'); // Hiển thị danh sách vai trò
         Route::get('/create', [RoleController::class, 'create'])->name('create'); // Hiển thị form tạo mới vai trò
         Route::post('/store', [RoleController::class, 'store'])->name('store'); // Xử lý thêm mới vai trò
@@ -116,7 +119,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     // Chức năng quản lý quyền
-    Route::prefix('permissions')->name('permissions.')->group(function () {
+    Route::prefix('permissions')->name('permissions.')->middleware('canAny:access_permissions')->group(function () {
         Route::get('/index', [PermissionController::class, 'index'])->name('index'); // Hiển thị danh sách quyền
         Route::get('/create', [PermissionController::class, 'create'])->name('create'); // Hiển thị form tạo mới quyền
         Route::post('/store', [PermissionController::class, 'store'])->name('store'); // Xử lý thêm mới quyền
@@ -148,9 +151,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('posts', PostController::class);
 
     // Slides
-    Route::resource('slides', SlideController::class);
+    Route::resource('slides', SlideController::class)->middleware('canAny:access_slides');
 
     // Cấu hình thông tin liên hệ
-    Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->name('contact-info.edit');
-    Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->name('contact-info.update');
+    Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->middleware('canAny:access_contact-info')->name('contact-info.edit');
+    Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->middleware('canAny:access_contact-info')->name('contact-info.update');
 });

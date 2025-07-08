@@ -61,11 +61,17 @@ class User extends Authenticatable {
             return true;
         }
 
-        // Kiểm tra nếu quyền này có quyền cha nhiều cấp
+        // Kiểm tra nếu quyền này có quyền cha nhiều cấp, tránh vòng lặp vô hạn
         $perm = Permission::where('name', $permission)->with('parent')->first();
+        $visitedIds = [];
         while ($perm && $perm->parent) {
+            if (in_array($perm->id, $visitedIds)) {
+                // Nếu đã duyệt qua quyền này rồi thì dừng lại để tránh lặp vô hạn
+                break;
+            }
+            $visitedIds[] = $perm->id;
             $perm = $perm->parent;
-            if (parent::can($perm->name, $arguments)) {
+            if ($perm && parent::can($perm->name, $arguments)) {
                 return true;
             }
         }

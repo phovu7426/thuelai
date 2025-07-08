@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
 
         // Run permission seeders
         $this->call([
+            AdminSidebarSeeder::class, // Thêm dòng này để seed quyền, vai trò, tài khoản admin theo sidebar
             PermissionSeeder::class,
             RolePermissionSeeder::class,
         ]);
