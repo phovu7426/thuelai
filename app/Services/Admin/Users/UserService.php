@@ -83,6 +83,10 @@ class UserService extends BaseService
     public function assignRoles($id, array $roles): void
     {
         $user = $this->getRepository()->findById($id);
+        // Chặn phân quyền cho tài khoản admin
+        if ($user->email === 'admin@gmail.com' || $user->hasRole('admin')) {
+            throw new \Exception('Không thể phân quyền cho tài khoản admin!');
+        }
         $user->syncRoles($roles);
     }
 
@@ -124,5 +128,29 @@ class UserService extends BaseService
     public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
     {
         return parent::autocomplete($term, 'email', $limit);
+    }
+
+    /**
+     * Hàm xóa tài khoản
+     * @param $id
+     * @return array
+     */
+    public function delete($id): array
+    {
+        $return = [
+            'success' => false,
+            'message' => 'Xóa tài khoản thất bại'
+        ];
+        $user = $this->getRepository()->findById($id);
+        // Chặn xóa tài khoản admin
+        if ($user && ($user->email === 'admin@gmail.com' || $user->hasRole('admin'))) {
+            $return['message'] = 'Không thể xóa tài khoản admin!';
+            return $return;
+        }
+        if ($user && $this->getRepository()->delete($user)) {
+            $return['success'] = true;
+            $return['message'] = 'Xóa tài khoản thành công';
+        }
+        return $return;
     }
 }

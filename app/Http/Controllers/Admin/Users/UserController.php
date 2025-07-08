@@ -105,6 +105,11 @@ class UserController extends BaseController
             return redirect()->route('admin.users.index')
                 ->with('success', $return['message'] ?? 'Xóa tài khoản thành công.');
         }
+        // Nếu là lỗi không thể xóa tài khoản admin thì trả về thông báo riêng
+        if (!empty($return['message']) && $return['message'] === 'Không thể xóa tài khoản admin!') {
+            return redirect()->route('admin.users.index')
+                ->with('fail', 'Không thể xóa tài khoản admin!');
+        }
         return redirect()->route('admin.users.index')
             ->with('fail', $return['message'] ?? 'Xóa tài khoản thất bại.');
     }
