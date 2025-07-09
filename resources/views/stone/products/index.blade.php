@@ -120,7 +120,7 @@
                                                     <i class="fas fa-cart-plus"></i>
                                                 </button>
                                             </form>
-                                            <a href="{{ url('/stone/products/' . $product->slug) }}"
+                                            <a href="{{ route('stone.products.show', $product->slug) }}"
                                                 class="btn btn-sm btn-outline-primary ms-1">Chi tiết</a>
                                         </div>
                                     </div>
@@ -135,7 +135,7 @@
                         </div>
                         <h4>Không tìm thấy sản phẩm nào</h4>
                         <p>Vui lòng thử lại với bộ lọc khác hoặc xem tất cả sản phẩm của chúng tôi.</p>
-                        <a href="{{ url('/stone/products') }}" class="btn btn-primary mt-3">Xem tất cả sản phẩm</a>
+                        <a href="{{ route('stone.products.index') }}" class="btn btn-primary mt-3">Xem tất cả sản phẩm</a>
                     </div>
                 @endif
             </div>
@@ -204,7 +204,7 @@
                                                             <i class="fas fa-cart-plus"></i> Thêm vào giỏ
                                                         </button>
                                                     </form>
-                                                    <a href="{{ url('/stone/products/' . $product->slug) }}"
+                                                    <a href="{{ route('stone.products.show', $product->slug) }}"
                                                         class="btn btn-outline-primary me-2">Chi tiết</a>
                                                     <button class="btn btn-sm btn-light rounded-circle me-1"
                                                         data-bs-toggle="tooltip" title="Yêu thích">
@@ -251,7 +251,7 @@
                                     @if($category->children_count > 0)
                                         <p class="text-white-50 small mb-3">{{ $category->children_count }} danh mục con</p>
                                     @endif
-                                    <a href="{{ url('/stone/products/category/' . $category->slug) }}"
+                                    <a href="{{ route('stone.products.category', $category->slug) }}"
                                         class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                 </div>
                             </div>
@@ -269,7 +269,7 @@
                 <div class="col-lg-8 mx-auto text-center">
                     <h2 class="mb-4">Bạn cần tư vấn về sản phẩm?</h2>
                     <p class="lead mb-4">Hãy liên hệ ngay với chúng tôi để được tư vấn chi tiết và báo giá tốt nhất.</p>
-                    <a href="{{ url('/stone/contact') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
+                    <a href="{{ route('stone.contact.index') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
                 </div>
             </div>
         </div>

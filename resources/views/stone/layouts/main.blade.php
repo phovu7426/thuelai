@@ -416,7 +416,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand py-0" href="{{ url('/stone') }}">
+            <a class="navbar-brand py-0" href="{{ route('stone.home') }}">
                 <img src="{{ asset('images/default/logov2.png') }}" style="height: 40px !important;" alt="Cơ sở sản xuất đá ốp lát DN Logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -425,35 +425,35 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('stone') ? 'active' : '' }}"
-                            href="{{ url('/stone') }}">Trang chủ</a>
+                        <a class="nav-link {{ request()->routeIs('stone.home') ? 'active' : '' }}"
+                            href="{{ route('stone.home') }}">Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('stone/products*') ? 'active' : '' }}"
-                            href="{{ url('/stone/products') }}">Sản phẩm</a>
+                        <a class="nav-link {{ request()->routeIs('stone.products.*') ? 'active' : '' }}"
+                            href="{{ route('stone.products.index') }}">Sản phẩm</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('stone/applications*') ? 'active' : '' }}"
-                            href="{{ url('/stone/applications') }}">Ứng dụng</a>
+                        <a class="nav-link {{ request()->routeIs('stone.applications.*') ? 'active' : '' }}"
+                            href="{{ route('stone.applications.index') }}">Ứng dụng</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('stone/projects*') ? 'active' : '' }}"
-                            href="{{ url('/stone/projects') }}">Dự án</a>
+                        <a class="nav-link {{ request()->routeIs('stone.projects.*') ? 'active' : '' }}"
+                            href="{{ route('stone.projects.index') }}">Dự án</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('stone/showrooms*') ? 'active' : '' }}"
-                            href="{{ url('/stone/showrooms') }}">Showroom</a>
+                        <a class="nav-link {{ request()->routeIs('stone.showrooms.*') ? 'active' : '' }}"
+                            href="{{ route('stone.showrooms.index') }}">Showroom</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('stone/about') ? 'active' : '' }}"
-                            href="{{ url('/stone/about') }}">Giới thiệu</a>
+                        <a class="nav-link {{ request()->routeIs('stone.about') ? 'active' : '' }}"
+                            href="{{ route('stone.about') }}">Giới thiệu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('stone/contact') ? 'active' : '' }}"
-                            href="{{ url('/stone/contact') }}">Liên hệ</a>
+                        <a class="nav-link {{ request()->routeIs('stone.contact.index') ? 'active' : '' }}"
+                            href="{{ route('stone.contact.index') }}">Liên hệ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('stone/cart*') ? 'active' : '' }}"
+                        <a class="nav-link {{ request()->routeIs('stone.cart.index') ? 'active' : '' }}"
                             href="{{ route('stone.cart.index') }}">
                             <i class="fas fa-shopping-cart"></i>
                             @if (!Cart::isEmpty())
@@ -463,7 +463,7 @@
                     </li>
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('stone/orders*') ? 'active' : '' }}"
+                            <a class="nav-link {{ request()->routeIs('stone.orders.index') ? 'active' : '' }}"
                                 href="{{ route('stone.orders.index') }}">
                                 <i class="fas fa-clipboard-list"></i>
                             </a>
@@ -519,11 +519,11 @@
 
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h5>Liên kết nhanh</h5>
-                    <a href="{{ url('/stone') }}">Trang chủ</a>
-                    <a href="{{ url('/stone/products') }}">Sản phẩm</a>
-                    <a href="{{ url('/stone/projects') }}">Dự án</a>
-                    <a href="{{ url('/stone/about') }}">Giới thiệu</a>
-                    <a href="{{ url('/stone/contact') }}">Liên hệ</a>
+                    <a href="{{ route('stone.home') }}">Trang chủ</a>
+                    <a href="{{ route('stone.products.index') }}">Sản phẩm</a>
+                    <a href="{{ route('stone.projects.index') }}">Dự án</a>
+                    <a href="{{ route('stone.about') }}">Giới thiệu</a>
+                    <a href="{{ route('stone.contact.index') }}">Liên hệ</a>
                 </div>
 
                 <div class="col-lg-3 col-md-6">

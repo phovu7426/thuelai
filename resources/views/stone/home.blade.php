@@ -16,9 +16,9 @@
                             @if ($slide->link)
                                 <a href="{{ $slide->link }}" class="btn btn-primary me-2">Xem chi tiết</a>
                             @else
-                                <a href="{{ url('/stone/products') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
+                                <a href="{{ route('stone.products.index') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
                             @endif
-                            <a href="{{ url('/stone/contact') }}" class="btn btn-outline-light">Liên hệ ngay</a>
+                            <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-light">Liên hệ ngay</a>
                         </div>
                     </div>
                 @endforeach
@@ -30,8 +30,8 @@
                         <h1>Đá tự nhiên cao cấp</h1>
                         <p>Chuyên cung cấp và thi công đá tự nhiên cao cấp với chất lượng tốt nhất, mẫu mã đa dạng và giá cả
                             cạnh tranh.</p>
-                        <a href="{{ url('/stone/products') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
-                        <a href="{{ url('/stone/contact') }}" class="btn btn-outline-light">Liên hệ ngay</a>
+                        <a href="{{ route('stone.products.index') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
+                        <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-light">Liên hệ ngay</a>
                     </div>
                 </div>
                 <div class="swiper-slide hero-slide"
@@ -39,8 +39,8 @@
                     <div class="hero-content">
                         <h1>Đá Marble cao cấp</h1>
                         <p>Đá Marble nhập khẩu từ các mỏ đá nổi tiếng trên thế giới như Ý, Tây Ban Nha, Brazil...</p>
-                        <a href="{{ url('/stone/products') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
-                        <a href="{{ url('/stone/contact') }}" class="btn btn-outline-light">Liên hệ ngay</a>
+                        <a href="{{ route('stone.products.index') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
+                        <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-light">Liên hệ ngay</a>
                     </div>
                 </div>
                 <div class="swiper-slide hero-slide"
@@ -49,8 +49,8 @@
                         <h1>Thi công chuyên nghiệp</h1>
                         <p>Đội ngũ thợ lành nghề với nhiều năm kinh nghiệm, đảm bảo thi công đúng kỹ thuật, chính xác và
                             thẩm mỹ cao.</p>
-                        <a href="{{ url('/stone/projects') }}" class="btn btn-primary me-2">Xem dự án</a>
-                        <a href="{{ url('/stone/contact') }}" class="btn btn-outline-light">Liên hệ ngay</a>
+                        <a href="{{ route('stone.projects.index') }}" class="btn btn-primary me-2">Xem dự án</a>
+                        <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-light">Liên hệ ngay</a>
                     </div>
                 </div>
             @endif
@@ -122,7 +122,7 @@
                                     <div class="category-content">
                                         <h3 class="category-title">{{ $category->name }}</h3>
                                         <p class="text-white small mb-3">{{ \Illuminate\Support\Str::limit($category->description, 80) }}</p>
-                                        <a href="{{ url('/stone/products/category/' . $category->slug) }}"
+                                        <a href="{{ route('stone.products.category', $category->slug) }}"
                                             class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                     </div>
                                 </div>
@@ -137,7 +137,7 @@
             </div>
             
             <div class="text-center mt-4">
-                <a href="{{ url('/stone/products') }}" class="btn btn-primary">Xem tất cả danh mục</a>
+                <a href="{{ route('stone.products.index') }}" class="btn btn-primary">Xem tất cả danh mục</a>
             </div>
         </div>
     </section>
@@ -163,7 +163,7 @@
                                 </div>
                                 <div class="card-footer d-flex justify-content-between align-items-center">
                                     <span class="text-primary fw-bold">{{ $product->material->name ?? '' }}</span>
-                                    <a href="{{ url('/stone/products/' . $product->slug) }}"
+                                    <a href="{{ route('stone.products.show', $product->slug) }}"
                                         class="btn btn-sm btn-outline-primary">Chi tiết</a>
                                 </div>
                             </div>
@@ -177,7 +177,7 @@
             </div>
 
             <div class="text-center mt-5">
-                <a href="{{ url('/stone/products') }}" class="btn btn-primary">Xem tất cả sản phẩm</a>
+                <a href="{{ route('stone.products.index') }}" class="btn btn-primary">Xem tất cả sản phẩm</a>
             </div>
         </div>
     </section>
@@ -210,7 +210,7 @@
                                             <p class="card-text flex-grow-1">
                                                 {{ \Illuminate\Support\Str::limit($application->description ?? 'Không có mô tả', 100) }}
                                             </p>
-                                            <a href="{{ url('/stone/applications/' . $application->slug) }}"
+                                            <a href="{{ route('stone.applications.show', $application->slug) }}"
                                                 class="btn btn-sm btn-outline-primary align-self-start mt-2">Tìm hiểu thêm</a>
                                         </div>
                                     </div>
@@ -247,7 +247,7 @@
                                     <p class="card-text">
                                         {{ \Illuminate\Support\Str::limit($project->description ?? 'Không có mô tả', 100) }}
                                     </p>
-                                    <a href="{{ url('/stone/projects/' . $project->slug) }}"
+                                    <a href="{{ route('stone.projects.show', $project->slug) }}"
                                         class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
                                 </div>
                             </div>
@@ -261,7 +261,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="{{ url('/stone/projects') }}" class="btn btn-primary">Xem tất cả dự án</a>
+                <a href="{{ route('stone.projects.index') }}" class="btn btn-primary">Xem tất cả dự án</a>
             </div>
         </div>
     </section>
@@ -289,7 +289,7 @@
                                         {{ $showroom->phone }}</p>
                                     <p class="mb-3"><i class="fas fa-envelope text-primary me-2"></i>
                                         {{ $showroom->email }}</p>
-                                    <a href="{{ url('/stone/showrooms/' . $showroom->slug) }}"
+                                    <a href="{{ route('stone.showrooms.show', $showroom->slug) }}"
                                         class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
                                 </div>
                             </div>
@@ -314,7 +314,7 @@
                 <div class="col-lg-8 mx-auto text-center">
                     <h2 class="mb-4">Bạn cần tư vấn về sản phẩm đá tự nhiên?</h2>
                     <p class="lead mb-4">Hãy liên hệ ngay với chúng tôi để được tư vấn chi tiết và báo giá tốt nhất.</p>
-                    <a href="{{ url('/stone/contact') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
+                    <a href="{{ route('stone.contact.index') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
                 </div>
             </div>
         </div>

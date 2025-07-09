@@ -164,11 +164,11 @@
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ url('/stone') }}">Trang chủ</a></li>
-                    <li class="breadcrumb-item"><a href="{{ url('/stone/products') }}">Sản phẩm</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('stone.home') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('stone.products.index') }}">Sản phẩm</a></li>
                     @if ($product->category)
                         <li class="breadcrumb-item"><a
-                                href="{{ url('/stone/products/category/' . $product->category->slug) }}">{{ $product->category->name }}</a>
+                                href="{{ route('stone.products.category', $product->category->slug) }}">{{ $product->category->name }}</a>
                         </li>
                     @endif
                     <li class="breadcrumb-item active" aria-current="page">{{ $product->name }}</li>
@@ -279,7 +279,7 @@
                                     <div class="product-meta-label">Danh mục:</div>
                                     <div class="product-meta-value">
                                         <a
-                                            href="{{ url('/stone/products/category/' . $product->category->slug) }}">{{ $product->category->name }}</a>
+                                            href="{{ route('stone.products.category', $product->category->slug) }}">{{ $product->category->name }}</a>
                                     </div>
                                 </div>
                             @endif
@@ -355,7 +355,7 @@
                         </form>
 
                         <div class="mt-4">
-                            <a href="{{ url('/stone/contact') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-phone-alt me-2"></i> Liên hệ tư vấn
                             </a>
                         </div>
@@ -503,7 +503,7 @@
                                     <div class="list-group list-group-flush">
                                         @if (count($relatedProjects) > 0)
                                             @foreach ($relatedProjects as $project)
-                                                <a href="{{ url('/stone/projects/' . $project->slug) }}"
+                                                <a href="{{ route('stone.projects.show', $project->slug) }}"
                                                     class="list-group-item list-group-item-action border-0 px-0">
                                                     <div class="d-flex align-items-center">
                                                         <div class="flex-shrink-0">
@@ -608,7 +608,7 @@
                                                 <span class="fw-bold">{{ number_format($relatedProduct->price) }}đ</span>
                                             @endif
                                         </div>
-                                        <a href="{{ url('/stone/products/' . $relatedProduct->slug) }}"
+                                        <a href="{{ route('stone.products.show', $relatedProduct->slug) }}"
                                             class="btn btn-sm btn-outline-primary">Chi tiết</a>
                                     </div>
                                 </div>
