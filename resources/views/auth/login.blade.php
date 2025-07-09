@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đăng nhập - StoneShop</title>
+    <title>Cơ sở sản xuất đá ốp lát DN - Đá tự nhiên cao cấp</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
@@ -51,10 +51,10 @@
         }
 
         .login-logo img {
-            width: 60px;
-            height: 60px;
+            width: 50%;
+            height: 45px;
             object-fit: contain;
-            margin-bottom: 8px;
+            /* Không bo tròn, không nền, không viền, không bóng đổ */
         }
 
         .login-logo span {
@@ -145,8 +145,7 @@
     <div class="overlay"></div>
     <div class="login-container">
         <div class="login-logo">
-            <img src="https://cdn-icons-png.flaticon.com/512/2935/2935358.png" alt="StoneShop Logo">
-            <span>StoneShop</span>
+            <img src="{{ asset('images/default/logov2.png') }}" alt="StoneShop Logo">
         </div>
         <h2>Đăng nhập tài khoản</h2>
         <form id="login_form">
