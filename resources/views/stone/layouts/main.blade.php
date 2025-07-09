@@ -414,7 +414,7 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/stone') }}">
-                <img src="{{ asset('images/default/logov1.png') }}" alt="Cơ sở sản xuất đá ốp lát DN Logo">
+                <img src="{{ asset('images/default/logov2.png') }}" alt="Cơ sở sản xuất đá ốp lát DN Logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
