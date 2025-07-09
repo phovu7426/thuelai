@@ -103,14 +103,9 @@
             <a href="{{ route('admin.index') }}" class="brand-link">
                 <!--begin::Brand Image-->
                 <img
-                    src="{{ asset('adminlte/assets/img/AdminLTELogo.png') }}"
-                    alt="AdminLTE Logo"
+                    src="{{ asset('images/default/logov2.png') }}"
                     class="brand-image opacity-75 shadow"
                 />
-                <!--end::Brand Image-->
-                <!--begin::Brand Text-->
-                <span class="brand-text fw-light">AdminLTE 4</span>
-                <!--end::Brand Text-->
             </a>
             <!--end::Brand Link-->
         </div>
