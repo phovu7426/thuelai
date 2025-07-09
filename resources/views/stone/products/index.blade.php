@@ -116,9 +116,15 @@
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                 <input type="hidden" name="quantity" value="1">
+                                                @if ($product->quantity == 0)
                                                 <button style="background-color: red; border-color: red;" type="submit" class="btn btn-sm btn-primary" {{ $product->quantity == 0 ? 'disabled' : '' }}>
                                                     <i class="fas fa-cart-plus"></i>
                                                 </button>
+                                                    @else
+                                                   <button type="submit" class="btn btn-sm btn-primary" {{ $product->quantity == 0 ? 'disabled' : '' }}>
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                                    @endif
                                             </form>
                                             <a href="{{ route('stone.products.show', $product->slug) }}"
                                                 class="btn btn-sm btn-outline-primary ms-1">Chi tiết</a>
