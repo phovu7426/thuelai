@@ -95,6 +95,7 @@
                                         <th>Email</th>
                                         <th>Số điện thoại</th>
                                         <th>Tiêu đề</th>
+                                        <th>Nội dung</th>
                                         <th>Trạng thái</th>
                                         <th>Đã gửi mail</th>
                                         <th>Ngày gửi</th>
@@ -115,6 +116,15 @@
                                             <td>{{ $contact->email }}</td>
                                             <td>{{ $contact->phone ?? 'N/A' }}</td>
                                             <td>{{ $contact->subject ?? 'Không có tiêu đề' }}</td>
+                                            <td>
+                                                @if($contact->message)
+                                                    <div class="text-truncate" style="max-width: 200px;" title="{{ $contact->message }}">
+                                                        {{ \Illuminate\Support\Str::limit($contact->message, 50) }}
+                                                    </div>
+                                                @else
+                                                    <span class="text-muted">Không có nội dung</span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($contact->is_read)
                                                     <span class="badge bg-success">Đã đọc</span>
