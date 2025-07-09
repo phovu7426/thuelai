@@ -104,7 +104,7 @@
                 <!--begin::Brand Image-->
                 <img
                     src="{{ asset('images/default/logov2.png') }}"
-                    class="brand-image opacity-75 shadow"
+                    class="brand-image"
                 />
             </a>
             <!--end::Brand Link-->
