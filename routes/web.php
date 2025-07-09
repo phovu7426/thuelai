@@ -26,6 +26,9 @@ use App\Http\Controllers\Home\SlideController as HomeSlideController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 
+use Spatie\Sitemap\Sitemap;
+use Spatie\Sitemap\Tags\Url;
+
 Route::get('/_setup', function () {
     Artisan::call('key:generate');
     Artisan::call('migrate', ['--force' => true]);
@@ -173,4 +176,19 @@ Route::get('/test-send-mail', function() {
                 ->subject('Test gửi mail từ Laravel');
     });
     return 'Đã gửi mail test!';
+});
+
+Route::get('/sitemap.xml', function () {
+    $sitemap = Sitemap::create()
+        ->add(Url::create('/'))
+        ->add(Url::create('/gioi-thieu'))
+        ->add(Url::create('/lien-he'))
+        ->add(Url::create('/san-pham'));
+
+    // Nếu có danh sách sản phẩm động:
+    foreach (\App\Models\StoneProduct::all() as $product) {
+        $sitemap->add(Url::create('/san-pham/' . $product->slug));
+    }
+
+    return $sitemap->toResponse(request());
 });
