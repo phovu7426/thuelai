@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->job(new \App\Jobs\ProcessUnsentContacts)
-            ->cron('*/3 * * * *')
+            ->everyMinute()
             ->withoutOverlapping();
     }
 
