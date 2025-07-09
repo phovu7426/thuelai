@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class ProcessUnsentContacts implements ShouldQueue
 {
@@ -22,12 +23,14 @@ class ProcessUnsentContacts implements ShouldQueue
         if (!$adminEmail) return;
 
         $contacts = StoneContact::where('mail_sent', false)->get();
+        Log::channel('single')->info('[ProcessUnsentContacts] Run at: ' . now() . ' | Found: ' . $contacts->count() . ' contacts');
         foreach ($contacts as $contact) {
             try {
                 Mail::to($adminEmail)->send(new ContactNotification($contact->toArray()));
                 $contact->update(['mail_sent' => true]);
+                Log::channel('single')->info('[ProcessUnsentContacts] Sent mail for contact ID: ' . $contact->id);
             } catch (\Throwable $e) {
-                // Có thể log lỗi nếu cần
+                Log::channel('single')->error('[ProcessUnsentContacts] Error for contact ID: ' . $contact->id . ' | ' . $e->getMessage());
             }
         }
     }
