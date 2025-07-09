@@ -47,8 +47,8 @@
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        @if (isset($item->attributes['image']))
-                                                            <img src="{{ asset($item->attributes['image']) }}"
+                                                        @if (!empty($item->main_image))
+                                                            <img src="{{ get_image_url($item->main_image) }}"
                                                                 alt="{{ $item->name }}" class="img-thumbnail mr-3"
                                                                 style="width: 80px; height: 80px; object-fit: cover;">
                                                         @else
