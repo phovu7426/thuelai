@@ -13,6 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <link rel="icon" type="image/png" href="{{ asset('images/default/logo.png') }}">
+    <meta name="description" content="@yield('meta_description', 'Daoplatdn.com chuyên cung cấp đá ốp lát bền, đẹp, giá rẻ, hợp lý, phục vụ nhiệt tình.')" />
+    <link rel="canonical" href="{{ url()->current() }}">
     <style>
         :root {
             --primary-color: #c8a97e;
