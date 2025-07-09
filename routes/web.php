@@ -29,6 +29,12 @@ use Illuminate\Support\Facades\Mail;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
+use App\Models\StoneProduct;
+use App\Models\StoneCategory;
+use App\Models\StoneProject;
+use App\Models\StoneApplication;
+use App\Models\StoneShowroom;
+
 Route::get('/_setup', function () {
     Artisan::call('key:generate');
     Artisan::call('migrate', ['--force' => true]);
@@ -188,9 +194,29 @@ Route::get('/sitemap.xml', function () {
         ->add(Url::create('/du-an'))
         ->add(Url::create('/showroom'));
 
-    // Nếu có danh sách sản phẩm động:
-    foreach (\App\Models\StoneProduct::all() as $product) {
+    // Sản phẩm động
+    foreach (StoneProduct::all() as $product) {
         $sitemap->add(Url::create('/san-pham/' . $product->slug));
+    }
+
+    // Danh mục sản phẩm động
+    foreach (StoneCategory::all() as $category) {
+        $sitemap->add(Url::create('/san-pham/danh-muc/' . $category->slug));
+    }
+
+    // Dự án động
+    foreach (StoneProject::all() as $project) {
+        $sitemap->add(Url::create('/du-an/' . $project->slug));
+    }
+
+    // Ứng dụng động
+    foreach (StoneApplication::all() as $application) {
+        $sitemap->add(Url::create('/ung-dung/' . $application->slug));
+    }
+
+    // Showroom động
+    foreach (StoneShowroom::all() as $showroom) {
+        $sitemap->add(Url::create('/showroom/' . $showroom->slug));
     }
 
     return $sitemap->toResponse(request());
