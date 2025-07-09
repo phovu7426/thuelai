@@ -55,14 +55,14 @@
                                 <div class="position-relative">
                                     <img src="{{ get_image_url($product->main_image) }}" class="card-img-top"
                                         alt="{{ $product->name }}">
-                                    @if ($product->is_new)
+                                    <!-- @if ($product->is_new)
                                         <span
                                             class="position-absolute top-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded-pill">Mới</span>
                                     @endif
                                     @if ($product->discount_percent > 0)
                                         <span
                                             class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded-pill">-{{ $product->discount_percent }}%</span>
-                                    @endif
+                                    @endif -->
                                     <div class="product-actions position-absolute bottom-0 end-0 m-2">
                                         <button class="btn btn-sm btn-light rounded-circle me-1" data-bs-toggle="tooltip"
                                             title="Yêu thích">
