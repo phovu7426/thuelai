@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
+use App\Models\ContactInfo;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,7 +35,10 @@ class AppServiceProvider extends ServiceProvider
         try {
             // Chỉ thực hiện nếu kết nối thành công
             if (DB::connection()->getPdo() && Schema::hasTable('contact_infos')) {
-                // Code logic cần thiết
+                View::composer('stone.layouts.main', function ($view) {
+                    $contactInfo = ContactInfo::first();
+                    $view->with('contactInfo', $contactInfo);
+                });
             }
         } catch (\Exception $e) {
             // Không có DB → không thực hiện gì, chỉ log hoặc im lặng
