@@ -84,37 +84,44 @@
                                     <p class="card-text small">
                                         {!! \Illuminate\Support\Str::limit(strip_tags($product->description) ?? 'Không có mô tả', 60) !!}
                                     </p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="text-muted small">
-                                            @if($product->quantity > 0)
-                                                <span class="text-success">Còn {{ $product->quantity }} sản phẩm</span>
-                                            @else
-                                                <span class="text-danger">Hết hàng</span>
-                                            @endif
-                                        </div>
+                                    
+                                    <!-- Trạng thái sản phẩm -->
+                                    <div class="text-muted small mb-2">
+                                        @if($product->quantity > 0)
+                                            <span class="text-success">Còn {{ $product->quantity }} sản phẩm</span>
+                                        @else
+                                            <span class="text-danger">Hết hàng</span>
+                                        @endif
                                     </div>
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                    
+                                    <hr class="my-2">
+                                    
+                                    <!-- Giá và nút -->
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <!-- Giá -->
                                         <div>
                                             @if ($product->sale_price > 0)
-                                                <span
-                                                    class="text-decoration-line-through text-muted me-2">{{ number_format($product->price) }}đ</span>
-                                                <span
-                                                    class="fw-bold text-danger">{{ number_format($product->sale_price) }}đ</span>
+                                                <div>
+                                                    <del class="text-muted small">{{ number_format($product->price) }}đ</del><br>
+                                                    <span class="fw-bold text-danger">{{ number_format($product->sale_price) }}đ</span>
+                                                </div>
                                             @else
                                                 <span class="fw-bold">{{ number_format($product->price) }}đ</span>
                                             @endif
                                         </div>
+                                        
+                                        <!-- Nút -->
                                         <div>
                                             <form action="{{ route('stone.cart.add') }}" method="POST" class="d-inline">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                                 <input type="hidden" name="quantity" value="1">
-                                                <button type="submit" class="btn btn-sm btn-primary me-1" {{ $product->quantity == 0 ? 'disabled' : '' }}>
+                                                <button type="submit" class="btn btn-sm btn-primary" {{ $product->quantity == 0 ? 'disabled' : '' }}>
                                                     <i class="fas fa-cart-plus"></i>
                                                 </button>
                                             </form>
                                             <a href="{{ url('/stone/products/' . $product->slug) }}"
-                                                class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                                                class="btn btn-sm btn-outline-primary ms-1">Chi tiết</a>
                                         </div>
                                     </div>
                                 </div>
