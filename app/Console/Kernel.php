@@ -27,6 +27,9 @@ class Kernel extends ConsoleKernel
         $schedule->job(new \App\Jobs\ProcessUnsentContacts)
             ->everyMinute()
             ->withoutOverlapping();
+        $schedule->call(function () {
+            \Log::channel('single')->info('[ScheduleTest] Run at: ' . now());
+        })->everyMinute();
     }
 
     /**
