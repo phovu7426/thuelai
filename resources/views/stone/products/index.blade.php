@@ -309,18 +309,18 @@
             function applyFilters() {
                 const params = new URLSearchParams();
 
-                if (categoryFilter.value) params.append('category_id', categoryFilter.value);
-                if (materialFilter.value) params.append('material_id', materialFilter.value);
-                if (colorFilter.value) params.append('color_id', colorFilter.value);
-                if (sortBy.value) params.append('sort', sortBy.value);
+                if (categoryFilter && categoryFilter.value) params.append('category_id', categoryFilter.value);
+                if (materialFilter && materialFilter.value) params.append('material_id', materialFilter.value);
+                if (colorFilter && colorFilter.value) params.append('color_id', colorFilter.value);
+                if (sortBy && sortBy.value) params.append('sort', sortBy.value);
 
                 window.location.href = `${window.location.pathname}?${params.toString()}`;
             }
 
-            categoryFilter.addEventListener('change', applyFilters);
-            materialFilter.addEventListener('change', applyFilters);
-            colorFilter.addEventListener('change', applyFilters);
-            sortBy.addEventListener('change', applyFilters);
+            if (categoryFilter) categoryFilter.addEventListener('change', applyFilters);
+            if (materialFilter) materialFilter.addEventListener('change', applyFilters);
+            if (colorFilter) colorFilter.addEventListener('change', applyFilters);
+            if (sortBy) sortBy.addEventListener('change', applyFilters);
         });
     </script>
 @endsection
