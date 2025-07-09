@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\CheckDatabase::class,
         Commands\SeedLargeDataCommand::class,
         Commands\SeedTableCommand::class,
+        Commands\ProcessUnsentContactsCommand::class,
     ];
 
     /**
@@ -23,13 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
-        $schedule->job(new \App\Jobs\ProcessUnsentContacts)
-            ->everyMinute()
-            ->withoutOverlapping();
-        $schedule->call(function () {
-            \Log::channel('single')->info('[ScheduleTest] Run at: ' . now());
-        })->everyMinute();
+        $schedule->command('contacts:process-unsent')->everyThreeMinutes();
     }
 
     /**
