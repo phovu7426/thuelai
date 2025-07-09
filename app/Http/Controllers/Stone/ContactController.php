@@ -37,6 +37,7 @@ class ContactController extends Controller
 
         $contactData = $request->only(['name', 'email', 'phone', 'subject', 'message']);
         $contact = StoneContact::create($contactData);
+        $contactData['id'] = $contact->id; // Thêm id vào contactData
 
         // Lấy email admin từ cấu hình
         $adminEmail = null;
@@ -47,7 +48,7 @@ class ContactController extends Controller
         if ($adminEmail) {
             try {
                 \App\Jobs\SendContactNotification::dispatch($adminEmail, $contactData);
-                $contact->update(['mail_sent' => true]);
+                // $contact->update(['mail_sent' => true]); // Xóa dòng này, cập nhật trong job
             } catch (\Throwable $e) {
                 // Có thể log lỗi nếu cần
             }
