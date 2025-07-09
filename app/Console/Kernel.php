@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\CheckDatabase::class,
         Commands\SeedLargeDataCommand::class,
         Commands\SeedTableCommand::class,
+        Commands\SeedThanhThanhTungData::class,
     ];
 
     /**

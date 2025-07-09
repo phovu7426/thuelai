@@ -47,20 +47,23 @@ class DatabaseSeeder extends Seeder
         }
 
         // Run content seeders
-        // $this->call([
-        //     // Blog content
-        //     StoneCategorySeeder::class,
-        //     StoneMaterialSeeder::class,
-        //     StoneSurfaceSeeder::class,
-        //     StoneApplicationSeeder::class,
-        //     StoneProductSeeder::class,
-        //     StoneProjectSeeder::class,
-        //     StoneShowroomSeeder::class,
-        //     StoneVideoSeeder::class,
-        //     SlideSeeder::class,
+        $this->call([
+            // Stone content from Thanh Thanh Tung website
+            ThanhThanhTungSeeder::class,
+            
+            // Uncomment these if you want to run the original seeders as well
+            // StoneCategorySeeder::class,
+            // StoneMaterialSeeder::class,
+            // StoneSurfaceSeeder::class,
+            // StoneApplicationSeeder::class,
+            // StoneProductSeeder::class,
+            // StoneProjectSeeder::class,
+            // StoneShowroomSeeder::class,
+            // StoneVideoSeeder::class,
+            // SlideSeeder::class,
 
-        //     // Other content if needed
-        //     PostSeeder::class,
-        // ]);
+            // Other content if needed
+            // PostSeeder::class,
+        ]);
     }
 }
