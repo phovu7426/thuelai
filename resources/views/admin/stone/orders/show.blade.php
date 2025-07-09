@@ -127,11 +127,7 @@
                                                     <td>{{ $index + 1 }}</td>
                                                     <td>
                                                         <div>
-                                                            <strong>{{ $item->product->name }}</strong>
-                                                            @if ($item->product)
-                                                                <p class="text-muted mb-0">Mã: {{ $item->product->code }}
-                                                                </p>
-                                                            @endif
+                                                            <strong>{{ $item->product_name }}</strong>
                                                         </div>
                                                     </td>
                                                     <td>{{ number_format($item->price) }} đ</td>

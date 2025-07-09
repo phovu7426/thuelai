@@ -16,9 +16,9 @@
                             @if ($slide->link)
                                 <a href="{{ $slide->link }}" class="btn btn-primary me-2">Xem chi tiết</a>
                             @else
-                                <a href="{{ url('/stone/products') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
+                                <a href="{{ route('stone.products.index') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
                             @endif
-                            <a href="{{ url('/stone/contact') }}" class="btn btn-outline-light">Liên hệ ngay</a>
+                            <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-light">Liên hệ ngay</a>
                         </div>
                     </div>
                 @endforeach
@@ -30,8 +30,8 @@
                         <h1>Đá tự nhiên cao cấp</h1>
                         <p>Chuyên cung cấp và thi công đá tự nhiên cao cấp với chất lượng tốt nhất, mẫu mã đa dạng và giá cả
                             cạnh tranh.</p>
-                        <a href="{{ url('/stone/products') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
-                        <a href="{{ url('/stone/contact') }}" class="btn btn-outline-light">Liên hệ ngay</a>
+                        <a href="{{ route('stone.products.index') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
+                        <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-light">Liên hệ ngay</a>
                     </div>
                 </div>
                 <div class="swiper-slide hero-slide"
@@ -39,8 +39,8 @@
                     <div class="hero-content">
                         <h1>Đá Marble cao cấp</h1>
                         <p>Đá Marble nhập khẩu từ các mỏ đá nổi tiếng trên thế giới như Ý, Tây Ban Nha, Brazil...</p>
-                        <a href="{{ url('/stone/products') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
-                        <a href="{{ url('/stone/contact') }}" class="btn btn-outline-light">Liên hệ ngay</a>
+                        <a href="{{ route('stone.products.index') }}" class="btn btn-primary me-2">Xem sản phẩm</a>
+                        <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-light">Liên hệ ngay</a>
                     </div>
                 </div>
                 <div class="swiper-slide hero-slide"
@@ -49,8 +49,8 @@
                         <h1>Thi công chuyên nghiệp</h1>
                         <p>Đội ngũ thợ lành nghề với nhiều năm kinh nghiệm, đảm bảo thi công đúng kỹ thuật, chính xác và
                             thẩm mỹ cao.</p>
-                        <a href="{{ url('/stone/projects') }}" class="btn btn-primary me-2">Xem dự án</a>
-                        <a href="{{ url('/stone/contact') }}" class="btn btn-outline-light">Liên hệ ngay</a>
+                        <a href="{{ route('stone.projects.index') }}" class="btn btn-primary me-2">Xem dự án</a>
+                        <a href="{{ route('stone.contact.index') }}" class="btn btn-outline-light">Liên hệ ngay</a>
                     </div>
                 </div>
             @endif
@@ -116,13 +116,13 @@
                     @foreach ($categories as $category)
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="category-card shadow-sm rounded overflow-hidden">
-                                <img src="{{ $category->image ? asset($category->image) : asset('images/default/default_image.png') }}" 
+                                <img src="{{ get_image_url($category->image) }}" 
                                     alt="{{ $category->name }}" class="img-fluid w-100" style="height: 250px; object-fit: cover;">
                                 <div class="overlay">
                                     <div class="category-content">
                                         <h3 class="category-title">{{ $category->name }}</h3>
                                         <p class="text-white small mb-3">{{ \Illuminate\Support\Str::limit($category->description, 80) }}</p>
-                                        <a href="{{ url('/stone/products/category/' . $category->slug) }}"
+                                        <a href="{{ route('stone.products.category', $category->slug) }}"
                                             class="btn btn-sm btn-primary">Xem sản phẩm</a>
                                     </div>
                                 </div>
@@ -137,7 +137,7 @@
             </div>
             
             <div class="text-center mt-4">
-                <a href="{{ url('/stone/products') }}" class="btn btn-primary">Xem tất cả danh mục</a>
+                <a href="{{ route('stone.products.index') }}" class="btn btn-primary">Xem tất cả danh mục</a>
             </div>
         </div>
     </section>
@@ -155,7 +155,7 @@
                     @foreach ($featuredProducts as $product)
                         <div class="col-lg-3 col-md-6">
                             <div class="product-card card h-100">
-                                <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top"
+                                <img src="{{ get_image_url($product->main_image) }}" class="card-img-top"
                                     alt="{{ $product->name }}">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $product->name }}</h5>
@@ -163,7 +163,7 @@
                                 </div>
                                 <div class="card-footer d-flex justify-content-between align-items-center">
                                     <span class="text-primary fw-bold">{{ $product->material->name ?? '' }}</span>
-                                    <a href="{{ url('/stone/products/' . $product->slug) }}"
+                                    <a href="{{ route('stone.products.show', $product->slug) }}"
                                         class="btn btn-sm btn-outline-primary">Chi tiết</a>
                                 </div>
                             </div>
@@ -177,7 +177,7 @@
             </div>
 
             <div class="text-center mt-5">
-                <a href="{{ url('/stone/products') }}" class="btn btn-primary">Xem tất cả sản phẩm</a>
+                <a href="{{ route('stone.products.index') }}" class="btn btn-primary">Xem tất cả sản phẩm</a>
             </div>
         </div>
     </section>
@@ -197,18 +197,21 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="row g-0">
                                     <div class="col-md-5">
-                                        <img src="{{ asset('images/default/default_image.png') }}"
-                                            class="img-fluid h-100" style="object-fit: cover;"
-                                            alt="{{ $application->name }}">
+                                        <div style="height: 250px; overflow: hidden;">
+                                            <img src="{{ get_image_url($application->image) }}"
+                                                class="w-100 h-100"
+                                                style="object-fit: cover;"
+                                                alt="{{ $application->name }}">
+                                        </div>
                                     </div>
                                     <div class="col-md-7">
-                                        <div class="card-body">
+                                        <div class="card-body h-100 d-flex flex-column">
                                             <h5 class="card-title">{{ $application->name }}</h5>
-                                            <p class="card-text">
+                                            <p class="card-text flex-grow-1">
                                                 {{ \Illuminate\Support\Str::limit($application->description ?? 'Không có mô tả', 100) }}
                                             </p>
-                                            <a href="{{ url('/stone/applications/' . $application->slug) }}"
-                                                class="btn btn-sm btn-outline-primary">Tìm hiểu thêm</a>
+                                            <a href="{{ route('stone.applications.show', $application->slug) }}"
+                                                class="btn btn-sm btn-outline-primary align-self-start mt-2">Tìm hiểu thêm</a>
                                         </div>
                                     </div>
                                 </div>
@@ -237,14 +240,14 @@
                     @foreach ($featuredProjects as $project)
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100 border-0 shadow-sm overflow-hidden">
-                                <img src="{{ asset('images/default/default_image.png') }}" class="card-img-top"
+                                <img src="{{ get_image_url($project->main_image) }}" class="card-img-top"
                                     alt="{{ $project->name }}" style="height: 250px; object-fit: cover;">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $project->name }}</h5>
                                     <p class="card-text">
                                         {{ \Illuminate\Support\Str::limit($project->description ?? 'Không có mô tả', 100) }}
                                     </p>
-                                    <a href="{{ url('/stone/projects/' . $project->slug) }}"
+                                    <a href="{{ route('stone.projects.show', $project->slug) }}"
                                         class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
                                 </div>
                             </div>
@@ -258,7 +261,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="{{ url('/stone/projects') }}" class="btn btn-primary">Xem tất cả dự án</a>
+                <a href="{{ route('stone.projects.index') }}" class="btn btn-primary">Xem tất cả dự án</a>
             </div>
         </div>
     </section>
@@ -286,7 +289,7 @@
                                         {{ $showroom->phone }}</p>
                                     <p class="mb-3"><i class="fas fa-envelope text-primary me-2"></i>
                                         {{ $showroom->email }}</p>
-                                    <a href="{{ url('/stone/showrooms/' . $showroom->slug) }}"
+                                    <a href="{{ route('stone.showrooms.show', $showroom->slug) }}"
                                         class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
                                 </div>
                             </div>
@@ -303,7 +306,7 @@
 
     <!-- CTA Section -->
     <section class="section bg-dark text-white"
-        style="background-image: url('{{ asset('images/default/default_image.png') }}'); background-size: cover; background-position: center; position: relative;">
+        style="background-image: url('{{ get_image_url(null, 'images/default/default_image.png') }}'); background-size: cover; background-position: center; position: relative;">
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7);">
         </div>
         <div class="container position-relative">
@@ -311,7 +314,7 @@
                 <div class="col-lg-8 mx-auto text-center">
                     <h2 class="mb-4">Bạn cần tư vấn về sản phẩm đá tự nhiên?</h2>
                     <p class="lead mb-4">Hãy liên hệ ngay với chúng tôi để được tư vấn chi tiết và báo giá tốt nhất.</p>
-                    <a href="{{ url('/stone/contact') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
+                    <a href="{{ route('stone.contact.index') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
                 </div>
             </div>
         </div>

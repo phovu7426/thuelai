@@ -1,6 +1,6 @@
 @extends('stone.layouts.main')
 
-@section('page_title', 'Giới thiệu - Thanh Tùng Stone')
+@section('page_title', 'Giới thiệu - Cơ sở sản xuất đá ốp lát DN')
 
 @section('content')
     <!-- Hero Section -->
@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="mb-4">Giới thiệu về Thanh Tùng Stone</h1>
+                    <h1 class="mb-4">Giới thiệu về Cơ sở sản xuất đá ốp lát DN</h1>
                     <p class="lead">Chuyên cung cấp và thi công đá tự nhiên cao cấp với chất lượng tốt nhất, mẫu mã đa dạng
                         và giá cả cạnh tranh.</p>
                 </div>
@@ -26,10 +26,10 @@
                 </div>
                 <div class="col-lg-6">
                     <h2 class="mb-4">Về chúng tôi</h2>
-                    <p>Thanh Tùng Stone là đơn vị hàng đầu trong lĩnh vực cung cấp và thi công đá tự nhiên cao cấp tại Việt
+                    <p>Cơ sở sản xuất đá ốp lát DN là đơn vị hàng đầu trong lĩnh vực cung cấp và thi công đá tự nhiên cao cấp tại Việt
                         Nam. Với hơn 10 năm kinh nghiệm, chúng tôi tự hào mang đến cho khách hàng những sản phẩm đá tự nhiên
                         chất lượng cao, mẫu mã đa dạng với giá cả cạnh tranh nhất thị trường.</p>
-                    <p>Đá tự nhiên từ Thanh Tùng Stone được nhập khẩu từ các mỏ đá nổi tiếng trên thế giới như Ý, Tây Ban
+                    <p>Đá tự nhiên từ Cơ sở sản xuất đá ốp lát DN được nhập khẩu từ các mỏ đá nổi tiếng trên thế giới như Ý, Tây Ban
                         Nha, Brazil, Ấn Độ... với các loại đá marble, granite, travertine, onyx... đáp ứng mọi nhu cầu thiết
                         kế và trang trí.</p>
                 </div>
@@ -88,7 +88,7 @@
                         </div>
                         <div>
                             <h4>Đa dạng sản phẩm</h4>
-                            <p>Thanh Tùng Stone cung cấp đầy đủ các loại đá tự nhiên cao cấp với hàng nghìn mẫu mã, màu sắc
+                            <p>Cơ sở sản xuất đá ốp lát DN cung cấp đầy đủ các loại đá tự nhiên cao cấp với hàng nghìn mẫu mã, màu sắc
                                 và hoa văn khác nhau, đáp ứng mọi nhu cầu thiết kế và trang trí.</p>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                         </div>
                         <div>
                             <h4>Bảo hành dài hạn</h4>
-                            <p>Tất cả sản phẩm của Thanh Tùng Stone đều được bảo hành dài hạn, mang đến sự an tâm tuyệt đối
+                            <p>Tất cả sản phẩm của Cơ sở sản xuất đá ốp lát DN đều được bảo hành dài hạn, mang đến sự an tâm tuyệt đối
                                 cho khách hàng.</p>
                         </div>
                     </div>

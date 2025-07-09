@@ -112,27 +112,14 @@
                                                 <tr>
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            @if ($item->product && $item->product->main_image)
-                                                                <img src="{{ asset('storage/' . $item->product->main_image) }}"
-                                                                    alt="{{ $item->product->name }}"
-                                                                    class="img-thumbnail mr-3"
-                                                                    style="width: 60px; height: 60px; object-fit: cover;">
-                                                            @else
-                                                                <img src="{{ asset('images/default/default_image.png') }}"
-                                                                    alt="{{ $item->product ? $item->product->name : 'Sản phẩm' }}"
-                                                                    class="img-thumbnail mr-3"
-                                                                    style="width: 60px; height: 60px; object-fit: cover;">
-                                                            @endif
+                                                            <img src="{{ asset('images/default/default_image.png') }}"
+                                                                alt="{{ $item->product_name }}"
+                                                                class="img-thumbnail mr-3"
+                                                                style="width: 60px; height: 60px; object-fit: cover;">
                                                             <div>
                                                                 <h6 class="mb-0">
-                                                                    {{ $item->product ? $item->product->name : 'Sản phẩm không còn tồn tại' }}
+                                                                    {{ $item->product_name }}
                                                                 </h6>
-                                                                @if ($item->product)
-                                                                    <small class="text-muted">Mã:
-                                                                        {{ $item->product->code }}</small><br>
-                                                                    <a href="{{ route('stone.products.show', $item->product->id) }}"
-                                                                        class="text-primary">Xem sản phẩm</a>
-                                                                @endif
                                                             </div>
                                                         </div>
                                                     </td>

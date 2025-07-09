@@ -95,13 +95,15 @@
                                         <th>Email</th>
                                         <th>Số điện thoại</th>
                                         <th>Tiêu đề</th>
+                                        <th>Nội dung</th>
                                         <th>Trạng thái</th>
+                                        <th>Đã gửi mail</th>
                                         <th>Ngày gửi</th>
                                         <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($contacts as $contact)
+                                    @forelse ($contacts as $contact)
                                         <tr class="{{ $contact->is_read ? '' : 'table-warning' }}">
                                             <td>
                                                 <div class="form-check">
@@ -115,10 +117,26 @@
                                             <td>{{ $contact->phone ?? 'N/A' }}</td>
                                             <td>{{ $contact->subject ?? 'Không có tiêu đề' }}</td>
                                             <td>
+                                                @if($contact->message)
+                                                    <div class="text-truncate" style="max-width: 200px;" title="{{ $contact->message }}">
+                                                        {{ \Illuminate\Support\Str::limit($contact->message, 50) }}
+                                                    </div>
+                                                @else
+                                                    <span class="text-muted">Không có nội dung</span>
+                                                @endif
+                                            </td>
+                                            <td>
                                                 @if ($contact->is_read)
                                                     <span class="badge bg-success">Đã đọc</span>
                                                 @else
                                                     <span class="badge bg-warning">Chưa đọc</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($contact->mail_sent)
+                                                    <span class="badge bg-success">Đã gửi</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Chưa gửi</span>
                                                 @endif
                                             </td>
                                             <td>{{ $contact->created_at->format('d/m/Y H:i') }}</td>
@@ -133,13 +151,17 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="11" class="text-center">Không có liên hệ nào</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="mt-3">
-                            {{ $contacts->links() }}
+                        <div class="mt-4 d-flex justify-content-center">
+                            {{ $contacts->withQueryString()->links('vendor.pagination.bootstrap-4') }}
                         </div>
                     </div>
                 </div>

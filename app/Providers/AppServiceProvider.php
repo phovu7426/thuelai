@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
+use App\Models\ContactInfo;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,19 +30,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Use Bootstrap for pagination
-        Paginator::useBootstrap();
-
-        // Add custom debug directive
-        Blade::directive('debug', function ($expression) {
-            return "<?php if(config('app.debug')): ?><pre><?php print_r($expression); ?></pre><?php endif; ?>";
-        });
-
-        // Chia sẻ biến contactInfo cho tất cả view, chỉ khi bảng tồn tại
-        $contactInfo = null;
-        if (Schema::hasTable('contact_infos')) {
-            $contactInfo = \App\Models\ContactInfo::first();
+        Schema::defaultStringLength(191);
+        
+        try {
+            // Chỉ thực hiện nếu kết nối thành công
+            if (DB::connection()->getPdo() && Schema::hasTable('contact_infos')) {
+                View::composer('stone.layouts.main', function ($view) {
+                    $contactInfo = ContactInfo::first();
+                    $view->with('contactInfo', $contactInfo);
+                });
+            }
+        } catch (\Exception $e) {
+            // Không có DB → không thực hiện gì, chỉ log hoặc im lặng
+            Log::warning('DB not ready: ' . $e->getMessage());
         }
-        view()->share('contactInfo', $contactInfo);
     }
 }

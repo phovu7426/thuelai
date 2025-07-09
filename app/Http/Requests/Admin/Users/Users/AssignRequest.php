@@ -18,7 +18,7 @@ class AssignRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'roles' => 'required|array',
+            'roles' => 'array', // Cho phép mảng rỗng
         ];
     }
 
@@ -29,7 +29,6 @@ class AssignRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'roles.required' => 'Vai trò không được để trống.',
             'roles.array' => 'Định dạng không hợp lệ',
         ];
     }

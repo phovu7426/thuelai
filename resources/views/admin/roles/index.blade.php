@@ -36,9 +36,9 @@
                                 </form>
                             </div>
                             <div class="col-sm-3 d-flex">
-                                @canany(['manage_roles', 'create_roles'])
+                                @can('access_roles')
                                     <a href="{{ route('admin.roles.create') }}" class="btn btn-primary ms-auto">Thêm Vai Trò</a>
-                                @endcanany
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -77,17 +77,14 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @canany(['manage_roles', 'edit_roles'])
+                                        @can('access_roles')
                                             <a href="{{ route('admin.roles.edit', $role->id ?? '') }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                        @endcanany
-
-                                        @canany(['manage_roles', 'delete_roles'])
                                             <form action="{{ route('admin.roles.delete', $role->id ?? '') }}" method="POST" style="display:inline-block;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
                                             </form>
-                                        @endcanany
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

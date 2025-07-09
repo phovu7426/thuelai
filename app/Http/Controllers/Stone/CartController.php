@@ -43,12 +43,31 @@ class CartController extends Controller
         $product = StoneProduct::findOrFail($request->product_id);
         \Log::info('Product found:', $product->toArray());
         
+        $quantity = $request->quantity ?? 1;
+        
+        // Kiểm tra số lượng trong kho
+        if ($product->quantity < $quantity) {
+            session()->flash('error', 'Số lượng sản phẩm trong kho không đủ. Hiện chỉ còn ' . $product->quantity . ' sản phẩm.');
+            return redirect()->back();
+        }
+        
+        // Kiểm tra số lượng trong giỏ hàng hiện tại
+        $cartItem = Cart::get($product->id);
+        if ($cartItem) {
+            $totalQuantity = $cartItem->quantity + $quantity;
+            if ($totalQuantity > $product->quantity) {
+                session()->flash('error', 'Tổng số lượng sản phẩm vượt quá số lượng trong kho. Hiện chỉ còn ' . $product->quantity . ' sản phẩm.');
+                return redirect()->back();
+            }
+        }
+        
         try {
             Cart::add([
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
-                'quantity' => $request->quantity ?? 1,
+                'quantity' => $quantity,
+                'image' => $product->main_image,
                 'attributes' => [
                     'image' => $product->main_image
                 ],
@@ -71,6 +90,21 @@ class CartController extends Controller
      */
     public function update(Request $request)
     {
+        $cartItem = Cart::get($request->id);
+        if (!$cartItem) {
+            return redirect()->route('stone.cart.index')->with('error', 'Không tìm thấy sản phẩm trong giỏ hàng.');
+        }
+        
+        $product = StoneProduct::find($cartItem->associatedModel->id);
+        if (!$product) {
+            return redirect()->route('stone.cart.index')->with('error', 'Không tìm thấy sản phẩm.');
+        }
+        
+        // Kiểm tra số lượng trong kho
+        if ($product->quantity < $request->quantity) {
+            return redirect()->route('stone.cart.index')->with('error', 'Số lượng sản phẩm trong kho không đủ. Hiện chỉ còn ' . $product->quantity . ' sản phẩm.');
+        }
+
         Cart::update($request->id, [
             'quantity' => [
                 'relative' => false,

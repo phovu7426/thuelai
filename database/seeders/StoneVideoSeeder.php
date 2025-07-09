@@ -15,8 +15,8 @@ class StoneVideoSeeder extends Seeder
     {
         $videos = [
             [
-                'title' => 'Video giới thiệu công ty Thanh Thanh Tùng',
-                'description' => 'Video giới thiệu về công ty TNHH Thanh Thanh Tùng, nhà sản xuất và cung cấp đá ốp lát, đá mỹ nghệ hàng đầu Việt Nam.',
+                'title' => 'Video giới thiệu Cơ sở sản xuất đá ốp lát DN',
+                'description' => 'Video giới thiệu về Cơ sở sản xuất đá ốp lát DN, nhà sản xuất và cung cấp đá ốp lát, đá mỹ nghệ hàng đầu Việt Nam.',
                 'video_url' => 'https://www.youtube.com/watch?v=example1',
                 'thumbnail' => 'stone_videos/video-gioi-thieu-cong-ty.jpg',
                 'is_featured' => 1,

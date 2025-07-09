@@ -11,7 +11,7 @@
                 @foreach ($projects as $project)
                     <div class="col-md-4 mb-4">
                         <div class="card">
-                            <img src="{{ $project->image ? asset($project->image) : asset('images/default/default_image.png') }}"
+                            <img src="{{ get_image_url($project->main_image) }}"
                                 class="card-img-top" alt="{{ $project->name }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ $project->name }}</h5>

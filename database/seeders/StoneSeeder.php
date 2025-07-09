@@ -129,21 +129,21 @@ class StoneSeeder extends Seeder
                 'slug' => 'showroom-hai-chau',
                 'address' => '123 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng',
                 'phone' => '0123.456.789',
-                'email' => 'haichau@thanhtungstone.com'
+                'email' => 'haichau@cosodaopltdn.com'
             ],
             [
                 'name' => 'Showroom Thanh Khê',
                 'slug' => 'showroom-thanh-khe',
                 'address' => '456 Lê Duẩn, Q. Thanh Khê, Đà Nẵng',
                 'phone' => '0987.654.321',
-                'email' => 'thanhkhe@thanhtungstone.com'
+                'email' => 'thanhkhe@cosodaopltdn.com'
             ],
             [
                 'name' => 'Showroom Liên Chiểu',
                 'slug' => 'showroom-lien-chieu',
                 'address' => '789 Nguyễn Tất Thành, Q. Liên Chiểu, Đà Nẵng',
                 'phone' => '0909.123.456',
-                'email' => 'lienchieu@thanhtungstone.com'
+                'email' => 'lienchieu@cosodaopltdn.com'
             ],
         ];
         

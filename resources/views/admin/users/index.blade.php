@@ -32,9 +32,9 @@
                                 </form>
                             </div>
                             <div class="col-sm-3 d-flex">
-                                @canany(['create_users'])
+                                @can('access_users')
                                     <a href="{{ route('admin.users.create') }}" class="btn btn-primary ms-auto">Thêm Tài khoản</a>
-                                @endcanany
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -75,11 +75,11 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @canany(['assign_users'])
+                                        @can('access_users')
                                             <a href="{{ route('admin.users.showAssignRolesForm', $user->id ?? '') }}" title="Gán vai trò"
                                                class="btn btn-sm btn-warning"><i class="fas fa-user-tag"></i></a>
-                                        @endcanany
-                                        @canany(['edit_users'])
+                                        @endcan
+                                        @can('access_users')
                                             <a href="{{ route('admin.profiles.edit', $user->id ?? '') }}"
                                                class="btn btn-sm btn-warning" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
                                             <form action="{{ route('admin.users.toggleBlock', $user->id ?? '') }}" method="POST"
@@ -90,8 +90,8 @@
                                                     <i class="bi {{ !empty($user->is_blocked) ? 'bi-unlock-fill' : 'bi-lock-fill' }}"></i>
                                                 </button>
                                             </form>
-                                        @endcanany
-                                        @canany(['delete_users'])
+                                        @endcan
+                                        @can('access_users')
                                             <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
                                                   style="display:inline;">
                                                 @csrf
@@ -99,7 +99,7 @@
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </form>
-                                        @endcanany
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

@@ -76,7 +76,7 @@ class BaseService
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'name', int $limit = 10): JsonResponse
+    public function autocomplete(string $term = '', string $column = 'name', int $limit = 50): JsonResponse
     {
         return $this->getRepository()->autocomplete($term, $column, $limit);
     }

@@ -232,8 +232,8 @@
                         if (response.success === true) {
                             toastr.success(response.message || 'Đăng ký thành công!');
                             setTimeout(function() {
-                                window.location.href = "{{ url('/dashboard') }}";
-                            }, 1000);
+                                window.location.href = "{{ url('/') }}";
+                            }, 3000);
                         } else {
                             toastr.error(response.message || 'Đăng ký thất bại!');
                         }

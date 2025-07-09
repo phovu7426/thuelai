@@ -99,6 +99,16 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
 
+            // Kiểm tra số lượng trong kho trước khi tạo đơn hàng
+            foreach ($request->products as $productData) {
+                $product = StoneProduct::findOrFail($productData['id']);
+                $quantity = intval($productData['quantity']);
+                
+                if ($product->quantity < $quantity) {
+                    throw new \Exception("Sản phẩm '{$product->name}' không đủ số lượng trong kho. Hiện chỉ còn {$product->quantity} sản phẩm.");
+                }
+            }
+
             // Create order
             $order = new Order();
             $order->user_id = $request->user_id;
@@ -145,6 +155,12 @@ class OrderController extends Controller
                         $price = $product->price;
 
                         $totalAmount += $price * $quantity;
+                        
+                        // Trừ số lượng trong kho nếu đơn hàng không ở trạng thái hủy
+                        if ($order->status !== Order::STATUS_CANCELLED) {
+                            $product->quantity -= $quantity;
+                            $product->save();
+                        }
                     }
                 }
             }
@@ -165,7 +181,7 @@ class OrderController extends Controller
 
                         $orderItem = new OrderItem();
                         $orderItem->order_id = $order->id;
-                        $orderItem->stone_product_id = $product->id;
+                        $orderItem->product_id = $product->id; // Thêm product_id
                         $orderItem->product_name = $product->name;
                         $orderItem->quantity = $quantity;
                         $orderItem->price = $price;
@@ -192,7 +208,7 @@ class OrderController extends Controller
     public function show($id)
     {
         try {
-            $order = Order::with(['items.product', 'user'])->findOrFail($id);
+            $order = Order::with(['items', 'user'])->findOrFail($id);
 
             // Đảm bảo tất cả các items đều có subtotal
             foreach ($order->items as $item) {
@@ -213,7 +229,7 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        $order = Order::with(['items.product', 'user'])->findOrFail($id);
+        $order = Order::with(['items', 'user'])->findOrFail($id);
         $users = User::all();
         $products = StoneProduct::all();
 
@@ -336,39 +352,57 @@ class OrderController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
+        $request->validate([
+            'status' => 'required|in:' . implode(',', array_keys(Order::getStatuses()))
+        ]);
+
         try {
-            $order = Order::findOrFail($id);
-            $newStatus = $request->input('status');
+            DB::beginTransaction();
 
-            // Validate the new status
-            if (!in_array($newStatus, array_keys(Order::getStatuses()))) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Trạng thái không hợp lệ'
-                ], 400);
+            $order = Order::with('items')->findOrFail($id);
+            $oldStatus = $order->status;
+            $newStatus = $request->status;
+
+            // Nếu đơn hàng đang bị hủy và được cập nhật sang trạng thái khác
+            if ($oldStatus === Order::STATUS_CANCELLED && $newStatus !== Order::STATUS_CANCELLED) {
+                // Kiểm tra số lượng trong kho
+                foreach ($order->items as $item) {
+                    $product = StoneProduct::find($item->product_id);
+                    if ($product && $product->quantity < $item->quantity) {
+                        throw new \Exception("Không thể khôi phục đơn hàng. Sản phẩm '{$product->name}' không đủ số lượng trong kho. Hiện chỉ còn {$product->quantity} sản phẩm.");
+                    }
+                }
+
+                // Trừ số lượng trong kho
+                foreach ($order->items as $item) {
+                    $product = StoneProduct::find($item->product_id);
+                    if ($product) {
+                        $product->quantity -= $item->quantity;
+                        $product->save();
+                    }
+                }
+            }
+            // Nếu đơn hàng đang ở trạng thái khác và được hủy
+            elseif ($oldStatus !== Order::STATUS_CANCELLED && $newStatus === Order::STATUS_CANCELLED) {
+                // Hoàn lại số lượng vào kho
+                foreach ($order->items as $item) {
+                    $product = StoneProduct::find($item->product_id);
+                    if ($product) {
+                        $product->quantity += $item->quantity;
+                        $product->save();
+                    }
+                }
             }
 
-            // Check if the status transition is allowed
-            if (!$order->canTransitionTo($newStatus)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không thể chuyển sang trạng thái này'
-                ], 400);
-            }
-
-            // Update the status
             $order->status = $newStatus;
             $order->save();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cập nhật trạng thái thành công'
-            ]);
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Trạng thái đơn hàng đã được cập nhật thành công.');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
     }
 }

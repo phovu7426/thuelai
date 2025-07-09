@@ -16,9 +16,11 @@ class StoneContact extends Model
         'subject',
         'message',
         'is_read',
+        'mail_sent',
     ];
 
     protected $casts = [
         'is_read' => 'boolean',
+        'mail_sent' => 'boolean',
     ];
 } 

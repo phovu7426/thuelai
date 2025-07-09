@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Stone\HomeController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,7 @@ class StoneProduct extends Model
         'stone_surface_id',
         'stone_color_id',
         'price',
+        'quantity',
         'sale_price',
         'discount_price',
         'discount_percent',
@@ -49,6 +51,22 @@ class StoneProduct extends Model
         'specifications' => 'array',
         'is_featured' => 'boolean',
     ];
+    
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::saved(function () {
+            HomeController::clearHomeCache();
+        });
+        
+        static::deleted(function () {
+            HomeController::clearHomeCache();
+        });
+    }
 
     /**
      * Lấy danh mục của sản phẩm

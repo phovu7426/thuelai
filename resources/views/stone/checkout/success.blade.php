@@ -50,7 +50,7 @@
                                 <tbody>
                                     @foreach ($order->items as $item)
                                         <tr>
-                                            <td>{{ $item->product->name }}</td>
+                                            <td>{{ $item->product_name }}</td>
                                             <td>{{ number_format((float) $item->price) }} đ</td>
                                             <td>{{ $item->quantity }}</td>
                                             <td class="text-right">{{ number_format((float) $item->subtotal) }} đ</td>
