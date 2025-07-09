@@ -103,7 +103,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($contacts as $contact)
+                                    @forelse ($contacts as $contact)
                                         <tr class="{{ $contact->is_read ? '' : 'table-warning' }}">
                                             <td>
                                                 <div class="form-check">
@@ -151,13 +151,17 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="11" class="text-center">Không có liên hệ nào</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="mt-3">
-                            {{ $contacts->links() }}
+                        <div class="mt-4 d-flex justify-content-center">
+                            {{ $contacts->withQueryString()->links('vendor.pagination.bootstrap-4') }}
                         </div>
                     </div>
                 </div>
