@@ -47,8 +47,9 @@ class ContactController extends Controller
         }
         if ($adminEmail) {
             try {
-                \App\Jobs\SendContactNotification::dispatch($adminEmail, $contactData);
-                // $contact->update(['mail_sent' => true]); // Xóa dòng này, cập nhật trong job
+                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\Stone\ContactNotification($contactData));
+                // Đánh dấu đã gửi mail
+                $contact->update(['mail_sent' => true]);
             } catch (\Throwable $e) {
                 // Có thể log lỗi nếu cần
             }
