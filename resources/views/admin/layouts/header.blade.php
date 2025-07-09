@@ -60,7 +60,7 @@
                     />
                     <span class="d-none d-md-inline">{{ Auth::user()->email ?? '' }}</span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                {{-- <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                     <!--begin::User Image-->
                     <li class="user-header text-bg-primary">
                         <img
@@ -91,7 +91,7 @@
                         <a href="{{ route('logout') }}" class="btn btn-default btn-flat float-end">Sign out</a>
                     </li>
                     <!--end::Menu Footer-->
-                </ul>
+                </ul> --}}
             </li>
             <!--end::User Menu Dropdown-->
         </ul>
