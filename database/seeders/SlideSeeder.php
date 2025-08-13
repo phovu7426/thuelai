@@ -14,31 +14,31 @@ class SlideSeeder extends Seeder
     {
         $slides = [
             [
-                'title' => 'Đá tự nhiên cao cấp',
-                'description' => 'Chuyên cung cấp và thi công đá tự nhiên cao cấp với chất lượng tốt nhất, mẫu mã đa dạng và giá cả cạnh tranh.',
+                'title' => 'Dịch vụ lái xe chuyên nghiệp',
+                'description' => 'Cung cấp dịch vụ lái xe thuê chuyên nghiệp, an toàn và đáng tin cậy cho mọi nhu cầu di chuyển.',
                 'image' => 'slides/slide-1.jpg',
-                'link' => '/stone/products',
+                'link' => '/driver/services',
                 'status' => 1,
             ],
             [
-                'title' => 'Đá Marble cao cấp',
-                'description' => 'Đá Marble nhập khẩu từ các mỏ đá nổi tiếng trên thế giới như Ý, Tây Ban Nha, Brazil...',
+                'title' => 'Lái xe có kinh nghiệm',
+                'description' => 'Đội ngũ lái xe có kinh nghiệm, được đào tạo chuyên nghiệp và có giấy phép lái xe hợp lệ.',
                 'image' => 'slides/slide-2.jpg',
-                'link' => '/stone/products',
+                'link' => '/driver/services',
                 'status' => 1,
             ],
             [
-                'title' => 'Thi công chuyên nghiệp',
-                'description' => 'Đội ngũ thợ lành nghề với nhiều năm kinh nghiệm, đảm bảo thi công đúng kỹ thuật, chính xác và thẩm mỹ cao.',
+                'title' => 'Dịch vụ đa dạng',
+                'description' => 'Cung cấp nhiều loại dịch vụ lái xe khác nhau: lái xe gia đình, lái xe công ty, lái xe du lịch...',
                 'image' => 'slides/slide-3.jpg',
-                'link' => '/stone/projects',
+                'link' => '/driver/services',
                 'status' => 1,
             ],
             [
-                'title' => 'Showroom đa dạng',
-                'description' => 'Ghé thăm showroom để trải nghiệm sản phẩm đá tự nhiên cao cấp với nhiều mẫu mã đa dạng.',
+                'title' => 'Đặt dịch vụ dễ dàng',
+                'description' => 'Quy trình đặt dịch vụ đơn giản, nhanh chóng và thuận tiện cho khách hàng.',
                 'image' => 'slides/slide-4.jpg',
-                'link' => '/stone/showrooms',
+                'link' => '/driver/services',
                 'status' => 1,
             ],
         ];

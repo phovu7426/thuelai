@@ -32,7 +32,8 @@ class OrderItem extends Model
      */
     public function product()
     {
-        return $this->belongsTo(StoneProduct::class, 'product_id');
+        // Product relationship removed - stone products no longer exist
+        return null;
     }
 
     /**

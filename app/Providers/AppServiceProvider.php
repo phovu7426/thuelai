@@ -35,10 +35,7 @@ class AppServiceProvider extends ServiceProvider
         try {
             // Chỉ thực hiện nếu kết nối thành công
             if (DB::connection()->getPdo() && Schema::hasTable('contact_infos')) {
-                View::composer('stone.layouts.main', function ($view) {
-                    $contactInfo = ContactInfo::first();
-                    $view->with('contactInfo', $contactInfo);
-                });
+                // Stone layout composer removed - stone views no longer exist
             }
         } catch (\Exception $e) {
             // Không có DB → không thực hiện gì, chỉ log hoặc im lặng

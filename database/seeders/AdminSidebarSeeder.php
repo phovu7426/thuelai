@@ -37,18 +37,7 @@ class AdminSidebarSeeder extends Seeder
             'roles' => 'Quản lý vai trò',
             'permissions' => 'Quản lý quyền',
             'slides' => 'Quản lý slide',
-            'stone.categories' => 'Danh mục đá',
-            'stone.materials' => 'Chất liệu đá',
-            'stone.surfaces' => 'Bề mặt đá',
-            'stone.applications' => 'Ứng dụng đá',
-            'stone.products' => 'Sản phẩm đá',
-            'stone.projects' => 'Dự án đá',
-            'stone.showrooms' => 'Showroom',
-            'stone.videos' => 'Video',
-            'stone.orders' => 'Đơn hàng',
-            'stone.contacts' => 'Liên hệ',
             'contact-info' => 'Cấu hình hệ thống',
-            'stone.inventory' => 'Quản lý kho hàng',
         ];
 
         $permissionIds = [];

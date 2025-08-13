@@ -89,11 +89,11 @@
     $totalUsers = $totalUsers ?? \App\Models\User::count() ?? 0;
     $newUsers = $newUsers ?? \App\Models\User::where('created_at', '>=', now()->subDays(7))->count() ?? 0;
     
-    $totalProducts = $totalProducts ?? \App\Models\StoneProduct::count() ?? 0;
-    $newProducts = $newProducts ?? \App\Models\StoneProduct::where('created_at', '>=', now()->subDays(30))->count() ?? 0;
-    
-    $totalProjects = $totalProjects ?? \App\Models\StoneProject::count() ?? 0;
-    $newProjects = $newProjects ?? \App\Models\StoneProject::where('created_at', '>=', now()->subDays(30))->count() ?? 0;
+            $totalProducts = $totalProducts ?? 0;
+        $newProducts = $newProducts ?? 0;
+        
+        $totalProjects = $totalProjects ?? 0;
+        $newProjects = $newProjects ?? 0;
     
     // Chỉ đếm đơn hàng thành công
     $totalOrders = $totalOrders ?? \App\Models\Order::where('status', 'completed')->count() ?? 0;
@@ -147,10 +147,10 @@
     
     // Hoạt động gần đây
     $recentOrders = $recentOrders ?? \App\Models\Order::latest()->take(3)->get() ?? collect([]);
-    $recentProducts = $recentProducts ?? \App\Models\StoneProduct::latest()->take(3)->get() ?? collect([]);
-    $recentProjects = $recentProjects ?? \App\Models\StoneProject::latest()->take(2)->get() ?? collect([]);
-    
-    $unreadContacts = $unreadContacts ?? \App\Models\StoneContact::where('is_read', 0)->count() ?? 0;
+            $recentProducts = $recentProducts ?? collect([]);
+        $recentProjects = $recentProjects ?? collect([]);
+        
+        $unreadContacts = $unreadContacts ?? 0;
 @endphp
 
 <div class="app-content">
@@ -192,7 +192,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-white-50">Sản phẩm đá</div>
+                                <div class="text-white-50">Dịch vụ lái xe</div>
                                 <div class="fs-3 fw-bold">{{ $totalProducts }}</div>
                                 <div class="small text-white-50">
                                     <i class="bi bi-arrow-up"></i> 
@@ -200,12 +200,12 @@
                                 </div>
                             </div>
                             <div class="stat-icon bg-white text-success">
-                                <i class="bi bi-gem"></i>
+                                <i class="bi bi-car-front"></i>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <a href="{{ route('admin.stone.products.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                        <a href="{{ route('admin.driver.services.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                         <div class="text-white"><i class="bi bi-chevron-right"></i></div>
                     </div>
                 </div>
@@ -217,7 +217,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-white-50">Dự án</div>
+                                <div class="text-white-50">Đơn hàng lái xe</div>
                                 <div class="fs-3 fw-bold">{{ $totalProjects }}</div>
                                 <div class="small text-white-50">
                                     <i class="bi bi-arrow-up"></i> 
@@ -230,7 +230,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <a href="{{ route('admin.stone.projects.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                        <a href="{{ route('admin.driver.services.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                         <div class="text-white"><i class="bi bi-chevron-right"></i></div>
                     </div>
                 </div>
@@ -242,7 +242,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-white-50">Đơn hàng</div>
+                                <div class="text-white-50">Liên hệ</div>
                                 <div class="fs-3 fw-bold">{{ $totalOrders }}</div>
                                 <div class="small text-white-50">
                                     <i class="bi bi-arrow-up"></i> 
@@ -255,7 +255,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <a href="{{ route('admin.stone.orders.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                        <a href="{{ route('admin.driver.orders.index') }}" class="text-white stretched-link">Xem chi tiết</a>
                         <div class="text-white"><i class="bi bi-chevron-right"></i></div>
                     </div>
                 </div>
@@ -331,7 +331,7 @@
                             @endforelse
                             
                             <div class="text-center mt-3">
-                                <a href="{{ route('admin.stone.orders.index') }}" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                                <a href="{{ route('admin.driver.orders.index') }}" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
                             </div>
                         </div>
                     </div>
@@ -388,8 +388,8 @@
                         <div class="quick-action-icon text-primary">
                             <i class="bi bi-plus-circle"></i>
                         </div>
-                        <h5>Thêm sản phẩm</h5>
-                        <a href="{{ route('admin.stone.products.create') }}" class="btn btn-sm btn-primary mt-2">Truy cập</a>
+                        <h5>Thêm dịch vụ lái xe</h5>
+                        <a href="{{ route('admin.driver.services.create') }}" class="btn btn-sm btn-primary mt-2">Truy cập</a>
                     </div>
                 </div>
             </div>
@@ -400,8 +400,8 @@
                         <div class="quick-action-icon text-success">
                             <i class="bi bi-file-earmark-plus"></i>
                         </div>
-                        <h5>Thêm dự án</h5>
-                        <a href="{{ route('admin.stone.projects.create') }}" class="btn btn-sm btn-success mt-2">Truy cập</a>
+                        <h5>Thêm đơn hàng</h5>
+                        <a href="{{ route('admin.driver.orders.create') }}" class="btn btn-sm btn-success mt-2">Truy cập</a>
                     </div>
                 </div>
             </div>

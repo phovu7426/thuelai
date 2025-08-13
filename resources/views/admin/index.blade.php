@@ -80,8 +80,8 @@
                                             <i class="bi bi-gem"></i>
                                         </span>
                                         <div class="info-box-content">
-                                            <span class="info-box-text">Sản phẩm đá</span>
-                                            <span class="info-box-number">{{ \App\Models\StoneProduct::count() }}</span>
+                                            <span class="info-box-text">Dịch vụ lái xe</span>
+                                            <span class="info-box-number">0</span>
                                         </div>
                                     </div>
                                 </div>
@@ -91,8 +91,8 @@
                                             <i class="bi bi-building"></i>
                                         </span>
                                         <div class="info-box-content">
-                                            <span class="info-box-text">Dự án</span>
-                                            <span class="info-box-number">{{ \App\Models\StoneProject::count() }}</span>
+                                            <span class="info-box-text">Đơn hàng lái xe</span>
+                                            <span class="info-box-number">0</span>
                                         </div>
                                     </div>
                                 </div>
@@ -122,10 +122,10 @@
                                     <div class="timeline-time">2 phút trước</div>
                                     <div class="timeline-content">
                                         <div class="timeline-header">
-                                            <strong>Admin</strong> đã thêm sản phẩm mới
+                                            <strong>Admin</strong> đã thêm dịch vụ lái xe mới
                                         </div>
                                         <div class="timeline-body">
-                                            Đá Marble trắng Ý cao cấp
+                                            Dịch vụ lái xe gia đình
                                         </div>
                                     </div>
                                 </div>
@@ -133,10 +133,10 @@
                                     <div class="timeline-time">1 giờ trước</div>
                                     <div class="timeline-content">
                                         <div class="timeline-header">
-                                            <strong>Admin</strong> đã cập nhật thông tin dự án
+                                            <strong>Admin</strong> đã cập nhật thông tin đơn hàng
                                         </div>
                                         <div class="timeline-body">
-                                            Dự án Vinpearl Resort
+                                            Đơn hàng lái xe công ty
                                         </div>
                                     </div>
                                 </div>
@@ -144,10 +144,10 @@
                                     <div class="timeline-time">Hôm qua</div>
                                     <div class="timeline-content">
                                         <div class="timeline-header">
-                                            <strong>Admin</strong> đã thêm danh mục mới
+                                            <strong>Admin</strong> đã thêm dịch vụ mới
                                         </div>
                                         <div class="timeline-body">
-                                            Đá Granite nhập khẩu
+                                            Dịch vụ lái xe du lịch
                                         </div>
                                     </div>
                                 </div>

@@ -28,8 +28,9 @@ class CartItem extends Model
     /**
      * Get the product that is in the cart.
      */
-    public function product(): BelongsTo
+    public function product(): mixed
     {
-        return $this->belongsTo(StoneProduct::class, 'stone_product_id');
+        // Product relationship removed - stone products no longer exist
+        return null;
     }
 } 

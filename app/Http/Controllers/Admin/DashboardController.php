@@ -4,11 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\StoneProduct;
-use App\Models\StoneProject;
 use App\Models\User;
-use App\Models\StoneCategory;
-use App\Models\StoneContact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -23,13 +19,13 @@ class DashboardController extends Controller
             $totalUsers = User::count();
             $newUsers = User::where('created_at', '>=', now()->subDays(7))->count();
             
-            // Thống kê sản phẩm
-            $totalProducts = StoneProduct::count();
-            $newProducts = StoneProduct::where('created_at', '>=', now()->subDays(30))->count();
+            // Thống kê dịch vụ lái xe (thay thế cho sản phẩm đá)
+            $totalProducts = 0; // Sẽ được cập nhật khi có model DriverService
+            $newProducts = 0;
             
-            // Thống kê dự án
-            $totalProjects = StoneProject::count();
-            $newProjects = StoneProject::where('created_at', '>=', now()->subDays(30))->count();
+            // Thống kê đơn hàng lái xe (thay thế cho dự án đá)
+            $totalProjects = 0; // Sẽ được cập nhật khi có model DriverOrder
+            $newProjects = 0;
             
             // Thống kê đơn hàng - chỉ đếm đơn hàng thành công
             $totalOrders = Order::where('status', 'completed')->count();
@@ -48,11 +44,11 @@ class DashboardController extends Controller
             
             // Hoạt động gần đây
             $recentOrders = Order::latest()->take(3)->get();
-            $recentProducts = StoneProduct::latest()->take(3)->get();
-            $recentProjects = StoneProject::latest()->take(2)->get();
+            $recentProducts = collect([]); // Sẽ được cập nhật khi có model DriverService
+            $recentProjects = collect([]); // Sẽ được cập nhật khi có model DriverOrder
             
             // Thống kê liên hệ
-            $unreadContacts = StoneContact::where('is_read', 0)->count();
+            $unreadContacts = 0; // Sẽ được cập nhật khi có model DriverContact
         } catch (\Exception $e) {
             // Nếu có lỗi, đặt giá trị mặc định
             $totalUsers = 0;
@@ -127,49 +123,11 @@ class DashboardController extends Controller
      */
     private function getProductsByCategory()
     {
-        try {
-            // Lấy tất cả danh mục (bao gồm cả danh mục con)
-            $categories = StoneCategory::all();
-            
-            $labels = collect([]);
-            $data = collect([]);
-            
-            foreach ($categories as $category) {
-                // Đếm số lượng sản phẩm trong category
-                $productCount = StoneProduct::where('stone_category_id', $category->id)
-                    ->where('status', true) // Chỉ đếm sản phẩm đang hoạt động
-                    ->count();
-                
-                // Chỉ thêm vào biểu đồ nếu có sản phẩm
-                if ($productCount > 0) {
-                    // Thêm tên danh mục cha vào nếu có
-                    $categoryName = $category->parent 
-                        ? $category->parent->name . ' - ' . $category->name 
-                        : $category->name;
-                        
-                    $labels->push($categoryName);
-                    $data->push($productCount);
-                }
-            }
-            
-            // Nếu không có dữ liệu
-            if ($labels->isEmpty()) {
-                return [
-                    'labels' => ['Không có dữ liệu'],
-                    'data' => [0]
-                ];
-            }
-            
-            return [
-                'labels' => $labels,
-                'data' => $data
-            ];
-        } catch (\Exception $e) {
-            return [
-                'labels' => ['Không có dữ liệu'],
-                'data' => [0]
-            ];
-        }
+        // Stone functionality removed - return default data
+        return [
+            'labels' => ['Dịch vụ lái xe', 'Đơn hàng', 'Liên hệ'],
+            'data' => [0, 0, 0]
+        ];
     }
     
     /**

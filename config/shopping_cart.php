@@ -21,7 +21,7 @@ return [
      *
      * This is the prefix of your shopping cart session key.
      */
-    'session_key' => 'stone_cart',
+    'session_key' => 'cart',
 
     /*
      * ---------------------------------------------------------------

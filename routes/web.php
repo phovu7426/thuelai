@@ -10,31 +10,12 @@ use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Home\Posts\PostController as HomePostController;
-use App\Http\Controllers\Stone\ApplicationController;
-use App\Http\Controllers\Stone\CartController;
-use App\Http\Controllers\Stone\CheckoutController;
-use App\Http\Controllers\Stone\HomeController;
-use App\Http\Controllers\Stone\OrderController;
-use App\Http\Controllers\Stone\ProductController;
-use App\Http\Controllers\Stone\ProjectController;
-use App\Http\Controllers\Stone\ShowroomController;
-use App\Http\Controllers\Stone\VideoController;
-use App\Http\Controllers\Stone\TestController;
-use App\Http\Controllers\Stone\ShowroomListController;
-use App\Http\Controllers\Stone\ApplicationDetailController;
-use App\Http\Controllers\Stone\ContactController;
 use App\Http\Controllers\Home\SlideController as HomeSlideController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
-
-use App\Models\StoneProduct;
-use App\Models\StoneCategory;
-use App\Models\StoneProject;
-use App\Models\StoneApplication;
-use App\Models\StoneShowroom;
 
 Route::get('/_setup', function () {
     Artisan::call('key:generate');
@@ -87,86 +68,6 @@ Route::get('/posts/{slug}', [HomePostController::class, 'show'])->name('home.pos
 // Admin routes
 require __DIR__ . '/admin.php';
 
-// Trang web đá
-Route::name('stone.')->middleware('web')->group(function () {
-    // Trang chủ đá (đã chuyển đến /stone)
-    Route::get('/stone', [HomeController::class, 'index'])->name('home');
-
-    // Trang giới thiệu
-    Route::get('/stone/gioi-thieu', [HomeController::class, 'about'])->name('about');
-
-    // Trang liên hệ
-    Route::get('/stone/lien-he', [ContactController::class, 'index'])->name('contact.index');
-    Route::post('/stone/lien-he', [ContactController::class, 'store'])->name('contact.store');
-
-    // Sản phẩm đá
-    Route::prefix('stone/san-pham')->name('products.')->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('index');
-        Route::get('/danh-muc/{slug}', [ProductController::class, 'category'])->name('category');
-        Route::get('/chat-lieu/{slug}', [ProductController::class, 'material'])->name('material');
-        Route::get('/be-mat/{slug}', [ProductController::class, 'surface'])->name('surface');
-        Route::get('/{slug}', [ProductController::class, 'show'])->name('show');
-        Route::get('/hoan-thien/{slug}', [ProductController::class, 'finish'])->name('finish');
-    });
-
-    // Giỏ hàng
-    Route::prefix('stone/gio-hang')->name('cart.')->group(function () {
-        Route::get('/', [CartController::class, 'index'])->name('index');
-        Route::post('/them', [CartController::class, 'add'])->name('add');
-        Route::post('/cap-nhat', [CartController::class, 'update'])->name('update');
-        Route::post('/xoa', [CartController::class, 'remove'])->name('remove');
-        Route::post('/xoa-tat-ca', [CartController::class, 'clear'])->name('clear');
-    });
-
-    // Thanh toán
-    Route::prefix('stone/thanh-toan')->name('checkout.')->middleware('auth')->group(function () {
-        Route::get('/', [CheckoutController::class, 'index'])->name('index');
-        Route::post('/xu-ly', [CheckoutController::class, 'process'])->name('process');
-        Route::get('/thanh-cong/{order}', [CheckoutController::class, 'success'])->name('success');
-    });
-
-    // Đơn hàng
-    Route::prefix('stone/don-hang')->name('orders.')->middleware('auth')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index');
-        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
-        Route::post('/{id}/huy', [OrderController::class, 'cancel'])->name('cancel');
-    });
-
-    // Ứng dụng đá
-    Route::prefix('stone/ung-dung')->name('applications.')->group(function () {
-        Route::get('/', [ApplicationController::class, 'index'])->name('index');
-        Route::get('/test-html/{slug}', [ApplicationController::class, 'testHtml'])->name('test_html');
-        Route::get('/simple-test/{slug}', [ApplicationController::class, 'simpleTest'])->name('simple_test');
-        Route::get('/minimal-test/{slug}', [ApplicationController::class, 'testMinimal'])->name('minimal_test');
-        Route::get('/via-he-custom', [ApplicationController::class, 'viaHe'])->name('via_he_custom');
-        Route::get('/chi-tiet/{slug}', [ApplicationDetailController::class, 'show'])->name('detail');
-        Route::get('/{slug}', [ApplicationController::class, 'show'])->name('show');
-    });
-
-    // Dự án đá
-    Route::prefix('stone/du-an')->name('projects.')->group(function () {
-        Route::get('/', [ProjectController::class, 'index'])->name('index');
-        Route::get('/{slug}', [ProjectController::class, 'show'])->name('show');
-    });
-
-    // Showroom
-    Route::prefix('stone/showroom')->name('showrooms.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Stone\ShowroomPageController::class, 'index'])->name('index');
-        Route::get('/{slug}', [App\Http\Controllers\Stone\ShowroomPageController::class, 'show'])->name('show');
-    });
-
-    // Video
-    Route::prefix('stone/video')->name('videos.')->group(function () {
-        Route::get('/', [VideoController::class, 'index'])->name('index');
-    });
-
-    // Test route
-    Route::get('/test', [TestController::class, 'index'])->name('test');
-
-    // New showroom list route
-    Route::get('/stone/danh-sach-showroom', [ShowroomListController::class, 'index'])->name('showrooms.list');
-});
-
 // Test Blade rendering
 Route::get('/test-blade', function () {
     return view('test_blade');
@@ -192,39 +93,7 @@ Route::get('/sitemap.xml', function () {
         ->add(Url::create('/dich-vu'))
         ->add(Url::create('/bang-gia'))
         ->add(Url::create('/tin-tuc'))
-        ->add(Url::create('/lien-he'))
-        ->add(Url::create('/stone'))
-        ->add(Url::create('/stone/gioi-thieu'))
-        ->add(Url::create('/stone/lien-he'))
-        ->add(Url::create('/stone/san-pham'))
-        ->add(Url::create('/stone/ung-dung'))
-        ->add(Url::create('/stone/du-an'))
-        ->add(Url::create('/stone/showroom'));
-
-    // Sản phẩm động
-    foreach (StoneProduct::all() as $product) {
-        $sitemap->add(Url::create('/stone/san-pham/' . $product->slug));
-    }
-
-    // Danh mục sản phẩm động
-    foreach (StoneCategory::all() as $category) {
-        $sitemap->add(Url::create('/stone/san-pham/danh-muc/' . $category->slug));
-    }
-
-    // Dự án động
-    foreach (StoneProject::all() as $project) {
-        $sitemap->add(Url::create('/stone/du-an/' . $project->slug));
-    }
-
-    // Ứng dụng động
-    foreach (StoneApplication::all() as $category) {
-        $sitemap->add(Url::create('/stone/ung-dung/' . $category->slug));
-    }
-
-    // Showroom động
-    foreach (StoneShowroom::all() as $showroom) {
-        $sitemap->add(Url::create('/stone/showroom/' . $showroom->slug));
-    }
+        ->add(Url::create('/lien-he'));
 
     return $sitemap->toResponse(request());
 });

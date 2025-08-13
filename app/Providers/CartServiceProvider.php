@@ -16,7 +16,7 @@ class CartServiceProvider extends ServiceProvider
             $storage = new \App\Services\Cart\DBStorage();
             $events = $app['events'];
             $instanceName = 'cart';
-            $session_key = 'stone_cart';
+            $session_key = 'cart';
             
             return new \Darryldecode\Cart\Cart(
                 $storage,
