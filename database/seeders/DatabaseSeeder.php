@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             AdminSidebarSeeder::class, // Thêm dòng này để seed quyền, vai trò, tài khoản admin theo sidebar
             PermissionSeeder::class,
             RolePermissionSeeder::class,
+            DriverPermissionsSeeder::class, // Thêm permissions cho driver services
         ]);
 
         // Assign admin role to admin user

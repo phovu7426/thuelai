@@ -209,4 +209,56 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Cấu hình thông tin liên hệ
     Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->middleware('canAny:access_contact-info')->name('contact-info.edit');
     Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->middleware('canAny:access_contact-info')->name('contact-info.update');
+
+    // ===== DRIVER SERVICE ADMIN ROUTES =====
+    Route::prefix('driver')->name('driver.')->middleware('canAny:access_driver_services,access_driver_orders,access_driver_testimonials,access_driver_contacts')->group(function () {
+        
+        // Dashboard
+        Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/chart-data', [\App\Http\Controllers\Admin\Driver\DriverDashboardController::class, 'getChartData'])->name('chart-data');
+        Route::get('/real-time-stats', [\App\Http\Controllers\Admin\Driver\DriverDashboardController::class, 'getRealTimeStats'])->name('real-time-stats');
+        
+        // Quản lý dịch vụ lái xe
+        Route::prefix('services')->name('services.')->middleware('canAny:access_driver_services')->group(function () {
+            Route::resource('/', \App\Http\Controllers\Admin\Driver\DriverServiceController::class)->except(['show']);
+            Route::get('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'show'])->name('show');
+            Route::post('/{driverService}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{driverService}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'toggleFeatured'])->name('toggle-featured');
+            Route::post('/update-order', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'updateOrder'])->name('update-order');
+        });
+
+        // Quản lý đơn hàng lái xe
+        Route::prefix('orders')->name('orders.')->middleware('canAny:access_driver_orders')->group(function () {
+            Route::resource('/', \App\Http\Controllers\Admin\Driver\DriverOrderController::class)->except(['show']);
+            Route::get('/{driverOrder}', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'show'])->name('show');
+            Route::post('/{driverOrder}/status', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'updateStatus'])->name('update-status');
+            Route::get('/filter/status', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'filterByStatus'])->name('filter-by-status');
+            Route::get('/search', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'search'])->name('search');
+            Route::get('/export', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'export'])->name('export');
+        });
+
+        // Quản lý testimonials
+        Route::prefix('testimonials')->name('testimonials.')->middleware('canAny:access_driver_testimonials')->group(function () {
+            Route::resource('/', \App\Http\Controllers\Admin\Driver\TestimonialController::class)->except(['show']);
+            Route::get('/{testimonial}', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'show'])->name('show');
+            Route::post('/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{testimonial}/toggle-featured', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleFeatured'])->name('toggle-featured');
+            Route::post('/update-order', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'updateOrder'])->name('update-order');
+            Route::get('/filter/status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'filterByStatus'])->name('filter-by-status');
+            Route::get('/search', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'search'])->name('search');
+            Route::post('/bulk-action', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'bulkAction'])->name('bulk-action');
+        });
+
+        // Quản lý liên hệ từ website lái xe
+        Route::prefix('contacts')->name('contacts.')->middleware('canAny:access_driver_contacts')->group(function () {
+            Route::resource('/', \App\Http\Controllers\Admin\Driver\DriverContactController::class)->except(['show']);
+            Route::get('/{id}', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'show'])->name('show');
+            Route::post('/{id}/status', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'updateStatus'])->name('update-status');
+            Route::post('/{id}/mark-read', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'markAsRead'])->name('mark-read');
+            Route::get('/filter/status', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'filterByStatus'])->name('filter-by-status');
+            Route::get('/search', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'search'])->name('search');
+            Route::post('/bulk-action', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'bulkAction'])->name('bulk-action');
+            Route::get('/export', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'export'])->name('export');
+        });
+    });
 });

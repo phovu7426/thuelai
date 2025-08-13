@@ -14,10 +14,10 @@ class AdminSidebarSeeder extends Seeder
     {
         // 1. Tạo tài khoản admin
         $admin = User::firstOrCreate(
-            ['email' => 'dinhminhlh@gmail.com'],
+            ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Admin',
-                'password' => Hash::make('Minhminh@12345'),
+                'password' => Hash::make('12345678'),
                 'status' => 'active',
             ]
         );

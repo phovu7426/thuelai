@@ -198,6 +198,58 @@
             </li>
             @endcan
 
+            {{-- ===== DRIVER SERVICES SECTION ===== --}}
+            @can('access_driver_services')
+            <li class="nav-item">
+                <a href="{{ route('admin.driver.dashboard') }}" class="nav-link {{ request()->routeIs('admin.driver.dashboard') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-car-front"></i>
+                    <p>Dịch vụ lái xe</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- Quản lý dịch vụ lái xe --}}
+            @can('access_driver_services')
+            <li class="nav-item">
+                <a href="{{ route('admin.driver.services.index') }}" class="nav-link {{ request()->routeIs('admin.driver.services.*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-gear"></i>
+                    <p>Quản lý dịch vụ</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- Quản lý đơn hàng lái xe --}}
+            @can('access_driver_orders')
+            <li class="nav-item">
+                <a href="{{ route('admin.driver.orders.index') }}" class="nav-link {{ request()->routeIs('admin.driver.orders.*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-cart-check"></i>
+                    <p>Đơn hàng lái xe</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- Quản lý testimonials --}}
+            @can('access_driver_testimonials')
+            <li class="nav-item">
+                <a href="{{ route('admin.driver.testimonials.index') }}" class="nav-link {{ request()->routeIs('admin.driver.testimonials.*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-chat-quote"></i>
+                    <p>Đánh giá khách hàng</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- Quản lý liên hệ lái xe --}}
+            @can('access_driver_contacts')
+            <li class="nav-item">
+                <a href="{{ route('admin.driver.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.driver.contacts.*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-envelope"></i>
+                    <p>Liên hệ lái xe</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- ===== END DRIVER SERVICES SECTION ===== --}}
+
             {{-- Cấu hình --}}
             @can('access_contact-info')
             <li class="nav-item">
