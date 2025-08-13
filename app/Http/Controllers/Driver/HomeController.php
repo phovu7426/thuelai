@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Http\Controllers\Driver;
+
+use App\Http\Controllers\Controller;
+use App\Models\DriverService;
+use App\Models\Testimonial;
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class HomeController extends Controller
+{
+    public function index()
+    {
+        $services = DriverService::where('status', true)
+            ->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->take(6)
+            ->get();
+
+        $featuredServices = DriverService::where('status', true)
+            ->where('is_featured', true)
+            ->orderBy('sort_order')
+            ->take(4)
+            ->get();
+
+        $testimonials = Testimonial::where('status', true)
+            ->where('is_featured', true)
+            ->orderBy('sort_order')
+            ->take(3)
+            ->get();
+
+        $posts = Post::where('status', 'published')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
+        return view('driver.home', compact('services', 'featuredServices', 'testimonials', 'posts'));
+    }
+
+    public function about()
+    {
+        return view('driver.about');
+    }
+
+    public function services()
+    {
+        $services = DriverService::where('status', true)
+            ->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('driver.services', compact('services'));
+    }
+
+    public function pricing()
+    {
+        $services = DriverService::where('status', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('driver.pricing', compact('services'));
+    }
+
+    public function news()
+    {
+        $posts = Post::where('status', 'published')
+            ->orderBy('created_at', 'desc')
+            ->paginate(9);
+
+        return view('driver.news', compact('posts'));
+    }
+
+    public function contact()
+    {
+        return view('driver.contact');
+    }
+
+    public function newsDetail($slug)
+    {
+        $post = Post::where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
+        $relatedPosts = Post::where('status', 'published')
+            ->where('id', '!=', $post->id)
+            ->where('category_id', $post->category_id)
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
+        return view('driver.news-detail', compact('post', 'relatedPosts'));
+    }
+}
