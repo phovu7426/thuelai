@@ -68,23 +68,7 @@ Route::get('/posts/{slug}', [HomePostController::class, 'show'])->name('home.pos
 // Admin routes
 require __DIR__ . '/admin.php';
 
-// Test Blade rendering
-Route::get('/test-blade', function () {
-    return view('test_blade');
-});
-
 Route::get('/slides', [HomeSlideController::class, 'index'])->name('home.slides');
-
-// Test showroom page
-Route::get('/test-showroom', [App\Http\Controllers\TestShowroomController::class, 'index'])->name('test.showroom');
-
-Route::get('/test-send-mail', function() {
-    Mail::raw('Đây là email test gửi từ hệ thống Laravel.', function($message) {
-        $message->to('vumanhhoang140799@gmail.com')
-                ->subject('Test gửi mail từ Laravel');
-    });
-    return 'Đã gửi mail test!';
-});
 
 Route::get('/sitemap.xml', function () {
     $sitemap = Sitemap::create()

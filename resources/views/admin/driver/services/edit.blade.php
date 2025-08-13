@@ -28,7 +28,7 @@
                     <h5 class="card-title">Thông tin dịch vụ</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.driver.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.driver.services.update', $driverService->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         
@@ -38,7 +38,7 @@
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Tên dịch vụ <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                                           id="name" name="name" value="{{ old('name', $service->name) }}" required>
+                                           id="name" name="name" value="{{ old('name', $driverService->name) }}" required>
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -47,7 +47,7 @@
                                 <div class="mb-3">
                                     <label for="short_description" class="form-label">Mô tả ngắn</label>
                                     <textarea class="form-control @error('short_description') is-invalid @enderror" 
-                                              id="short_description" name="short_description" rows="3">{{ old('short_description', $service->short_description) }}</textarea>
+                                              id="short_description" name="short_description" rows="3">{{ old('short_description', $driverService->short_description) }}</textarea>
                                     @error('short_description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -57,7 +57,7 @@
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Mô tả chi tiết</label>
                                     <textarea class="form-control @error('description') is-invalid @enderror" 
-                                              id="description" name="description" rows="5">{{ old('description', $service->description) }}</textarea>
+                                              id="description" name="description" rows="5">{{ old('description', $driverService->description) }}</textarea>
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -69,7 +69,7 @@
                                         <div class="mb-3">
                                             <label for="price_per_hour" class="form-label">Giá theo giờ (VNĐ)</label>
                                             <input type="number" class="form-control @error('price_per_hour') is-invalid @enderror" 
-                                                   id="price_per_hour" name="price_per_hour" value="{{ old('price_per_hour', $service->price_per_hour) }}" min="0">
+                                                   id="price_per_hour" name="price_per_hour" value="{{ old('price_per_hour', $driverService->price_per_hour) }}" min="0">
                                             @error('price_per_hour')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -79,7 +79,7 @@
                                         <div class="mb-3">
                                             <label for="price_per_trip" class="form-label">Giá theo chuyến (VNĐ)</label>
                                             <input type="number" class="form-control @error('price_per_trip') is-invalid @enderror" 
-                                                   id="price_per_trip" name="price_per_trip" value="{{ old('price_per_trip', $service->price_per_trip) }}" min="0">
+                                                   id="price_per_trip" name="price_per_trip" value="{{ old('price_per_trip', $driverService->price_per_trip) }}" min="0">
                                             @error('price_per_trip')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -90,7 +90,7 @@
                                 <div class="mb-3">
                                     <label for="sort_order" class="form-label">Thứ tự hiển thị</label>
                                     <input type="number" class="form-control @error('sort_order') is-invalid @enderror" 
-                                           id="sort_order" name="sort_order" value="{{ old('sort_order', $service->sort_order) }}" min="0">
+                                           id="sort_order" name="sort_order" value="{{ old('sort_order', $driverService->sort_order) }}" min="0">
                                     @error('sort_order')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -101,10 +101,10 @@
                                 <!-- Current Images -->
                                 <div class="mb-3">
                                     <h6>Hình ảnh hiện tại:</h6>
-                                    @if($service->image)
+                                    @if($driverService->image)
                                         <div class="mb-2">
-                                            <img src="{{ asset('storage/' . $service->image) }}" 
-                                                 alt="{{ $service->name }}" 
+                                            <img src="{{ asset('storage/' . $driverService->image) }}" 
+                                                 alt="{{ $driverService->name }}" 
                                                  class="img-fluid rounded" 
                                                  style="max-width: 100%; height: auto;">
                                         </div>
@@ -115,11 +115,11 @@
                                         </div>
                                     @endif
                                     
-                                    @if($service->icon)
+                                    @if($driverService->icon)
                                         <div class="mb-2">
                                             <small>Icon hiện tại:</small><br>
-                                            <img src="{{ asset('storage/' . $service->icon) }}" 
-                                                 alt="{{ $service->name }} icon" 
+                                            <img src="{{ asset('storage/' . $driverService->icon) }}" 
+                                                 alt="{{ $driverService->name }} icon" 
                                                  class="img-fluid rounded" 
                                                  style="max-width: 80px; height: auto;">
                                         </div>
@@ -156,7 +156,7 @@
                                 <div class="mb-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="status" name="status" 
-                                               {{ old('status', $service->status) ? 'checked' : '' }}>
+                                               {{ old('status', $driverService->status) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="status">
                                             Kích hoạt dịch vụ
                                         </label>
@@ -166,7 +166,7 @@
                                 <div class="mb-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" 
-                                               {{ old('is_featured', $service->is_featured) ? 'checked' : '' }}>
+                                               {{ old('is_featured', $driverService->is_featured) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="is_featured">
                                             Đánh dấu nổi bật
                                         </label>
@@ -180,7 +180,7 @@
                             <div class="col-12">
                                 <hr>
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.driver.services.show', $service->id) }}" class="btn btn-secondary">
+                                    <a href="{{ route('admin.driver.services.show', $driverService->id) }}" class="btn btn-secondary">
                                         <i class="bi bi-arrow-left"></i> Quay lại
                                     </a>
                                     <div>
