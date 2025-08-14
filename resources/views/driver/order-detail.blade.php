@@ -523,6 +523,7 @@
     gap: 0.75rem;
     border-bottom: 2px solid #e2e8f0; /* Thêm border bottom */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Thêm shadow nhẹ */
+    margin-bottom: 0rem;
 }
 
 .section-icon {
