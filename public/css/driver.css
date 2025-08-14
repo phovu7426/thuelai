@@ -482,6 +482,7 @@ h1, h2, h3, h4, h5, h6 {
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    align-items: stretch;
 }
 
 .service-card-modern {
@@ -492,6 +493,10 @@ h1, h2, h3, h4, h5, h6 {
     transition: var(--transition-normal);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 500px;
 }
 
 .service-card-modern::before {
@@ -556,22 +561,39 @@ h1, h2, h3, h4, h5, h6 {
 
 .service-content {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .service-title {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: var(--gray-900);
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .service-description {
     color: var(--gray-600);
     margin-bottom: 1.5rem;
     line-height: 1.6;
+    min-height: 4.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .service-pricing {
     margin-bottom: 2rem;
+    flex: 1;
+    min-height: 6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .price-item {
@@ -604,6 +626,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1rem;
     cursor: pointer;
     transition: var(--transition-normal);
+    margin-top: auto;
 }
 
 .btn-book-service:hover {
@@ -826,6 +849,7 @@ h1, h2, h3, h4, h5, h6 {
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    align-items: stretch;
 }
 
 .pricing-card-modern {
@@ -834,6 +858,10 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
     box-shadow: var(--shadow-md);
     transition: var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 500px;
 }
 
 .pricing-card-modern:hover {
@@ -852,20 +880,37 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
     color: var(--white);
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .pricing-header p {
     opacity: 0.9;
     margin: 0;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .pricing-body {
     padding: 2rem;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .price-display {
     margin-bottom: 1.5rem;
+    flex: 1;
+    min-height: 8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .currency {
@@ -897,6 +942,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1rem;
     cursor: pointer;
     transition: var(--transition-normal);
+    margin-top: auto;
 }
 
 .btn-book-pricing:hover {
@@ -1168,7 +1214,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .brand-logo i {
-    font-size: 2rem;
+        font-size: 2rem;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1393,14 +1439,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .contact-info {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
 .contact-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
+        gap: 1rem;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);

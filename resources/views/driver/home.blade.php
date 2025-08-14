@@ -16,14 +16,14 @@
                     <span class="badge-glow">
                         <i class="fas fa-star"></i>
                         Dịch vụ 5 sao được tin cậy
-                    </span>
-                </div>
+                            </span>
+                        </div>
                 
                 <h1 class="hero-title">
                     <span class="title-line">Lái xe an toàn</span>
                     <span class="title-highlight">chuyên nghiệp</span>
                     <span class="title-line">24/7</span>
-                </h1>
+                        </h1>
                 
                 <p class="hero-description">
                     Dịch vụ lái xe thuê cao cấp với đội ngũ tài xế giàu kinh nghiệm, 
@@ -34,16 +34,16 @@
                     <div class="stat-item">
                         <div class="stat-number" data-count="1000">0</div>
                         <div class="stat-label">Khách hàng hài lòng</div>
-                    </div>
+                                    </div>
                     <div class="stat-item">
                         <div class="stat-number" data-count="24">0</div>
                         <div class="stat-label">Giờ hỗ trợ</div>
-                    </div>
+                                </div>
                     <div class="stat-item">
                         <div class="stat-number" data-count="5">0</div>
                         <div class="stat-label">Sao đánh giá</div>
-                    </div>
-                </div>
+                                    </div>
+                                </div>
                 
                 <div class="hero-actions">
                     <a href="#booking" class="btn-primary-glow">
@@ -56,8 +56,8 @@
                         <i class="fas fa-play"></i>
                         <span>Xem dịch vụ</span>
                     </a>
-                </div>
-            </div>
+                                    </div>
+                                </div>
             
             <div class="hero-visual">
                 <div class="floating-cards">
@@ -68,8 +68,8 @@
                         <div class="card-content">
                             <h4>Tài xế chuyên nghiệp</h4>
                             <p>Được đào tạo bài bản</p>
+                            </div>
                         </div>
-                    </div>
                     <div class="card-2">
                         <div class="card-icon">
                             <i class="fas fa-shield-alt"></i>
@@ -77,20 +77,20 @@
                         <div class="card-content">
                             <h4>An toàn tuyệt đối</h4>
                             <p>Bảo hiểm đầy đủ</p>
-                        </div>
                     </div>
+                </div>
                     <div class="card-3">
                         <div class="card-icon">
                             <i class="fas fa-clock"></i>
-                        </div>
+                                </div>
                         <div class="card-content">
                             <h4>Dịch vụ 24/7</h4>
                             <p>Luôn sẵn sàng phục vụ</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         
         <div class="scroll-indicator">
             <div class="scroll-arrow">
@@ -107,64 +107,64 @@
                     <span class="badge-modern">
                         <i class="fas fa-cogs"></i>
                         Dịch vụ của chúng tôi
-                    </span>
-                </div>
+                            </span>
+                        </div>
                 <h2 class="section-title">Dịch vụ đa dạng</h2>
                 <p class="section-subtitle">
                     Chúng tôi cung cấp đầy đủ các dịch vụ lái xe thuê phù hợp với mọi nhu cầu
                 </p>
             </div>
-            
+
             <div class="services-grid">
                 @if(count($services) > 0)
                     @foreach($services as $service)
                         <div class="service-card-modern">
                             <div class="service-header">
-                                <div class="service-icon-wrapper">
-                                    @if($service->icon)
+                                    <div class="service-icon-wrapper">
+                                        @if($service->icon)
                                         <img src="{{ $service->icon_url }}" alt="{{ $service->name }}">
-                                    @else
+                                        @else
                                         <i class="fas fa-car"></i>
-                                    @endif
-                                </div>
-                                @if($service->is_featured)
+                                        @endif
+                                    </div>
+                                    @if($service->is_featured)
                                     <div class="featured-tag">
                                         <span>Nổi bật</span>
-                                    </div>
-                                @endif
-                            </div>
+                                        </div>
+                                    @endif
+                                </div>
                             
                             <div class="service-content">
                                 <h3 class="service-title">{{ $service->name }}</h3>
                                 <p class="service-description">{{ $service->short_description }}</p>
                                 
                                 <div class="service-pricing">
-                                    @if($service->price_per_hour)
+                                        @if($service->price_per_hour)
                                         <div class="price-item">
-                                            <span class="price-amount">{{ number_format($service->price_per_hour) }}đ</span>
-                                            <span class="price-unit">/giờ</span>
-                                        </div>
-                                    @endif
+                                                <span class="price-amount">{{ number_format($service->price_per_hour) }}đ</span>
+                                                <span class="price-unit">/giờ</span>
+                                            </div>
+                                        @endif
+                                        
+                                        @if($service->price_per_trip)
+                                        <div class="price-item">
+                                                <span class="price-amount">{{ number_format($service->price_per_trip) }}đ</span>
+                                                <span class="price-unit">/chuyến</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                     
-                                    @if($service->price_per_trip)
-                                        <div class="price-item">
-                                            <span class="price-amount">{{ number_format($service->price_per_trip) }}đ</span>
-                                            <span class="price-unit">/chuyến</span>
-                                        </div>
-                                    @endif
-                                </div>
-                                
                                 <button class="btn-book-service" 
-                                        data-service-id="{{ $service->id }}" 
-                                        data-service-name="{{ $service->name }}">
+                                            data-service-id="{{ $service->id }}" 
+                                            data-service-name="{{ $service->name }}">
                                     <span>Đặt ngay</span>
                                     <i class="fas fa-arrow-right"></i>
-                                </button>
+                                    </button>
                             </div>
                         </div>
                     @endforeach
                 @else
-                    <div class="empty-state">
+                        <div class="empty-state">
                         <div class="empty-icon">
                             <i class="fas fa-car"></i>
                         </div>
@@ -182,8 +182,8 @@
             <div class="features-grid">
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-headset"></i>
-                    </div>
+                                <i class="fas fa-headset"></i>
+                            </div>
                     <div class="feature-content">
                         <h3>Tư vấn 24/7</h3>
                         <p>Đội ngũ tư vấn chuyên nghiệp luôn sẵn sàng hỗ trợ bạn mọi lúc</p>
@@ -192,8 +192,8 @@
                 
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
                     <div class="feature-content">
                         <h3>An toàn tuyệt đối</h3>
                         <p>Bảo hiểm đầy đủ và cam kết an toàn cho mọi chuyến đi</p>
@@ -202,8 +202,8 @@
                 
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-smile"></i>
-                    </div>
+                                <i class="fas fa-smile"></i>
+                            </div>
                     <div class="feature-content">
                         <h3>Phục vụ chuyên nghiệp</h3>
                         <p>Tài xế thân thiện, có kinh nghiệm và phục vụ tận tâm</p>
@@ -212,8 +212,8 @@
                 
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-award"></i>
-                    </div>
+                                <i class="fas fa-award"></i>
+                            </div>
                     <div class="feature-content">
                         <h3>Kinh nghiệm dày dặn</h3>
                         <p>Đội ngũ tài xế có nhiều năm kinh nghiệm lái xe</p>
@@ -295,41 +295,41 @@
                     Những đánh giá chân thực từ khách hàng đã sử dụng dịch vụ
                 </p>
             </div>
-            
+
             <div class="testimonials-grid">
-                @foreach($testimonials as $testimonial)
+                    @foreach($testimonials as $testimonial)
                     <div class="testimonial-card-modern">
                         <div class="testimonial-header">
-                            @if($testimonial->image)
+                                        @if($testimonial->image)
                                 <img src="{{ $testimonial->image_url }}" alt="{{ $testimonial->customer_name }}" class="customer-avatar">
-                            @else
+                                        @else
                                 <div class="customer-avatar-placeholder">
                                     <i class="fas fa-user"></i>
-                                </div>
-                            @endif
+                                            </div>
+                                        @endif
                             <div class="customer-info">
                                 <h4>{{ $testimonial->customer_name }}</h4>
-                                @if($testimonial->customer_title)
+                                            @if($testimonial->customer_title)
                                     <span>{{ $testimonial->customer_title }}</span>
-                                @endif
-                            </div>
-                        </div>
-                        
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
                         <div class="rating-stars">
-                            @for($i = 1; $i <= 5; $i++)
-                                @if($i <= $testimonial->rating)
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= $testimonial->rating)
                                     <i class="fas fa-star"></i>
-                                @else
+                                            @else
                                     <i class="far fa-star"></i>
-                                @endif
-                            @endfor
-                        </div>
-                        
+                                            @endif
+                                        @endfor
+                                    </div>
+                                    
                         <blockquote>
                             "{{ $testimonial->content }}"
-                        </blockquote>
-                    </div>
-                @endforeach
+                                    </blockquote>
+                        </div>
+                    @endforeach
             </div>
         </div>
     </section>
@@ -350,7 +350,7 @@
                     Không phát sinh chi phí, giá cả rõ ràng và cạnh tranh
                 </p>
             </div>
-            
+
             <div class="pricing-grid">
                 @if(count($featuredServices) > 0)
                     @foreach($featuredServices as $service)
@@ -358,30 +358,30 @@
                             <div class="pricing-header">
                                 <h3>{{ $service->name }}</h3>
                                 <p>{{ $service->short_description }}</p>
-                            </div>
-                            
+                                </div>
+                                    
                             <div class="pricing-body">
-                                @if($service->price_per_hour)
+                                    @if($service->price_per_hour)
                                     <div class="price-display">
                                         <span class="currency">₫</span>
                                         <span class="amount">{{ number_format($service->price_per_hour) }}</span>
                                         <span class="period">/giờ</span>
-                                    </div>
-                                @endif
-                                
-                                @if($service->price_per_trip)
+                                        </div>
+                                    @endif
+                                    
+                                    @if($service->price_per_trip)
                                     <div class="price-display">
                                         <span class="currency">₫</span>
                                         <span class="amount">{{ number_format($service->price_per_trip) }}</span>
                                         <span class="period">/chuyến</span>
-                                    </div>
-                                @endif
-                                
+                                        </div>
+                                    @endif
+                                    
                                 <button class="btn-book-pricing" 
-                                        data-service-id="{{ $service->id }}" 
-                                        data-service-name="{{ $service->name }}">
+                                            data-service-id="{{ $service->id }}" 
+                                            data-service-name="{{ $service->name }}">
                                     Đặt ngay
-                                </button>
+                                    </button>
                             </div>
                         </div>
                     @endforeach
@@ -407,8 +407,8 @@
                     <div class="contact-methods">
                         <div class="contact-method">
                             <div class="method-icon">
-                                <i class="fas fa-phone"></i>
-                            </div>
+                                    <i class="fas fa-phone"></i>
+                                </div>
                             <div class="method-info">
                                 <h4>Hotline</h4>
                                 <p>1900 xxxx</p>
@@ -418,8 +418,8 @@
                         
                         <div class="contact-method">
                             <div class="method-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
+                                    <i class="fas fa-envelope"></i>
+                                </div>
                             <div class="method-info">
                                 <h4>Email</h4>
                                 <p>info@thuelai.vn</p>
@@ -429,8 +429,8 @@
                         
                         <div class="contact-method">
                             <div class="method-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
                             <div class="method-info">
                                 <h4>Địa chỉ</h4>
                                 <p>Hà Nội, Việt Nam</p>
@@ -452,14 +452,14 @@
                         <span class="badge-modern">
                             <i class="fas fa-calendar-check"></i>
                             Đặt dịch vụ
-                        </span>
-                    </div>
-                    <h2 class="section-title">Đặt dịch vụ nhanh</h2>
+                            </span>
+                        </div>
+                        <h2 class="section-title">Đặt dịch vụ nhanh</h2>
                     <p class="section-subtitle">
                         Điền thông tin để được tư vấn và đặt dịch vụ ngay lập tức
                     </p>
-                </div>
-                
+                    </div>
+                    
                 <div class="booking-form-container">
                     <form id="quick-booking-form" class="booking-form-modern">
                         <div class="form-grid">
@@ -467,92 +467,92 @@
                                 <label for="customer_name">
                                     <i class="fas fa-user"></i>
                                     Họ tên *
-                                </label>
+                                        </label>
                                 <input type="text" id="customer_name" name="customer_name" required>
-                            </div>
+                                    </div>
                             
                             <div class="form-group">
                                 <label for="customer_phone">
                                     <i class="fas fa-phone"></i>
                                     Số điện thoại *
-                                </label>
+                                        </label>
                                 <input type="tel" id="customer_phone" name="customer_phone" required>
-                            </div>
+                                    </div>
                             
                             <div class="form-group">
                                 <label for="driver_service_id">
                                     <i class="fas fa-cogs"></i>
                                     Loại dịch vụ *
-                                </label>
+                                        </label>
                                 <select id="driver_service_id" name="driver_service_id" required>
-                                    <option value="">Chọn dịch vụ</option>
-                                    @foreach($services as $service)
-                                        <option value="{{ $service->id }}">{{ $service->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                                            <option value="">Chọn dịch vụ</option>
+                                            @foreach($services as $service)
+                                                <option value="{{ $service->id }}">{{ $service->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                             
                             <div class="form-group">
                                 <label for="service_type">
                                     <i class="fas fa-clock"></i>
                                     Hình thức dịch vụ *
-                                </label>
+                                        </label>
                                 <select id="service_type" name="service_type" required>
-                                    <option value="">Chọn hình thức</option>
-                                    <option value="hourly">Theo giờ</option>
-                                    <option value="trip">Theo chuyến</option>
-                                    <option value="custom">Tùy chỉnh</option>
-                                </select>
-                            </div>
+                                            <option value="">Chọn hình thức</option>
+                                            <option value="hourly">Theo giờ</option>
+                                            <option value="trip">Theo chuyến</option>
+                                            <option value="custom">Tùy chỉnh</option>
+                                        </select>
+                                    </div>
                             
                             <div class="form-group">
                                 <label for="pickup_datetime">
                                     <i class="fas fa-calendar"></i>
                                     Thời gian đón *
-                                </label>
+                                        </label>
                                 <input type="datetime-local" id="pickup_datetime" name="pickup_datetime" required>
-                            </div>
+                                    </div>
                             
                             <div class="form-group">
                                 <label for="hours">
                                     <i class="fas fa-hourglass-half"></i>
                                     Số giờ (nếu theo giờ)
-                                </label>
+                                        </label>
                                 <input type="number" id="hours" name="hours" min="1" value="4">
-                            </div>
-                        </div>
+                                    </div>
+                                </div>
                         
                         <div class="form-group full-width">
                             <label for="pickup_location">
                                 <i class="fas fa-map-marker-alt"></i>
                                 Địa điểm đón *
-                            </label>
+                                    </label>
                             <input type="text" id="pickup_location" name="pickup_location" required>
-                        </div>
+                                </div>
                         
                         <div class="form-group full-width">
                             <label for="destination">
                                 <i class="fas fa-flag-checkered"></i>
                                 Điểm đến
-                            </label>
+                                    </label>
                             <input type="text" id="destination" name="destination">
-                        </div>
+                                </div>
                         
                         <div class="form-group full-width">
                             <label for="special_requirements">
                                 <i class="fas fa-clipboard-list"></i>
                                 Yêu cầu đặc biệt
-                            </label>
+                                    </label>
                             <textarea id="special_requirements" name="special_requirements" rows="3" placeholder="Nhập yêu cầu đặc biệt nếu có..."></textarea>
-                        </div>
+                                </div>
                         
                         <div class="form-submit">
                             <button type="submit" class="btn-submit">
                                 <span>Gửi yêu cầu</span>
                                 <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </form>
+                                    </button>
+                                </div>
+                            </form>
                 </div>
             </div>
         </div>

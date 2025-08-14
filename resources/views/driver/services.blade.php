@@ -3,72 +3,103 @@
 @section('page_title', 'Dịch vụ lái xe thuê - ThuêLai.vn')
 
 @section('content')
-    <!-- Page Header -->
-    <section class="page-header bg-primary text-white py-5">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-video-bg">
+            <div class="hero-overlay"></div>
+            <div class="hero-particles"></div>
+        </div>
         <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="display-4 fw-bold mb-3">Dịch vụ của chúng tôi</h1>
-                    <p class="lead">Đa dạng các gói dịch vụ lái xe thuê phù hợp với mọi nhu cầu của bạn</p>
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-glow">
+                        <i class="fas fa-star"></i>
+                        Dịch vụ chất lượng cao
+                    </span>
                 </div>
+                <h1 class="hero-title">
+                    <span class="title-line">Dịch vụ lái xe</span>
+                    <span class="title-highlight">chuyên nghiệp</span>
+                    <span class="title-line">đa dạng</span>
+                </h1>
+                <p class="hero-description">
+                    Khám phá các gói dịch vụ lái xe thuê đa dạng, phù hợp với mọi nhu cầu 
+                    từ cá nhân đến doanh nghiệp với chất lượng dịch vụ hàng đầu
+                </p>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
             </div>
         </div>
     </section>
 
-    <!-- Services Grid -->
-    <section class="py-5">
+    <!-- Services Section -->
+    <section class="services-section">
         <div class="container">
-            <div class="row">
+            <div class="section-header">
+                <h2 class="section-title">Các gói dịch vụ của chúng tôi</h2>
+                <p class="section-subtitle">
+                    Đa dạng các gói dịch vụ lái xe thuê phù hợp với mọi nhu cầu của bạn
+                </p>
+            </div>
+
+            <div class="services-grid">
                 @if(count($services) > 0)
                     @foreach($services as $service)
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="service-card card h-100 border-0 shadow-sm">
+                        <div class="service-card-modern animate-in">
+                            <div class="service-header">
                                 @if($service->image)
-                                    <img src="{{ $service->image_url }}" class="card-img-top" alt="{{ $service->name }}" style="height: 200px; object-fit: cover;">
+                                    <div class="service-icon-wrapper">
+                                        <img src="{{ $service->image_url }}" alt="{{ $service->name }}">
+                                    </div>
+                                @else
+                                    <div class="service-icon-wrapper">
+                                        <i class="fas fa-car"></i>
+                                    </div>
                                 @endif
-                                <div class="card-body text-center p-4">
-                                    @if($service->icon)
-                                        <div class="service-icon mb-3">
-                                            <img src="{{ $service->icon_url }}" alt="{{ $service->name }}" class="img-fluid" style="width: 64px; height: 64px;">
-                                        </div>
-                                    @else
-                                        <div class="service-icon mb-3">
-                                            <i class="fas fa-car fa-3x text-white"></i>
+                                @if($service->is_featured)
+                                    <div class="featured-tag">Nổi bật</div>
+                                @endif
+                            </div>
+                            
+                            <div class="service-content">
+                                <h3 class="service-title">{{ $service->name }}</h3>
+                                <p class="service-description">{{ $service->description }}</p>
+                                
+                                <div class="service-pricing">
+                                    @if($service->price_per_hour)
+                                        <div class="price-item">
+                                            <span class="price-amount">{{ number_format($service->price_per_hour) }}đ</span>
+                                            <span class="price-unit">/giờ</span>
                                         </div>
                                     @endif
-                                    <h5 class="card-title">{{ $service->name }}</h5>
-                                    <p class="card-text text-muted">{{ $service->description }}</p>
                                     
-                                    <div class="pricing-info mb-3">
-                                        @if($service->price_per_hour)
-                                            <div class="price-item">
-                                                <span class="text-primary fw-bold">{{ number_format($service->price_per_hour) }}đ</span>
-                                                <small class="text-muted">/giờ</small>
-                                            </div>
-                                        @endif
-                                        
-                                        @if($service->price_per_trip)
-                                            <div class="price-item">
-                                                <span class="text-primary fw-bold">{{ number_format($service->price_per_trip) }}đ</span>
-                                                <small class="text-muted">/chuyến</small>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    
-                                    <button class="btn btn-primary book-service-btn" data-service-id="{{ $service->id }}" data-service-name="{{ $service->name }}">
-                                        Đặt ngay
-                                    </button>
+                                    @if($service->price_per_trip)
+                                        <div class="price-item">
+                                            <span class="price-amount">{{ number_format($service->price_per_trip) }}đ</span>
+                                            <span class="price-unit">/chuyến</span>
+                                        </div>
+                                    @endif
                                 </div>
+                                
+                                <button class="btn-book-service book-service-btn" 
+                                        data-service-id="{{ $service->id }}" 
+                                        data-service-name="{{ $service->name }}">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>Đặt ngay</span>
+                                </button>
                             </div>
                         </div>
                     @endforeach
                 @else
-                    <div class="col-12 text-center">
-                        <div class="py-5">
-                            <i class="fas fa-car fa-4x text-muted mb-3"></i>
-                            <h4 class="text-muted">Chưa có dịch vụ nào</h4>
-                            <p class="text-muted">Vui lòng quay lại sau hoặc liên hệ với chúng tôi để được tư vấn.</p>
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-car"></i>
                         </div>
+                        <h3>Chưa có dịch vụ nào</h3>
+                        <p>Vui lòng quay lại sau hoặc liên hệ với chúng tôi để được tư vấn.</p>
                     </div>
                 @endif
             </div>
@@ -82,17 +113,115 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="py-5 bg-light">
+    <!-- Features Section -->
+    <section class="features-section">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h2 class="mb-4">Bạn cần tư vấn về dịch vụ?</h2>
-                    <p class="lead mb-4">Hãy liên hệ ngay với chúng tôi để được tư vấn chi tiết và báo giá tốt nhất.</p>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="{{ route('driver.contact') }}" class="btn btn-primary btn-lg">Liên hệ ngay</a>
-                        <a href="{{ route('driver.pricing') }}" class="btn btn-outline-primary btn-lg">Xem bảng giá</a>
+            <div class="section-header">
+                <h2 class="section-title">Tại sao chọn chúng tôi?</h2>
+                <p class="section-subtitle">
+                    Những lý do khiến ThuêLai.vn trở thành lựa chọn hàng đầu cho dịch vụ lái xe thuê
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item animate-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
+                    <div class="feature-content">
+                        <h3>An toàn tuyệt đối</h3>
+                        <p>Tài xế được đào tạo bài bản, xe được bảo dưỡng định kỳ và bảo hiểm đầy đủ</p>
+                    </div>
+                </div>
+
+                <div class="feature-item animate-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Dịch vụ 24/7</h3>
+                        <p>Luôn sẵn sàng phục vụ mọi lúc, mọi nơi với đội ngũ tài xế chuyên nghiệp</p>
+                    </div>
+                </div>
+
+                <div class="feature-item animate-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Giá cả hợp lý</h3>
+                        <p>Bảng giá minh bạch, không phát sinh chi phí ẩn và nhiều ưu đãi hấp dẫn</p>
+                    </div>
+                </div>
+
+                <div class="feature-item animate-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Hỗ trợ tận tâm</h3>
+                        <p>Đội ngũ chăm sóc khách hàng chuyên nghiệp, sẵn sàng hỗ trợ mọi vấn đề</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>Bạn cần tư vấn về dịch vụ?</h2>
+                    <p>Hãy liên hệ ngay với chúng tôi để được tư vấn chi tiết và báo giá tốt nhất.</p>
+                </div>
+                
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <div class="method-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="method-info">
+                            <h4>Gọi điện thoại</h4>
+                            <p>1900 1234</p>
+                            <span>Hỗ trợ 24/7</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-method">
+                        <div class="method-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="method-info">
+                            <h4>Gửi email</h4>
+                            <p>info@thuelai.vn</p>
+                            <span>Phản hồi trong 2h</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-method">
+                        <div class="method-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="method-info">
+                            <h4>Chat trực tuyến</h4>
+                            <p>Zalo, Facebook</p>
+                            <span>Phản hồi ngay lập tức</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-actions" style="margin-top: 3rem;">
+                    <a href="{{ route('driver.contact') }}" class="btn-primary-glow">
+                        <span class="btn-text">Liên hệ ngay</span>
+                        <span class="btn-icon">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </a>
+                    <a href="{{ route('driver.pricing') }}" class="btn-secondary">
+                        <i class="fas fa-list"></i>
+                        <span>Xem bảng giá</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -102,23 +231,57 @@
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Xử lý nút đặt dịch vụ
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+
+    // Observe all elements with animate-in class
+    document.querySelectorAll('.animate-in').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Handle service booking buttons
     const bookButtons = document.querySelectorAll('.book-service-btn');
     bookButtons.forEach(button => {
         button.addEventListener('click', function() {
             const serviceId = this.getAttribute('data-service-id');
             const serviceName = this.getAttribute('data-service-name');
             
-            // Chuyển đến trang chủ với form đặt dịch vụ
-            window.location.href = '{{ route("driver.home") }}#booking-form';
-            
-            // Lưu thông tin dịch vụ vào localStorage để form có thể sử dụng
+            // Store service info in localStorage
             localStorage.setItem('selectedService', JSON.stringify({
                 id: serviceId,
                 name: serviceName
             }));
+            
+            // Redirect to home page with booking form
+            window.location.href = '{{ route("driver.home") }}#booking';
         });
     });
+
+    // Smooth scroll for scroll indicator
+    const scrollArrow = document.querySelector('.scroll-arrow');
+    if (scrollArrow) {
+        scrollArrow.addEventListener('click', function() {
+            const servicesSection = document.querySelector('.services-section');
+            if (servicesSection) {
+                servicesSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    }
 });
 </script>
 @endsection
+

@@ -19,58 +19,58 @@
     <!-- Modern Header -->
     <header class="modern-header">
         <nav class="navbar navbar-expand-lg">
-            <div class="container">
+        <div class="container">
                 <a class="navbar-brand" href="{{ route('driver.home') }}">
                     <div class="brand-logo">
                         <i class="fas fa-car"></i>
                         <span>ThuêLai.vn</span>
                     </div>
-                </a>
-                
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
                             <a class="nav-link" href="{{ route('driver.home') }}">
                                 <i class="fas fa-home"></i>
                                 <span>Trang chủ</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
                             <a class="nav-link" href="{{ route('driver.services') }}">
                                 <i class="fas fa-cogs"></i>
                                 <span>Dịch vụ</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
                             <a class="nav-link" href="{{ route('driver.pricing') }}">
                                 <i class="fas fa-tags"></i>
                                 <span>Bảng giá</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
                             <a class="nav-link" href="{{ route('driver.news') }}">
                                 <i class="fas fa-newspaper"></i>
                                 <span>Tin tức</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
                             <a class="nav-link" href="{{ route('driver.about') }}">
                                 <i class="fas fa-info-circle"></i>
                                 <span>Giới thiệu</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
                             <a class="nav-link" href="{{ route('driver.contact') }}">
                                 <i class="fas fa-phone"></i>
                                 <span>Liên hệ</span>
                             </a>
-                        </li>
-                        @auth
-                            <li class="nav-item dropdown">
+                    </li>
+                    @auth
+                        <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle user-menu" href="#" role="button" data-bs-toggle="dropdown">
                                     <div class="user-avatar">
                                         <i class="fas fa-user"></i>
@@ -84,29 +84,29 @@
                                             <span>Quản lý</span>
                                         </a>
                                     </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
                                             <button type="submit" class="dropdown-item">
                                                 <i class="fas fa-sign-out-alt"></i>
                                                 <span>Đăng xuất</span>
                                             </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
-                        @else
-                            <li class="nav-item">
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        <li class="nav-item">
                                 <a class="nav-link login-btn" href="{{ route('login.index') }}">
                                     <i class="fas fa-sign-in-alt"></i>
                                     <span>Đăng nhập</span>
                                 </a>
-                            </li>
-                        @endauth
-                    </ul>
-                </div>
+                        </li>
+                    @endauth
+                </ul>
             </div>
+        </div>
         </nav>
     </header>
 
@@ -124,7 +124,7 @@
         </div>
         
         <div class="footer-content">
-            <div class="container">
+        <div class="container">
                 <div class="footer-grid">
                     <div class="footer-section">
                         <div class="footer-brand">
@@ -133,7 +133,7 @@
                                 <span>ThuêLai.vn</span>
                             </div>
                             <p>Dịch vụ lái xe thuê chuyên nghiệp, an toàn và uy tín hàng đầu Việt Nam. Cam kết mang đến trải nghiệm dịch vụ tốt nhất cho khách hàng.</p>
-                            <div class="social-links">
+                    <div class="social-links">
                                 <a href="#" class="social-link">
                                     <i class="fab fa-facebook-f"></i>
                                 </a>
@@ -147,8 +147,8 @@
                                     <i class="fab fa-tiktok"></i>
                                 </a>
                             </div>
-                        </div>
                     </div>
+                </div>
                     
                     <div class="footer-section">
                         <h4>Dịch vụ</h4>
@@ -158,8 +158,8 @@
                             <li><a href="{{ route('driver.services') }}">Lái xe doanh nghiệp</a></li>
                             <li><a href="{{ route('driver.services') }}">Lái xe sự kiện</a></li>
                             <li><a href="{{ route('driver.services') }}">Lái xe du lịch</a></li>
-                        </ul>
-                    </div>
+                    </ul>
+                </div>
                     
                     <div class="footer-section">
                         <h4>Hỗ trợ</h4>
@@ -169,12 +169,12 @@
                             <li><a href="#">Hướng dẫn</a></li>
                             <li><a href="#">Chính sách</a></li>
                             <li><a href="#">Điều khoản</a></li>
-                        </ul>
-                    </div>
+                    </ul>
+                </div>
                     
                     <div class="footer-section">
                         <h4>Liên hệ</h4>
-                        <div class="contact-info">
+                    <div class="contact-info">
                             <div class="contact-item">
                                 <div class="contact-icon">
                                     <i class="fas fa-phone"></i>
@@ -211,9 +211,9 @@
                                     <span class="contact-value">24/7</span>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
+            </div>
                 
                 <div class="footer-bottom">
                     <div class="footer-bottom-content">
@@ -225,7 +225,7 @@
                             <a href="#" class="footer-action-link">Điều khoản sử dụng</a>
                             <a href="#" class="footer-action-link">Sitemap</a>
                         </div>
-                    </div>
+                </div>
                 </div>
             </div>
         </div>
