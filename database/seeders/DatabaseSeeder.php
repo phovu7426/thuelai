@@ -53,6 +53,7 @@ class DatabaseSeeder extends Seeder
             
             // Other content if needed
             // PostSeeder::class,
+            DriverServiceSeeder::class,
         ]);
     }
 }

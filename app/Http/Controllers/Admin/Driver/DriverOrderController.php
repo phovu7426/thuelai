@@ -18,6 +18,8 @@ class DriverOrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
+        $services = DriverService::where('status', true)->get();
+
         $statuses = [
             'pending' => 'Chờ xác nhận',
             'confirmed' => 'Đã xác nhận',
@@ -26,7 +28,7 @@ class DriverOrderController extends Controller
             'cancelled' => 'Đã hủy'
         ];
 
-        return view('admin.driver.orders.index', compact('orders', 'statuses'));
+        return view('admin.driver.orders.index', compact('orders', 'services', 'statuses'));
     }
 
     /**
@@ -328,5 +330,75 @@ class DriverOrderController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Dashboard thống kê đơn hàng lái xe
+     */
+    public function dashboard()
+    {
+        $totalOrders = DriverOrder::count();
+        $pendingOrders = DriverOrder::where('status', 'pending')->count();
+        $confirmedOrders = DriverOrder::where('status', 'confirmed')->count();
+        $inProgressOrders = DriverOrder::where('status', 'in_progress')->count();
+        $completedOrders = DriverOrder::where('status', 'completed')->count();
+        $cancelledOrders = DriverOrder::where('status', 'cancelled')->count();
+
+        $totalRevenue = DriverOrder::where('status', 'completed')->sum('total_amount');
+        $monthlyRevenue = DriverOrder::where('status', 'completed')
+            ->whereMonth('created_at', now()->month)
+            ->sum('total_amount');
+
+        $recentOrders = DriverOrder::with(['service', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        $ordersByService = DriverOrder::with('service')
+            ->selectRaw('driver_service_id, COUNT(*) as count')
+            ->groupBy('driver_service_id')
+            ->get();
+
+        return view('admin.driver.dashboard', compact(
+            'totalOrders',
+            'pendingOrders',
+            'confirmedOrders',
+            'inProgressOrders',
+            'completedOrders',
+            'cancelledOrders',
+            'totalRevenue',
+            'monthlyRevenue',
+            'recentOrders',
+            'ordersByService'
+        ));
+    }
+
+    /**
+     * Thêm ghi chú admin
+     */
+    public function addNote(Request $request, DriverOrder $driverOrder)
+    {
+        $request->validate([
+            'admin_notes' => 'required|string|max:1000'
+        ], [
+            'admin_notes.required' => 'Ghi chú là bắt buộc',
+            'admin_notes.max' => 'Ghi chú không được quá 1000 ký tự'
+        ]);
+
+        try {
+            $driverOrder->update([
+                'admin_notes' => $request->admin_notes
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ghi chú đã được thêm thành công!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -46,6 +46,12 @@
                             </a>
                     </li>
                     <li class="nav-item">
+                            <a class="nav-link" href="{{ route('driver.booking') }}">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Đặt dịch vụ</span>
+                            </a>
+                    </li>
+                    <li class="nav-item">
                             <a class="nav-link" href="{{ route('driver.pricing') }}">
                                 <i class="fas fa-tags"></i>
                                 <span>Bảng giá</span>
@@ -78,6 +84,12 @@
                                     <span>{{ Auth::user()->name }}</span>
                                 </a>
                                 <ul class="dropdown-menu modern-dropdown">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('driver.orders.index') }}">
+                                            <i class="fas fa-receipt"></i>
+                                            <span>Đơn hàng của tôi</span>
+                                        </a>
+                                    </li>
                                     <li>
                                         <a class="dropdown-item" href="{{ route('dashboard') }}">
                                             <i class="fas fa-tachometer-alt"></i>
