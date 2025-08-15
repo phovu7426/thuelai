@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Driver;
 
 use App\Http\Controllers\Controller;
 use App\Models\DriverService;
-use App\Models\DriverOrder;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 
@@ -20,22 +19,13 @@ class DriverDashboardController extends Controller
             'total_services' => DriverService::count(),
             'active_services' => DriverService::where('status', true)->count(),
             'featured_services' => DriverService::where('is_featured', true)->count(),
-            'total_orders' => DriverOrder::count(),
-            'pending_orders' => DriverOrder::where('status', 'pending')->count(),
-            'confirmed_orders' => DriverOrder::where('status', 'confirmed')->count(),
-            'in_progress_orders' => DriverOrder::where('status', 'in_progress')->count(),
-            'completed_orders' => DriverOrder::where('status', 'completed')->count(),
-            'cancelled_orders' => DriverOrder::where('status', 'cancelled')->count(),
             'total_testimonials' => Testimonial::count(),
             'active_testimonials' => Testimonial::where('status', true)->count(),
             'featured_testimonials' => Testimonial::where('is_featured', true)->count(),
         ];
 
-        // Đơn hàng gần đây
-        $recent_orders = DriverOrder::with(['user', 'service'])
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
+        // Đơn hàng gần đây - đã loại bỏ
+        $recent_orders = collect([]);
 
         // Dịch vụ nổi bật
         $featured_services = DriverService::where('is_featured', true)
@@ -76,18 +66,11 @@ class DriverDashboardController extends Controller
             $month_name = $date->format('M Y');
             $months[] = $month_name;
 
-            // Đếm đơn hàng theo tháng
-            $order_count = DriverOrder::whereYear('created_at', $date->year)
-                ->whereMonth('created_at', $date->month)
-                ->count();
-            $order_counts[] = $order_count;
+            // Đếm đơn hàng theo tháng - đã loại bỏ
+            $order_counts[] = 0;
 
-            // Tính doanh thu theo tháng
-            $revenue = DriverOrder::whereYear('created_at', $date->year)
-                ->whereMonth('created_at', $date->month)
-                ->where('status', 'completed')
-                ->sum('total_amount');
-            $revenue_data[] = $revenue;
+            // Tính doanh thu theo tháng - đã loại bỏ
+            $revenue_data[] = 0;
         }
 
         return [
@@ -130,10 +113,9 @@ class DriverDashboardController extends Controller
         $data = [];
 
         foreach ($statuses as $status) {
-            $count = DriverOrder::where('status', $status)->count();
             $data[] = [
                 'status' => $status,
-                'count' => $count
+                'count' => 0
             ];
         }
 
@@ -152,11 +134,7 @@ class DriverDashboardController extends Controller
             $date = now()->subMonths($i);
             $months[] = $date->format('M');
             
-            $monthly_revenue = DriverOrder::whereYear('created_at', $date->year)
-                ->whereMonth('created_at', $date->month)
-                ->where('status', 'completed')
-                ->sum('total_amount');
-            $revenue[] = $monthly_revenue;
+            $revenue[] = 0;
         }
 
         return [
@@ -170,14 +148,13 @@ class DriverDashboardController extends Controller
      */
     private function getServiceChartData()
     {
-        $services = DriverService::withCount('orders')
-            ->orderBy('orders_count', 'desc')
+        $services = DriverService::orderBy('name', 'asc')
             ->take(10)
             ->get();
 
         return [
             'labels' => $services->pluck('name')->toArray(),
-            'data' => $services->pluck('orders_count')->toArray()
+            'data' => array_fill(0, $services->count(), 0)
         ];
     }
 
@@ -187,11 +164,9 @@ class DriverDashboardController extends Controller
     public function getRealTimeStats()
     {
         $stats = [
-            'today_orders' => DriverOrder::whereDate('created_at', today())->count(),
-            'today_revenue' => DriverOrder::whereDate('created_at', today())
-                ->where('status', 'completed')
-                ->sum('total_amount'),
-            'pending_orders' => DriverOrder::where('status', 'pending')->count(),
+            'today_orders' => 0,
+            'today_revenue' => 0,
+            'pending_orders' => 0,
             'unread_contacts' => 0, // Sẽ cập nhật khi có model Contact
         ];
 

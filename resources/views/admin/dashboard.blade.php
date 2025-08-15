@@ -95,11 +95,11 @@
         $totalProjects = $totalProjects ?? 0;
         $newProjects = $newProjects ?? 0;
     
-    // Chỉ đếm đơn hàng thành công
-    $totalOrders = $totalOrders ?? \App\Models\Order::where('status', 'completed')->count() ?? 0;
-    $newOrders = $newOrders ?? \App\Models\Order::where('status', 'completed')->where('created_at', '>=', now()->subDays(7))->count() ?? 0;
-    $pendingOrders = $pendingOrders ?? \App\Models\Order::where('status', 'pending')->count() ?? 0;
-    $completedOrders = $completedOrders ?? \App\Models\Order::where('status', 'completed')->count() ?? 0;
+    // Đơn hàng đã loại bỏ
+    $totalOrders = $totalOrders ?? 0;
+    $newOrders = $newOrders ?? 0;
+    $pendingOrders = $pendingOrders ?? 0;
+    $completedOrders = $completedOrders ?? 0;
     
     // Dữ liệu mẫu cho biểu đồ doanh thu - chỉ tính đơn hàng thành công
     try {
@@ -113,11 +113,8 @@
             
             $months[] = $monthName;
             
-            // Tính tổng doanh thu trong tháng từ đơn hàng đã hoàn thành
-            $monthlyRevenue = \App\Models\Order::where('status', 'completed')
-                ->whereMonth('created_at', $date->month)
-                ->whereYear('created_at', $date->year)
-                ->sum('total_amount');
+            // Tính tổng doanh thu trong tháng - đã loại bỏ
+            $monthlyRevenue = 0;
             
             $revenues[] = $monthlyRevenue;
         }
@@ -146,7 +143,7 @@
     ];
     
     // Hoạt động gần đây
-    $recentOrders = $recentOrders ?? \App\Models\Order::latest()->take(3)->get() ?? collect([]);
+    $recentOrders = $recentOrders ?? collect([]);
             $recentProducts = $recentProducts ?? collect([]);
         $recentProjects = $recentProjects ?? collect([]);
         
@@ -255,7 +252,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between small">
-                        <a href="{{ route('admin.driver.orders.index') }}" class="text-white stretched-link">Xem chi tiết</a>
+                        <span class="text-white">Đã loại bỏ</span>
                         <div class="text-white"><i class="bi bi-chevron-right"></i></div>
                     </div>
                 </div>
@@ -330,9 +327,7 @@
                             @empty
                             @endforelse
                             
-                            <div class="text-center mt-3">
-                                <a href="{{ route('admin.driver.orders.index') }}" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -401,7 +396,7 @@
                             <i class="bi bi-file-earmark-plus"></i>
                         </div>
                         <h5>Thêm đơn hàng</h5>
-                        <a href="{{ route('admin.driver.orders.create') }}" class="btn btn-sm btn-success mt-2">Truy cập</a>
+                        <span class="btn btn-sm btn-secondary mt-2">Đã loại bỏ</span>
                     </div>
                 </div>
             </div>

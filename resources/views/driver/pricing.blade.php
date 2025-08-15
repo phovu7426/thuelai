@@ -296,10 +296,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </span>
                     </a>
-                    <a href="{{ route('driver.home') }}#booking" class="btn-secondary">
-                        <i class="fas fa-calendar-check"></i>
-                        <span>Đặt dịch vụ</span>
-                    </a>
+
                 </div>
             </div>
         </div>
@@ -328,23 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
-    // Handle service booking buttons
-    const bookButtons = document.querySelectorAll('.book-service-btn');
-    bookButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const serviceId = this.getAttribute('data-service-id');
-            const serviceName = this.getAttribute('data-service-name');
-            
-            // Store service info in localStorage
-            localStorage.setItem('selectedService', JSON.stringify({
-                id: serviceId,
-                name: serviceName
-            }));
-            
-            // Redirect to home page with booking form
-            window.location.href = '{{ route("driver.home") }}#booking';
-        });
-    });
+
 
     // Smooth scroll for scroll indicator
     const scrollArrow = document.querySelector('.scroll-arrow');

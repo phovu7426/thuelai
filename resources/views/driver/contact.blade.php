@@ -140,7 +140,7 @@
                                 <select id="subject" name="subject" required>
                             <option value="">Chọn chủ đề</option>
                                     <option value="tư_vấn">Tư vấn dịch vụ</option>
-                                    <option value="đặt_dịch_vụ">Đặt dịch vụ</option>
+
                                     <option value="phản_hồi">Phản hồi</option>
                                     <option value="khiếu_nại">Khiếu nại</option>
                                     <option value="khác">Khác</option>

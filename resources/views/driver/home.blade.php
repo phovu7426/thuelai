@@ -235,7 +235,7 @@
                 </div>
                 <h2 class="section-title">4 bước đặt tài xế</h2>
                 <p class="section-subtitle">
-                    Quy trình đặt dịch vụ đơn giản, nhanh chóng chỉ trong vài phút
+                    Dịch vụ lái xe chất lượng, uy tín và chuyên nghiệp
                 </p>
             </div>
             
@@ -246,7 +246,7 @@
                         <i class="fas fa-phone-alt"></i>
                     </div>
                     <h3>Liên hệ</h3>
-                    <p>Gọi hotline hoặc điền form đặt dịch vụ</p>
+                    <p>Gọi hotline hoặc liên hệ trực tiếp</p>
                 </div>
                 
                 <div class="process-step">
@@ -447,115 +447,7 @@
     <section id="booking" class="booking-section">
         <div class="container">
             <div class="booking-content">
-                <div class="section-header">
-                    <div class="section-badge">
-                        <span class="badge-modern">
-                            <i class="fas fa-calendar-check"></i>
-                            Đặt dịch vụ
-                            </span>
-                        </div>
-                        <h2 class="section-title">Đặt dịch vụ nhanh</h2>
-                    <p class="section-subtitle">
-                        Điền thông tin để được tư vấn và đặt dịch vụ ngay lập tức
-                    </p>
-                    </div>
-                    
-                <div class="booking-form-container">
-                    <form id="quick-booking-form" class="booking-form-modern">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="customer_name">
-                                    <i class="fas fa-user"></i>
-                                    Họ tên *
-                                        </label>
-                                <input type="text" id="customer_name" name="customer_name" required>
-                                    </div>
-                            
-                            <div class="form-group">
-                                <label for="customer_phone">
-                                    <i class="fas fa-phone"></i>
-                                    Số điện thoại *
-                                        </label>
-                                <input type="tel" id="customer_phone" name="customer_phone" required>
-                                    </div>
-                            
-                            <div class="form-group">
-                                <label for="driver_service_id">
-                                    <i class="fas fa-cogs"></i>
-                                    Loại dịch vụ *
-                                        </label>
-                                <select id="driver_service_id" name="driver_service_id" required>
-                                            <option value="">Chọn dịch vụ</option>
-                                            @foreach($services as $service)
-                                                <option value="{{ $service->id }}">{{ $service->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                            
-                            <div class="form-group">
-                                <label for="service_type">
-                                    <i class="fas fa-clock"></i>
-                                    Hình thức dịch vụ *
-                                        </label>
-                                <select id="service_type" name="service_type" required>
-                                            <option value="">Chọn hình thức</option>
-                                            <option value="hourly">Theo giờ</option>
-                                            <option value="trip">Theo chuyến</option>
-                                            <option value="custom">Tùy chỉnh</option>
-                                        </select>
-                                    </div>
-                            
-                            <div class="form-group">
-                                <label for="pickup_datetime">
-                                    <i class="fas fa-calendar"></i>
-                                    Thời gian đón *
-                                        </label>
-                                <input type="datetime-local" id="pickup_datetime" name="pickup_datetime" required>
-                                    </div>
-                            
-                            <div class="form-group">
-                                <label for="hours">
-                                    <i class="fas fa-hourglass-half"></i>
-                                    Số giờ (nếu theo giờ)
-                                        </label>
-                                <input type="number" id="hours" name="hours" min="1" value="4">
-                                    </div>
-                                </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="pickup_location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                Địa điểm đón *
-                                    </label>
-                            <input type="text" id="pickup_location" name="pickup_location" required>
-                                </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="destination">
-                                <i class="fas fa-flag-checkered"></i>
-                                Điểm đến
-                                    </label>
-                            <input type="text" id="destination" name="destination">
-                                </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="special_requirements">
-                                <i class="fas fa-clipboard-list"></i>
-                                Yêu cầu đặc biệt
-                                    </label>
-                            <textarea id="special_requirements" name="special_requirements" rows="3" placeholder="Nhập yêu cầu đặc biệt nếu có..."></textarea>
-                                </div>
-                        
-                        <div class="form-submit">
-                            <button type="submit" class="btn-submit">
-                                <span>Gửi yêu cầu</span>
-                                <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </div>
-                            </form>
-                </div>
-            </div>
-        </div>
+
     </section>
 @endsection
 
@@ -609,59 +501,9 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
-    // Form handling
-    const form = document.getElementById('quick-booking-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-            
-            // Show loading state
-            const submitBtn = form.querySelector('.btn-submit');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
-            submitBtn.disabled = true;
-            
-            fetch('{{ route("driver.order.store") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification('Thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.', 'success');
-                    form.reset();
-                } else {
-                    showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('Có lỗi xảy ra. Vui lòng thử lại.', 'error');
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
-        });
-    }
 
-    // Book service buttons
-    document.querySelectorAll('.btn-book-service, .btn-book-pricing').forEach(button => {
-        button.addEventListener('click', function() {
-            const serviceId = this.getAttribute('data-service-id');
-            const serviceName = this.getAttribute('data-service-name');
-            
-            document.getElementById('driver_service_id').value = serviceId;
-            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
-        });
-    });
+
+
 
     // Smooth scroll for navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

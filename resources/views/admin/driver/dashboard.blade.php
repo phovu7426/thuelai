@@ -117,9 +117,7 @@
                                     @foreach($recent_orders as $order)
                                     <tr>
                                         <td>
-                                            <a href="{{ route('admin.driver.orders.show', $order->id) }}">
-                                                {{ $order->order_number }}
-                                            </a>
+                                            {{ $order->order_number ?? 'N/A' }}
                                         </td>
                                         <td>{{ $order->customer_name }}</td>
                                         <td>
@@ -133,11 +131,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="text-center mt-3">
-                            <a href="{{ route('admin.driver.orders.index') }}" class="btn btn-primary btn-sm">
-                                Xem tất cả đơn hàng
-                            </a>
-                        </div>
+
                     @else
                         <p class="text-muted text-center">Chưa có đơn hàng nào.</p>
                     @endif

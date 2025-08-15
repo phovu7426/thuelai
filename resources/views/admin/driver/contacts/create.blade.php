@@ -83,7 +83,7 @@
                                     <select class="form-control @error('contact_type') is-invalid @enderror" 
                                             id="contact_type" name="contact_type">
                                         <option value="general" {{ old('contact_type') == 'general' ? 'selected' : '' }}>Liên hệ chung</option>
-                                        <option value="booking" {{ old('contact_type') == 'booking' ? 'selected' : '' }}>Đặt dịch vụ</option>
+
                                         <option value="support" {{ old('contact_type') == 'support' ? 'selected' : '' }}>Hỗ trợ</option>
                                         <option value="complaint" {{ old('contact_type') == 'complaint' ? 'selected' : '' }}>Khiếu nại</option>
                                         <option value="feedback" {{ old('contact_type') == 'feedback' ? 'selected' : '' }}>Phản hồi</option>
@@ -181,9 +181,7 @@ $(document).ready(function() {
         
         if (!subject.val()) {
             switch(contactType) {
-                case 'booking':
-                    subject.val('Yêu cầu đặt dịch vụ lái xe');
-                    break;
+
                 case 'support':
                     subject.val('Yêu cầu hỗ trợ');
                     break;

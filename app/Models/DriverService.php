@@ -30,10 +30,7 @@ class DriverService extends Model
         'status' => 'boolean'
     ];
 
-    public function orders()
-    {
-        return $this->hasMany(DriverOrder::class);
-    }
+
 
     public function getImageUrlAttribute()
     {

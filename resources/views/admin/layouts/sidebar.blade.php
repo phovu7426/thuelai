@@ -84,18 +84,9 @@
             </li>
             @endcan
 
-            {{-- Stone menu items removed - stone functionality no longer exists --}}
+                        {{-- Stone menu items removed - stone functionality no longer exists --}}
 
             {{-- ===== DRIVER SERVICES SECTION ===== --}}
-            @can('access_driver_services')
-            <li class="nav-item">
-                <a href="{{ route('admin.driver.dashboard') }}" class="nav-link {{ request()->routeIs('admin.driver.dashboard') ? 'active' : '' }}">
-                    <i class="nav-icon bi bi-car-front"></i>
-                    <p>Dịch vụ lái xe</p>
-                </a>
-            </li>
-            @endcan
-
             {{-- Quản lý dịch vụ lái xe --}}
             @can('access_driver_services')
             <li class="nav-item">
@@ -106,12 +97,12 @@
             </li>
             @endcan
 
-            {{-- Quản lý đơn hàng lái xe --}}
-            @can('access_driver_orders')
+            {{-- Quản lý bảng giá --}}
+            @can('access_driver_services')
             <li class="nav-item">
-                <a href="{{ route('admin.driver.orders.index') }}" class="nav-link {{ request()->routeIs('admin.driver.orders.*') ? 'active' : '' }}">
-                    <i class="nav-icon bi bi-cart-check"></i>
-                    <p>Đơn hàng lái xe</p>
+                <a href="{{ route('admin.driver.pricing.index') }}" class="nav-link {{ request()->routeIs('admin.driver.pricing.*') ? 'active' : '' }}">
+                    <i class="nav-icon bi bi-tags"></i>
+                    <p>Bảng giá</p>
                 </a>
             </li>
             @endcan

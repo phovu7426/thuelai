@@ -27,11 +27,11 @@ class DashboardController extends Controller
             $totalProjects = 0; // Sẽ được cập nhật khi có model DriverOrder
             $newProjects = 0;
             
-            // Thống kê đơn hàng - chỉ đếm đơn hàng thành công
-            $totalOrders = Order::where('status', 'completed')->count();
-            $newOrders = Order::where('status', 'completed')->where('created_at', '>=', now()->subDays(7))->count();
-            $pendingOrders = Order::where('status', 'pending')->count();
-            $completedOrders = Order::where('status', 'completed')->count();
+            // Thống kê đơn hàng - đã loại bỏ
+            $totalOrders = 0;
+            $newOrders = 0;
+            $pendingOrders = 0;
+            $completedOrders = 0;
             
             // Doanh thu theo tháng (6 tháng gần nhất) - chỉ tính đơn hàng đã hoàn thành
             $revenueData = $this->getMonthlyRevenue();
@@ -43,7 +43,7 @@ class DashboardController extends Controller
             $visitsData = $this->getDailyVisits();
             
             // Hoạt động gần đây
-            $recentOrders = Order::latest()->take(3)->get();
+            $recentOrders = collect([]);
             $recentProducts = collect([]); // Sẽ được cập nhật khi có model DriverService
             $recentProjects = collect([]); // Sẽ được cập nhật khi có model DriverOrder
             
@@ -97,11 +97,8 @@ class DashboardController extends Controller
                 
                 $months->push($monthName);
                 
-                // Tính tổng doanh thu trong tháng - CHỈ từ đơn hàng đã hoàn thành
-                $monthlyRevenue = Order::where('status', 'completed')
-                    ->whereMonth('created_at', $date->month)
-                    ->whereYear('created_at', $date->year)
-                    ->sum('total_amount');
+                // Tính tổng doanh thu trong tháng - đã loại bỏ
+                $monthlyRevenue = 0;
                 
                 $revenue->push($monthlyRevenue);
             }

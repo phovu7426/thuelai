@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Driver\HomeController;
-use App\Http\Controllers\Driver\OrderController;
+
 use App\Http\Controllers\Driver\ContactController;
 use App\Http\Controllers\Driver\BookingController;
 use Illuminate\Support\Facades\Route;
@@ -18,12 +18,5 @@ Route::name('driver.')->group(function () {
     // Contact form submission
     Route::post('/lien-he', [ContactController::class, 'submit'])->name('contact.submit');
     
-    // Order submission
-    Route::post('/dat-dich-vu', [OrderController::class, 'store'])->name('order.store');
-    
-    // Protected routes
-    Route::middleware('auth')->group(function () {
-        Route::get('/don-hang', [OrderController::class, 'index'])->name('orders.index');
-        Route::get('/don-hang/{id}', [OrderController::class, 'show'])->name('order.show');
-    });
+
 });

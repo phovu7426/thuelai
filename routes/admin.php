@@ -122,22 +122,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->middleware('canAny:access_contact-info')->name('contact-info.edit');
     Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->middleware('canAny:access_contact-info')->name('contact-info.update');
 
-    // Driver Orders Management
-    Route::prefix('driver-orders')->name('driver.orders.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'index'])->name('index');
-        Route::get('/{id}', [App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'update'])->name('update');
-        Route::delete('/{id}', [App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'destroy'])->name('destroy');
-        Route::patch('/{id}/status', [App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'updateStatus'])->name('updateStatus');
-        Route::patch('/{id}/note', [App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'addNote'])->name('addNote');
-    });
 
-    // Driver Dashboard
-    Route::get('/driver-dashboard', [App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'dashboard'])->name('driver.dashboard');
 
     // ===== DRIVER SERVICE ADMIN ROUTES =====
-    Route::prefix('driver')->name('driver.')->middleware('canAny:access_driver_services,access_driver_orders,access_driver_testimonials,access_driver_contacts')->group(function () {
+    Route::prefix('driver')->name('driver.')->middleware('canAny:access_driver_services,access_driver_testimonials,access_driver_contacts')->group(function () {
         
         // Dashboard
         Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverDashboardController::class, 'index'])->name('dashboard');
@@ -153,15 +141,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/update-order', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'updateOrder'])->name('update-order');
         });
 
-        // Quản lý đơn hàng lái xe
-        Route::prefix('orders')->name('orders.')->middleware('canAny:access_driver_orders')->group(function () {
-            Route::resource('/', \App\Http\Controllers\Admin\Driver\DriverOrderController::class)->except(['show']);
-            Route::get('/{driverOrder}', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'show'])->name('show');
-            Route::post('/{driverOrder}/status', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'updateStatus'])->name('update-status');
-            Route::get('/filter/status', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'filterByStatus'])->name('filter-by-status');
-            Route::get('/search', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'search'])->name('search');
-            Route::get('/export', [\App\Http\Controllers\Admin\Driver\DriverOrderController::class, 'export'])->name('export');
+        // Quản lý bảng giá
+        Route::prefix('pricing')->name('pricing.')->middleware('canAny:access_driver_services')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverPricingController::class, 'index'])->name('index');
+            Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverPricingController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingController::class, 'update'])->name('update');
         });
+
+
 
         // Quản lý testimonials
         Route::prefix('testimonials')->name('testimonials.')->middleware('canAny:access_driver_testimonials')->group(function () {
