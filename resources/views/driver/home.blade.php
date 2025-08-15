@@ -138,28 +138,10 @@
                                 <h3 class="service-title">{{ $service->name }}</h3>
                                 <p class="service-description">{{ $service->short_description }}</p>
                                 
-                                <div class="service-pricing">
-                                        @if($service->price_per_hour)
-                                        <div class="price-item">
-                                                <span class="price-amount">{{ number_format($service->price_per_hour) }}đ</span>
-                                                <span class="price-unit">/giờ</span>
-                                            </div>
-                                        @endif
-                                        
-                                        @if($service->price_per_trip)
-                                        <div class="price-item">
-                                                <span class="price-amount">{{ number_format($service->price_per_trip) }}đ</span>
-                                                <span class="price-unit">/chuyến</span>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    
-                                <button class="btn-book-service" 
-                                            data-service-id="{{ $service->id }}" 
-                                            data-service-name="{{ $service->name }}">
-                                    <span>Đặt ngay</span>
+                                <a href="{{ route('driver.contact') }}" class="btn-book-service">
+                                    <span>Liên hệ tư vấn</span>
                                     <i class="fas fa-arrow-right"></i>
-                                    </button>
+                                </a>
                             </div>
                         </div>
                     @endforeach
@@ -249,6 +231,10 @@
                     <p>Gọi hotline hoặc liên hệ trực tiếp</p>
                 </div>
                 
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
                 <div class="process-step">
                     <div class="step-number">2</div>
                     <div class="step-icon">
@@ -258,6 +244,10 @@
                     <p>Chúng tôi xác nhận thông tin và báo giá</p>
                 </div>
                 
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
                 <div class="process-step">
                     <div class="step-number">3</div>
                     <div class="step-icon">
@@ -265,6 +255,10 @@
                     </div>
                     <h3>Đón khách</h3>
                     <p>Tài xế đến đúng địa điểm và thời gian</p>
+                </div>
+                
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
                 </div>
                 
                 <div class="process-step">
@@ -361,27 +355,13 @@
                                 </div>
                                     
                             <div class="pricing-body">
-                                    @if($service->price_per_hour)
-                                    <div class="price-display">
-                                        <span class="currency">₫</span>
-                                        <span class="amount">{{ number_format($service->price_per_hour) }}</span>
-                                        <span class="period">/giờ</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if($service->price_per_trip)
-                                    <div class="price-display">
-                                        <span class="currency">₫</span>
-                                        <span class="amount">{{ number_format($service->price_per_trip) }}</span>
-                                        <span class="period">/chuyến</span>
-                                        </div>
-                                    @endif
-                                    
-                                <button class="btn-book-pricing" 
-                                            data-service-id="{{ $service->id }}" 
-                                            data-service-name="{{ $service->name }}">
-                                    Đặt ngay
-                                    </button>
+                                <div class="service-description">
+                                    <p>{{ $service->description }}</p>
+                                </div>
+                                
+                                <a href="{{ route('driver.contact') }}" class="btn-book-pricing">
+                                    <span>Liên hệ tư vấn</span>
+                                </a>
                             </div>
                         </div>
                     @endforeach

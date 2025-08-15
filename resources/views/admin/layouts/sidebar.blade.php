@@ -90,7 +90,7 @@
             {{-- Quản lý dịch vụ lái xe --}}
             @can('access_driver_services')
             <li class="nav-item">
-                <a href="{{ route('admin.driver.services.index') }}" class="nav-link {{ request()->routeIs('admin.driver.services.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.driver.services.index') }}" class="nav-link {{ isActive('admin.driver.services.*') }}">
                     <i class="nav-icon bi bi-gear"></i>
                     <p>Quản lý dịch vụ</p>
                 </a>
@@ -100,7 +100,7 @@
             {{-- Quản lý bảng giá --}}
             @can('access_driver_services')
             <li class="nav-item">
-                <a href="{{ route('admin.driver.pricing.index') }}" class="nav-link {{ request()->routeIs('admin.driver.pricing.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.driver.pricing.index') }}" class="nav-link {{ isActive('admin.driver.pricing.*') }}">
                     <i class="nav-icon bi bi-tags"></i>
                     <p>Bảng giá</p>
                 </a>
@@ -110,7 +110,7 @@
             {{-- Quản lý testimonials --}}
             @can('access_driver_testimonials')
             <li class="nav-item">
-                <a href="{{ route('admin.driver.testimonials.index') }}" class="nav-link {{ request()->routeIs('admin.driver.testimonials.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.driver.testimonials.index') }}" class="nav-link {{ isActive('admin.driver.testimonials.*') }}">
                     <i class="nav-icon bi bi-chat-quote"></i>
                     <p>Đánh giá khách hàng</p>
                 </a>
@@ -120,7 +120,7 @@
             {{-- Quản lý liên hệ lái xe --}}
             @can('access_driver_contacts')
             <li class="nav-item">
-                <a href="{{ route('admin.driver.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.driver.contacts.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.driver.contacts.index') }}" class="nav-link {{ isActive('admin.driver.contacts.*') }}">
                     <i class="nav-icon bi bi-envelope"></i>
                     <p>Liên hệ lái xe</p>
                 </a>

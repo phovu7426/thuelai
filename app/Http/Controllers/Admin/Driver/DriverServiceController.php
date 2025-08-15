@@ -13,9 +13,21 @@ class DriverServiceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $services = DriverService::orderBy('sort_order', 'asc')
+        $query = DriverService::query();
+
+        // Lọc theo tên dịch vụ
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // Lọc theo trạng thái
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $services = $query->orderBy('sort_order', 'asc')
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 

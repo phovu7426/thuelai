@@ -1,33 +1,24 @@
-@extends('admin.layouts.main')
+@extends('admin.index')
 
-@section('title', 'Thêm dịch vụ lái xe mới')
+@section('page_title', 'Thêm dịch vụ lái xe mới')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.driver.services.index') }}">Quản lý dịch vụ lái xe</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+@endsection
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h3 class="page-title">Thêm dịch vụ lái xe mới</h3>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.driver.dashboard') }}">Dịch vụ lái xe</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.driver.services.index') }}">Quản lý dịch vụ</a></li>
-                    <li class="breadcrumb-item active">Thêm mới</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- /Page Header -->
-
-    <!-- Create Form -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Thông tin dịch vụ</h5>
-                </div>
-                <div class="card-body">
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Thông tin dịch vụ</h5>
+                    </div>
+                    <div class="card-body">
                     <form action="{{ route('admin.driver.services.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
@@ -134,10 +125,13 @@
                     </form>
                 </div>
             </div>
+                </div>
+            </div>
+            <!--end::Row-->
         </div>
+        <!--end::Container-->
     </div>
-    <!-- /Create Form -->
-</div>
+    <!--end::App Content-->
 @endsection
 
 @section('scripts')

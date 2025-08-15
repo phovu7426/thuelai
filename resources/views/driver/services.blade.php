@@ -68,28 +68,12 @@
                                 <h3 class="service-title">{{ $service->name }}</h3>
                                 <p class="service-description">{{ $service->description }}</p>
                                 
-                                <div class="service-pricing">
-                                    @if($service->price_per_hour)
-                                        <div class="price-item">
-                                            <span class="price-amount">{{ number_format($service->price_per_hour) }}đ</span>
-                                            <span class="price-unit">/giờ</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if($service->price_per_trip)
-                                        <div class="price-item">
-                                            <span class="price-amount">{{ number_format($service->price_per_trip) }}đ</span>
-                                            <span class="price-unit">/chuyến</span>
-                                        </div>
-                                    @endif
-                                </div>
+
                                 
-                                <button class="btn-book-service book-service-btn" 
-                                        data-service-id="{{ $service->id }}" 
-                                        data-service-name="{{ $service->name }}">
-                                    <i class="fas fa-calendar-check"></i>
-                                    <span>Đặt ngay</span>
-                                </button>
+                                <a href="{{ route('driver.contact') }}" class="btn-book-service">
+                                    <span>Liên hệ tư vấn</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
                             </div>
                         </div>
                     @endforeach
@@ -250,23 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
-    // Handle service booking buttons
-    const bookButtons = document.querySelectorAll('.book-service-btn');
-    bookButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const serviceId = this.getAttribute('data-service-id');
-            const serviceName = this.getAttribute('data-service-name');
-            
-            // Store service info in localStorage
-            localStorage.setItem('selectedService', JSON.stringify({
-                id: serviceId,
-                name: serviceName
-            }));
-            
-            // Redirect to home page with booking form
-            window.location.href = '{{ route("driver.home") }}#booking';
-        });
-    });
+
 
     // Smooth scroll for scroll indicator
     const scrollArrow = document.querySelector('.scroll-arrow');

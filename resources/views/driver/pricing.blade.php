@@ -54,30 +54,13 @@
                                 <p>{{ $service->short_description }}</p>
                             </div>
                             <div class="pricing-body">
-                                <div class="price-display">
-                                    @if($service->price_per_hour)
-                                        <div class="price-item mb-3">
-                                            <span class="currency">₫</span>
-                                            <span class="amount">{{ number_format($service->price_per_hour) }}</span>
-                                            <span class="period">/giờ</span>
-                                        </div>
-                                    @endif
-                                    
-                                    @if($service->price_per_trip)
-                                        <div class="price-item">
-                                            <span class="currency">₫</span>
-                                            <span class="amount">{{ number_format($service->price_per_trip) }}</span>
-                                            <span class="period">/chuyến</span>
-                                        </div>
-                                    @endif
+                                <div class="service-description">
+                                    <p>{{ $service->description }}</p>
                                 </div>
                                 
-                                <button class="btn-book-pricing book-service-btn" 
-                                        data-service-id="{{ $service->id }}" 
-                                        data-service-name="{{ $service->name }}">
-                                    <i class="fas fa-calendar-check"></i>
-                                    <span>Đặt ngay</span>
-                                </button>
+                                <a href="{{ route('driver.contact') }}" class="btn-book-pricing">
+                                    <span>Liên hệ tư vấn</span>
+                                </a>
                             </div>
                         </div>
                     @endforeach
@@ -110,11 +93,8 @@
                         <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-center" style="width: 30%;">Loại dịch vụ</th>
-                                    <th class="text-center" style="width: 20%;">Giá theo giờ</th>
-                                    <th class="text-center" style="width: 20%;">Giá theo chuyến</th>
-                                    <th class="text-center" style="width: 20%;">Ghi chú</th>
-                                    <th class="text-center" style="width: 10%;">Thao tác</th>
+                                    <th class="text-center" style="width: 50%;">Loại dịch vụ</th>
+                                    <th class="text-center" style="width: 50%;">Mô tả</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -137,42 +117,18 @@
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                @if($service->price_per_hour)
-                                                    <span class="price-amount">{{ number_format($service->price_per_hour) }}đ</span>
-                                                    <br><small class="text-muted">/giờ</small>
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-                                            <td class="text-center">
-                                                @if($service->price_per_trip)
-                                                    <span class="price-amount">{{ number_format($service->price_per_trip) }}đ</span>
-                                                    <br><small class="text-muted">/chuyến</small>
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-                                            <td class="text-center">
                                                 <small class="text-muted">
                                                     @if($service->is_featured)
                                                         <span class="badge-modern">Nổi bật</span><br>
                                                     @endif
-                                                    {{ $service->description ? Str::limit($service->description, 50) : 'Không có mô tả' }}
+                                                    {{ $service->description ? Str::limit($service->description, 100) : 'Không có mô tả' }}
                                                 </small>
-                                            </td>
-                                            <td class="text-center">
-                                                <button class="btn-book-service book-service-btn" 
-                                                        data-service-id="{{ $service->id }}" 
-                                                        data-service-name="{{ $service->name }}">
-                                                    <i class="fas fa-calendar-check"></i>
-                                                    <span>Đặt</span>
-                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="5" class="text-center py-5">
+                                        <td colspan="2" class="text-center py-5">
                                             <div class="empty-state">
                                                 <div class="empty-icon">
                                                     <i class="fas fa-car"></i>

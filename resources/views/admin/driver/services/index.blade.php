@@ -1,40 +1,54 @@
-@extends('admin.layouts.main')
+@extends('admin.index')
 
-@section('title', 'Quản lý dịch vụ lái xe')
+@section('page_title', 'Quản lý dịch vụ lái xe')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active" aria-current="page">Quản lý dịch vụ lái xe</li>
+@endsection
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h3 class="page-title">Quản lý dịch vụ lái xe</h3>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.driver.dashboard') }}">Dịch vụ lái xe</a></li>
-                    <li class="breadcrumb-item active">Quản lý dịch vụ</li>
-                </ul>
-            </div>
-            <div class="col-auto">
-                <a href="{{ route('admin.driver.services.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus"></i> Thêm dịch vụ mới
-                </a>
-            </div>
-        </div>
-    </div>
-    <!-- /Page Header -->
-
-    <!-- Services List -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Danh sách dịch vụ</h5>
-                </div>
-                <div class="card-body">
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <!-- Form lọc -->
+                                <form action="{{ route('admin.driver.services.index') }}" method="GET">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <input type="text" name="name" class="form-control" placeholder="Nhập tên dịch vụ"
+                                                   value="{{ request('name') }}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select name="status" class="form-control">
+                                                <option value="">Tất cả trạng thái</option>
+                                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Kích hoạt</option>
+                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Vô hiệu</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-primary">Lọc</button>
+                                            <a href="{{ route('admin.driver.services.index') }}" class="btn btn-secondary">Reset</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-sm-3 d-flex">
+                                <a href="{{ route('admin.driver.services.create') }}" class="btn btn-primary ms-auto">
+                                    <i class="bi bi-plus"></i> Thêm dịch vụ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
                     @if($services->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -122,9 +136,7 @@
                         </div>
 
                         <!-- Pagination -->
-                        <div class="d-flex justify-content-center mt-3">
-                            {{ $services->links() }}
-                        </div>
+                        @include('vendor.pagination.pagination', ['paginator' => $services])
                     @else
                         <div class="text-center py-5">
                             <i class="bi bi-gear text-muted" style="font-size: 3rem;"></i>
@@ -135,12 +147,14 @@
                             </a>
                         </div>
                     @endif
+                    </div>
                 </div>
             </div>
+            <!--end::Row-->
         </div>
+        <!--end::Container-->
     </div>
-    <!-- /Services List -->
-</div>
+    <!--end::App Content-->
 @endsection
 
 @section('scripts')

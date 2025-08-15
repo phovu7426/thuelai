@@ -1,33 +1,24 @@
-@extends('admin.layouts.main')
+@extends('admin.index')
 
-@section('title', 'Sửa dịch vụ lái xe')
+@section('page_title', 'Sửa dịch vụ lái xe')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.driver.services.index') }}">Quản lý dịch vụ lái xe</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Sửa dịch vụ</li>
+@endsection
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col">
-                <h3 class="page-title">Sửa dịch vụ lái xe</h3>
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.driver.dashboard') }}">Dịch vụ lái xe</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.driver.services.index') }}">Quản lý dịch vụ</a></li>
-                    <li class="breadcrumb-item active">Sửa dịch vụ</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- /Page Header -->
-
-    <!-- Edit Form -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Thông tin dịch vụ</h5>
-                </div>
-                <div class="card-body">
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Thông tin dịch vụ</h5>
+                    </div>
+                    <div class="card-body">
                     <form action="{{ route('admin.driver.services.update', $driverService->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -158,27 +149,25 @@
                             <div class="col-12">
                                 <hr>
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.driver.services.show', $driverService->id) }}" class="btn btn-secondary">
+                                    <a href="{{ route('admin.driver.services.index') }}" class="btn btn-secondary">
                                         <i class="bi bi-arrow-left"></i> Quay lại
                                     </a>
-                                    <div>
-                                        <a href="{{ route('admin.driver.services.index') }}" class="btn btn-outline-secondary me-2">
-                                            Hủy
-                                        </a>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-check"></i> Cập nhật dịch vụ
-                                        </button>
-                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check"></i> Cập nhật dịch vụ
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
+                </div>
+            </div>
+            <!--end::Row-->
         </div>
+        <!--end::Container-->
     </div>
-    <!-- /Edit Form -->
-</div>
+    <!--end::App Content-->
 @endsection
 
 @section('scripts')
