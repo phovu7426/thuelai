@@ -63,29 +63,7 @@
                                     @enderror
                                 </div>
 
-                                <!-- Pricing -->
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="price_per_hour" class="form-label">Giá theo giờ (VNĐ)</label>
-                                            <input type="number" class="form-control @error('price_per_hour') is-invalid @enderror" 
-                                                   id="price_per_hour" name="price_per_hour" value="{{ old('price_per_hour', $driverService->price_per_hour) }}" min="0">
-                                            @error('price_per_hour')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="price_per_trip" class="form-label">Giá theo chuyến (VNĐ)</label>
-                                            <input type="number" class="form-control @error('price_per_trip') is-invalid @enderror" 
-                                                   id="price_per_trip" name="price_per_trip" value="{{ old('price_per_trip', $driverService->price_per_trip) }}" min="0">
-                                            @error('price_per_trip')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
+
 
                                 <div class="mb-3">
                                     <label for="sort_order" class="form-label">Thứ tự hiển thị</label>

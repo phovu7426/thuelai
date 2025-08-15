@@ -39,8 +39,6 @@ class DriverServiceController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
-            'price_per_hour' => 'nullable|numeric|min:0',
-            'price_per_trip' => 'nullable|numeric|min:0',
             'is_featured' => 'boolean',
             'status' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
@@ -50,10 +48,6 @@ class DriverServiceController extends Controller
             'name.required' => 'Tên dịch vụ là bắt buộc',
             'name.max' => 'Tên dịch vụ không được vượt quá 255 ký tự',
             'short_description.max' => 'Mô tả ngắn không được vượt quá 500 ký tự',
-            'price_per_hour.numeric' => 'Giá theo giờ phải là số',
-            'price_per_hour.min' => 'Giá theo giờ không được âm',
-            'price_per_trip.numeric' => 'Giá theo chuyến phải là số',
-            'price_per_trip.min' => 'Giá theo chuyến không được âm',
             'image.image' => 'File phải là hình ảnh',
             'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
             'image.max' => 'Hình ảnh không được vượt quá 2MB',
@@ -103,6 +97,11 @@ class DriverServiceController extends Controller
      */
     public function edit(DriverService $driverService)
     {
+        // Debug: Kiểm tra xem có lấy được service không
+        if (!$driverService) {
+            abort(404, 'Service not found');
+        }
+        
         return view('admin.driver.services.edit', compact('driverService'));
     }
 
@@ -115,8 +114,6 @@ class DriverServiceController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
-            'price_per_hour' => 'nullable|numeric|min:0',
-            'price_per_trip' => 'nullable|numeric|min:0',
             'is_featured' => 'boolean',
             'status' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
@@ -126,10 +123,6 @@ class DriverServiceController extends Controller
             'name.required' => 'Tên dịch vụ là bắt buộc',
             'name.max' => 'Tên dịch vụ không được vượt quá 255 ký tự',
             'short_description.max' => 'Mô tả ngắn không được vượt quá 500 ký tự',
-            'price_per_hour.numeric' => 'Giá theo giờ phải là số',
-            'price_per_hour.min' => 'Giá theo giờ không được âm',
-            'price_per_trip.numeric' => 'Giá theo chuyến phải là số',
-            'price_per_trip.min' => 'Giá theo chuyến không được âm',
             'image.image' => 'File phải là hình ảnh',
             'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
             'image.max' => 'Hình ảnh không được vượt quá 2MB',

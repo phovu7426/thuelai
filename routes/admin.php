@@ -133,12 +133,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/real-time-stats', [\App\Http\Controllers\Admin\Driver\DriverDashboardController::class, 'getRealTimeStats'])->name('real-time-stats');
         
         // Quản lý dịch vụ lái xe
-        Route::prefix('services')->name('services.')->middleware('canAny:access_driver_services')->group(function () {
-            Route::resource('/', \App\Http\Controllers\Admin\Driver\DriverServiceController::class)->except(['show']);
-            Route::get('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'show'])->name('show');
+        Route::prefix('services')->name('services.')->middleware('auth')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'create'])->name('create');
+            Route::post('/', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'store'])->name('store');
+            Route::post('/update-order', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'updateOrder'])->name('update-order');
+            Route::get('/{driverService}/edit', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'edit'])->name('edit');
+            Route::put('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'update'])->name('update');
+            Route::delete('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'destroy'])->name('destroy');
             Route::post('/{driverService}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'toggleStatus'])->name('toggle-status');
             Route::post('/{driverService}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'toggleFeatured'])->name('toggle-featured');
-            Route::post('/update-order', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'updateOrder'])->name('update-order');
+            Route::get('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'show'])->name('show');
         });
 
         // Quản lý bảng giá

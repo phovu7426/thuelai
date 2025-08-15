@@ -41,7 +41,6 @@
                                         <th>Hình ảnh</th>
                                         <th>Tên dịch vụ</th>
                                         <th>Mô tả ngắn</th>
-                                        <th>Giá</th>
                                         <th>Trạng thái</th>
                                         <th>Nổi bật</th>
                                         <th>Thứ tự</th>
@@ -71,14 +70,6 @@
                                             <small class="text-muted">{{ $service->slug }}</small>
                                         </td>
                                         <td>{{ Str::limit($service->short_description, 100) }}</td>
-                                        <td>
-                                            @if($service->price_per_hour)
-                                                <span class="badge bg-info">{{ number_format($service->price_per_hour) }}đ/giờ</span><br>
-                                            @endif
-                                            @if($service->price_per_trip)
-                                                <span class="badge bg-success">{{ number_format($service->price_per_trip) }}đ/chuyến</span>
-                                            @endif
-                                        </td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input toggle-status" 
