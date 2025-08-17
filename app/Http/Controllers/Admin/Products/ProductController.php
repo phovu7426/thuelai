@@ -69,6 +69,30 @@ class ProductController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết sản phẩm
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $product = $this->getService()->findById($id);
+        
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sản phẩm không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin sản phẩm thành công.',
+            'data' => $product
+        ]);
+    }
+
+    /**
      * Hiển thị form chỉnh sửa sản phẩm
      * @param int $id
      * @return View|Application|Factory|RedirectResponse

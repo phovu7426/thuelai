@@ -114,37 +114,83 @@
 @section('scripts')
 <script src="{{ asset('js/admin/universal-modal.js') }}"></script>
 <script>
-// Khởi tạo Universal Modal cho Permissions
-if (!window.permissionsModal) {
-    window.permissionsModal = new UniversalModal({
-        modalId: 'permissionsModal',
-        modalTitle: 'Quyền hạn',
-        formId: 'permissionsForm',
-        submitBtnId: 'permissionsSubmitBtn',
-        createRoute: '{{ route("admin.permissions.store") }}',
-        updateRoute: '{{ route("admin.permissions.update", ":id") }}',
-        getDataRoute: '{{ route("admin.permissions.show", ":id") }}',
-        successMessage: 'Thao tác quyền hạn thành công',
-        errorMessage: 'Có lỗi xảy ra khi xử lý quyền hạn',
-        viewPath: 'admin.permissions.form',
-        viewData: {
-            permissions: @json($permissions ?? [])
-        },
-        onSuccess: function(response, isEdit, id) {
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        }
-    });
+// Đợi jQuery sẵn sàng trước khi khởi tạo Universal Modal
+function waitForJQuery(callback) {
+    if (typeof $ !== 'undefined') {
+        callback();
+    } else {
+        // Nếu jQuery chưa sẵn sàng, chờ DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof $ !== 'undefined') {
+                callback();
+            } else {
+                // Nếu vẫn chưa có jQuery, chờ thêm một chút
+                setTimeout(() => {
+                    if (typeof $ !== 'undefined') {
+                        callback();
+                    } else {
+                        console.error('jQuery is not loaded after waiting');
+                    }
+                }, 100);
+            }
+        });
+    }
 }
+
+// Khởi tạo Universal Modal
+waitForJQuery(function() {
+    // Kiểm tra jQuery đã sẵn sàng
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded');
+        return;
+    }
+    
+    // Kiểm tra UniversalModal class đã sẵn sàng
+    if (typeof UniversalModal === 'undefined') {
+        console.error('UniversalModal class is not loaded');
+        return;
+    }
+    
+    // Khởi tạo Universal Modal cho Permissions
+    if (!window.permissionsModal) {
+        window.permissionsModal = new UniversalModal({
+            modalId: 'permissionsModal',
+            modalTitle: 'Quyền hạn',
+            formId: 'permissionsForm',
+            submitBtnId: 'permissionsSubmitBtn',
+            createRoute: '{{ route("admin.permissions.store") }}',
+            updateRoute: '{{ route("admin.permissions.update", ":id") }}',
+            getDataRoute: '{{ route("admin.permissions.show", ":id") }}',
+            successMessage: 'Thao tác quyền hạn thành công',
+            errorMessage: 'Có lỗi xảy ra khi xử lý quyền hạn',
+            viewPath: 'admin.permissions.form',
+            viewData: {
+                permissions: @json($permissions ?? [])
+            },
+            onSuccess: function(response, isEdit, id) {
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        });
+    }
+});
 
 // Global functions để gọi từ HTML
 function openCreatePermissionModal() {
-    window.permissionsModal.openCreateModal();
+    if (window.permissionsModal) {
+        window.permissionsModal.openCreateModal();
+    } else {
+        console.error('Permissions modal not initialized');
+    }
 }
 
 function openEditPermissionModal(permissionId) {
-    window.permissionsModal.openEditModal(permissionId);
+    if (window.permissionsModal) {
+        window.permissionsModal.openEditModal(permissionId);
+    } else {
+        console.error('Permissions modal not initialized');
+    }
 }
 </script>
 

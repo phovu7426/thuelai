@@ -87,6 +87,22 @@ class PostController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết bài viết
+     * @param Post $post
+     * @return JsonResponse
+     */
+    public function show(Post $post): JsonResponse
+    {
+        $post->load(['category', 'tags']);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin bài viết thành công.',
+            'data' => $post
+        ]);
+    }
+
+    /**
      * Xử lý chỉnh sửa bài viết
      * @param UpdateRequest $request
      * @param Post $post

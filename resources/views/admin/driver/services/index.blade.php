@@ -20,9 +20,9 @@
                                 <h5 class="mb-0">Danh sách dịch vụ lái xe</h5>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
-                                <a href="{{ route('admin.driver.services.create') }}" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary" onclick="openCreateServiceModal()">
                                     <i class="bi bi-plus-circle"></i> Thêm dịch vụ
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -96,8 +96,10 @@
                                             <td>{{ $service->created_at ? $service->created_at->format('d/m/Y') : 'N/A' }}</td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('admin.driver.services.edit', $service->id) }}"
-                                                       class="btn-action btn-edit" title="Sửa"><i class="fas fa-edit"></i></a>
+                                                    <button type="button" class="btn-action btn-edit" title="Sửa"
+                                                            onclick="openEditServiceModal({{ $service->id }})">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
                                                     <button type="button" class="btn-action btn-delete" title="Xóa"
                                                             onclick="deleteService({{ $service->id }})">
                                                         <i class="fas fa-trash-alt"></i>
@@ -125,15 +127,87 @@
     </div>
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script>
+// Đợi jQuery sẵn sàng trước khi khởi tạo Universal Modal
+function waitForJQuery(callback) {
+    if (typeof $ !== 'undefined') {
+        callback();
+    } else {
+        // Nếu jQuery chưa sẵn sàng, chờ DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof $ !== 'undefined') {
+                callback();
+            } else {
+                // Nếu vẫn chưa có jQuery, chờ thêm một chút
+                setTimeout(() => {
+                    if (typeof $ !== 'undefined') {
+                        callback();
+                    } else {
+                        console.error('jQuery is not loaded after waiting');
+                    }
+                }, 100);
+            }
+        });
+    }
+}
+
+// Khởi tạo Universal Modal
+waitForJQuery(function() {
+    // Kiểm tra jQuery đã sẵn sàng
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded');
+        return;
+    }
+    
+    // Khởi tạo Universal Modal cho Driver Services
+    if (!window.driverServicesModal) {
+        window.driverServicesModal = new UniversalModal({
+            modalId: 'driverServicesModal',
+            modalTitle: 'Dịch vụ lái xe',
+            formId: 'driverServicesForm',
+            submitBtnId: 'driverServicesSubmitBtn',
+            createRoute: '{{ route("admin.driver.services.store") }}',
+            updateRoute: '{{ route("admin.driver.services.update", ":id") }}',
+            getDataRoute: '{{ route("admin.driver.services.show", ":id") }}',
+            successMessage: 'Thao tác dịch vụ lái xe thành công',
+            errorMessage: 'Có lỗi xảy ra khi xử lý dịch vụ lái xe',
+            viewPath: 'admin.driver.services.form',
+            viewData: {},
+            onSuccess: function(response, isEdit, id) {
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        });
+    }
+});
+
+// Global functions để gọi từ HTML
+function openCreateServiceModal() {
+    if (window.driverServicesModal) {
+        window.driverServicesModal.openCreateModal();
+    } else {
+        console.error('Driver Services modal not initialized');
+    }
+}
+
+function openEditServiceModal(serviceId) {
+    if (window.driverServicesModal) {
+        window.driverServicesModal.openEditModal(serviceId);
+    } else {
+        console.error('Driver Services modal not initialized');
+    }
+}
+</script>
+
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Bind event handlers
-    bindEventHandlers();
-});
-
-// Bind event handlers
-function bindEventHandlers() {
     // Status toggle
     $('.status-select').change(function() {
         const serviceId = $(this).data('service-id');
@@ -147,15 +221,7 @@ function bindEventHandlers() {
         const newFeatured = $(this).val();
         toggleFeatured(serviceId, newFeatured);
     });
-
-    // Delete service
-    $('.delete-service').click(function() {
-        const serviceId = $(this).data('id');
-        if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này không?')) {
-            deleteService(serviceId);
-        }
-    });
-}
+});
 
 // Toggle status
 function toggleStatus(serviceId, newStatus) {
@@ -223,25 +289,27 @@ function toggleFeatured(serviceId, newFeatured) {
 
 // Delete service
 function deleteService(serviceId) {
-    $.ajax({
-        url: `/admin/driver/services/${serviceId}`,
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            if (response.success) {
-                showAlert(response.message, 'success');
-                // Remove row from table
-                $(`tr:has(button[data-id="${serviceId}"])`).remove();
-            } else {
-                showAlert(response.message, 'error');
+    if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này không?')) {
+        $.ajax({
+            url: `/admin/driver/services/${serviceId}`,
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert(response.message, 'success');
+                    // Remove row from table
+                    $(`tr:has(button[onclick*="${serviceId}"])`).remove();
+                } else {
+                    showAlert(response.message, 'error');
+                }
+            },
+            error: function(xhr) {
+                showAlert('Có lỗi xảy ra', 'error');
             }
-        },
-        error: function(xhr) {
-            showAlert('Có lỗi xảy ra', 'error');
-        }
-    });
+        });
+    }
 }
 
 // Helper functions

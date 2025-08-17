@@ -84,11 +84,11 @@ class DriverServiceController extends BaseController
     }
 
     /**
-     * Hiển thị chi tiết dịch vụ lái xe
+     * Hiển thị chi tiết dịch vụ lái xe (HTML view)
      * @param int $id
      * @return View|Application|Factory
      */
-    public function show(int $id): View|Application|Factory
+    public function view(int $id): View|Application|Factory
     {
         $service = $this->getService()->findById($id);
         
@@ -97,6 +97,30 @@ class DriverServiceController extends BaseController
         }
         
         return view('admin.driver.services.show', compact('service'));
+    }
+
+    /**
+     * Hiển thị chi tiết dịch vụ lái xe (JSON data cho modal)
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $service = $this->getService()->findById($id);
+        
+        if (!$service) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dịch vụ lái xe không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin dịch vụ lái xe thành công.',
+            'data' => $service
+        ]);
     }
 
     /**

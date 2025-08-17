@@ -140,10 +140,38 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
 <script>
-// Đảm bảo jQuery và UniversalModal đã sẵn sàng
-$(document).ready(function() {
+// Đợi jQuery sẵn sàng trước khi khởi tạo Universal Modal
+function waitForJQuery(callback) {
+    if (typeof $ !== 'undefined') {
+        callback();
+    } else {
+        // Nếu jQuery chưa sẵn sàng, chờ DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof $ !== 'undefined') {
+                callback();
+            } else {
+                // Nếu vẫn chưa có jQuery, chờ thêm một chút
+                setTimeout(() => {
+                    if (typeof $ !== 'undefined') {
+                        callback();
+                    } else {
+                        console.error('jQuery is not loaded after waiting');
+                    }
+                }, 100);
+            }
+        });
+    }
+}
+
+// Khởi tạo Universal Modal
+waitForJQuery(function() {
+    // Kiểm tra jQuery đã sẵn sàng
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded');
+        return;
+    }
+    
     // Khởi tạo Universal Modal cho Roles
     if (!window.rolesModal) {
         window.rolesModal = new UniversalModal({

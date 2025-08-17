@@ -190,7 +190,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'destroy'])->name('destroy');
             Route::patch('/{driverService}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'toggleStatus'])->name('toggle-status');
             Route::patch('/{driverService}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'toggleFeatured'])->name('toggle-featured');
-            Route::get('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'show'])->name('show');
+            Route::get('/{driverService}/view', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'view'])->name('view'); // Hiển thị HTML view
+            Route::get('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'show'])->name('show'); // Trả về JSON data cho modal
         });
 
         // Quản lý quy tắc giá cố định
