@@ -17,23 +17,20 @@
                     <div class="card-header">
                         <div class="row align-items-center">
                             <div class="col-sm-9">
-                                <!-- Form lọc -->
-                                <form action="{{ route('admin.roles.index') }}" method="GET" class="mb-0">
-                                    <div class="row g-3">
-                                        <div class="col-md-4">
-                                            <input type="text" name="name" class="form-control" placeholder="🔍 Nhập tên vai trò"
-                                                   value="{{ request('name') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-search"></i> Lọc
-                                            </button>
-                                            <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">
-                                                <i class="bi bi-arrow-clockwise"></i> Reset
-                                            </a>
-                                        </div>
+                                <!-- Form tìm kiếm -->
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <input type="text" id="search-name" class="form-control" placeholder="🔍 Nhập tên vai trò">
                                     </div>
-                                </form>
+                                    <div class="col-md-4">
+                                        <button type="button" id="btn-search" class="btn btn-primary">
+                                            <i class="bi bi-search"></i> Tìm kiếm
+                                        </button>
+                                        <button type="button" id="btn-reset" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-clockwise"></i> Reset
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
@@ -46,6 +43,9 @@
                     </div>
 
                     <div class="card-body">
+                        <!-- Alert messages -->
+                        <div id="alert-container"></div>
+
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -53,12 +53,14 @@
                                 <th>Ý nghĩa vai trò</th>
                                 <th>Tên vai trò</th>
                                 <th>Quyền</th>
+                                <th>Trạng thái</th>
+                                <th>Nổi bật</th>
                                 <th>Hành động</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="roles-table-body">
                             @foreach($roles as $index => $role)
-                                <tr>
+                                <tr data-id="{{ $role->id }}">
                                     <td>{{ $roles->firstItem() + $index }}</td>
                                     <td>{{ $role->title ?? '' }}</td>
                                     <td>{{ $role->name ?? '' }}</td>
@@ -79,14 +81,36 @@
                                         @endif
                                     </td>
                                     <td>
+                                        <select class="form-select form-select-sm status-select" 
+                                                data-role-id="{{ $role->id }}" 
+                                                data-current-status="{{ $role->is_active ? '1' : '0' }}"
+                                                data-status-type="roles">
+                                            <option value="0" {{ !$role->is_active ? 'selected' : '' }}>
+                                                Vô hiệu
+                                            </option>
+                                            <option value="1" {{ $role->is_active ? 'selected' : '' }}>
+                                                Kích hoạt
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm featured-select" 
+                                                data-role-id="{{ $role->id }}" 
+                                                data-current-featured="{{ $role->is_featured ? '1' : '0' }}"
+                                                data-featured-type="roles">
+                                            <option value="0" {{ !$role->is_featured ? 'selected' : '' }}>
+                                                Không nổi bật
+                                            </option>
+                                            <option value="1" {{ $role->is_featured ? 'selected' : '' }}>
+                                                Nổi bật
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
                                         <div class="action-buttons">
                                             @can('access_roles')
                                                 <a href="{{ route('admin.roles.edit', $role->id ?? '') }}" class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                                <form action="{{ route('admin.roles.delete', $role->id ?? '') }}" method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete" title="Xóa"><i class="fas fa-trash-alt"></i></button>
-                                                </form>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteRole({{ $role->id }})"><i class="fas fa-trash-alt"></i></button>
                                             @endcan
                                         </div>
                                     </td>
@@ -97,7 +121,9 @@
                     </div>
 
                     <!-- Hiển thị phân trang -->
-                    @include('vendor.pagination.pagination', ['paginator' => $roles])
+                    <div id="pagination-container">
+                        @include('vendor.pagination.pagination', ['paginator' => $roles])
+                    </div>
                 </div>
             </div>
         </div>
@@ -133,3 +159,178 @@
         </div>
     @endforeach
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const roleId = $(this).data('role-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus !== currentStatus) {
+            updateRoleStatus(roleId, newStatus);
+        }
+    });
+
+    // Featured select change
+    $('.featured-select').change(function() {
+        const roleId = $(this).data('role-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured !== currentFeatured) {
+            updateRoleFeatured(roleId, newFeatured);
+        }
+    });
+
+    // Search
+    $('#btn-search').click(function() {
+        searchRoles();
+    });
+
+    // Reset search
+    $('#btn-reset').click(function() {
+        $('#search-name').val('');
+        searchRoles();
+    });
+
+    // Enter key search
+    $('#search-name').keypress(function(e) {
+        if (e.which == 13) {
+            searchRoles();
+        }
+    });
+});
+
+function searchRoles(page = 1) {
+    const name = $('#search-name').val();
+    
+    $.ajax({
+        url: '{{ route("admin.roles.index") }}',
+        method: 'GET',
+        data: {
+            name: name,
+            page: page
+        },
+        success: function(response) {
+            $('#roles-table-body').html(response.html);
+            $('#pagination-container').html(response.pagination);
+            
+            // Rebind events
+            bindEvents();
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi tìm kiếm');
+        }
+    });
+}
+
+function deleteRole(roleId) {
+    if (confirm('Bạn có chắc chắn muốn xóa vai trò này không?')) {
+        $.ajax({
+            url: `/admin/roles/${roleId}`,
+            method: 'DELETE',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Remove row from table
+                    $(`tr[data-id="${roleId}"]`).remove();
+                } else {
+                    showAlert('danger', response.message);
+                }
+            },
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi xóa vai trò');
+            }
+        });
+    }
+}
+
+function bindEvents() {
+    // Rebind delete events
+    $('.btn-delete').off('click').on('click', function() {
+        const roleId = $(this).closest('tr').data('id');
+        deleteRole(roleId);
+    });
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+
+function updateRoleStatus(roleId, status) {
+    $.ajax({
+        url: `/admin/roles/${roleId}/toggle-status`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            status: status
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current status
+                $(`select[data-role-id="${roleId}"]`).data('current-status', status);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-role-id="${roleId}"]`);
+                select.val(select.data('current-status'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+            // Revert select
+            const select = $(`select[data-role-id="${roleId}"]`);
+            select.val(select.data('current-status'));
+        }
+    });
+}
+
+function updateRoleFeatured(roleId, featured) {
+    $.ajax({
+        url: `/admin/roles/${roleId}/toggle-featured`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            is_featured: featured
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current featured
+                $(`select[data-role-id="${roleId}"]`).data('current-featured', featured);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-role-id="${roleId}"]`);
+                select.val(select.data('current-featured'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+            // Revert select
+            const select = $(`select[data-role-id="${roleId}"]`);
+            select.val(select.data('current-featured'));
+        }
+    });
+}
+</script>
+@endpush

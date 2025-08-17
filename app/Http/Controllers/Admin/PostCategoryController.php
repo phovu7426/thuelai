@@ -2,123 +2,150 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\PostCategory;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Posts\PostCategory\StoreRequest;
+use App\Http\Requests\Admin\Posts\PostCategory\UpdateRequest;
+use App\Services\Admin\Posts\PostCategoryService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
-class PostCategoryController extends Controller
+class PostCategoryController extends BaseController
 {
-    public function index()
+    public function __construct(PostCategoryService $postCategoryService)
     {
-        $query = PostCategory::latest(); // Removed withCount('posts')
-
-        // Filter by name
-        if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
-        }
-
-        $categories = $query->ordered()->paginate(20);
-
-        return view('admin.post-categories.index', compact('categories'));
+        $this->service = $postCategoryService;
     }
 
-    public function create()
+    /**
+     * Lấy service instance
+     * @return PostCategoryService
+     */
+    public function getService(): PostCategoryService
+    {
+        return $this->service;
+    }
+
+    /**
+     * Hiển thị danh sách danh mục
+     * @param Request $request
+     * @return View|Application|Factory
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
+        $categories = $this->getService()->getList($filters, $options);
+        
+        return view('admin.post-categories.index', compact('categories', 'filters', 'options'));
+    }
+
+    /**
+     * Hiển thị form tạo danh mục
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
     {
         return view('admin.post-categories.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Xử lý tạo danh mục
+     * @param StoreRequest $request
+     * @return JsonResponse
+     */
+    public function store(StoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'color' => 'nullable|string|max:7',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
-        ]);
-
-        $data = $request->all();
-        $data['is_active'] = $request->has('is_active');
+        $result = $this->getService()->create($request->validated());
         
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('categories', 'public');
-        }
-
-        PostCategory::create($data);
-
-        return redirect()->route('admin.post-categories.index')
-                        ->with('success', 'Danh mục đã được tạo thành công!');
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo danh mục thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
-    public function edit(PostCategory $category)
+    /**
+     * Hiển thị form chỉnh sửa danh mục
+     * @param int $id
+     * @return View|Application|Factory
+     */
+    public function edit(int $id): View|Application|Factory
     {
+        $category = $this->getService()->findById($id);
+        
+        if (!$category) {
+            abort(404, 'Danh mục không tồn tại.');
+        }
+        
         return view('admin.post-categories.edit', compact('category'));
     }
 
-    public function update(Request $request, PostCategory $category)
+    /**
+     * Xử lý chỉnh sửa danh mục
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'color' => 'nullable|string|max:7',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật danh mục thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        $data = $request->all();
-        $data['is_active'] = $request->has('is_active');
-        
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($category->image) {
-                Storage::disk('public')->delete($category->image);
-            }
-            $data['image'] = $request->file('image')->store('categories', 'public');
-        }
-
-        $category->update($data);
-
-        return redirect()->route('admin.post-categories.index')
-                        ->with('success', 'Danh mục đã được cập nhật thành công!');
     }
 
-    public function destroy(PostCategory $category)
+    /**
+     * Xử lý xóa danh mục
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse
     {
-        if ($category->posts()->count() > 0) {
-            return redirect()->back()
-                            ->with('error', 'Không thể xóa danh mục có bài viết!');
-        }
-
-        if ($category->image) {
-            Storage::disk('public')->delete($category->image);
-        }
+        $result = $this->getService()->delete($id);
         
-        $category->delete();
-
-        return redirect()->route('admin.post-categories.index')
-                        ->with('success', 'Danh mục đã được xóa thành công!');
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa danh mục thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
-    public function toggleStatus(PostCategory $category)
+    /**
+     * Thay đổi trạng thái danh mục
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleStatus(int $id): JsonResponse
     {
-        try {
-            $category->update(['is_active' => !$category->is_active]);
-            
-            $status = $category->is_active ? 'kích hoạt' : 'vô hiệu hóa';
-            return response()->json([
-                'success' => true,
-                'message' => "Danh mục đã được {$status} thành công!",
-                'status' => $category->is_active
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái nổi bật của danh mục
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleFeatured(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleFeatured($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }
 

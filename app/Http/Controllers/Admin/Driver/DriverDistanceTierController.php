@@ -2,87 +2,150 @@
 
 namespace App\Http\Controllers\Admin\Driver;
 
-use App\Http\Controllers\Controller;
-use App\Models\DriverDistanceTier;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Driver\DriverDistanceTier\StoreRequest;
+use App\Http\Requests\Admin\Driver\DriverDistanceTier\UpdateRequest;
+use App\Services\Admin\Driver\DriverDistanceTierService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class DriverDistanceTierController extends Controller
+class DriverDistanceTierController extends BaseController
 {
-    public function index()
+    public function __construct(DriverDistanceTierService $driverDistanceTierService)
     {
-        $distanceTiers = DriverDistanceTier::active()->ordered()->get();
-        return view('admin.driver.distance-tiers.index', compact('distanceTiers'));
+        $this->service = $driverDistanceTierService;
     }
 
-    public function create()
+    /**
+     * Lấy service instance
+     * @return DriverDistanceTierService
+     */
+    public function getService(): DriverDistanceTierService
+    {
+        return $this->service;
+    }
+
+    /**
+     * Hiển thị danh sách khoảng cách
+     * @param Request $request
+     * @return View|Application|Factory
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
+        $distanceTiers = $this->getService()->getList($filters, $options);
+        
+        return view('admin.driver.distance-tiers.index', compact('distanceTiers', 'filters', 'options'));
+    }
+
+    /**
+     * Hiển thị form tạo khoảng cách
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
     {
         return view('admin.driver.distance-tiers.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Xử lý tạo khoảng cách
+     * @param StoreRequest $request
+     * @return JsonResponse
+     */
+    public function store(StoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'from_distance' => 'required|numeric|min:0',
-            'to_distance' => 'nullable|numeric|min:0|gt:from_distance',
-            'display_text' => 'required|string|max:255',
-            'sort_order' => 'nullable|integer|min:0',
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo khoảng cách thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        DriverDistanceTier::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'from_distance' => $request->from_distance,
-            'to_distance' => $request->to_distance,
-            'display_text' => $request->display_text,
-            'sort_order' => $request->sort_order ?? 0,
-            'is_active' => $request->has('is_active'),
-        ]);
-
-        return redirect()->route('admin.driver.distance-tiers.index')
-            ->with('success', 'Khoảng cách đã được tạo thành công!');
     }
 
-    public function edit(string $id)
+    /**
+     * Hiển thị form chỉnh sửa khoảng cách
+     * @param int $id
+     * @return View|Application|Factory
+     */
+    public function edit(int $id): View|Application|Factory
     {
-        $distanceTier = DriverDistanceTier::findOrFail($id);
+        $distanceTier = $this->getService()->findById($id);
+        
+        if (!$distanceTier) {
+            abort(404, 'Khoảng cách không tồn tại.');
+        }
+        
         return view('admin.driver.distance-tiers.edit', compact('distanceTier'));
     }
 
-    public function update(Request $request, string $id)
+    /**
+     * Xử lý chỉnh sửa khoảng cách
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'from_distance' => 'required|numeric|min:0',
-            'to_distance' => 'nullable|numeric|min:0|gt:from_distance',
-            'display_text' => 'required|string|max:255',
-            'sort_order' => 'nullable|integer|min:0',
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật khoảng cách thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        $distanceTier = DriverDistanceTier::findOrFail($id);
-        $distanceTier->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'from_distance' => $request->from_distance,
-            'to_distance' => $request->to_distance,
-            'display_text' => $request->display_text,
-            'sort_order' => $request->sort_order ?? 0,
-            'is_active' => $request->has('is_active'),
-        ]);
-
-        return redirect()->route('admin.driver.distance-tiers.index')
-            ->with('success', 'Khoảng cách đã được cập nhật thành công!');
     }
 
-    public function destroy(string $id)
+    /**
+     * Xử lý xóa khoảng cách
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse
     {
-        $distanceTier = DriverDistanceTier::findOrFail($id);
-        $distanceTier->delete();
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa khoảng cách thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
 
-        return redirect()->route('admin.driver.distance-tiers.index')
-            ->with('success', 'Khoảng cách đã được xóa thành công!');
+    /**
+     * Thay đổi trạng thái khoảng cách
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleStatus(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái nổi bật của khoảng cách
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleFeatured(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleFeatured($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }
 

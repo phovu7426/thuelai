@@ -2,419 +2,266 @@
 
 namespace App\Http\Controllers\Admin\Driver;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Driver\DriverContact\StoreRequest;
+use App\Http\Requests\Admin\Driver\DriverContact\UpdateRequest;
+use App\Services\Admin\Driver\DriverContactService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
-use App\Mail\Driver\ContactNotification;
 
-class DriverContactController extends Controller
+class DriverContactController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct(DriverContactService $driverContactService)
     {
-        // Lấy danh sách liên hệ từ bảng contacts hoặc tạo model mới
-        // Tạm thời sử dụng session để lưu trữ
-        $contacts = collect(session('driver_contacts', []));
-        
-        return view('admin.driver.contacts.index', compact('contacts'));
+        $this->service = $driverContactService;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Lấy service instance
+     * @return DriverContactService
      */
-    public function create()
+    public function getService(): DriverContactService
+    {
+        return $this->service;
+    }
+
+    /**
+     * Hiển thị danh sách liên hệ
+     * @param Request $request
+     * @return View|Application|Factory
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
+        $contacts = $this->getService()->getList($filters, $options);
+        
+        return view('admin.driver.contacts.index', compact('contacts', 'filters', 'options'));
+    }
+
+    /**
+     * Hiển thị form tạo liên hệ
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
     {
         return view('admin.driver.contacts.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Xử lý tạo liên hệ
+     * @param StoreRequest $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'subject' => 'nullable|string|max:255',
-            'message' => 'required|string|min:10|max:2000',
-        ], [
-            'name.required' => 'Tên là bắt buộc',
-            'email.required' => 'Email là bắt buộc',
-            'email.email' => 'Email không hợp lệ',
-            'phone.required' => 'Số điện thoại là bắt buộc',
-            'message.required' => 'Nội dung tin nhắn là bắt buộc',
-            'message.min' => 'Nội dung tin nhắn phải có ít nhất 10 ký tự',
-            'message.max' => 'Nội dung tin nhắn không được vượt quá 2000 ký tự',
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo liên hệ thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        try {
-            // Lưu vào session tạm thời (có thể thay bằng database sau)
-            $contact = [
-                'id' => uniqid(),
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'subject' => $request->subject,
-                'message' => $request->message,
-                'status' => 'unread',
-                'created_at' => now(),
-                'admin_notes' => null,
-            ];
-
-            $contacts = collect(session('driver_contacts', []));
-            $contacts->push($contact);
-            session(['driver_contacts' => $contacts->toArray()]);
-
-            // Gửi email thông báo (nếu có cấu hình email)
-            try {
-                // Mail::to('admin@thuelai.vn')->send(new ContactNotification($contact));
-            } catch (\Exception $e) {
-                // Log lỗi gửi email
-                Log::error('Failed to send contact notification email: ' . $e->getMessage());
-            }
-
-            return redirect()->route('admin.driver.contacts.index')
-                ->with('success', 'Liên hệ đã được tạo thành công!');
-
-        } catch (\Exception $e) {
-            return back()->withInput()
-                ->with('error', 'Có lỗi xảy ra khi tạo liên hệ: ' . $e->getMessage());
-        }
     }
 
     /**
-     * Display the specified resource.
+     * Hiển thị chi tiết liên hệ
+     * @param int $id
+     * @return View|Application|Factory
      */
-    public function show($id)
+    public function show(int $id): View|Application|Factory
     {
-        $contacts = collect(session('driver_contacts', []));
-        $contact = $contacts->firstWhere('id', $id);
-
+        $contact = $this->getService()->findById($id);
+        
         if (!$contact) {
-            abort(404);
+            abort(404, 'Liên hệ không tồn tại.');
         }
-
+        
         return view('admin.driver.contacts.show', compact('contact'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Hiển thị form chỉnh sửa liên hệ
+     * @param int $id
+     * @return View|Application|Factory
      */
-    public function edit($id)
+    public function edit(int $id): View|Application|Factory
     {
-        $contacts = collect(session('driver_contacts', []));
-        $contact = $contacts->firstWhere('id', $id);
-
+        $contact = $this->getService()->findById($id);
+        
         if (!$contact) {
-            abort(404);
+            abort(404, 'Liên hệ không tồn tại.');
         }
-
+        
         return view('admin.driver.contacts.edit', compact('contact'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Xử lý chỉnh sửa liên hệ
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'subject' => 'nullable|string|max:255',
-            'message' => 'required|string|min:10|max:2000',
-            'status' => 'required|in:unread,read,replied,closed',
-            'admin_notes' => 'nullable|string',
-        ], [
-            'name.required' => 'Tên là bắt buộc',
-            'email.required' => 'Email là bắt buộc',
-            'email.email' => 'Email không hợp lệ',
-            'phone.required' => 'Số điện thoại là bắt buộc',
-            'message.required' => 'Nội dung tin nhắn là bắt buộc',
-            'message.min' => 'Nội dung tin nhắn phải có ít nhất 10 ký tự',
-            'message.max' => 'Nội dung tin nhắn không được vượt quá 2000 ký tự',
-            'status.required' => 'Trạng thái là bắt buộc',
-            'status.in' => 'Trạng thái không hợp lệ',
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật liên hệ thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        try {
-            $contacts = collect(session('driver_contacts', []));
-            $contactIndex = $contacts->search(function($item) use ($id) {
-                return $item['id'] === $id;
-            });
-
-            if ($contactIndex === false) {
-                abort(404);
-            }
-
-            $contacts[$contactIndex] = array_merge($contacts[$contactIndex], [
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'subject' => $request->subject,
-                'message' => $request->message,
-                'status' => $request->status,
-                'admin_notes' => $request->admin_notes,
-                'updated_at' => now(),
-            ]);
-
-            session(['driver_contacts' => $contacts->toArray()]);
-
-            return redirect()->route('admin.driver.contacts.index')
-                ->with('success', 'Liên hệ đã được cập nhật thành công!');
-
-        } catch (\Exception $e) {
-            return back()->withInput()
-                ->with('error', 'Có lỗi xảy ra khi cập nhật liên hệ: ' . $e->getMessage());
-        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Xử lý xóa liên hệ
+     * @param int $id
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
-        try {
-            $contacts = collect(session('driver_contacts', []));
-            $contacts = $contacts->filter(function($item) use ($id) {
-                return $item['id'] !== $id;
-            });
-
-            session(['driver_contacts' => $contacts->toArray()]);
-
-            return redirect()->route('admin.driver.contacts.index')
-                ->with('success', 'Liên hệ đã được xóa thành công!');
-
-        } catch (\Exception $e) {
-            return back()->with('error', 'Có lỗi xảy ra khi xóa liên hệ: ' . $e->getMessage());
-        }
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa liên hệ thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Cập nhật trạng thái liên hệ
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, int $id): JsonResponse
     {
         $request->validate([
             'status' => 'required|in:unread,read,replied,closed',
             'admin_notes' => 'nullable|string'
-        ], [
-            'status.required' => 'Trạng thái là bắt buộc',
-            'status.in' => 'Trạng thái không hợp lệ'
         ]);
 
-        try {
-            $contacts = collect(session('driver_contacts', []));
-            $contactIndex = $contacts->search(function($item) use ($id) {
-                return $item['id'] === $id;
-            });
-
-            if ($contactIndex === false) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Liên hệ không tồn tại'
-                ], 404);
-            }
-
-            $contacts[$contactIndex]['status'] = $request->status;
-            $contacts[$contactIndex]['admin_notes'] = $request->admin_notes;
-            $contacts[$contactIndex]['updated_at'] = now();
-
-            session(['driver_contacts' => $contacts->toArray()]);
-
-            $statusLabels = [
-                'unread' => 'Chưa đọc',
-                'read' => 'Đã đọc',
-                'replied' => 'Đã trả lời',
-                'closed' => 'Đã đóng'
-            ];
-
-            return response()->json([
-                'success' => true,
-                'message' => "Liên hệ đã được cập nhật trạng thái thành: {$statusLabels[$request->status]}",
-                'status' => $request->status
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
+        $result = $this->getService()->updateStatus(
+            $id, 
+            $request->status, 
+            $request->admin_notes
+        );
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Đánh dấu đã đọc
+     * @param int $id
+     * @return JsonResponse
      */
-    public function markAsRead($id)
+    public function markAsRead(int $id): JsonResponse
     {
-        try {
-            $contacts = collect(session('driver_contacts', []));
-            $contactIndex = $contacts->search(function($item) use ($id) {
-                return $item['id'] === $id;
-            });
+        $result = $this->getService()->markAsRead($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Đánh dấu đã đọc thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
 
-            if ($contactIndex === false) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Liên hệ không tồn tại'
-                ], 404);
-            }
-
-            $contacts[$contactIndex]['status'] = 'read';
-            $contacts[$contactIndex]['updated_at'] = now();
-
-            session(['driver_contacts' => $contacts->toArray()]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Liên hệ đã được đánh dấu đã đọc'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
+    /**
+     * Thay đổi trạng thái liên hệ
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleStatus(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Lọc liên hệ theo trạng thái
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function filterByStatus(Request $request)
+    public function filterByStatus(Request $request): JsonResponse
     {
         $status = $request->get('status');
-        $contacts = collect(session('driver_contacts', []));
-
-        if ($status && $status !== 'all') {
-            $contacts = $contacts->where('status', $status);
-        }
-
-        $contacts = $contacts->sortByDesc('created_at')->values();
-
-        if ($request->ajax()) {
-            return view('admin.driver.contacts.partials.contacts-table', compact('contacts'))->render();
-        }
-
-        return view('admin.driver.contacts.index', compact('contacts'));
+        $filters = ['status' => $status];
+        $options = $this->getOptions($request->all());
+        
+        $contacts = $this->getService()->getList($filters, $options);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $contacts
+        ]);
     }
 
     /**
      * Tìm kiếm liên hệ
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function search(Request $request)
+    public function search(Request $request): JsonResponse
     {
         $search = $request->get('search');
-        $contacts = collect(session('driver_contacts', []));
-
-        if ($search) {
-            $contacts = $contacts->filter(function($contact) use ($search) {
-                return str_contains(strtolower($contact['name']), strtolower($search)) ||
-                       str_contains(strtolower($contact['email']), strtolower($search)) ||
-                       str_contains(strtolower($contact['phone']), strtolower($search)) ||
-                       str_contains(strtolower($contact['subject']), strtolower($search)) ||
-                       str_contains(strtolower($contact['message']), strtolower($search));
-            });
-        }
-
-        $contacts = $contacts->sortByDesc('created_at')->values();
-
-        if ($request->ajax()) {
-            return view('admin.driver.contacts.partials.contacts-table', compact('contacts'))->render();
-        }
-
-        return view('admin.driver.contacts.index', compact('contacts'));
+        $filters = ['search' => $search];
+        $options = $this->getOptions($request->all());
+        
+        $contacts = $this->getService()->getList($filters, $options);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $contacts
+        ]);
     }
 
     /**
      * Bulk actions
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function bulkAction(Request $request)
+    public function bulkAction(Request $request): JsonResponse
     {
         $request->validate([
             'action' => 'required|in:delete,mark-read,mark-replied,mark-closed',
             'ids' => 'required|array'
         ]);
 
-        try {
-            $ids = $request->ids;
-            $action = $request->action;
-            $contacts = collect(session('driver_contacts', []));
-
-            switch ($action) {
-                case 'delete':
-                    $contacts = $contacts->filter(function($item) use ($ids) {
-                        return !in_array($item['id'], $ids);
-                    });
-                    $message = 'Đã xóa ' . count($ids) . ' liên hệ thành công!';
-                    break;
-
-                case 'mark-read':
-                    $contacts = $contacts->map(function($item) use ($ids) {
-                        if (in_array($item['id'], $ids)) {
-                            $item['status'] = 'read';
-                            $item['updated_at'] = now();
-                        }
-                        return $item;
-                    });
-                    $message = 'Đã đánh dấu đã đọc ' . count($ids) . ' liên hệ thành công!';
-                    break;
-
-                case 'mark-replied':
-                    $contacts = $contacts->map(function($item) use ($ids) {
-                        if (in_array($item['id'], $ids)) {
-                            $item['status'] = 'replied';
-                            $item['updated_at'] = now();
-                        }
-                        return $item;
-                    });
-                    $message = 'Đã đánh dấu đã trả lời ' . count($ids) . ' liên hệ thành công!';
-                    break;
-
-                case 'mark-closed':
-                    $contacts = $contacts->map(function($item) use ($ids) {
-                        if (in_array($item['id'], $ids)) {
-                            $item['status'] = 'closed';
-                            $item['updated_at'] = now();
-                        }
-                        return $item;
-                    });
-                    $message = 'Đã đánh dấu đã đóng ' . count($ids) . ' liên hệ thành công!';
-                    break;
-            }
-
-            session(['driver_contacts' => $contacts->toArray()]);
-
-            return response()->json([
-                'success' => true,
-                'message' => $message
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
+        $result = $this->getService()->bulkAction($request->action, $request->ids);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thực hiện hành động thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Xuất dữ liệu liên hệ
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
     public function export(Request $request)
     {
         $status = $request->get('status');
-        $contacts = collect(session('driver_contacts', []));
-
-        if ($status && $status !== 'all') {
-            $contacts = $contacts->where('status', $status);
-        }
-
-        $contacts = $contacts->sortByDesc('created_at')->values();
-
+        $filters = ['status' => $status];
+        $options = ['per_page' => 1000]; // Lấy tất cả để export
+        
+        $contacts = $this->getService()->getList($filters, $options);
+        
         // Tạo file CSV
         $filename = 'driver_contacts_' . date('Y-m-d_H-i-s') . '.csv';
         $headers = [
@@ -440,14 +287,14 @@ class DriverContactController extends Controller
             // Data
             foreach ($contacts as $contact) {
                 fputcsv($file, [
-                    $contact['name'],
-                    $contact['email'],
-                    $contact['phone'],
-                    $contact['subject'],
-                    $contact['message'],
-                    $contact['status'],
-                    $contact['admin_notes'],
-                    $contact['created_at']->format('d/m/Y H:i')
+                    $contact->name,
+                    $contact->email,
+                    $contact->phone,
+                    $contact->subject,
+                    $contact->message,
+                    $contact->status_text,
+                    $contact->admin_notes,
+                    $contact->created_at->format('d/m/Y H:i')
                 ]);
             }
 
@@ -455,70 +302,5 @@ class DriverContactController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
-    }
-
-    /**
-     * Toggle trạng thái liên hệ
-     */
-    public function toggleStatus($id)
-    {
-        try {
-            $contacts = collect(session('driver_contacts', []));
-            $contact = $contacts->firstWhere('id', $id);
-
-            if (!$contact) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không tìm thấy liên hệ'
-                ], 404);
-            }
-
-            // Chuyển đổi trạng thái theo thứ tự: unread -> read -> replied -> unread
-            $statusMap = [
-                'unread' => 'read',
-                'read' => 'replied',
-                'replied' => 'unread'
-            ];
-
-            $newStatus = $statusMap[$contact['status']] ?? 'unread';
-            
-            // Cập nhật trạng thái
-            $contacts = $contacts->map(function($item) use ($id, $newStatus) {
-                if ($item['id'] === $id) {
-                    $item['status'] = $newStatus;
-                    $item['updated_at'] = now();
-                }
-                return $item;
-            });
-
-            session(['driver_contacts' => $contacts->toArray()]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Đã cập nhật trạng thái thành công',
-                'new_status' => $newStatus,
-                'status_text' => $this->getStatusText($newStatus)
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Lấy text hiển thị cho trạng thái
-     */
-    private function getStatusText($status)
-    {
-        $statusLabels = [
-            'unread' => 'Chưa đọc',
-            'read' => 'Đã đọc',
-            'replied' => 'Đã trả lời'
-        ];
-
-        return $statusLabels[$status] ?? ucfirst($status);
     }
 }

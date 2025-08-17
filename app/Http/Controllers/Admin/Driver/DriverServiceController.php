@@ -2,277 +2,181 @@
 
 namespace App\Http\Controllers\Admin\Driver;
 
-use App\Http\Controllers\Controller;
-use App\Models\DriverService;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Driver\DriverService\StoreRequest;
+use App\Http\Requests\Admin\Driver\DriverService\UpdateRequest;
+use App\Services\Admin\Driver\DriverServiceService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
-class DriverServiceController extends Controller
+class DriverServiceController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function __construct(DriverServiceService $driverServiceService)
     {
-        $query = DriverService::query();
-
-        // Lọc theo tên dịch vụ
-        if ($request->filled('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        // Lọc theo trạng thái
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $services = $query->orderBy('sort_order', 'asc')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
-        return view('admin.driver.services.index', compact('services'));
+        $this->service = $driverServiceService;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Lấy service instance
+     * @return DriverServiceService
      */
-    public function create()
+    public function getService(): DriverServiceService
+    {
+        return $this->service;
+    }
+
+    /**
+     * Hiển thị danh sách dịch vụ lái xe
+     * @param Request $request
+     * @return View|Application|Factory
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
+        $services = $this->getService()->getList($filters, $options);
+        
+        return view('admin.driver.services.index', compact('services', 'filters', 'options'));
+    }
+
+    /**
+     * Hiển thị form tạo dịch vụ lái xe
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
     {
         return view('admin.driver.services.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Xử lý tạo dịch vụ lái xe
+     * @param StoreRequest $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'short_description' => 'nullable|string|max:500',
-            'is_featured' => 'boolean',
-            'status' => 'boolean',
-            'sort_order' => 'nullable|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], [
-            'name.required' => 'Tên dịch vụ là bắt buộc',
-            'name.max' => 'Tên dịch vụ không được vượt quá 255 ký tự',
-            'short_description.max' => 'Mô tả ngắn không được vượt quá 500 ký tự',
-            'image.image' => 'File phải là hình ảnh',
-            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
-            'image.max' => 'Hình ảnh không được vượt quá 2MB',
-            'icon.image' => 'File icon phải là hình ảnh',
-            'icon.mimes' => 'Icon phải có định dạng: jpeg, png, jpg, gif',
-            'icon.max' => 'Icon không được vượt quá 2MB',
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo dịch vụ lái xe thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        try {
-            $data = $request->all();
-            $data['slug'] = Str::slug($request->name);
-            $data['is_featured'] = $request->has('is_featured');
-            $data['status'] = $request->has('status');
-
-            // Xử lý upload hình ảnh
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('driver-services', 'public');
-                $data['image'] = $imagePath;
-            }
-
-            if ($request->hasFile('icon')) {
-                $iconPath = $request->file('icon')->store('driver-services/icons', 'public');
-                $data['icon'] = $iconPath;
-            }
-
-            DriverService::create($data);
-
-            return redirect()->route('admin.driver.services.index')
-                ->with('success', 'Dịch vụ đã được tạo thành công!');
-
-        } catch (\Exception $e) {
-            return back()->withInput()
-                ->with('error', 'Có lỗi xảy ra khi tạo dịch vụ: ' . $e->getMessage());
-        }
     }
 
     /**
-     * Display the specified resource.
+     * Hiển thị form chỉnh sửa dịch vụ lái xe
+     * @param int $id
+     * @return View|Application|Factory
      */
-    public function show(DriverService $driverService)
+    public function edit(int $id): View|Application|Factory
     {
-        return view('admin.driver.services.show', compact('driverService'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(DriverService $driverService)
-    {
-        // Debug: Kiểm tra xem có lấy được service không
-        if (!$driverService) {
-            abort(404, 'Service not found');
+        $service = $this->getService()->findById($id);
+        
+        if (!$service) {
+            abort(404, 'Dịch vụ lái xe không tồn tại.');
         }
         
-        return view('admin.driver.services.edit', compact('driverService'));
+        return view('admin.driver.services.edit', compact('service'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Hiển thị chi tiết dịch vụ lái xe
+     * @param int $id
+     * @return View|Application|Factory
      */
-    public function update(Request $request, DriverService $driverService)
+    public function show(int $id): View|Application|Factory
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'short_description' => 'nullable|string|max:500',
-            'is_featured' => 'boolean',
-            'status' => 'boolean',
-            'sort_order' => 'nullable|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], [
-            'name.required' => 'Tên dịch vụ là bắt buộc',
-            'name.max' => 'Tên dịch vụ không được vượt quá 255 ký tự',
-            'short_description.max' => 'Mô tả ngắn không được vượt quá 500 ký tự',
-            'image.image' => 'File phải là hình ảnh',
-            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
-            'image.max' => 'Hình ảnh không được vượt quá 2MB',
-            'icon.image' => 'File icon phải là hình ảnh',
-            'icon.mimes' => 'Icon phải có định dạng: jpeg, png, jpg, gif',
-            'icon.max' => 'Icon không được vượt quá 2MB',
+        $service = $this->getService()->findById($id);
+        
+        if (!$service) {
+            abort(404, 'Dịch vụ lái xe không tồn tại.');
+        }
+        
+        return view('admin.driver.services.show', compact('service'));
+    }
+
+    /**
+     * Xử lý chỉnh sửa dịch vụ lái xe
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(UpdateRequest $request, int $id): JsonResponse
+    {
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật dịch vụ lái xe thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        try {
-            $data = $request->all();
-            $data['slug'] = Str::slug($request->name);
-            $data['is_featured'] = $request->has('is_featured');
-            $data['status'] = $request->has('status');
-
-            // Xử lý upload hình ảnh mới
-            if ($request->hasFile('image')) {
-                // Xóa hình ảnh cũ nếu có
-                if ($driverService->image) {
-                    Storage::disk('public')->delete($driverService->image);
-                }
-                $imagePath = $request->file('image')->store('driver-services', 'public');
-                $data['image'] = $imagePath;
-            }
-
-            if ($request->hasFile('icon')) {
-                // Xóa icon cũ nếu có
-                if ($driverService->icon) {
-                    Storage::disk('public')->delete($driverService->icon);
-                }
-                $iconPath = $request->file('icon')->store('driver-services/icons', 'public');
-                $data['icon'] = $iconPath;
-            }
-
-            $driverService->update($data);
-
-            return redirect()->route('admin.driver.services.index')
-                ->with('success', 'Dịch vụ đã được cập nhật thành công!');
-
-        } catch (\Exception $e) {
-            return back()->withInput()
-                ->with('error', 'Có lỗi xảy ra khi cập nhật dịch vụ: ' . $e->getMessage());
-        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Xử lý xóa dịch vụ lái xe
+     * @param int $id
+     * @return JsonResponse
      */
-    public function destroy(DriverService $driverService)
+    public function destroy(int $id): JsonResponse
     {
-        try {
-            // Xóa hình ảnh nếu có
-            if ($driverService->image) {
-                Storage::disk('public')->delete($driverService->image);
-            }
-            if ($driverService->icon) {
-                Storage::disk('public')->delete($driverService->icon);
-            }
-
-            $driverService->delete();
-
-            return redirect()->route('admin.driver.services.index')
-                ->with('success', 'Dịch vụ đã được xóa thành công!');
-
-        } catch (\Exception $e) {
-            return back()->with('error', 'Có lỗi xảy ra khi xóa dịch vụ: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Toggle trạng thái dịch vụ
-     */
-    public function toggleStatus(DriverService $driverService)
-    {
-        try {
-            $driverService->update(['status' => !$driverService->status]);
-            
-            $status = $driverService->status ? 'kích hoạt' : 'vô hiệu hóa';
-            return response()->json([
-                'success' => true,
-                'message' => "Dịch vụ đã được {$status} thành công!",
-                'status' => $driverService->status
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Toggle trạng thái featured
-     */
-    public function toggleFeatured(DriverService $driverService)
-    {
-        try {
-            $driverService->update(['is_featured' => !$driverService->is_featured]);
-            
-            $status = $driverService->is_featured ? 'đánh dấu nổi bật' : 'bỏ đánh dấu nổi bật';
-            return response()->json([
-                'success' => true,
-                'message' => "Dịch vụ đã được {$status} thành công!",
-                'is_featured' => $driverService->is_featured
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Cập nhật thứ tự sắp xếp
-     */
-    public function updateOrder(Request $request)
-    {
-        $request->validate([
-            'services' => 'required|array',
-            'services.*.id' => 'required|exists:driver_services,id',
-            'services.*.sort_order' => 'required|integer|min:0'
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa dịch vụ lái xe thất bại.',
+            'data' => $result['data'] ?? null
         ]);
+    }
 
-        try {
-            foreach ($request->services as $service) {
-                DriverService::where('id', $service['id'])
-                    ->update(['sort_order' => $service['sort_order']]);
-            }
+    /**
+     * Thay đổi trạng thái dịch vụ lái xe
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleStatus(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Thứ tự sắp xếp đã được cập nhật thành công!'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
+    /**
+     * Thay đổi trạng thái nổi bật
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleFeatured(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleFeatured($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Cập nhật thứ tự dịch vụ
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateOrder(Request $request): JsonResponse
+    {
+        $result = $this->getService()->updateOrder($request->all());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['success'] ? 'Cập nhật thứ tự thành công' : 'Cập nhật thứ tự thất bại',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }

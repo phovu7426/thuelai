@@ -24,11 +24,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
+                        <!-- Alert messages -->
+                        <div id="alert-container"></div>
 
                         @if($distanceTiers->count() > 0)
                             <div class="table-responsive">
@@ -41,12 +38,13 @@
                                             <th width="15%">Text hiển thị</th>
                                             <th width="25%">Mô tả</th>
                                             <th width="10%">Trạng thái</th>
+                                            <th width="10%">Nổi bật</th>
                                             <th width="10%">Thao tác</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="distance-tiers-table-body">
                                         @foreach($distanceTiers as $index => $tier)
-                                        <tr>
+                                        <tr data-id="{{ $tier->id }}">
                                             <td>{{ $index + 1 }}</td>
                                             <td>
                                                 <strong>{{ $tier->name }}</strong>
@@ -65,11 +63,30 @@
                                                 {{ $tier->description ?: 'Không có mô tả' }}
                                             </td>
                                             <td>
-                                                @if($tier->is_active)
-                                                    <span class="badge bg-success">Hoạt động</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Tạm dừng</span>
-                                                @endif
+                                                <select class="form-select form-select-sm status-select" 
+                                                        data-tier-id="{{ $tier->id }}" 
+                                                        data-current-status="{{ $tier->is_active ? '1' : '0' }}"
+                                                        data-status-type="distance-tiers">
+                                                    <option value="0" {{ !$tier->is_active ? 'selected' : '' }}>
+                                                        Tạm dừng
+                                                    </option>
+                                                    <option value="1" {{ $tier->is_active ? 'selected' : '' }}>
+                                                        Hoạt động
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-select form-select-sm featured-select" 
+                                                        data-tier-id="{{ $tier->id }}" 
+                                                        data-current-featured="{{ $tier->is_highlighted ? '1' : '0' }}"
+                                                        data-featured-type="distance-tiers">
+                                                    <option value="0" {{ !$tier->is_highlighted ? 'selected' : '' }}>
+                                                        Không nổi bật
+                                                    </option>
+                                                    <option value="1" {{ $tier->is_highlighted ? 'selected' : '' }}>
+                                                        Nổi bật
+                                                    </option>
+                                                </select>
                                             </td>
                                             <td>
                                                 <div class="action-buttons">
@@ -77,16 +94,9 @@
                                                        class="btn-action btn-edit" title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form action="{{ route('admin.driver.distance-tiers.destroy', $tier->id) }}" 
-                                                          method="POST" 
-                                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa khoảng cách này?')"
-                                                          style="display: inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn-action btn-delete" title="Xóa">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteDistanceTier({{ $tier->id }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -113,6 +123,132 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const tierId = $(this).data('tier-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus !== currentStatus) {
+            updateTierStatus(tierId, newStatus);
+        }
+    });
+
+    // Featured select change
+    $('.featured-select').change(function() {
+        const tierId = $(this).data('tier-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured !== currentFeatured) {
+            updateTierFeatured(tierId, newFeatured);
+        }
+    });
+});
+
+function updateTierStatus(tierId, status) {
+    $.ajax({
+        url: `/admin/driver/distance-tiers/${tierId}/toggle-status`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            status: status
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current status
+                $(`select[data-tier-id="${tierId}"]`).data('current-status', status);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-tier-id="${tierId}"]`);
+                select.val(select.data('current-status'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+            // Revert select
+            const select = $(`select[data-tier-id="${tierId}"]`);
+            select.val(select.data('current-status'));
+        }
+    });
+}
+
+function updateTierFeatured(tierId, featured) {
+    $.ajax({
+        url: `/admin/driver/distance-tiers/${tierId}/toggle-featured`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            is_highlighted: featured
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current featured
+                $(`select[data-tier-id="${tierId}"]`).data('current-featured', featured);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-tier-id="${tierId}"]`);
+                select.val(select.data('current-featured'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+            // Revert select
+            const select = $(`select[data-tier-id="${tierId}"]`);
+            select.val(select.data('current-featured'));
+        }
+    });
+}
+
+function deleteDistanceTier(tierId) {
+    if (confirm('Bạn có chắc chắn muốn xóa khoảng cách này không?')) {
+        $.ajax({
+            url: `/admin/driver/distance-tiers/${tierId}`,
+            method: 'DELETE',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Remove row from table
+                    $(`tr[data-id="${tierId}"]`).remove();
+                } else {
+                    showAlert('danger', response.message);
+                }
+            },
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi xóa khoảng cách');
+            }
+        });
+    }
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+</script>
+@endpush
 
 
 

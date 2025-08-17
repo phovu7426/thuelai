@@ -2,139 +2,152 @@
 
 namespace App\Http\Controllers\Admin\Driver;
 
-use App\Http\Controllers\Controller;
-use App\Models\DriverPricingRule;
-use App\Models\DriverDistanceTier;
-use App\Models\DriverPricingRuleDistance;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Driver\DriverPricingRule\StoreRequest;
+use App\Http\Requests\Admin\Driver\DriverPricingRule\UpdateRequest;
+use App\Services\Admin\Driver\DriverPricingRuleService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class DriverPricingRuleController extends Controller
+class DriverPricingRuleController extends BaseController
 {
-    public function index()
+    public function __construct(DriverPricingRuleService $driverPricingRuleService)
     {
-        $pricingRules = DriverPricingRule::with('pricingDistances.distanceTier')->active()->ordered()->get();
-        $distanceTiers = DriverDistanceTier::active()->ordered()->get();
-        return view('admin.driver.pricing-rules.index', compact('pricingRules', 'distanceTiers'));
+        $this->service = $driverPricingRuleService;
     }
 
-    public function create()
+    /**
+     * Lấy service instance
+     * @return DriverPricingRuleService
+     */
+    public function getService(): DriverPricingRuleService
     {
-        $distanceTiers = DriverDistanceTier::active()->ordered()->get();
+        return $this->service;
+    }
+
+    /**
+     * Hiển thị danh sách quy tắc giá
+     * @param Request $request
+     * @return View|Application|Factory
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
+        $pricingRules = $this->getService()->getList($filters, $options);
+        $distanceTiers = \App\Models\DriverDistanceTier::active()->ordered()->get();
+        
+        return view('admin.driver.pricing-rules.index', compact('pricingRules', 'distanceTiers', 'filters', 'options'));
+    }
+
+    /**
+     * Hiển thị form tạo quy tắc giá
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
+    {
+        $distanceTiers = \App\Models\DriverDistanceTier::active()->ordered()->get();
         return view('admin.driver.pricing-rules.create', compact('distanceTiers'));
     }
 
-    public function store(Request $request)
+    /**
+     * Xử lý tạo quy tắc giá
+     * @param StoreRequest $request
+     * @return JsonResponse
+     */
+    public function store(StoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'time_slot' => 'required|string|max:255',
-            'time_icon' => 'required|string|max:255',
-            'time_color' => 'required|string|max:255',
-            'sort_order' => 'nullable|integer|min:0',
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo quy tắc giá thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        // Tạo quy tắc giá
-        $pricingRule = DriverPricingRule::create([
-            'time_slot' => $request->time_slot,
-            'time_icon' => $request->time_icon,
-            'time_color' => $request->time_color,
-            'sort_order' => $request->sort_order ?? 0,
-            'is_active' => $request->has('is_active'),
-        ]);
-
-        // Lưu giá cho từng khoảng cách
-        $distanceTiers = DriverDistanceTier::active()->ordered()->get();
-        foreach ($distanceTiers as $tier) {
-            $priceField = 'price_' . $tier->id;
-            if ($request->has($priceField)) {
-                $price = $request->input($priceField);
-                
-                // Xác định loại giá (số hay text)
-                if (is_numeric($price)) {
-                    DriverPricingRuleDistance::create([
-                        'pricing_rule_id' => $pricingRule->id,
-                        'distance_tier_id' => $tier->id,
-                        'price' => $price,
-                        'price_text' => null,
-                    ]);
-                } else {
-                    DriverPricingRuleDistance::create([
-                        'pricing_rule_id' => $pricingRule->id,
-                        'distance_tier_id' => $tier->id,
-                        'price' => null,
-                        'price_text' => $price,
-                    ]);
-                }
-            }
-        }
-
-        return redirect()->route('admin.driver.pricing-rules.index')
-            ->with('success', 'Quy tắc giá đã được tạo thành công!');
     }
 
-    public function edit(string $id)
+    /**
+     * Hiển thị form chỉnh sửa quy tắc giá
+     * @param int $id
+     * @return View|Application|Factory
+     */
+    public function edit(int $id): View|Application|Factory
     {
-        $pricingRule = DriverPricingRule::findOrFail($id);
-        $distanceTiers = DriverDistanceTier::active()->ordered()->get();
+        $pricingRule = $this->getService()->findById($id);
+        
+        if (!$pricingRule) {
+            abort(404, 'Quy tắc giá không tồn tại.');
+        }
+        
+        $distanceTiers = \App\Models\DriverDistanceTier::active()->ordered()->get();
         return view('admin.driver.pricing-rules.edit', compact('pricingRule', 'distanceTiers'));
     }
 
-    public function update(Request $request, string $id)
+    /**
+     * Xử lý chỉnh sửa quy tắc giá
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        $request->validate([
-            'time_slot' => 'required|string|max:255',
-            'time_icon' => 'required|string|max:255',
-            'time_color' => 'required|string|max:255',
-            'sort_order' => 'nullable|integer|min:0',
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật quy tắc giá thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        $pricingRule = DriverPricingRule::findOrFail($id);
-        $pricingRule->update([
-            'time_slot' => $request->time_slot,
-            'time_icon' => $request->time_icon,
-            'time_color' => $request->time_color,
-            'sort_order' => $request->sort_order ?? 0,
-            'is_active' => $request->has('is_active'),
-        ]);
-
-        // Xóa tất cả giá cũ
-        $pricingRule->pricingDistances()->delete();
-
-        // Cập nhật giá cho từng khoảng cách
-        $distanceTiers = DriverDistanceTier::active()->ordered()->get();
-        foreach ($distanceTiers as $tier) {
-            $priceField = 'price_' . $tier->id;
-            if ($request->has($priceField)) {
-                $price = $request->input($priceField);
-                
-                // Xác định loại giá (số hay text)
-                if (is_numeric($price)) {
-                    DriverPricingRuleDistance::create([
-                        'pricing_rule_id' => $pricingRule->id,
-                        'distance_tier_id' => $tier->id,
-                        'price' => $price,
-                        'price_text' => null,
-                    ]);
-                } else {
-                    DriverPricingRuleDistance::create([
-                        'pricing_rule_id' => $pricingRule->id,
-                        'distance_tier_id' => $tier->id,
-                        'price' => null,
-                        'price_text' => $price,
-                    ]);
-                }
-            }
-        }
-
-        return redirect()->route('admin.driver.pricing-rules.index')
-            ->with('success', 'Quy tắc giá đã được cập nhật thành công!');
     }
 
-    public function destroy(string $id)
+    /**
+     * Xử lý xóa quy tắc giá
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse
     {
-        $pricingRule = DriverPricingRule::findOrFail($id);
-        $pricingRule->delete();
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa quy tắc giá thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
 
-        return redirect()->route('admin.driver.pricing-rules.index')
-            ->with('success', 'Quy tắc giá đã được xóa thành công!');
+    /**
+     * Thay đổi trạng thái quy tắc giá
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleStatus(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái nổi bật của quy tắc giá
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleFeatured(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleFeatured($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }

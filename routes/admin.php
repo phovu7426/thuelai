@@ -26,27 +26,8 @@ use App\Http\Controllers\Admin\Categories\CategoryController;
 Route::prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::middleware('canAny:access_dashboard,access_users,access_roles,access_permissions,access_slides,access_contact-info')->get('/', function () {
-        // Ưu tiên dashboard
-        if (auth()->user()->can('access_dashboard')) {
-            return redirect()->route('admin.dashboard');
-        }
-        if (auth()->user()->can('access_users')) {
-            return redirect()->route('admin.users.index');
-        }
-        if (auth()->user()->can('access_roles')) {
-            return redirect()->route('admin.roles.index');
-        }
-        if (auth()->user()->can('access_permissions')) {
-            return redirect()->route('admin.permissions.index');
-        }
-        if (auth()->user()->can('access_slides')) {
-            return redirect()->route('admin.slides.index');
-        }
-        if (auth()->user()->can('access_contact-info')) {
-            return redirect()->route('admin.contact-info.edit');
-        }
-        // Nếu không có quyền nào thì về dashboard hoặc trang báo lỗi
-        return abort(403, 'Bạn không có quyền truy cập!');
+        // Chuyển hướng dựa trên quyền truy cập
+        return redirect()->route('admin.dashboard');
     })->name('index');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -81,6 +62,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/update/{id}', [RoleController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [RoleController::class, 'delete'])->name('delete');
         Route::get('/autocomplete', [RoleController::class, 'autocomplete'])->name('autocomplete'); // Lấy vai trò theo từ
+        Route::post('/{role}/toggle-status', [RoleController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{role}/toggle-featured', [RoleController::class, 'toggleFeatured'])->name('toggle-featured');
     });
 
     // Chức năng quản lý quyền
@@ -92,6 +75,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/update/{id}', [PermissionController::class, 'update'])->name('update'); // Xử lý sửa quyền
         Route::delete('/delete/{id}', [PermissionController::class, 'delete'])->name('delete'); // Xử lý xóa quyền
         Route::get('/autocomplete', [PermissionController::class, 'autocomplete'])->name('autocomplete'); // Lấy quyền theo từ
+        Route::post('/{permission}/toggle-status', [PermissionController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{permission}/toggle-featured', [PermissionController::class, 'toggleFeatured'])->name('toggle-featured');
     });
 
     // Profile
@@ -108,9 +93,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Categories
     Route::resource('categories', CategoryController::class);
+    Route::post('/categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+    Route::post('/categories/{category}/toggle-featured', [CategoryController::class, 'toggleFeatured'])->name('categories.toggle-featured');
 
     // Series
     Route::resource('series', SeriesController::class);
+    Route::post('/series/{series}/toggle-status', [SeriesController::class, 'toggleStatus'])->name('series.toggle-status');
+    Route::post('/series/{series}/toggle-featured', [SeriesController::class, 'toggleFeatured'])->name('series.toggle-featured');
 
     // Posts
     Route::resource('posts', PostController::class)->middleware('canAny:access_users');
@@ -130,6 +119,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/{post}', [\App\Http\Controllers\Admin\PostController::class, 'destroy'])->name('destroy');
         Route::patch('/{post}/toggle-status', [\App\Http\Controllers\Admin\PostController::class, 'toggleStatus'])->name('toggle-status');
         Route::patch('/{post}/toggle-featured', [\App\Http\Controllers\Admin\PostController::class, 'toggleFeatured'])->name('toggle-featured');
+        Route::post('/{post}/toggle-status', [\App\Http\Controllers\Admin\PostController::class, 'toggleStatus'])->name('toggle-status-json');
+        Route::post('/{post}/toggle-featured', [\App\Http\Controllers\Admin\PostController::class, 'toggleFeatured'])->name('toggle-featured-json');
     });
 
     // Post Categories Management
@@ -141,6 +132,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/{category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'update'])->name('update');
         Route::delete('/{category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'destroy'])->name('destroy');
         Route::patch('/{category}/toggle-status', [\App\Http\Controllers\Admin\PostCategoryController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{category}/toggle-status', [\App\Http\Controllers\Admin\PostCategoryController::class, 'toggleStatus'])->name('toggle-status-json');
+        Route::patch('/{category}/toggle-featured', [\App\Http\Controllers\Admin\PostCategoryController::class, 'toggleFeatured'])->name('toggle-featured');
+        Route::post('/{category}/toggle-featured', [\App\Http\Controllers\Admin\PostCategoryController::class, 'toggleFeatured'])->name('toggle-featured-json');
     });
 
     // Post Tags Management
@@ -152,6 +146,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/{tag}', [\App\Http\Controllers\Admin\PostTagController::class, 'update'])->name('update');
         Route::delete('/{tag}', [\App\Http\Controllers\Admin\PostTagController::class, 'destroy'])->name('destroy');
         Route::patch('/{tag}/toggle-status', [\App\Http\Controllers\Admin\PostTagController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{tag}/toggle-status', [\App\Http\Controllers\Admin\PostTagController::class, 'toggleStatus'])->name('toggle-status-json');
+        Route::patch('/{tag}/toggle-featured', [\App\Http\Controllers\Admin\PostTagController::class, 'toggleFeatured'])->name('toggle-featured');
+        Route::post('/{tag}/toggle-featured', [\App\Http\Controllers\Admin\PostTagController::class, 'toggleFeatured'])->name('toggle-featured-json');
     });
 
     // Cấu hình thông tin liên hệ
@@ -182,9 +179,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{driverService}', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'show'])->name('show');
         });
 
-
-
-
         // Quản lý quy tắc giá cố định
         Route::prefix('pricing-rules')->name('pricing-rules.')->middleware('canAny:access_driver_services')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'index'])->name('index');
@@ -193,6 +187,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'edit'])->name('edit');
             Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'update'])->name('update');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{id}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'toggleFeatured'])->name('toggle-featured');
         });
 
         // Quản lý khoảng cách
@@ -203,6 +199,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'edit'])->name('edit');
             Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'update'])->name('update');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{id}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'toggleFeatured'])->name('toggle-featured');
         });
 
         // Quản lý giá theo khoảng cách linh hoạt
@@ -213,16 +211,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'edit'])->name('edit');
             Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'update'])->name('update');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{id}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'toggleFeatured'])->name('toggle-featured');
         });
-
-
 
         // Quản lý testimonials
         Route::prefix('testimonials')->name('testimonials.')->middleware('canAny:access_driver_testimonials')->group(function () {
             Route::resource('/', \App\Http\Controllers\Admin\Driver\TestimonialController::class)->except(['show']);
             Route::get('/{testimonial}', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'show'])->name('show');
-            Route::patch('/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleStatus'])->name('toggle-status');
-            Route::patch('/{testimonial}/toggle-featured', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleFeatured'])->name('toggle-featured');
+            Route::post('/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{testimonial}/toggle-featured', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleFeatured'])->name('toggle-featured');
             Route::post('/update-order', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'updateOrder'])->name('update-order');
             Route::get('/filter/status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'filterByStatus'])->name('filter-by-status');
             Route::get('/search', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'search'])->name('search');
@@ -235,11 +233,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'show'])->name('show');
             Route::post('/{id}/status', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'updateStatus'])->name('update-status');
             Route::post('/{id}/mark-read', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'markAsRead'])->name('mark-read');
-            Route::patch('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'toggleStatus'])->name('toggle-status');
+            Route::post('/{id}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'toggleFeatured'])->name('toggle-featured');
             Route::get('/filter/status', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'filterByStatus'])->name('filter-by-status');
             Route::get('/search', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'search'])->name('search');
             Route::post('/bulk-action', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'bulkAction'])->name('bulk-action');
             Route::get('/export', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'export'])->name('export');
         });
     });
+
+    // Upload routes
+    Route::post('upload/image', [\App\Http\Controllers\UploadController::class, 'upload'])
+        ->middleware('auth')
+        ->name('upload.image');
+
+    Route::post('upload/ckeditor', [\App\Http\Controllers\UploadController::class, 'uploadImage'])
+        ->middleware('auth')
+        ->name('upload.ckeditor');
 });

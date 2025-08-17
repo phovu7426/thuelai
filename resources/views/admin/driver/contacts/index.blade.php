@@ -19,23 +19,20 @@
                     <div class="card-header">
                         <div class="row align-items-center">
                             <div class="col-sm-9">
-                                <!-- Form lọc -->
-                                <form action="{{ route('admin.driver.contacts.index') }}" method="GET" class="mb-0">
-                                    <div class="row g-3">
-                                        <div class="col-md-4">
-                                            <input type="text" name="name" class="form-control" placeholder="🔍 Nhập tên khách hàng"
-                                                   value="{{ request('name') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-search"></i> Lọc
-                                            </button>
-                                            <a href="{{ route('admin.driver.contacts.index') }}" class="btn btn-secondary">
-                                                <i class="bi bi-arrow-clockwise"></i> Reset
-                                            </a>
-                                        </div>
+                                <!-- Form tìm kiếm -->
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <input type="text" id="search-name" class="form-control" placeholder="🔍 Nhập tên khách hàng">
                                     </div>
-                                </form>
+                                    <div class="col-md-4">
+                                        <button type="button" id="btn-search" class="btn btn-primary">
+                                            <i class="bi bi-search"></i> Tìm kiếm
+                                        </button>
+                                        <button type="button" id="btn-reset" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-clockwise"></i> Reset
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
@@ -48,6 +45,9 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
+                        <!-- Alert messages -->
+                        <div id="alert-container"></div>
+
                         @if($contacts->count() > 0)
                             <div class="table-responsive">
                                 <table class="table table-bordered">
@@ -59,13 +59,14 @@
                                             <th>Số điện thoại</th>
                                             <th>Tiêu đề</th>
                                             <th>Trạng thái</th>
+                                            <th>Nổi bật</th>
                                             <th>Ngày gửi</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="contacts-table-body">
                                         @foreach($contacts as $index => $contact)
-                                        <tr>
+                                        <tr data-id="{{ $contact['id'] }}">
                                             <td>{{ $index + 1 }}</td>
                                             <td>
                                                 <strong>{{ $contact['name'] }}</strong>
@@ -86,8 +87,7 @@
                                             <td>
                                                 <select class="form-select form-select-sm status-select" 
                                                         data-contact-id="{{ $contact['id'] }}" 
-                                                        data-current-status="{{ $contact['status'] }}"
-                                                        data-status-type="contacts">
+                                                        data-current-status="{{ $contact['status'] }}">
                                                     <option value="unread" {{ $contact['status'] == 'unread' ? 'selected' : '' }}>
                                                         Chưa đọc
                                                     </option>
@@ -96,6 +96,19 @@
                                                     </option>
                                                     <option value="replied" {{ $contact['status'] == 'replied' ? 'selected' : '' }}>
                                                         Đã trả lời
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-select form-select-sm featured-select" 
+                                                        data-contact-id="{{ $contact['id'] }}" 
+                                                        data-current-featured="{{ $contact['is_featured'] ? '1' : '0' }}"
+                                                        data-featured-type="contacts">
+                                                    <option value="0" {{ !$contact['is_featured'] ? 'selected' : '' }}>
+                                                        Không nổi bật
+                                                    </option>
+                                                    <option value="1" {{ $contact['is_featured'] ? 'selected' : '' }}>
+                                                        Nổi bật
                                                     </option>
                                                 </select>
                                             </td>
@@ -111,16 +124,9 @@
                                                            class="btn-action btn-edit" title="Chỉnh sửa">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.driver.contacts.destroy', $contact['id']) }}" 
-                                                              method="POST" 
-                                                              style="display:inline;"
-                                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa liên hệ này?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn-action btn-delete" title="Xóa">
-                                                                <i class="fas fa-trash-alt"></i>
-                                                            </button>
-                                                        </form>
+                                                        <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteContact({{ $contact['id'] }})">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
                                                     @endcan
                                                 </div>
                                             </td>
@@ -131,11 +137,13 @@
                             </div>
                             
                             <!-- Phân trang -->
-                            @if($contacts->hasPages())
-                                <div class="d-flex justify-content-center mt-3">
-                                    {{ $contacts->links() }}
-                                </div>
-                            @endif
+                            <div id="pagination-container">
+                                @if($contacts->hasPages())
+                                    <div class="d-flex justify-content-center mt-3">
+                                        {{ $contacts->links() }}
+                                    </div>
+                                @endif
+                            </div>
                         @else
                             <div class="text-center py-5">
                                 <i class="bi bi-envelope-open display-1 text-muted"></i>
@@ -157,6 +165,142 @@
     <!--end::App Content-->
 @endsection
 
-@section('scripts')
-<!-- Sử dụng component chung admin-dropdowns.js -->
-@endsection
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Status change
+    $('.status-select').change(function() {
+        const contactId = $(this).data('contact-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus !== currentStatus) {
+            updateContactStatus(contactId, newStatus);
+        }
+    });
+
+    // Search
+    $('#btn-search').click(function() {
+        searchContacts();
+    });
+
+    // Reset search
+    $('#btn-reset').click(function() {
+        $('#search-name').val('');
+        searchContacts();
+    });
+
+    // Enter key search
+    $('#search-name').keypress(function(e) {
+        if (e.which == 13) {
+            searchContacts();
+        }
+    });
+});
+
+function updateContactStatus(contactId, status) {
+    $.ajax({
+        url: `/admin/driver/contacts/${contactId}/status`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            status: status
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current status
+                $(`select[data-contact-id="${contactId}"]`).data('current-status', status);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-contact-id="${contactId}"]`);
+                select.val(select.data('current-status'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+            // Revert select
+            const select = $(`select[data-contact-id="${contactId}"]`);
+            select.val(select.data('current-status'));
+        }
+    });
+}
+
+function searchContacts(page = 1) {
+    const name = $('#search-name').val();
+    
+    $.ajax({
+        url: '{{ route("admin.driver.contacts.index") }}',
+        method: 'GET',
+        data: {
+            name: name,
+            page: page
+        },
+        success: function(response) {
+            $('#contacts-table-body').html(response.html);
+            $('#pagination-container').html(response.pagination);
+            
+            // Rebind events
+            bindEvents();
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi tìm kiếm');
+        }
+    });
+}
+
+function deleteContact(contactId) {
+    if (confirm('Bạn có chắc chắn muốn xóa liên hệ này không?')) {
+        $.ajax({
+            url: `/admin/driver/contacts/${contactId}`,
+            method: 'DELETE',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Remove row from table
+                    $(`tr[data-id="${contactId}"]`).remove();
+                } else {
+                    showAlert('danger', response.message);
+                }
+            },
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi xóa liên hệ');
+            }
+        });
+    }
+}
+
+function bindEvents() {
+    // Rebind status change events
+    $('.status-select').off('change').on('change', function() {
+        const contactId = $(this).data('contact-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus !== currentStatus) {
+            updateContactStatus(contactId, newStatus);
+        }
+    });
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+</script>
+@endpush

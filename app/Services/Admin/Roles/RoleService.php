@@ -76,4 +76,74 @@ class RoleService extends BaseService
         }
         return $return;
     }
+
+    /**
+     * Thay đổi trạng thái vai trò
+     * @param $id
+     * @return array
+     */
+    public function toggleStatus($id): array
+    {
+        $return = [
+            'success' => false,
+            'message' => 'Thay đổi trạng thái thất bại'
+        ];
+
+        try {
+            $role = $this->getRepository()->findById($id);
+            
+            if (!$role) {
+                $return['message'] = 'Vai trò không tồn tại';
+                return $return;
+            }
+
+            $role->update(['is_active' => !$role->is_active]);
+            
+            $status = $role->is_active ? 'kích hoạt' : 'vô hiệu hóa';
+            $message = "Vai trò đã được {$status} thành công!";
+            
+            $return['success'] = true;
+            $return['message'] = $message;
+            $return['data'] = ['status' => $role->is_active];
+        } catch (\Exception $e) {
+            $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+        }
+        
+        return $return;
+    }
+
+    /**
+     * Thay đổi trạng thái nổi bật của vai trò
+     * @param $id
+     * @return array
+     */
+    public function toggleFeatured($id): array
+    {
+        $return = [
+            'success' => false,
+            'message' => 'Thay đổi trạng thái nổi bật thất bại'
+        ];
+
+        try {
+            $role = $this->getRepository()->findById($id);
+            
+            if (!$role) {
+                $return['message'] = 'Vai trò không tồn tại';
+                return $return;
+            }
+
+            $role->update(['is_featured' => !$role->is_featured]);
+            
+            $status = $role->is_featured ? 'nổi bật' : 'không nổi bật';
+            $message = "Vai trò đã được {$status} thành công!";
+            
+            $return['success'] = true;
+            $return['message'] = $message;
+            $return['data'] = ['is_featured' => $role->is_featured];
+        } catch (\Exception $e) {
+            $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+        }
+        
+        return $return;
+    }
 }

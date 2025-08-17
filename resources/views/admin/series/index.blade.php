@@ -53,6 +53,7 @@
                                     <th>Tên Series</th>
                                     <th>Mã Series</th>
                                     <th>Trạng Thái</th>
+                                    <th>Nổi Bật</th>
                                     <th>Hành Động</th>
                                 </tr>
                                 </thead>
@@ -63,11 +64,30 @@
                                         <td>{{ $each->name ?? '' }}</td>
                                         <td>{{ $each->code ?? '' }}</td>
                                         <td>
-                                            @if($each->status === 'active')
-                                                <span class="badge bg-success">Hoạt động</span>
-                                            @else
-                                                <span class="badge bg-secondary">Không hoạt động</span>
-                                            @endif
+                                            <select class="form-select form-select-sm status-select" 
+                                                    data-series-id="{{ $each->id }}" 
+                                                    data-current-status="{{ $each->status === 'active' ? 'active' : 'inactive' }}"
+                                                    data-status-type="series">
+                                                <option value="inactive" {{ $each->status !== 'active' ? 'selected' : '' }}>
+                                                    Không hoạt động
+                                                </option>
+                                                <option value="active" {{ $each->status === 'active' ? 'selected' : '' }}>
+                                                    Hoạt động
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-select form-select-sm featured-select" 
+                                                    data-series-id="{{ $each->id }}" 
+                                                    data-current-featured="{{ $each->is_featured ? '1' : '0' }}"
+                                                    data-featured-type="series">
+                                                <option value="0" {{ !$each->is_featured ? 'selected' : '' }}>
+                                                    Không nổi bật
+                                                </option>
+                                                <option value="1" {{ $each->is_featured ? 'selected' : '' }}>
+                                                    Nổi bật
+                                                </option>
+                                            </select>
                                         </td>
                                         <td>
                                             <div class="action-buttons">
@@ -97,4 +117,99 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const seriesId = $(this).data('series-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus === currentStatus) return;
+        
+        $.ajax({
+            url: `/admin/series/${seriesId}/toggle-status`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: newStatus
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Cập nhật current status
+                    $(this).data('current-status', newStatus);
+                    showAlert('success', response.message);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentStatus);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+                // Revert select
+                $(this).val(currentStatus);
+            }.bind(this)
+        });
+    });
+
+    // Featured select change
+    $('.featured-select').change(function() {
+        const seriesId = $(this).data('series-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured === currentFeatured) return;
+        
+        $.ajax({
+            url: `/admin/series/${seriesId}/toggle-featured`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                is_featured: newFeatured
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Cập nhật current featured
+                    $(this).data('current-featured', newFeatured);
+                    showAlert('success', response.message);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentFeatured);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+                // Revert select
+                $(this).val(currentFeatured);
+            }.bind(this)
+        });
+    });
+});
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Tạo container nếu chưa có
+    if ($('#alert-container').length === 0) {
+        $('.card-body').prepend('<div id="alert-container"></div>');
+    }
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+</script>
 @endsection

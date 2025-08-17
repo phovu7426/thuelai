@@ -23,7 +23,10 @@
                         </h3>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.driver.contacts.store') }}" method="POST">
+                        <!-- Alert messages -->
+                        <div id="alert-container"></div>
+
+                        <form id="create-contact-form">
                             @csrf
                             
                             <div class="row g-3">
@@ -32,11 +35,9 @@
                                         <label for="name" class="form-label">
                                             <i class="bi bi-person"></i> Họ tên <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                                        <input type="text" class="form-control" 
                                                id="name" name="name" placeholder="👤 Nhập họ tên..." value="{{ old('name') }}" required>
-                                        @error('name')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <div class="invalid-feedback" id="name-error"></div>
                                     </div>
                                 </div>
                                 
@@ -45,11 +46,9 @@
                                         <label for="phone" class="form-label">
                                             <i class="bi bi-telephone"></i> Số điện thoại <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control @error('phone') is-invalid @enderror" 
+                                        <input type="text" class="form-control" 
                                                id="phone" name="phone" placeholder="📱 Nhập số điện thoại..." value="{{ old('phone') }}" required>
-                                        @error('phone')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <div class="invalid-feedback" id="phone-error"></div>
                                     </div>
                                 </div>
 
@@ -58,11 +57,9 @@
                                         <label for="email" class="form-label">
                                             <i class="bi bi-envelope"></i> Email
                                         </label>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                                        <input type="email" class="form-control" 
                                                id="email" name="email" placeholder="📧 Nhập email..." value="{{ old('email') }}">
-                                        @error('email')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <div class="invalid-feedback" id="email-error"></div>
                                     </div>
                                 </div>
                                 
@@ -71,11 +68,9 @@
                                         <label for="subject" class="form-label">
                                             <i class="bi bi-chat-text"></i> Tiêu đề <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control @error('subject') is-invalid @enderror" 
+                                        <input type="text" class="form-control" 
                                                id="subject" name="subject" placeholder="📝 Nhập tiêu đề..." value="{{ old('subject') }}" required>
-                                        @error('subject')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <div class="invalid-feedback" id="subject-error"></div>
                                     </div>
                                 </div>
 
@@ -84,12 +79,10 @@
                                         <label for="message" class="form-label">
                                             <i class="bi bi-chat-dots"></i> Nội dung tin nhắn <span class="text-danger">*</span>
                                         </label>
-                                        <textarea class="form-control @error('message') is-invalid @enderror" 
+                                        <textarea class="form-control" 
                                                   id="message" name="message" rows="6" 
                                                   placeholder="💬 Nhập nội dung tin nhắn..." required>{{ old('message') }}</textarea>
-                                        @error('message')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <div class="invalid-feedback" id="message-error"></div>
                                     </div>
                                 </div>
 
@@ -98,7 +91,7 @@
                                         <label for="contact_type" class="form-label">
                                             <i class="bi bi-tags"></i> Loại liên hệ
                                         </label>
-                                        <select class="form-control @error('contact_type') is-invalid @enderror" 
+                                        <select class="form-control" 
                                                 id="contact_type" name="contact_type">
                                             <option value="">🏷️ Chọn loại liên hệ</option>
                                             <option value="general" {{ old('contact_type') == 'general' ? 'selected' : '' }}>Liên hệ chung</option>
@@ -106,9 +99,7 @@
                                             <option value="complaint" {{ old('contact_type') == 'complaint' ? 'selected' : '' }}>Khiếu nại</option>
                                             <option value="feedback" {{ old('contact_type') == 'feedback' ? 'selected' : '' }}>Phản hồi</option>
                                         </select>
-                                        @error('contact_type')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <div class="invalid-feedback" id="contact_type-error"></div>
                                     </div>
                                 </div>
                                 
@@ -117,16 +108,14 @@
                                         <label for="status" class="form-label">
                                             <i class="bi bi-toggle-on"></i> Trạng thái
                                         </label>
-                                        <select class="form-control @error('status') is-invalid @enderror" 
+                                        <select class="form-control" 
                                                 id="status" name="status">
                                             <option value="">🔄 Chọn trạng thái</option>
                                             <option value="unread" {{ old('status') == 'unread' ? 'selected' : '' }}>Chưa đọc</option>
                                             <option value="read" {{ old('status') == 'read' ? 'selected' : '' }}>Đã đọc</option>
                                             <option value="replied" {{ old('status') == 'replied' ? 'selected' : '' }}>Đã trả lời</option>
                                         </select>
-                                        @error('status')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <div class="invalid-feedback" id="status-error"></div>
                                     </div>
                                 </div>
 
@@ -135,7 +124,8 @@
                                         <a href="{{ route('admin.driver.contacts.index') }}" class="btn btn-secondary">
                                             <i class="bi bi-arrow-left"></i> Hủy
                                         </a>
-                                        <button type="submit" class="btn btn-primary">
+                                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                             <i class="bi bi-check-circle"></i> Tạo mới
                                         </button>
                                     </div>
@@ -153,7 +143,7 @@
     <!--end::App Content-->
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script>
 $(document).ready(function() {
     // Auto-fill subject based on contact type
@@ -163,7 +153,6 @@ $(document).ready(function() {
         
         if (!subject.val()) {
             switch(contactType) {
-
                 case 'support':
                     subject.val('Yêu cầu hỗ trợ');
                     break;
@@ -211,7 +200,88 @@ $(document).ready(function() {
             $(this).next('.char-counter').removeClass('text-danger');
         }
     });
+
+    // Form submission
+    $('#create-contact-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear previous errors
+        clearErrors();
+        
+        // Show loading state
+        const submitBtn = $('#submit-btn');
+        const spinner = submitBtn.find('.spinner-border');
+        const icon = submitBtn.find('.bi');
+        
+        submitBtn.prop('disabled', true);
+        spinner.removeClass('d-none');
+        icon.addClass('d-none');
+        
+        $.ajax({
+            url: '{{ route("admin.driver.contacts.store") }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Redirect after 1 second
+                    setTimeout(function() {
+                        window.location.href = '{{ route("admin.driver.contacts.index") }}';
+                    }, 1000);
+                } else {
+                    showAlert('danger', response.message);
+                }
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    // Validation errors
+                    const errors = xhr.responseJSON.errors;
+                    displayErrors(errors);
+                    showAlert('danger', 'Vui lòng kiểm tra lại thông tin nhập vào');
+                } else {
+                    showAlert('danger', 'Có lỗi xảy ra khi tạo liên hệ');
+                }
+            },
+            complete: function() {
+                // Reset loading state
+                submitBtn.prop('disabled', false);
+                spinner.addClass('d-none');
+                icon.removeClass('d-none');
+            }
+        });
+    });
 });
+
+function clearErrors() {
+    $('.is-invalid').removeClass('is-invalid');
+    $('.invalid-feedback').text('');
+}
+
+function displayErrors(errors) {
+    $.each(errors, function(field, messages) {
+        const input = $(`[name="${field}"]`);
+        const errorDiv = $(`#${field}-error`);
+        
+        input.addClass('is-invalid');
+        errorDiv.text(messages[0]);
+    });
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
 </script>
 
 <style>
@@ -233,4 +303,4 @@ $(document).ready(function() {
     color: #dc3545 !important;
 }
 </style>
-@endsection
+@endpush

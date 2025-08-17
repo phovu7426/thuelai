@@ -2,46 +2,43 @@
 
 namespace App\Http\Controllers\Admin\Driver;
 
-use App\Http\Controllers\Controller;
-use App\Models\DriverService;
-use App\Models\Testimonial;
+use App\Http\Controllers\BaseController;
+use App\Services\Admin\Driver\DriverDashboardService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class DriverDashboardController extends Controller
+class DriverDashboardController extends BaseController
 {
+    protected DriverDashboardService $dashboardService;
+
+    public function __construct(DriverDashboardService $dashboardService)
+    {
+        $this->dashboardService = $dashboardService;
+    }
+
     /**
      * Display the driver service dashboard.
+     * @return View|Application|Factory
      */
-    public function index()
+    public function index(): View|Application|Factory
     {
         // Thống kê tổng quan
-        $stats = [
-            'total_services' => DriverService::count(),
-            'active_services' => DriverService::where('status', true)->count(),
-            'featured_services' => DriverService::where('is_featured', true)->count(),
-            'total_testimonials' => Testimonial::count(),
-            'active_testimonials' => Testimonial::where('status', true)->count(),
-            'featured_testimonials' => Testimonial::where('is_featured', true)->count(),
-        ];
+        $stats = $this->dashboardService->getStats();
 
         // Đơn hàng gần đây - đã loại bỏ
         $recent_orders = collect([]);
 
         // Dịch vụ nổi bật
-        $featured_services = DriverService::where('is_featured', true)
-            ->where('status', true)
-            ->orderBy('sort_order', 'asc')
-            ->take(5)
-            ->get();
+        $featured_services = $this->dashboardService->getFeaturedServices(5);
 
         // Đánh giá gần đây
-        $recent_testimonials = Testimonial::where('status', true)
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
+        $recent_testimonials = $this->dashboardService->getRecentTestimonials(5);
 
         // Thống kê theo tháng (6 tháng gần nhất)
-        $monthly_stats = $this->getMonthlyStats();
+        $monthly_stats = $this->dashboardService->getMonthlyStats();
 
         return view('admin.driver.dashboard', compact(
             'stats',
@@ -53,123 +50,38 @@ class DriverDashboardController extends Controller
     }
 
     /**
-     * Lấy thống kê theo tháng
-     */
-    private function getMonthlyStats()
-    {
-        $months = [];
-        $order_counts = [];
-        $revenue_data = [];
-
-        for ($i = 5; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $month_name = $date->format('M Y');
-            $months[] = $month_name;
-
-            // Đếm đơn hàng theo tháng - đã loại bỏ
-            $order_counts[] = 0;
-
-            // Tính doanh thu theo tháng - đã loại bỏ
-            $revenue_data[] = 0;
-        }
-
-        return [
-            'months' => $months,
-            'order_counts' => $order_counts,
-            'revenue_data' => $revenue_data
-        ];
-    }
-
-    /**
      * Lấy dữ liệu cho biểu đồ
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function getChartData(Request $request)
+    public function getChartData(Request $request): JsonResponse
     {
         $type = $request->get('type', 'orders');
 
         switch ($type) {
             case 'orders':
-                $data = $this->getOrderChartData();
+                $data = $this->dashboardService->getOrderChartData();
                 break;
             case 'revenue':
-                $data = $this->getRevenueChartData();
+                $data = $this->dashboardService->getRevenueChartData();
                 break;
             case 'services':
-                $data = $this->getServiceChartData();
+                $data = $this->dashboardService->getServiceChartData();
                 break;
             default:
-                $data = $this->getOrderChartData();
+                $data = $this->dashboardService->getOrderChartData();
         }
 
         return response()->json($data);
     }
 
     /**
-     * Dữ liệu biểu đồ đơn hàng
-     */
-    private function getOrderChartData()
-    {
-        $statuses = ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'];
-        $data = [];
-
-        foreach ($statuses as $status) {
-            $data[] = [
-                'status' => $status,
-                'count' => 0
-            ];
-        }
-
-        return $data;
-    }
-
-    /**
-     * Dữ liệu biểu đồ doanh thu
-     */
-    private function getRevenueChartData()
-    {
-        $months = [];
-        $revenue = [];
-
-        for ($i = 5; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $months[] = $date->format('M');
-            
-            $revenue[] = 0;
-        }
-
-        return [
-            'labels' => $months,
-            'data' => $revenue
-        ];
-    }
-
-    /**
-     * Dữ liệu biểu đồ dịch vụ
-     */
-    private function getServiceChartData()
-    {
-        $services = DriverService::orderBy('name', 'asc')
-            ->take(10)
-            ->get();
-
-        return [
-            'labels' => $services->pluck('name')->toArray(),
-            'data' => array_fill(0, $services->count(), 0)
-        ];
-    }
-
-    /**
      * Lấy thống kê real-time
+     * @return JsonResponse
      */
-    public function getRealTimeStats()
+    public function getRealTimeStats(): JsonResponse
     {
-        $stats = [
-            'today_orders' => 0,
-            'today_revenue' => 0,
-            'pending_orders' => 0,
-            'unread_contacts' => 0, // Sẽ cập nhật khi có model Contact
-        ];
-
+        $stats = $this->dashboardService->getRealTimeStats();
         return response()->json($stats);
     }
 }

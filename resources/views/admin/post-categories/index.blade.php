@@ -17,23 +17,20 @@
                     <div class="card-header">
                         <div class="row align-items-center">
                             <div class="col-sm-9">
-                                <!-- Form lọc -->
-                                <form action="{{ route('admin.post-categories.index') }}" method="GET" class="mb-0">
-                                    <div class="row g-3">
-                                        <div class="col-md-4">
-                                            <input type="text" name="name" class="form-control" placeholder="🔍 Nhập tên danh mục"
-                                                   value="{{ request('name') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-search"></i> Lọc
-                                            </button>
-                                            <a href="{{ route('admin.post-categories.index') }}" class="btn btn-secondary">
-                                                <i class="bi bi-arrow-clockwise"></i> Reset
-                                            </a>
-                                        </div>
+                                <!-- Form tìm kiếm -->
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <input type="text" id="search-name" class="form-control" placeholder="🔍 Nhập tên danh mục">
                                     </div>
-                                </form>
+                                    <div class="col-md-4">
+                                        <button type="button" id="btn-search" class="btn btn-primary">
+                                            <i class="bi bi-search"></i> Tìm kiếm
+                                        </button>
+                                        <button type="button" id="btn-reset" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-clockwise"></i> Reset
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
@@ -46,6 +43,9 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
+                        <!-- Alert messages -->
+                        <div id="alert-container"></div>
+
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -54,12 +54,13 @@
                                 <th>Mô tả</th>
                                 <th>Màu sắc</th>
                                 <th>Trạng thái</th>
+                                <th>Nổi bật</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="categories-table-body">
                             @foreach($categories as $index => $category)
-                                <tr>
+                                <tr data-id="{{ $category->id }}">
                                     <td>{{ $categories->firstItem() + $index }}</td>
                                     <td>
                                         <strong>{{ $category->name ?? '' }}</strong>
@@ -80,7 +81,7 @@
                                         <select class="form-select form-select-sm status-select" 
                                                 data-category-id="{{ $category->id }}" 
                                                 data-current-status="{{ $category->is_active ? '1' : '0' }}"
-                                                data-status-type="default">
+                                                data-status-type="post-categories">
                                             <option value="0" {{ !$category->is_active ? 'selected' : '' }}>
                                                 Vô hiệu
                                             </option>
@@ -90,20 +91,26 @@
                                         </select>
                                     </td>
                                     <td>
+                                        <select class="form-select form-select-sm featured-select" 
+                                                data-category-id="{{ $category->id }}" 
+                                                data-current-featured="{{ $category->is_featured ? '1' : '0' }}"
+                                                data-featured-type="post-categories">
+                                            <option value="0" {{ !$category->is_featured ? 'selected' : '' }}>
+                                                Không nổi bật
+                                            </option>
+                                            <option value="1" {{ $category->is_featured ? 'selected' : '' }}>
+                                                Nổi bật
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
                                         <div class="action-buttons">
                                             @can('access_users')
                                                 <a href="{{ route('admin.post-categories.edit', $category->id ?? '') }}"
                                                    class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                                
-                                                <form action="{{ route('admin.post-categories.destroy', $category->id ?? '') }}" method="POST"
-                                                      style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" title="Xóa" class="btn-action btn-delete"
-                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteCategory({{ $category->id }})">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             @endcan
                                         </div>
                                     </td>
@@ -113,11 +120,13 @@
                         </table>
                         
                         <!-- Phân trang -->
-                        @if($categories->hasPages())
-                            <div class="d-flex justify-content-center mt-3">
-                                {{ $categories->links() }}
-                            </div>
-                        @endif
+                        <div id="pagination-container">
+                            @if($categories->hasPages())
+                                <div class="d-flex justify-content-center mt-3">
+                                    {{ $categories->links() }}
+                                </div>
+                            @endif
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -129,6 +138,223 @@
     <!--end::App Content-->
 @endsection
 
-@section('scripts')
-<!-- Sử dụng component chung admin-dropdowns.js -->
-@endsection
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const categoryId = $(this).data('category-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus === currentStatus) return;
+        
+        $.ajax({
+            url: `/admin/post-categories/${categoryId}/toggle-status`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: newStatus
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Cập nhật current status
+                    $(this).data('current-status', newStatus);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentStatus);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+                // Revert select
+                $(this).val(currentStatus);
+            }.bind(this)
+        });
+    });
+
+    // Toggle featured
+    $('.toggle-featured').change(function() {
+        const categoryId = $(this).data('id');
+        const isChecked = $(this).is(':checked');
+        
+        $.ajax({
+            url: `/admin/post-categories/${categoryId}/toggle-featured`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Cập nhật label
+                    $(`.featured-label-${categoryId}`).text(isChecked ? 'Có' : 'Không');
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert checkbox
+                    $(this).prop('checked', !isChecked);
+                }
+            },
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+                // Revert checkbox
+                $(this).prop('checked', !isChecked);
+            }
+        });
+    });
+
+    // Search
+    $('#btn-search').click(function() {
+        searchCategories();
+    });
+
+    // Reset search
+    $('#btn-reset').click(function() {
+        $('#search-name').val('');
+        searchCategories();
+    });
+
+    // Enter key search
+    $('#search-name').keypress(function(e) {
+        if (e.which == 13) {
+            searchCategories();
+        }
+    });
+});
+
+function searchCategories(page = 1) {
+    const name = $('#search-name').val();
+    
+    $.ajax({
+        url: '{{ route("admin.post-categories.index") }}',
+        method: 'GET',
+        data: {
+            name: name,
+            page: page
+        },
+        success: function(response) {
+            $('#categories-table-body').html(response.html);
+            $('#pagination-container').html(response.pagination);
+            
+            // Rebind events
+            bindEvents();
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi tìm kiếm');
+        }
+    });
+}
+
+function deleteCategory(categoryId) {
+    if (confirm('Bạn có chắc chắn muốn xóa danh mục này không?')) {
+        $.ajax({
+            url: `/admin/post-categories/${categoryId}`,
+            method: 'DELETE',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Remove row from table
+                    $(`tr[data-id="${categoryId}"]`).remove();
+                } else {
+                    showAlert('danger', response.message);
+                }
+            },
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi xóa danh mục');
+            }
+        });
+    }
+}
+
+function bindEvents() {
+    // Rebind status select events
+    $('.status-select').off('change').on('change', function() {
+        const categoryId = $(this).data('category-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus === currentStatus) return;
+        
+        $.ajax({
+            url: `/admin/post-categories/${categoryId}/toggle-status`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: newStatus
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Cập nhật current status
+                    $(this).data('current-status', newStatus);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentStatus);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+                // Revert select
+                $(this).val(currentStatus);
+            }.bind(this)
+        });
+    });
+
+    // Rebind featured select events
+    $('.featured-select').off('change').on('change', function() {
+        const categoryId = $(this).data('category-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured === currentFeatured) return;
+        
+        $.ajax({
+            url: `/admin/post-categories/${categoryId}/toggle-featured`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                is_featured: newFeatured
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Cập nhật current featured
+                    $(this).data('current-featured', newFeatured);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentFeatured);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+                // Revert select
+                $(this).val(currentFeatured);
+            }.bind(this)
+        });
+    });
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+</script>
+@endpush

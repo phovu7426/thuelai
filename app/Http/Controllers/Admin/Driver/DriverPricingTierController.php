@@ -2,102 +2,134 @@
 
 namespace App\Http\Controllers\Admin\Driver;
 
-use App\Http\Controllers\Controller;
-use App\Models\DriverPricingTier;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Driver\DriverPricingTier\StoreRequest;
+use App\Http\Requests\Admin\Driver\DriverPricingTier\UpdateRequest;
+use App\Services\Admin\Driver\DriverPricingTierService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class DriverPricingTierController extends Controller
+class DriverPricingTierController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct(DriverPricingTierService $driverPricingTierService)
     {
-        $pricingTiers = DriverPricingTier::ordered()->get()->groupBy('time_slot');
-        return view('admin.driver.pricing-tiers.index', compact('pricingTiers'));
+        $this->service = $driverPricingTierService;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Lấy service instance
+     * @return DriverPricingTierService
      */
-    public function create()
+    public function getService(): DriverPricingTierService
+    {
+        return $this->service;
+    }
+
+    /**
+     * Hiển thị danh sách mức giá
+     * @param Request $request
+     * @return View|Application|Factory
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
+        $pricingTiers = $this->getService()->getList($filters, $options);
+        $pricingTiers = $pricingTiers->groupBy('time_slot');
+        
+        return view('admin.driver.pricing-tiers.index', compact('pricingTiers', 'filters', 'options'));
+    }
+
+    /**
+     * Hiển thị form tạo mức giá
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
     {
         return view('admin.driver.pricing-tiers.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Xử lý tạo mức giá
+     * @param StoreRequest $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'time_slot' => 'required|string|max:255',
-            'time_icon' => 'required|string|max:255',
-            'time_color' => 'required|string|max:255',
-            'from_distance' => 'required|numeric|min:0',
-            'to_distance' => 'nullable|numeric|min:0|gt:from_distance',
-            'price' => 'required|numeric|min:0',
-            'price_type' => 'required|in:fixed,per_km',
-            'description' => 'nullable|string|max:500',
-            'sort_order' => 'nullable|integer|min:0',
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo mức giá thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        DriverPricingTier::create($request->all());
-
-        return redirect()->route('admin.driver.pricing-tiers.index')
-            ->with('success', 'Mức giá mới đã được tạo thành công!');
     }
 
     /**
-     * Display the specified resource.
+     * Hiển thị form chỉnh sửa mức giá
+     * @param int $id
+     * @return View|Application|Factory
      */
-    public function show(string $id)
+    public function edit(int $id): View|Application|Factory
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $pricingTier = DriverPricingTier::findOrFail($id);
+        $pricingTier = $this->getService()->findById($id);
+        
+        if (!$pricingTier) {
+            abort(404, 'Mức giá không tồn tại.');
+        }
+        
         return view('admin.driver.pricing-tiers.edit', compact('pricingTier'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Xử lý chỉnh sửa mức giá
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        $request->validate([
-            'time_slot' => 'required|string|max:255',
-            'time_icon' => 'required|string|max:255',
-            'time_color' => 'required|string|max:255',
-            'from_distance' => 'required|numeric|min:0',
-            'to_distance' => 'nullable|numeric|min:0|gt:from_distance',
-            'price' => 'required|numeric|min:0',
-            'price_type' => 'required|in:fixed,per_km',
-            'description' => 'nullable|string|max:500',
-            'sort_order' => 'nullable|integer|min:0',
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật mức giá thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        $pricingTier = DriverPricingTier::findOrFail($id);
-        $pricingTier->update($request->all());
-
-        return redirect()->route('admin.driver.pricing-tiers.index')
-            ->with('success', 'Mức giá đã được cập nhật thành công!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Xử lý xóa mức giá
+     * @param int $id
+     * @return JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(int $id): JsonResponse
     {
-        $pricingTier = DriverPricingTier::findOrFail($id);
-        $pricingTier->delete();
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa mức giá thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
 
-        return redirect()->route('admin.driver.pricing-tiers.index')
-            ->with('success', 'Mức giá đã được xóa thành công!');
+    /**
+     * Thay đổi trạng thái mức giá
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleStatus(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }

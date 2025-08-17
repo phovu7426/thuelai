@@ -24,11 +24,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
+                        <!-- Alert messages -->
+                        <div id="alert-container"></div>
 
                         @if($pricingRules->count() > 0)
                             <div class="table-responsive">
@@ -42,12 +39,13 @@
                                             <th width="15%">>10km</th>
                                             <th width="15%">>30km</th>
                                             <th width="10%">Trạng thái</th>
+                                            <th width="10%">Nổi bật</th>
                                             <th width="10%">Thao tác</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="pricing-rules-table-body">
                                         @foreach($pricingRules as $index => $rule)
-                                        <tr>
+                                        <tr data-id="{{ $rule->id }}">
                                             <td>{{ $index + 1 }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -79,11 +77,30 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                @if($rule->is_active)
-                                                    <span class="badge bg-success">Hoạt động</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Tạm dừng</span>
-                                                @endif
+                                                <select class="form-select form-select-sm status-select" 
+                                                        data-rule-id="{{ $rule->id }}" 
+                                                        data-current-status="{{ $rule->is_active ? '1' : '0' }}"
+                                                        data-status-type="pricing-rules">
+                                                    <option value="0" {{ !$rule->is_active ? 'selected' : '' }}>
+                                                        Tạm dừng
+                                                    </option>
+                                                    <option value="1" {{ $rule->is_active ? 'selected' : '' }}>
+                                                        Hoạt động
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-select form-select-sm featured-select" 
+                                                        data-rule-id="{{ $rule->id }}" 
+                                                        data-current-featured="{{ $rule->is_highlighted ? '1' : '0' }}"
+                                                        data-featured-type="pricing-rules">
+                                                    <option value="0" {{ !$rule->is_highlighted ? 'selected' : '' }}>
+                                                        Không nổi bật
+                                                    </option>
+                                                    <option value="1" {{ $rule->is_highlighted ? 'selected' : '' }}>
+                                                        Nổi bật
+                                                    </option>
+                                                </select>
                                             </td>
                                             <td>
                                                 <div class="action-buttons">
@@ -91,16 +108,9 @@
                                                        class="btn-action btn-edit" title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form action="{{ route('admin.driver.pricing-rules.destroy', $rule->id) }}" 
-                                                          method="POST" 
-                                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa quy tắc này?')"
-                                                          style="display: inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn-action btn-delete" title="Xóa">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deletePricingRule({{ $rule->id }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -127,3 +137,129 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const ruleId = $(this).data('rule-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus !== currentStatus) {
+            updateRuleStatus(ruleId, newStatus);
+        }
+    });
+
+    // Featured select change
+    $('.featured-select').change(function() {
+        const ruleId = $(this).data('rule-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured !== currentFeatured) {
+            updateRuleFeatured(ruleId, newFeatured);
+        }
+    });
+});
+
+function updateRuleStatus(ruleId, status) {
+    $.ajax({
+        url: `/admin/driver/pricing-rules/${ruleId}/toggle-status`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            status: status
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current status
+                $(`select[data-rule-id="${ruleId}"]`).data('current-status', status);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-rule-id="${ruleId}"]`);
+                select.val(select.data('current-status'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+            // Revert select
+            const select = $(`select[data-rule-id="${ruleId}"]`);
+            select.val(select.data('current-status'));
+        }
+    });
+}
+
+function updateRuleFeatured(ruleId, featured) {
+    $.ajax({
+        url: `/admin/driver/pricing-rules/${ruleId}/toggle-featured`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            is_highlighted: featured
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current featured
+                $(`select[data-rule-id="${ruleId}"]`).data('current-featured', featured);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-rule-id="${ruleId}"]`);
+                select.val(select.data('current-featured'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+            // Revert select
+            const select = $(`select[data-rule-id="${ruleId}"]`);
+            select.val(select.data('current-featured'));
+        }
+    });
+}
+
+function deletePricingRule(ruleId) {
+    if (confirm('Bạn có chắc chắn muốn xóa quy tắc này không?')) {
+        $.ajax({
+            url: `/admin/driver/pricing-rules/${ruleId}`,
+            method: 'DELETE',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Remove row from table
+                    $(`tr[data-id="${ruleId}"]`).remove();
+                } else {
+                    showAlert('danger', response.message);
+                }
+            },
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi xóa quy tắc');
+            }
+        });
+    }
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+</script>
+@endpush

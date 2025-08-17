@@ -106,3 +106,98 @@
     </div>
     <!--end::App Content-->
 @endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const permissionId = $(this).data('permission-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus === currentStatus) return;
+        
+        $.ajax({
+            url: `/admin/permissions/${permissionId}/toggle-status`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: newStatus
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Cập nhật current status
+                    $(this).data('current-status', newStatus);
+                    showAlert('success', response.message);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentStatus);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+                // Revert select
+                $(this).val(currentStatus);
+            }.bind(this)
+        });
+    });
+
+    // Featured select change
+    $('.featured-select').change(function() {
+        const permissionId = $(this).data('permission-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured === currentFeatured) return;
+        
+        $.ajax({
+            url: `/admin/permissions/${permissionId}/toggle-featured`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                is_featured: newFeatured
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Cập nhật current featured
+                    $(this).data('current-featured', newFeatured);
+                    showAlert('success', response.message);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentFeatured);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+                // Revert select
+                $(this).val(currentFeatured);
+            }.bind(this)
+        });
+    });
+});
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Tạo container nếu chưa có
+    if ($('#alert-container').length === 0) {
+        $('.card-body').prepend('<div id="alert-container"></div>');
+    }
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+</script>
+@endsection

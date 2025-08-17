@@ -2,32 +2,54 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Posts\StoreRequest;
+use App\Http\Requests\Admin\Posts\UpdateRequest;
+use App\Services\Admin\Posts\PostService;
 use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\PostTag;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
-class PostController extends Controller
+class PostController extends BaseController
 {
-    public function index()
+    public function __construct(PostService $postService)
     {
-        $query = Post::with(['category', 'author', 'tags']);
-
-        // Filter by title
-        if (request('title')) {
-            $query->where('title', 'like', '%' . request('title') . '%');
-        }
-
-        $posts = $query->latest()->paginate(20);
-
-        return view('admin.posts.index', compact('posts'));
+        $this->service = $postService;
     }
 
-    public function create()
+    /**
+     * Lấy service instance
+     * @return PostService
+     */
+    public function getService(): PostService
+    {
+        return $this->service;
+    }
+
+    /**
+     * Hiển thị danh sách bài viết
+     * @param Request $request
+     * @return View|Application|Factory
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
+        $posts = $this->getService()->getList($filters, $options);
+        
+        return view('admin.posts.index', compact('posts', 'filters', 'options'));
+    }
+
+    /**
+     * Hiển thị form tạo bài viết
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
     {
         $categories = PostCategory::active()->ordered()->get();
         $tags = PostTag::active()->get();
@@ -35,47 +57,28 @@ class PostController extends Controller
         return view('admin.posts.create', compact('categories', 'tags'));
     }
 
-    public function store(Request $request)
+    /**
+     * Xử lý tạo bài viết
+     * @param StoreRequest $request
+     * @return JsonResponse
+     */
+    public function store(StoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'required|string',
-            'category_id' => 'required|exists:post_categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:draft,published,archived',
-            'published_at' => 'nullable|date',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
-            'meta_keywords' => 'nullable|string',
-            'featured' => 'boolean',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:post_tags,id'
-        ]);
-
-        $data = $request->all();
-        $data['author_id'] = Auth::id();
-        $data['featured'] = $request->has('featured');
+        $result = $this->getService()->create($request->validated());
         
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('posts', 'public');
-        }
-
-        if ($data['status'] === 'published' && empty($data['published_at'])) {
-            $data['published_at'] = now();
-        }
-
-        $post = Post::create($data);
-
-        if ($request->has('tags')) {
-            $post->tags()->attach($request->tags);
-        }
-
-        return redirect()->route('admin.posts.index')
-                        ->with('success', 'Bài viết đã được tạo thành công!');
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo bài viết thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
-    public function edit(Post $post)
+    /**
+     * Hiển thị form chỉnh sửa bài viết
+     * @param Post $post
+     * @return View|Application|Factory
+     */
+    public function edit(Post $post): View|Application|Factory
     {
         $categories = PostCategory::active()->ordered()->get();
         $tags = PostTag::active()->get();
@@ -83,107 +86,69 @@ class PostController extends Controller
         return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
-    public function update(Request $request, Post $post)
+    /**
+     * Xử lý chỉnh sửa bài viết
+     * @param UpdateRequest $request
+     * @param Post $post
+     * @return JsonResponse
+     */
+    public function update(UpdateRequest $request, Post $post): JsonResponse
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'required|string',
-            'category_id' => 'required|exists:post_categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:draft,published,archived',
-            'published_at' => 'nullable|date',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
-            'meta_keywords' => 'nullable|string',
-            'featured' => 'boolean',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:post_tags,id'
+        $result = $this->getService()->update($post->id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật bài viết thất bại.',
+            'data' => $result['data'] ?? null
         ]);
+    }
 
-        $data = $request->all();
-        $data['featured'] = $request->has('featured');
+    /**
+     * Xử lý xóa bài viết
+     * @param Post $post
+     * @return JsonResponse
+     */
+    public function destroy(Post $post): JsonResponse
+    {
+        $result = $this->getService()->delete($post->id);
         
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
-            }
-            $data['image'] = $request->file('image')->store('posts', 'public');
-        }
-
-        if ($data['status'] === 'published' && empty($data['published_at'])) {
-            $data['published_at'] = now();
-        }
-
-        $post->update($data);
-
-        // Sync tags
-        $post->tags()->sync($request->tags ?? []);
-
-        return redirect()->route('admin.posts.index')
-                        ->with('success', 'Bài viết đã được cập nhật thành công!');
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa bài viết thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
-    public function destroy(Post $post)
+    /**
+     * Thay đổi trạng thái bài viết
+     * @param Post $post
+     * @return JsonResponse
+     */
+    public function toggleStatus(Post $post): JsonResponse
     {
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
+        $result = $this->getService()->toggleStatus($post->id);
         
-        $post->delete();
-
-        return redirect()->route('admin.posts.index')
-                        ->with('success', 'Bài viết đã được xóa thành công!');
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
-    public function toggleStatus(Post $post)
+    /**
+     * Thay đổi trạng thái nổi bật
+     * @param Post $post
+     * @return JsonResponse
+     */
+    public function toggleFeatured(Post $post): JsonResponse
     {
-        try {
-            if ($post->status === 'published') {
-                $post->update(['status' => 'draft']);
-                $status = 'draft';
-                $message = 'Bài viết đã được chuyển về bản nháp!';
-            } else {
-                $post->update([
-                    'status' => 'published',
-                    'published_at' => now()
-                ]);
-                $status = 'published';
-                $message = 'Bài viết đã được xuất bản!';
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'status' => $status
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function toggleFeatured(Post $post)
-    {
-        try {
-            $post->update(['featured' => !$post->featured]);
-            
-            $message = $post->featured ? 'Bài viết đã được đánh dấu nổi bật!' : 'Bài viết đã bỏ đánh dấu nổi bật!';
-            
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'featured' => $post->featured
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
+        $result = $this->getService()->toggleFeatured($post->id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }
 

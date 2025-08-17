@@ -61,4 +61,74 @@ class CategoryService extends BaseService
         }
         return $return;
     }
+
+    /**
+     * Thay đổi trạng thái danh mục
+     * @param $id
+     * @return array
+     */
+    public function toggleStatus($id): array
+    {
+        $return = [
+            'success' => false,
+            'message' => 'Thay đổi trạng thái thất bại'
+        ];
+
+        try {
+            $category = $this->getRepository()->findById($id);
+            
+            if (!$category) {
+                $return['message'] = 'Danh mục không tồn tại';
+                return $return;
+            }
+
+            $category->update(['status' => !$category->status]);
+            
+            $status = $category->status ? 'kích hoạt' : 'vô hiệu hóa';
+            $message = "Danh mục đã được {$status} thành công!";
+            
+            $return['success'] = true;
+            $return['message'] = $message;
+            $return['data'] = ['status' => $category->status];
+        } catch (\Exception $e) {
+            $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+        }
+        
+        return $return;
+    }
+
+    /**
+     * Thay đổi trạng thái nổi bật của danh mục
+     * @param $id
+     * @return array
+     */
+    public function toggleFeatured($id): array
+    {
+        $return = [
+            'success' => false,
+            'message' => 'Thay đổi trạng thái nổi bật thất bại'
+        ];
+
+        try {
+            $category = $this->getRepository()->findById($id);
+            
+            if (!$category) {
+                $return['message'] = 'Danh mục không tồn tại';
+                return $return;
+            }
+
+            $category->update(['is_featured' => !$category->is_featured]);
+            
+            $status = $category->is_featured ? 'nổi bật' : 'không nổi bật';
+            $message = "Danh mục đã được {$status} thành công!";
+            
+            $return['success'] = true;
+            $return['message'] = $message;
+            $return['data'] = ['is_featured' => $category->is_featured];
+        } catch (\Exception $e) {
+            $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+        }
+        
+        return $return;
+    }
 }

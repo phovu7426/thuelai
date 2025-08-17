@@ -2,50 +2,65 @@
 
 namespace App\Http\Requests\Admin\Posts;
 
-use App\Enums\BasicStatus;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 
 class StoreRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
-        return Auth::check();
+        return true;
     }
 
     /**
-     * Hàm check validate
-     * @return string[]
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
-            'description' => 'nullable|string|max:500',
-            'require_login' => 'nullable|boolean',
+            'category_id' => 'required|exists:post_categories,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => ['required', Rule::enum(BasicStatus::class)],
+            'status' => 'required|in:draft,published,archived',
+            'published_at' => 'nullable|date',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string',
+            'featured' => 'boolean',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:post_tags,id'
         ];
     }
 
     /**
-     * Hàm trả ra thông báo validate
-     * @return string[]
+     * Get custom messages for validator errors.
+     *
+     * @return array
      */
     public function messages(): array
     {
         return [
-            'name.required' => 'Tiêu đề không được để trống.',
-            'name.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
-            'content.required' => 'Nội dung không được để trống.',
-            'description.max' => 'Mô tả không được vượt quá 500 ký tự.',
-            'image.image' => 'Ảnh phải là một tập tin hình ảnh.',
-            'image.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif.',
-            'image.max' => 'Ảnh không được vượt quá 2MB.',
-            'status.required' => 'Trạng thái không được để trống.',
-            'status.in' => 'Trạng thái không hợp lệ.',
+            'title.required' => 'Tiêu đề bài viết là bắt buộc.',
+            'title.max' => 'Tiêu đề bài viết không được vượt quá 255 ký tự.',
+            'content.required' => 'Nội dung bài viết là bắt buộc.',
+            'category_id.required' => 'Danh mục bài viết là bắt buộc.',
+            'category_id.exists' => 'Danh mục bài viết không tồn tại.',
+            'image.image' => 'File phải là hình ảnh.',
+            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
+            'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
+            'status.required' => 'Trạng thái bài viết là bắt buộc.',
+            'status.in' => 'Trạng thái bài viết không hợp lệ.',
+            'published_at.date' => 'Ngày xuất bản không đúng định dạng.',
+            'meta_title.max' => 'Meta title không được vượt quá 255 ký tự.',
+            'meta_description.max' => 'Meta description không được vượt quá 500 ký tự.',
+            'tags.array' => 'Tags phải là một mảng.',
+            'tags.*.exists' => 'Tag không tồn tại.',
         ];
     }
 }

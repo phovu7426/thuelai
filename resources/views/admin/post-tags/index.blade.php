@@ -17,23 +17,20 @@
                     <div class="card-header">
                         <div class="row align-items-center">
                             <div class="col-sm-9">
-                                <!-- Form lọc -->
-                                <form action="{{ route('admin.post-tags.index') }}" method="GET" class="mb-0">
-                                    <div class="row g-3">
-                                        <div class="col-md-4">
-                                            <input type="text" name="name" class="form-control" placeholder="🔍 Nhập tên tag"
-                                                   value="{{ request('name') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-search"></i> Lọc
-                                            </button>
-                                            <a href="{{ route('admin.post-tags.index') }}" class="btn btn-secondary">
-                                                <i class="bi bi-arrow-clockwise"></i> Reset
-                                            </a>
-                                        </div>
+                                <!-- Form tìm kiếm -->
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <input type="text" id="search-name" class="form-control" placeholder="🔍 Nhập tên tag">
                                     </div>
-                                </form>
+                                    <div class="col-md-4">
+                                        <button type="button" id="btn-search" class="btn btn-primary">
+                                            <i class="bi bi-search"></i> Tìm kiếm
+                                        </button>
+                                        <button type="button" id="btn-reset" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-clockwise"></i> Reset
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
@@ -46,6 +43,9 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
+                        <!-- Alert messages -->
+                        <div id="alert-container"></div>
+
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -54,12 +54,13 @@
                                 <th>Mô tả</th>
                                 <th>Màu sắc</th>
                                 <th>Trạng thái</th>
+                                <th>Nổi bật</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tags-table-body">
                             @foreach($tags as $index => $tag)
-                                <tr>
+                                <tr data-id="{{ $tag->id }}">
                                     <td>{{ $tags->firstItem() + $index }}</td>
                                     <td>
                                         <strong>{{ $tag->name ?? '' }}</strong>
@@ -77,33 +78,39 @@
                                         @endif
                                     </td>
                                     <td>
-                                                <select class="form-select form-select-sm status-select" 
-                                                        data-tag-id="{{ $tag->id }}" 
-                                                        data-current-status="{{ $tag->is_active ? '1' : '0' }}"
-                                                        data-status-type="default">
-                                                    <option value="0" {{ !$tag->is_active ? 'selected' : '' }}>
-                                                        Vô hiệu
-                                                    </option>
-                                                    <option value="1" {{ $tag->is_active ? 'selected' : '' }}>
-                                                        Kích hoạt
-                                                    </option>
-                                                </select>
-                                            </td>
+                                        <select class="form-select form-select-sm status-select" 
+                                                data-tag-id="{{ $tag->id }}" 
+                                                data-current-status="{{ $tag->is_active ? '1' : '0' }}"
+                                                data-status-type="post-tags">
+                                            <option value="0" {{ !$tag->is_active ? 'selected' : '' }}>
+                                                Vô hiệu
+                                            </option>
+                                            <option value="1" {{ $tag->is_active ? 'selected' : '' }}>
+                                                Kích hoạt
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm featured-select" 
+                                                data-tag-id="{{ $tag->id }}" 
+                                                data-current-featured="{{ $tag->is_featured ? '1' : '0' }}"
+                                                data-featured-type="post-tags">
+                                            <option value="0" {{ !$tag->is_featured ? 'selected' : '' }}>
+                                                Không nổi bật
+                                            </option>
+                                            <option value="1" {{ $tag->is_featured ? 'selected' : '' }}>
+                                                Nổi bật
+                                            </option>
+                                        </select>
+                                    </td>
                                     <td>
                                         <div class="action-buttons">
                                             @can('access_users')
                                                 <a href="{{ route('admin.post-tags.edit', $tag->id ?? '') }}"
                                                    class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                                
-                                                <form action="{{ route('admin.post-tags.destroy', $tag->id ?? '') }}" method="POST"
-                                                      style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" title="Xóa" class="btn-action btn-delete"
-                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa tag này?')">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteTag({{ $tag->id }})">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             @endcan
                                         </div>
                                     </td>
@@ -113,11 +120,13 @@
                         </table>
                         
                         <!-- Phân trang -->
-                        @if($tags->hasPages())
-                            <div class="d-flex justify-content-center mt-3">
-                                {{ $tags->links() }}
-                            </div>
-                        @endif
+                        <div id="pagination-container">
+                            @if($tags->hasPages())
+                                <div class="d-flex justify-content-center mt-3">
+                                    {{ $tags->links() }}
+                                </div>
+                            @endif
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -129,8 +138,195 @@
     <!--end::App Content-->
 @endsection
 
-@section('scripts')
-<!-- Sử dụng component chung admin-dropdowns.js -->
-@endsection
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const tagId = $(this).data('tag-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus !== currentStatus) {
+            updateTagStatus(tagId, newStatus);
+        }
+    });
+
+    // Featured select change
+    $('.featured-select').change(function() {
+        const tagId = $(this).data('tag-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured !== currentFeatured) {
+            updateTagFeatured(tagId, newFeatured);
+        }
+    });
+
+    // Search
+    $('#btn-search').click(function() {
+        searchTags();
+    });
+
+    // Reset search
+    $('#btn-reset').click(function() {
+        $('#search-name').val('');
+        searchTags();
+    });
+
+    // Enter key search
+    $('#search-name').keypress(function(e) {
+        if (e.which == 13) {
+            searchTags();
+        }
+    });
+});
+
+function searchTags(page = 1) {
+    const name = $('#search-name').val();
+    
+    $.ajax({
+        url: '{{ route("admin.post-tags.index") }}',
+        method: 'GET',
+        data: {
+            name: name,
+            page: page
+        },
+        success: function(response) {
+            $('#tags-table-body').html(response.html);
+            $('#pagination-container').html(response.pagination);
+            
+            // Rebind events
+            bindEvents();
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi tìm kiếm');
+        }
+    });
+}
+
+function deleteTag(tagId) {
+    if (confirm('Bạn có chắc chắn muốn xóa tag này không?')) {
+        $.ajax({
+            url: `/admin/post-tags/${tagId}`,
+            method: 'DELETE',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Remove row from table
+                    $(`tr[data-id="${tagId}"]`).remove();
+                } else {
+                    showAlert('danger', response.message);
+                }
+            },
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi xóa tag');
+            }
+        });
+    }
+}
+
+function bindEvents() {
+    // Rebind status select events
+    $('.status-select').off('change').on('change', function() {
+        const tagId = $(this).data('tag-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus !== currentStatus) {
+            updateTagStatus(tagId, newStatus);
+        }
+    });
+
+    // Rebind featured select events
+    $('.featured-select').off('change').on('change', function() {
+        const tagId = $(this).data('tag-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured !== currentFeatured) {
+            updateTagFeatured(tagId, newFeatured);
+        }
+    });
+}
+
+function updateTagStatus(tagId, status) {
+    $.ajax({
+        url: `/admin/post-tags/${tagId}/toggle-status`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            status: status
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current status
+                $(`select[data-tag-id="${tagId}"]`).data('current-status', status);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-tag-id="${tagId}"]`);
+                select.val(select.data('current-status'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+            // Revert select
+            const select = $(`select[data-tag-id="${tagId}"]`);
+            select.val(select.data('current-status'));
+        }
+    });
+}
+
+function updateTagFeatured(tagId, featured) {
+    $.ajax({
+        url: `/admin/post-tags/${tagId}/toggle-featured`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            is_featured: featured
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current featured
+                $(`select[data-tag-id="${tagId}"]`).data('current-featured', featured);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-tag-id="${tagId}"]`);
+                select.val(select.data('current-featured'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+            // Revert select
+            const select = $(`select[data-tag-id="${tagId}"]`);
+            select.val(select.data('current-featured'));
+        }
+    });
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+</script>
+@endpush
 
 

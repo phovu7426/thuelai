@@ -10,6 +10,7 @@ use App\Services\Admin\Users\UserService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -22,6 +23,10 @@ class UserController extends BaseController
         $this->service = $userService;
     }
 
+    /**
+     * Lấy service instance
+     * @return UserService
+     */
     public function getService(): UserService
     {
         return $this->service;
@@ -37,6 +42,7 @@ class UserController extends BaseController
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $users = $this->getService()->getList($filters, $options);
+        
         return view('admin.users.index', compact('users', 'filters', 'options'));
     }
 
@@ -52,127 +58,170 @@ class UserController extends BaseController
     /**
      * Xử lý tạo tài khoản
      * @param StoreRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function store(StoreRequest $request): RedirectResponse
+    public function store(StoreRequest $request): JsonResponse
     {
-        $return = $this->getService()->create($request->all());
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.users.index')
-                ->with('success', $return['message'] ?? 'Tạo tài khoản thành công.');
-        }
-        return redirect()->route('admin.users.index')
-            ->with('fail', $return['message'] ?? 'Tạo tài khoản thất bại.');
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo tài khoản thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Hiển thị form chỉnh sửa tài khoản
-     * @param $id
-     * @return View|Application|Factory
+     * @param int $id
+     * @return View|Application|Factory|RedirectResponse
      */
-    public function edit($id): View|Application|Factory
+    public function edit(int $id): View|Application|Factory|RedirectResponse
     {
         $user = $this->getService()->findById($id);
+        
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('fail', 'Tài khoản không tồn tại.');
+        }
+        
         return view('admin.users.edit', compact('user'));
     }
 
     /**
      * Xử lý chỉnh sửa tài khoản
      * @param UpdateRequest $request
-     * @param $id
-     * @return RedirectResponse
+     * @param int $id
+     * @return JsonResponse
      */
-    public function update(UpdateRequest $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        $return = $this->getService()->update($id, $request->all());
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.users.index')
-                ->with('success', $return['message'] ?? 'Cập nhật tài khoản thành công.');
-        }
-        return redirect()->route('admin.users.index')
-            ->with('fail', $return['message'] ?? 'Cập nhật tài khoản thất bại.');
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật tài khoản thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Xử lý xóa tài khoản
-     * @param $id
-     * @return RedirectResponse
+     * @param int $id
+     * @return JsonResponse
      */
-    public function delete($id): RedirectResponse
+    public function delete(int $id): JsonResponse
     {
-        $return = $this->getService()->delete($id);
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.users.index')
-                ->with('success', $return['message'] ?? 'Xóa tài khoản thành công.');
-        }
-        // Nếu là lỗi không thể xóa tài khoản admin thì trả về thông báo riêng
-        if (!empty($return['message']) && $return['message'] === 'Không thể xóa tài khoản admin!') {
-            return redirect()->route('admin.users.index')
-                ->with('fail', 'Không thể xóa tài khoản admin!');
-        }
-        return redirect()->route('admin.users.index')
-            ->with('fail', $return['message'] ?? 'Xóa tài khoản thất bại.');
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa tài khoản thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Hiển thị form phân vai trò
-     * @param $id
-     * @return View|Application|Factory
+     * @param int $id
+     * @return View|Application|Factory|RedirectResponse
      */
-    public function showAssignRolesForm($id): View|Application|Factory
+    public function showAssignRolesForm(int $id): View|Application|Factory|RedirectResponse
     {
         $user = $this->getService()->findById($id);
+        
+        if (!$user) {
+            return redirect()->route('admin.users.index')
+                ->with('fail', 'Tài khoản không tồn tại.');
+        }
+        
         $roles = Role::all();
-        $userRoles = $user->roles->pluck('name')->unique()->toArray(); // Loại bỏ duplicate
+        $userRoles = $user->roles->pluck('name')->unique()->toArray();
+        
         return view('admin.users.assign-roles', compact('user', 'roles', 'userRoles'));
     }
 
     /**
      * Xử lý phân vai trò
      * @param AssignRequest $request
-     * @param $id
-     * @return RedirectResponse
+     * @param int $id
+     * @return JsonResponse
      */
-    public function assignRoles(AssignRequest $request, $id): RedirectResponse
+    public function assignRoles(AssignRequest $request, int $id): JsonResponse
     {
-        $this->getService()->assignRoles($id, $request->roles ?? []);
-        return redirect()->route('admin.users.index')->with('success', 'Cập nhật vai trò thành công.');
+        try {
+            $this->getService()->assignRoles($id, $request->validated()['roles'] ?? []);
+            return response()->json([
+                'success' => true,
+                'message' => 'Cập nhật vai trò thành công.',
+                'data' => null
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
     }
 
     /**
      * Khóa hoặc mở khóa tài khoản
+     * @param int $id
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function changeStatus($id, Request $request): RedirectResponse
+    public function changeStatus(int $id, Request $request): JsonResponse
     {
         $request->validate([
-            'status' => 'required',
+            'status' => 'required|boolean',
         ]);
-        $return = $this->getService()->changeStatus($id, (int)($request->status ?? 0));
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.users.index')
-                ->with('success', $return['message'] ?? 'Thay đổi trạng thái tài khoản thành công.');
-        }
-        return redirect()->route('admin.users.index')
-            ->with('fail', $return['message'] ?? 'Thay đổi trạng thái tài khoản thất bại.');
+        
+        $result = $this->getService()->changeStatus($id, (int) $request->status);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái tài khoản thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
-     * Get user information for AJAX request
+     * Lấy thông tin người dùng cho AJAX request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function getUserInfo($id)
-    {
-        $user = User::with('profile')->findOrFail($id);
-        return response()->json($user);
-    }
-
-    /**
-     * Toggle block status for AJAX request
-     */
-    public function toggleBlock($id, Request $request)
+    public function getUserInfo(int $id): JsonResponse
     {
         try {
+            $user = User::with('profile')->findOrFail($id);
+            return response()->json([
+                'success' => true,
+                'data' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy người dùng'
+            ], 404);
+        }
+    }
+
+    /**
+     * Toggle block status cho AJAX request
+     * @param int $id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function toggleBlock(int $id, Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'status' => 'required|boolean',
+            ]);
+            
             $user = User::findOrFail($id);
-            $newStatus = $request->input('status', 0);
+            $newStatus = $request->boolean('status');
             
             $user->is_blocked = $newStatus;
             $user->save();
@@ -188,5 +237,28 @@ class UserController extends BaseController
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Xử lý response chung cho các action
+     * @param array $result
+     * @param string $successMessage
+     * @param string $failMessage
+     * @param string $redirectRoute
+     * @return RedirectResponse
+     */
+    protected function handleResponse(
+        array $result, 
+        string $successMessage, 
+        string $failMessage, 
+        string $redirectRoute
+    ): RedirectResponse {
+        if (!empty($result['success'])) {
+            return redirect()->route($redirectRoute)
+                ->with('success', $result['message'] ?? $successMessage);
+        }
+        
+        return redirect()->route($redirectRoute)
+            ->with('fail', $result['message'] ?? $failMessage);
     }
 }

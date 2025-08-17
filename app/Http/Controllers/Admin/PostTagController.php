@@ -2,102 +2,150 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\PostTag;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\Posts\PostTag\StoreRequest;
+use App\Http\Requests\Admin\Posts\PostTag\UpdateRequest;
+use App\Services\Admin\Posts\PostTagService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class PostTagController extends Controller
+class PostTagController extends BaseController
 {
-    public function index()
+    public function __construct(PostTagService $postTagService)
     {
-        $query = PostTag::latest();
-
-        // Filter by name
-        if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
-        }
-
-        $tags = $query->paginate(20);
-
-        return view('admin.post-tags.index', compact('tags'));
+        $this->service = $postTagService;
     }
 
-    public function create()
+    /**
+     * Lấy service instance
+     * @return PostTagService
+     */
+    public function getService(): PostTagService
+    {
+        return $this->service;
+    }
+
+    /**
+     * Hiển thị danh sách tags
+     * @param Request $request
+     * @return View|Application|Factory
+     */
+    public function index(Request $request): View|Application|Factory
+    {
+        $filters = $this->getFilters($request->all());
+        $options = $this->getOptions($request->all());
+        $tags = $this->getService()->getList($filters, $options);
+        
+        return view('admin.post-tags.index', compact('tags', 'filters', 'options'));
+    }
+
+    /**
+     * Hiển thị form tạo tag
+     * @return View|Application|Factory
+     */
+    public function create(): View|Application|Factory
     {
         return view('admin.post-tags.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Xử lý tạo tag
+     * @param StoreRequest $request
+     * @return JsonResponse
+     */
+    public function store(StoreRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'color' => 'nullable|string|max:7',
-            'is_active' => 'boolean'
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo tag thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-
-        $data = $request->all();
-        $data['is_active'] = $request->has('is_active');
-
-        PostTag::create($data);
-
-        return redirect()->route('admin.post-tags.index')
-                        ->with('success', 'Tag đã được tạo thành công!');
     }
 
-    public function edit(PostTag $tag)
+    /**
+     * Hiển thị form chỉnh sửa tag
+     * @param int $id
+     * @return View|Application|Factory
+     */
+    public function edit(int $id): View|Application|Factory
     {
+        $tag = $this->getService()->findById($id);
+        
+        if (!$tag) {
+            abort(404, 'Tag không tồn tại.');
+        }
+        
         return view('admin.post-tags.edit', compact('tag'));
     }
 
-    public function update(Request $request, PostTag $tag)
+    /**
+     * Xử lý chỉnh sửa tag
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'color' => 'nullable|string|max:7',
-            'is_active' => 'boolean'
-        ]);
-
-        $data = $request->all();
-        $data['is_active'] = $request->has('is_active');
-
-        $tag->update($data);
-
-        return redirect()->route('admin.post-tags.index')
-                        ->with('success', 'Tag đã được cập nhật thành công!');
-    }
-
-    public function destroy(PostTag $tag)
-    {
-        if ($tag->posts()->count() > 0) {
-            return redirect()->back()
-                            ->with('error', 'Không thể xóa tag có bài viết!');
-        }
+        $result = $this->getService()->update($id, $request->validated());
         
-        $tag->delete();
-
-        return redirect()->route('admin.post-tags.index')
-                        ->with('success', 'Tag đã được xóa thành công!');
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật tag thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
-    public function toggleStatus(PostTag $tag)
+    /**
+     * Xử lý xóa tag
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse
     {
-        try {
-            $tag->update(['is_active' => !$tag->is_active]);
-            
-            $status = $tag->is_active ? 'kích hoạt' : 'vô hiệu hóa';
-            return response()->json([
-                'success' => true,
-                'message' => "Tag đã được {$status} thành công!",
-                'status' => $tag->is_active
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa tag thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái tag
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleStatus(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái nổi bật của tag
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleFeatured(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleFeatured($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }
 

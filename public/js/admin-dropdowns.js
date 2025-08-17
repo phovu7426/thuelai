@@ -204,7 +204,9 @@ class AdminDropdowns {
     getDefaultStatusApi(select) {
         const itemId = select.dataset.itemId || select.dataset.userId || select.dataset.postId || 
                        select.dataset.categoryId || select.dataset.tagId || select.dataset.slideId || 
-                       select.dataset.testimonialId || select.dataset.contactId || select.dataset.serviceId;
+                       select.dataset.testimonialId || select.dataset.contactId || select.dataset.serviceId ||
+                       select.dataset.roleId || select.dataset.permissionId || select.dataset.seriesId ||
+                       select.dataset.ruleId || select.dataset.tierId;
         
         // Xác định loại item dựa trên dataset
         if (select.dataset.userId) return `/admin/users/${itemId}/toggle-block`;
@@ -215,6 +217,11 @@ class AdminDropdowns {
         if (select.dataset.testimonialId) return `/admin/driver/testimonials/${itemId}/toggle-status`;
         if (select.dataset.contactId) return `/admin/driver/contacts/${itemId}/toggle-status`;
         if (select.dataset.serviceId) return `/admin/driver/services/${itemId}/toggle-status`;
+        if (select.dataset.roleId) return `/admin/roles/${itemId}/toggle-status`;
+        if (select.dataset.permissionId) return `/admin/permissions/${itemId}/toggle-status`;
+        if (select.dataset.seriesId) return `/admin/series/${itemId}/toggle-status`;
+        if (select.dataset.ruleId) return `/admin/driver/pricing-rules/${itemId}/toggle-status`;
+        if (select.dataset.tierId) return `/admin/driver/pricing-tiers/${itemId}/toggle-status`;
         
         return `/admin/items/${itemId}/toggle-status`;
     }
@@ -225,13 +232,23 @@ class AdminDropdowns {
     getDefaultFeaturedApi(select) {
         const itemId = select.dataset.itemId || select.dataset.userId || select.dataset.postId || 
                        select.dataset.categoryId || select.dataset.tagId || select.dataset.slideId || 
-                       select.dataset.testimonialId || select.dataset.contactId || select.dataset.serviceId;
+                       select.dataset.testimonialId || select.dataset.contactId || select.dataset.serviceId ||
+                       select.dataset.roleId || select.dataset.permissionId || select.dataset.seriesId ||
+                       select.dataset.ruleId || select.dataset.tierId;
         
         // Xác định loại item dựa trên dataset
         if (select.dataset.postId) return `/admin/posts/${itemId}/toggle-featured`;
+        if (select.dataset.categoryId) return `/admin/post-categories/${itemId}/toggle-featured`;
+        if (select.dataset.tagId) return `/admin/post-tags/${itemId}/toggle-featured`;
         if (select.dataset.slideId) return `/admin/slides/${itemId}/toggle-featured`;
         if (select.dataset.testimonialId) return `/admin/driver/testimonials/${itemId}/toggle-featured`;
         if (select.dataset.serviceId) return `/admin/driver/services/${itemId}/toggle-featured`;
+        if (select.dataset.roleId) return `/admin/roles/${itemId}/toggle-featured`;
+        if (select.dataset.permissionId) return `/admin/permissions/${itemId}/toggle-featured`;
+        if (select.dataset.seriesId) return `/admin/series/${itemId}/toggle-featured`;
+        if (select.dataset.ruleId) return `/admin/driver/pricing-rules/${itemId}/toggle-featured`;
+        if (select.dataset.tierId) return `/admin/driver/pricing-tiers/${itemId}/toggle-featured`;
+        if (select.dataset.contactId) return `/admin/driver/contacts/${itemId}/toggle-featured`;
         
         return `/admin/items/${itemId}/toggle-featured`;
     }

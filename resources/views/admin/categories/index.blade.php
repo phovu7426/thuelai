@@ -15,22 +15,18 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-sm-9">
-                                <form action="{{ route('admin.categories.index') }}" method="GET">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <input type="text" name="name" class="form-control" placeholder="Nhập tên"
-                                                   value="{{ request('name') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" name="code" class="form-control" placeholder="Nhập mã"
-                                                   value="{{ request('code') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Reset</a>
-                                        </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input type="text" id="search-name" class="form-control" placeholder="Nhập tên danh mục">
                                     </div>
-                                </form>
+                                    <div class="col-md-4">
+                                        <input type="text" id="search-code" class="form-control" placeholder="Nhập mã danh mục">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" id="btn-search" class="btn btn-primary">Tìm kiếm</button>
+                                        <button type="button" id="btn-reset" class="btn btn-secondary">Reset</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-3 d-flex">
                                 <a href="{{ route('admin.categories.create') }}" class="btn btn-primary ms-auto">Thêm Danh Mục</a>
@@ -39,12 +35,8 @@
                     </div>
 
                     <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
-                        @endif
-                        @if(session('error'))
-                            <div class="alert alert-danger">{{ session('error') }}</div>
-                        @endif
+                        <!-- Alert messages -->
+                        <div id="alert-container"></div>
 
                         <div class="table-responsive">
                             <table class="table table-bordered align-middle">
@@ -56,50 +48,295 @@
                                     <th>Slug</th>
                                     <th>Danh Mục Cha</th>
                                     <th>Trạng Thái</th>
+                                    <th>Nổi Bật</th>
                                     <th>Hành Động</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                @foreach($categories as $index => $category)
-                                    <tr>
-                                        <td>{{ $categories->firstItem() + $index }}</td>
-                                        <td>{{ $category->name ?? '' }}</td>
-                                        <td>{{ $category->code ?? '' }}</td>
-                                        <td>{{ $category->slug ?? '' }}</td>
-                                        <td>{{ $category->parent->name ?? 'N/A' }}</td>
-                                        <td>
-                                            @if($category->status)
-                                                <span class="badge bg-success">Hiển thị</span>
-                                            @else
-                                                <span class="badge bg-secondary">Ẩn</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                                   class="btn-action btn-edit" title="Sửa"><i class="fas fa-edit"></i></a>
-                                                <form action="{{ route('admin.categories.delete', $category->id) }}"
-                                                      method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete" title="Xóa"
-                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
+                                <tbody id="categories-table-body">
+                                    @foreach($categories as $index => $category)
+                                        <tr data-id="{{ $category->id }}">
+                                            <td>{{ $categories->firstItem() + $index }}</td>
+                                            <td>{{ $category->name ?? '' }}</td>
+                                            <td>{{ $category->code ?? '' }}</td>
+                                            <td>{{ $category->slug ?? '' }}</td>
+                                            <td>{{ $category->parent->name ?? 'N/A' }}</td>
+                                            <td>
+                                                <select class="form-select form-select-sm status-select" 
+                                                        data-category-id="{{ $category->id }}" 
+                                                        data-current-status="{{ $category->status ? '1' : '0' }}"
+                                                        data-status-type="categories">
+                                                    <option value="0" {{ !$category->status ? 'selected' : '' }}>
+                                                        Ẩn
+                                                    </option>
+                                                    <option value="1" {{ $category->status ? 'selected' : '' }}>
+                                                        Hiển thị
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-select form-select-sm featured-select" 
+                                                        data-category-id="{{ $category->id }}" 
+                                                        data-current-featured="{{ $category->is_featured ? '1' : '0' }}"
+                                                        data-featured-type="categories">
+                                                    <option value="0" {{ !$category->is_featured ? 'selected' : '' }}>
+                                                        Không nổi bật
+                                                    </option>
+                                                    <option value="1" {{ $category->is_featured ? 'selected' : '' }}>
+                                                        Nổi bật
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                                       class="btn-action btn-edit" title="Sửa"><i class="fas fa-edit"></i></a>
+                                                    <button type="button" class="btn-action btn-delete" title="Xóa"
+                                                            onclick="deleteCategory({{ $category->id }})">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Hiển thị phân trang -->
-                        @include('vendor.pagination.pagination', ['paginator' => $categories])
+                        <div id="pagination-container">
+                            @include('vendor.pagination.pagination', ['paginator' => $categories])
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const categoryId = $(this).data('category-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus === currentStatus) return;
+        
+        $.ajax({
+            url: `/admin/categories/${categoryId}/toggle-status`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: newStatus
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Cập nhật current status
+                    $(this).data('current-status', newStatus);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentStatus);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+                // Revert select
+                $(this).val(currentStatus);
+            }.bind(this)
+        });
+    });
+
+    // Featured select change
+    $('.featured-select').change(function() {
+        const categoryId = $(this).data('category-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured === currentFeatured) return;
+        
+        $.ajax({
+            url: `/admin/categories/${categoryId}/toggle-featured`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                is_featured: newFeatured
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Cập nhật current featured
+                    $(this).data('current-featured', newFeatured);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentFeatured);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+                // Revert select
+                $(this).val(currentFeatured);
+            }.bind(this)
+        });
+    });
+
+    // Search
+    $('#btn-search').click(function() {
+        searchCategories();
+    });
+
+    // Reset search
+    $('#btn-reset').click(function() {
+        $('#search-name').val('');
+        $('#search-code').val('');
+        searchCategories();
+    });
+
+    // Enter key search
+    $('#search-name, #search-code').keypress(function(e) {
+        if (e.which == 13) {
+            searchCategories();
+        }
+    });
+});
+
+function searchCategories(page = 1) {
+    const name = $('#search-name').val();
+    const code = $('#search-code').val();
+    
+    $.ajax({
+        url: '{{ route("admin.categories.index") }}',
+        method: 'GET',
+        data: {
+            name: name,
+            code: code,
+            page: page
+        },
+        success: function(response) {
+            $('#categories-table-body').html(response.html);
+            $('#pagination-container').html(response.pagination);
+            
+            // Rebind events
+            bindEvents();
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi tìm kiếm');
+        }
+    });
+}
+
+function deleteCategory(categoryId) {
+    if (confirm('Bạn có chắc chắn muốn xóa danh mục này không?')) {
+        $.ajax({
+            url: `/admin/categories/${categoryId}`,
+            method: 'DELETE',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Remove row from table
+                    $(`tr[data-id="${categoryId}"]`).remove();
+                } else {
+                    showAlert('danger', response.message);
+                }
+            },
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi xóa danh mục');
+            }
+        });
+    }
+}
+
+function bindEvents() {
+    // Rebind status select events
+    $('.status-select').off('change').on('change', function() {
+        const categoryId = $(this).data('category-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus === currentStatus) return;
+        
+        $.ajax({
+            url: `/admin/categories/${categoryId}/toggle-status`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                status: newStatus
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Cập nhật current status
+                    $(this).data('current-status', newStatus);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentStatus);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+                // Revert select
+                $(this).val(currentStatus);
+            }.bind(this)
+        });
+    });
+
+    // Rebind featured select events
+    $('.featured-select').off('change').on('change', function() {
+        const categoryId = $(this).data('category-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured === currentFeatured) return;
+        
+        $.ajax({
+            url: `/admin/categories/${categoryId}/toggle-featured`,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                is_featured: newFeatured
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    // Cập nhật current featured
+                    $(this).data('current-featured', newFeatured);
+                } else {
+                    showAlert('danger', response.message);
+                    // Revert select
+                    $(this).val(currentFeatured);
+                }
+            }.bind(this),
+            error: function() {
+                showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+                // Revert select
+                $(this).val(currentFeatured);
+            }.bind(this)
+        });
+    });
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+</script>
+@endpush

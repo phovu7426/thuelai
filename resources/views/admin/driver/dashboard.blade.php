@@ -1,4 +1,4 @@
-@extends('admin.layouts.main')
+@extends('admin.index')
 
 @section('title', 'Dashboard - Dịch vụ lái xe')
 

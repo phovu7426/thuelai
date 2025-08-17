@@ -1,9 +1,9 @@
 @extends('admin.index')
 
-@section('page_title', 'Danh sách tin tức')
+@section('page_title', 'Quản lý bài viết')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">Danh sách tin tức</li>
+    <li class="breadcrumb-item active" aria-current="page">Quản lý bài viết</li>
 @endsection
 
 @section('content')
@@ -18,73 +18,99 @@
                         <div class="row align-items-center">
                             <div class="col-sm-9">
                                 <!-- Form lọc -->
-                                <form action="{{ route('admin.posts.index') }}" method="GET" class="mb-0">
-                                    <div class="row g-3">
-                                        <div class="col-md-4">
-                                            <input type="text" name="title" class="form-control" placeholder="🔍 Nhập tiêu đề tin tức"
-                                                   value="{{ request('title') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-search"></i> Lọc
-                                            </button>
-                                            <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">
-                                                <i class="bi bi-arrow-clockwise"></i> Reset
-                                            </a>
-                                        </div>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <input type="text" id="search-title" class="form-control" placeholder="🔍 Tìm kiếm theo tiêu đề...">
                                     </div>
-                                </form>
+                                    <div class="col-md-3">
+                                        <select id="filter-status" class="form-control">
+                                            <option value="">Tất cả trạng thái</option>
+                                            <option value="draft">Bản nháp</option>
+                                            <option value="published">Đã xuất bản</option>
+                                            <option value="archived">Đã lưu trữ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select id="filter-category" class="form-control">
+                                            <option value="">Tất cả danh mục</option>
+                                            @foreach($categories ?? [] as $category)
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" id="search-btn" class="btn btn-primary">
+                                            <i class="bi bi-search"></i> Lọc
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
-                                @can('access_users')
-                                    <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
-                                        <i class="bi bi-plus-circle"></i> Thêm tin tức
-                                    </a>
-                                @endcan
+                                <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> Thêm bài viết
+                                </a>
                             </div>
                         </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Tiêu đề</th>
-                                    <th>Danh mục</th>
-                                    <th>Tác giả</th>
-                                    <th>Trạng thái</th>
-                                    <th>Nổi bật</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($posts as $index => $post)
-                                <tr>
-                                    <td>{{ $posts->firstItem() + $index }}</td>
-                                    <td>
-                                        <strong>{{ Str::limit($post->title ?? '', 50) }}</strong>
-                                        @if($post->excerpt)
-                                            <br><small class="text-muted">{{ Str::limit($post->excerpt, 80) }}</small>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">{{ $post->category->name ?? 'Không có' }}</span>
-                                    </td>
-                                    <td>
-                                        <strong>{{ $post->author->name ?? 'Không có' }}</strong>
-                                    </td>
-                                    <td>
+                        <!-- Posts Table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" id="posts-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="50">ID</th>
+                                        <th width="100">Ảnh</th>
+                                        <th>Tiêu đề</th>
+                                        <th width="120">Danh mục</th>
+                                        <th width="100">Trạng thái</th>
+                                        <th width="100">Nổi bật</th>
+                                        <th width="120">Ngày tạo</th>
+                                        <th width="150">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($posts ?? [] as $index => $post)
+                                        <tr>
+                                            <td>{{ $posts->firstItem() + $index }}</td>
+                                            <td>
+                                                @if($post->image)
+                                                    <img src="{{ asset('storage/' . $post->image) }}" 
+                                                         alt="{{ $post->title }}" 
+                                                         class="img-thumbnail" style="max-width: 80px;">
+                                                @else
+                                                    <div class="bg-secondary text-white text-center rounded" 
+                                                         style="width: 80px; height: 60px; line-height: 60px;">
+                                                        <i class="bi bi-image"></i>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <strong>{{ $post->title }}</strong>
+                                                @if($post->excerpt)
+                                                    <br><small class="text-muted">{{ Str::limit($post->excerpt, 100) }}</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($post->category)
+                                                    <span class="badge bg-info">{{ $post->category->name }}</span>
+                                                @else
+                                                    <span class="badge bg-secondary">Không có</span>
+                                                @endif
+                                            </td>
+                                            <td>
                                                 <select class="form-select form-select-sm status-select" 
                                                         data-post-id="{{ $post->id }}" 
                                                         data-current-status="{{ $post->status }}"
                                                         data-status-type="posts">
                                                     <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>
-                                                        Nháp
+                                                        Bản nháp
                                                     </option>
                                                     <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>
-                                                        Xuất bản
+                                                        Đã xuất bản
+                                                    </option>
+                                                    <option value="archived" {{ $post->status == 'archived' ? 'selected' : '' }}>
+                                                        Đã lưu trữ
                                                     </option>
                                                 </select>
                                             </td>
@@ -94,59 +120,186 @@
                                                         data-current-featured="{{ $post->featured ? '1' : '0' }}"
                                                         data-featured-type="posts">
                                                     <option value="0" {{ !$post->featured ? 'selected' : '' }}>
-                                                        Bình thường
+                                                        Không nổi bật
                                                     </option>
                                                     <option value="1" {{ $post->featured ? 'selected' : '' }}>
                                                         Nổi bật
                                                     </option>
                                                 </select>
                                             </td>
-                                    <td>{{ $post->created_at ? $post->created_at->format('d/m/Y') : 'N/A' }}</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            @can('access_users')
-                                                <a href="{{ route('admin.posts.show', $post->id) }}" 
-                                                   class="btn-action btn-view" title="Xem chi tiết">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('admin.posts.edit', $post->id) }}" 
-                                                   class="btn-action btn-edit" title="Chỉnh sửa">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST"
-                                                      style="display:inline;"
-                                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" title="Xóa" class="btn-action btn-delete">
+                                            <td>{{ $post->created_at ? $post->created_at->format('d/m/Y') : 'N/A' }}</td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <a href="{{ route('admin.posts.edit', $post->id) }}" 
+                                                       class="btn-action btn-edit" title="Sửa">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="{{ route('admin.posts.show', $post->id) }}" 
+                                                       class="btn-action btn-view" title="Xem">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <button type="button" class="btn-action btn-delete" title="Xóa"
+                                                            onclick="deletePost({{ $post->id }})">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
-                                                </form>
-                                            @endcan
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                        
-                        <!-- Phân trang -->
-                        @if($posts->hasPages())
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted">
+                                                <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                                <p class="mt-2">Chưa có bài viết nào</p>
+                                                <a href="{{ route('admin.posts.create') }}" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-plus-circle"></i> Tạo bài viết đầu tiên
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        @if($posts && $posts->hasPages())
                             <div class="d-flex justify-content-center mt-3">
                                 {{ $posts->links() }}
                             </div>
                         @endif
                     </div>
-                    <!-- /.card-body -->
                 </div>
             </div>
-            <!--end::Row-->
         </div>
-        <!--end::Container-->
     </div>
-    <!--end::App Content-->
 @endsection
 
-@section('scripts')
-<!-- Sử dụng component chung admin-dropdowns.js -->
-@endsection
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Status select change
+    $('.status-select').change(function() {
+        const postId = $(this).data('post-id');
+        const newStatus = $(this).val();
+        const currentStatus = $(this).data('current-status');
+        
+        if (newStatus !== currentStatus) {
+            updatePostStatus(postId, newStatus);
+        }
+    });
+
+    // Featured select change
+    $('.featured-select').change(function() {
+        const postId = $(this).data('post-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured !== currentFeatured) {
+            updatePostFeatured(postId, newFeatured);
+        }
+    });
+});
+
+function updatePostStatus(postId, status) {
+    $.ajax({
+        url: `/admin/posts/${postId}/toggle-status`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            status: status
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current status
+                $(`select[data-post-id="${postId}"]`).data('current-status', status);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-post-id="${postId}"]`);
+                select.val(select.data('current-status'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
+            // Revert select
+            const select = $(`select[data-post-id="${postId}"]`);
+            select.val(select.data('current-status'));
+        }
+    });
+}
+
+function updatePostFeatured(postId, featured) {
+    $.ajax({
+        url: `/admin/posts/${postId}/toggle-featured`,
+        method: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            featured: featured
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                // Update current featured
+                $(`select[data-post-id="${postId}"]`).data('current-featured', featured);
+            } else {
+                showAlert('danger', response.message);
+                // Revert select
+                const select = $(`select[data-post-id="${postId}"]`);
+                select.val(select.data('current-featured'));
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
+            // Revert select
+            const select = $(`select[data-post-id="${postId}"]`);
+            select.val(select.data('current-featured'));
+        }
+    });
+}
+
+function showAlert(type, message) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Tạo alert container nếu chưa có
+    if (!$('#alert-container').length) {
+        $('.card-body').prepend('<div id="alert-container"></div>');
+    }
+    
+    $('#alert-container').html(alertHtml);
+    
+    // Auto hide after 5 seconds
+    setTimeout(function() {
+        $('#alert-container .alert').fadeOut();
+    }, 5000);
+}
+
+function deletePost(id) {
+    if (confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
+        fetch(`/admin/posts/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Có lỗi xảy ra: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi xóa bài viết');
+        });
+    }
+}
+</script>
+@endpush

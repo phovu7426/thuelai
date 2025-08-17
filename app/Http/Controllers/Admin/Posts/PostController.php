@@ -34,7 +34,11 @@ class PostController extends BaseController
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $posts = $this->getService()->getList($filters, $options);
-        return view('admin.posts.index', compact('posts'));
+        
+        // Lấy danh sách categories để hiển thị trong filter
+        $categories = \App\Models\PostCategory::all();
+        
+        return view('admin.posts.index', compact('posts', 'categories'));
     }
 
     /**
@@ -43,7 +47,8 @@ class PostController extends BaseController
      */
     public function create(): View|Application|Factory
     {
-        return view('admin.posts.create');
+        $categories = \App\Models\PostCategory::all();
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -70,7 +75,19 @@ class PostController extends BaseController
     public function edit($id): View|Application|Factory
     {
         $post = $this->getService()->findById($id);
-        return view('admin.posts.edit', compact('post'));
+        $categories = \App\Models\PostCategory::all();
+        return view('admin.posts.edit', compact('post', 'categories'));
+    }
+
+    /**
+     * Hiển thị chi tiết bài đăng
+     * @param $id
+     * @return View|Application|Factory
+     */
+    public function show($id): View|Application|Factory
+    {
+        $post = $this->getService()->findById($id);
+        return view('admin.posts.show', compact('post'));
     }
 
     /**

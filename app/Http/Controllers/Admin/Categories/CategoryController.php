@@ -9,7 +9,7 @@ use App\Services\Admin\Categories\CategoryService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CategoryController extends BaseController
@@ -50,17 +50,17 @@ class CategoryController extends BaseController
     /**
      * Xử lý tạo danh mục
      * @param StoreRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function store(StoreRequest $request): RedirectResponse
+    public function store(StoreRequest $request): JsonResponse
     {
-        $return = $this->getService()->create($request->all());
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.categories.index')
-                ->with('success', $return['message'] ?? 'Thêm mới danh mục thành công.');
-        }
-        return redirect()->route('admin.categories.index')
-            ->with('fail', $return['message'] ?? 'Thêm mới danh mục thất bại.');
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thêm mới danh mục thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
@@ -79,32 +79,64 @@ class CategoryController extends BaseController
      * Xử lý cập nhật danh mục
      * @param UpdateRequest $request
      * @param $id
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function update(UpdateRequest $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): JsonResponse
     {
-        $return = $this->getService()->update($id, $request->all());
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.categories.index')
-                ->with('success', $return['message'] ?? 'Cập nhật danh mục thành công.');
-        }
-        return redirect()->route('admin.categories.index')
-            ->with('fail', $return['message'] ?? 'Cập nhật danh mục thất bại.');
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật danh mục thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Xóa danh mục
      * @param $id
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function delete($id): RedirectResponse
+    public function delete($id): JsonResponse
     {
-        $return = $this->getService()->delete($id);
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.categories.index')
-                ->with('success', $return['message'] ?? 'Xóa danh mục thành công.');
-        }
-        return redirect()->route('admin.categories.index')
-            ->with('fail', $return['message'] ?? 'Xóa danh mục thất bại.');
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa danh mục thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái danh mục
+     * @param $id
+     * @return JsonResponse
+     */
+    public function toggleStatus($id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái nổi bật của danh mục
+     * @param $id
+     * @return JsonResponse
+     */
+    public function toggleFeatured($id): JsonResponse
+    {
+        $result = $this->getService()->toggleFeatured($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }

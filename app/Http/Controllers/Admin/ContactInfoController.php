@@ -2,44 +2,46 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\ContactInfo;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\ContactInfo\UpdateRequest;
+use App\Services\Admin\ContactInfoService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 
-class ContactInfoController extends Controller
+class ContactInfoController extends BaseController
 {
-    public function edit()
+    protected ContactInfoService $contactInfoService;
+
+    public function __construct(ContactInfoService $contactInfoService)
     {
-        $contact = null;
-        if (Schema::hasTable('contact_infos')) {
-            $contact = ContactInfo::first();
-        }
+        $this->contactInfoService = $contactInfoService;
+    }
+
+    /**
+     * Hiển thị form chỉnh sửa thông tin liên hệ
+     * @return View|Application|Factory
+     */
+    public function edit(): View|Application|Factory
+    {
+        $contact = $this->contactInfoService->getContactInfo();
         return view('admin.contact_info.edit', compact('contact'));
     }
 
-    public function update(Request $request)
+    /**
+     * Cập nhật thông tin liên hệ
+     * @param UpdateRequest $request
+     * @return JsonResponse
+     */
+    public function update(UpdateRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'address' => 'nullable|string',
-            'phone' => 'nullable|string',
-            'email' => 'nullable|email',
-            'working_time' => 'nullable|string',
-            'facebook' => 'nullable|string',
-            'instagram' => 'nullable|string',
-            'youtube' => 'nullable|string',
-            'linkedin' => 'nullable|string',
-            'map_embed' => 'nullable|string',
+        $result = $this->contactInfoService->updateContactInfo($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật thông tin liên hệ thất bại.',
+            'data' => $result['data'] ?? null
         ]);
-        $contact = null;
-        if (Schema::hasTable('contact_infos')) {
-            $contact = ContactInfo::first();
-        }
-        if (!$contact) {
-            $contact = ContactInfo::create($data);
-        } else {
-            $contact->update($data);
-        }
-        return redirect()->route('admin.contact-info.edit')->with('success', 'Cập nhật thông tin liên hệ thành công!');
     }
 }

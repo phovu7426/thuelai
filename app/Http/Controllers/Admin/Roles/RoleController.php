@@ -13,7 +13,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use lib\DataTable;
 
@@ -59,17 +58,17 @@ class RoleController extends BaseController
     /**
      * Xử lý tạo vai trò
      * @param StoreRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function store(StoreRequest $request): RedirectResponse
+    public function store(StoreRequest $request): JsonResponse
     {
-        $return = $this->getService()->create($request->all());
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.roles.index')
-                ->with('success', $return['message'] ?? 'Tạo vai trò thành công.');
-        }
-        return redirect()->route('admin.roles.index')
-            ->with('fail', $return['message'] ?? 'Tạo vai trò thất bại.');
+        $result = $this->getService()->create($request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Tạo vai trò thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
@@ -88,32 +87,64 @@ class RoleController extends BaseController
      * Xử lý cập nhật vai trò
      * @param UpdateRequest $request
      * @param $id
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function update(UpdateRequest $request, $id): RedirectResponse
+    public function update(UpdateRequest $request, $id): JsonResponse
     {
-        $return = $this->getService()->update($id, $request->all());
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.roles.index')
-                ->with('success', $return['message'] ?? 'Cập nhật vai trò thành công.');
-        }
-        return redirect()->route('admin.roles.index')
-            ->with('fail', $return['message'] ?? 'Cập nhật vai trò thất bại.');
+        $result = $this->getService()->update($id, $request->validated());
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Cập nhật vai trò thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 
     /**
      * Xóa vai trò
      * @param $id
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function delete($id): RedirectResponse
+    public function delete($id): JsonResponse
     {
-        $return = $this->getService()->delete($id);
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.roles.index')
-                ->with('success', $return['message'] ?? 'Xóa vai trò thành công.');
-        }
-        return redirect()->route('admin.roles.index')
-            ->with('fail', $return['message'] ?? 'Xóa vai trò thất bại.');
+        $result = $this->getService()->delete($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Xóa vai trò thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái vai trò
+     * @param $id
+     * @return JsonResponse
+     */
+    public function toggleStatus($id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
+     * Thay đổi trạng thái nổi bật của vai trò
+     * @param $id
+     * @return JsonResponse
+     */
+    public function toggleFeatured($id): JsonResponse
+    {
+        $result = $this->getService()->toggleFeatured($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
     }
 }
