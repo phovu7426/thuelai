@@ -52,7 +52,6 @@
                                 <th>STT</th>
                                 <th>Tên danh mục</th>
                                 <th>Mô tả</th>
-                                <th>Màu sắc</th>
                                 <th>Trạng thái</th>
                                 <th>Nổi bật</th>
                                 <th>Hành Động</th>
@@ -67,16 +66,6 @@
                                         <br><small class="text-muted">Slug: {{ $category->slug ?? '' }}</small>
                                     </td>
                                     <td>{{ Str::limit($category->description ?? '', 80) }}</td>
-                                    <td>
-                                        @if($category->color)
-                                            <div class="d-flex align-items-center">
-                                                <div class="color-preview me-2" style="width: 20px; height: 20px; background-color: {{ $category->color }}; border-radius: 4px;"></div>
-                                                <span>{{ $category->color }}</span>
-                                            </div>
-                                        @else
-                                            <span class="text-muted">Không có</span>
-                                        @endif
-                                    </td>
                                     <td>
                                         <select class="form-select form-select-sm status-select" 
                                                 data-category-id="{{ $category->id }}" 

@@ -39,7 +39,6 @@
                                         <th>Tên dịch vụ</th>
                                         <th width="120">Trạng thái</th>
                                         <th width="100">Nổi bật</th>
-                                        <th width="100">Thứ tự</th>
                                         <th width="120">Ngày tạo</th>
                                         <th width="150">Thao tác</th>
                                     </tr>
@@ -94,15 +93,14 @@
                                                     </option>
                                                 </select>
                                             </td>
-                                            <td>{{ $service->sort_order ?? 0 }}</td>
                                             <td>{{ $service->created_at ? $service->created_at->format('d/m/Y') : 'N/A' }}</td>
                                             <td>
-                                                <div class="btn-group" role="group">
-                                                    <a href="{{ route('admin.driver.services.edit', $service->id) }}" class="btn btn-sm btn-info">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <button type="button" class="btn btn-sm btn-danger delete-service" data-id="{{ $service->id }}">
-                                                        <i class="fas fa-trash"></i>
+                                                <div class="action-buttons">
+                                                    <a href="{{ route('admin.driver.services.edit', $service->id) }}"
+                                                       class="btn-action btn-edit" title="Sửa"><i class="fas fa-edit"></i></a>
+                                                    <button type="button" class="btn-action btn-delete" title="Xóa"
+                                                            onclick="deleteService({{ $service->id }})">
+                                                        <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </div>
                                             </td>

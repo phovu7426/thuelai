@@ -53,8 +53,6 @@
                                 <th>Ý nghĩa vai trò</th>
                                 <th>Tên vai trò</th>
                                 <th>Quyền</th>
-                                <th>Trạng thái</th>
-                                <th>Nổi bật</th>
                                 <th>Hành động</th>
                             </tr>
                             </thead>
@@ -79,32 +77,6 @@
                                         @else
                                             <span class="badge bg-secondary">0 quyền</span>
                                         @endif
-                                    </td>
-                                    <td>
-                                        <select class="form-select form-select-sm status-select" 
-                                                data-role-id="{{ $role->id }}" 
-                                                data-current-status="{{ $role->is_active ? '1' : '0' }}"
-                                                data-status-type="roles">
-                                            <option value="0" {{ !$role->is_active ? 'selected' : '' }}>
-                                                Vô hiệu
-                                            </option>
-                                            <option value="1" {{ $role->is_active ? 'selected' : '' }}>
-                                                Kích hoạt
-                                            </option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-select form-select-sm featured-select" 
-                                                data-role-id="{{ $role->id }}" 
-                                                data-current-featured="{{ $role->is_featured ? '1' : '0' }}"
-                                                data-featured-type="roles">
-                                            <option value="0" {{ !$role->is_featured ? 'selected' : '' }}>
-                                                Không nổi bật
-                                            </option>
-                                            <option value="1" {{ $role->is_featured ? 'selected' : '' }}>
-                                                Nổi bật
-                                            </option>
-                                        </select>
                                     </td>
                                     <td>
                                         <div class="action-buttons">
@@ -163,28 +135,6 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Status select change
-    $('.status-select').change(function() {
-        const roleId = $(this).data('role-id');
-        const newStatus = $(this).val();
-        const currentStatus = $(this).data('current-status');
-        
-        if (newStatus !== currentStatus) {
-            updateRoleStatus(roleId, newStatus);
-        }
-    });
-
-    // Featured select change
-    $('.featured-select').change(function() {
-        const roleId = $(this).data('role-id');
-        const newFeatured = $(this).val();
-        const currentFeatured = $(this).data('current-featured');
-        
-        if (newFeatured !== currentFeatured) {
-            updateRoleFeatured(roleId, newFeatured);
-        }
-    });
-
     // Search
     $('#btn-search').click(function() {
         searchRoles();

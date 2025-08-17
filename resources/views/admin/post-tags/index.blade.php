@@ -52,7 +52,6 @@
                                 <th>STT</th>
                                 <th>Tên tag</th>
                                 <th>Mô tả</th>
-                                <th>Màu sắc</th>
                                 <th>Trạng thái</th>
                                 <th>Nổi bật</th>
                                 <th>Hành Động</th>
@@ -67,16 +66,6 @@
                                         <br><small class="text-muted">Slug: {{ $tag->slug ?? '' }}</small>
                                     </td>
                                     <td>{{ Str::limit($tag->description ?? '', 80) }}</td>
-                                    <td>
-                                        @if($tag->color)
-                                            <div class="d-flex align-items-center">
-                                                <div class="color-preview me-2" style="width: 20px; height: 20px; background-color: {{ $tag->color }}; border-radius: 4px;"></div>
-                                                <span>{{ $tag->color }}</span>
-                                            </div>
-                                        @else
-                                            <span class="text-muted">Không có</span>
-                                        @endif
-                                    </td>
                                     <td>
                                         <select class="form-select form-select-sm status-select" 
                                                 data-tag-id="{{ $tag->id }}" 
