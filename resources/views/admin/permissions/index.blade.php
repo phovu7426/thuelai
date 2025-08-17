@@ -37,9 +37,9 @@
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
-                                    <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" onclick="openCreatePermissionModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm Quyền
-                                    </a>
+                                    </button>
                                 @endcan
                             </div>
                         </div>
@@ -73,10 +73,10 @@
                                     <td class="text-center">
                                         <div class="action-buttons">
                                             @can('access_permissions')
-                                                <a href="{{ route('admin.permissions.edit', $permission->id) }}"
-                                                   class="btn-action btn-edit" title="Chỉnh sửa">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                                <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                        onclick="openEditPermissionModal({{ $permission->id }})">
+                                                    <i class="bi bi-edit"></i>
+                                                </button>
                                                 <form action="{{ route('admin.permissions.delete', $permission->id) }}" method="POST"
                                                       style="display:inline;"
                                                       onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
@@ -107,7 +107,47 @@
     <!--end::App Content-->
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
 @section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Permissions
+if (!window.permissionsModal) {
+    window.permissionsModal = new UniversalModal({
+        modalId: 'permissionsModal',
+        modalTitle: 'Quyền hạn',
+        formId: 'permissionsForm',
+        submitBtnId: 'permissionsSubmitBtn',
+        createRoute: '{{ route("admin.permissions.store") }}',
+        updateRoute: '{{ route("admin.permissions.update", ":id") }}',
+        getDataRoute: '{{ route("admin.permissions.show", ":id") }}',
+        successMessage: 'Thao tác quyền hạn thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý quyền hạn',
+        viewPath: 'admin.permissions.form',
+        viewData: {
+            permissions: @json($permissions ?? [])
+        },
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreatePermissionModal() {
+    window.permissionsModal.openCreateModal();
+}
+
+function openEditPermissionModal(permissionId) {
+    window.permissionsModal.openEditModal(permissionId);
+}
+</script>
+
 <script>
 $(document).ready(function() {
     // Status select change

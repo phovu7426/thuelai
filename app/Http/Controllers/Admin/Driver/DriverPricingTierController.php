@@ -69,6 +69,30 @@ class DriverPricingTierController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết mức giá
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $pricingTier = $this->getService()->findById($id);
+        
+        if (!$pricingTier) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mức giá không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin mức giá thành công.',
+            'data' => $pricingTier
+        ]);
+    }
+
+    /**
      * Hiển thị form chỉnh sửa mức giá
      * @param int $id
      * @return View|Application|Factory

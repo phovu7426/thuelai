@@ -1,0 +1,189 @@
+{{-- Form cho Post Categories Modal --}}
+@csrf
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <div class="mb-3">
+            <label for="name" class="form-label">
+                <i class="bi bi-folder"></i> Tên danh mục <span class="text-danger">*</span>
+            </label>
+            <input type="text" name="name" id="name" class="form-control"
+                   placeholder="Nhập tên danh mục tin tức..."
+                   value="{{ $data['name'] ?? old('name') }}"
+                   required>
+            <div class="invalid-feedback" id="nameError"></div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label for="slug" class="form-label">
+                <i class="bi bi-link"></i> Slug
+            </label>
+            <input type="text" name="slug" id="slug" class="form-control"
+                   placeholder="Tự động tạo từ tên..."
+                   value="{{ $data['slug'] ?? old('slug') }}">
+            <div class="invalid-feedback" id="slugError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-12">
+        <div class="mb-3">
+            <label for="description" class="form-label">
+                <i class="bi bi-text-paragraph"></i> Mô tả
+            </label>
+            <textarea name="description" id="description" class="form-control" rows="3"
+                      placeholder="Nhập mô tả danh mục...">{{ $data['description'] ?? old('description') }}</textarea>
+            <div class="invalid-feedback" id="descriptionError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="parent_id" class="form-label">
+                <i class="bi bi-diagram-3"></i> Danh mục cha
+            </label>
+            <select name="parent_id" id="parent_id" class="form-control">
+                <option value="">Không có danh mục cha</option>
+                @foreach($categories ?? [] as $category)
+                    @if($category->id != ($data['id'] ?? 0))
+                        <option value="{{ $category->id }}" 
+                                {{ ($data['parent_id'] ?? old('parent_id')) == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endif
+                @endforeach
+            </select>
+            <div class="invalid-feedback" id="parent_idError"></div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="sort_order" class="form-label">
+                <i class="bi bi-sort-numeric-down"></i> Thứ tự sắp xếp
+            </label>
+            <input type="number" name="sort_order" id="sort_order" class="form-control"
+                   placeholder="Nhập thứ tự sắp xếp..."
+                   value="{{ $data['sort_order'] ?? old('sort_order', 0) }}"
+                   min="0">
+            <div class="invalid-feedback" id="sort_orderError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="is_active" class="form-label">
+                <i class="bi bi-toggle-on"></i> Trạng thái
+            </label>
+            <select name="is_active" id="is_active" class="form-control">
+                <option value="0" {{ ($data['is_active'] ?? old('is_active', 1)) == '0' ? 'selected' : '' }}>Vô hiệu</option>
+                <option value="1" {{ ($data['is_active'] ?? old('is_active', 1)) == '1' ? 'selected' : '' }}>Kích hoạt</option>
+            </select>
+            <div class="invalid-feedback" id="is_activeError"></div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" name="is_featured" id="is_featured" class="form-check-input" value="1"
+                       {{ ($data['is_featured'] ?? old('is_featured')) ? 'checked' : '' }}>
+                <label class="form-check-label" for="is_featured">
+                    <i class="bi bi-star"></i> Nổi bật
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="meta_title" class="form-label">
+                <i class="bi bi-type-bold"></i> Meta Title
+            </label>
+            <input type="text" name="meta_title" id="meta_title" class="form-control"
+                   placeholder="Nhập meta title..."
+                   value="{{ $data['meta_title'] ?? old('meta_title') }}">
+            <div class="invalid-feedback" id="meta_titleError"></div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="meta_description" class="form-label">
+                <i class="bi bi-text-paragraph"></i> Meta Description
+            </label>
+            <input type="text" name="meta_description" id="meta_description" class="form-control"
+                   placeholder="Nhập meta description..."
+                   value="{{ $data['meta_description'] ?? old('meta_description') }}">
+            <div class="invalid-feedback" id="meta_descriptionError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-12">
+        <div class="mb-3">
+            <label for="meta_keywords" class="form-label">
+                <i class="bi bi-tags"></i> Meta Keywords
+            </label>
+            <input type="text" name="meta_keywords" id="meta_keywords" class="form-control"
+                   placeholder="Nhập meta keywords (phân cách bằng dấu phẩy)..."
+                   value="{{ $data['meta_keywords'] ?? old('meta_keywords') }}">
+            <div class="invalid-feedback" id="meta_keywordsError"></div>
+        </div>
+    </div>
+</div>
+
+{{-- Script để xử lý form --}}
+<script>
+$(document).ready(function() {
+    // Auto-generate slug from name
+    $('#name').on('input', function() {
+        const name = $(this).val();
+        if (name && !$('#slug').val()) {
+            const slug = name.toLowerCase()
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, '-');
+            $('#slug').val(slug);
+        }
+    });
+    
+    // Auto-generate meta title from name
+    $('#name').on('input', function() {
+        const name = $(this).val();
+        if (name && !$('#meta_title').val()) {
+            $('#meta_title').val(name);
+        }
+    });
+    
+    // Auto-generate meta description from description
+    $('#description').on('input', function() {
+        const description = $(this).val();
+        if (description && !$('#meta_description').val()) {
+            const metaDesc = description.length > 160 ? description.substring(0, 157) + '...' : description;
+            $('#meta_description').val(metaDesc);
+        }
+    });
+    
+    // Validate slug format
+    $('#slug').on('input', function() {
+        const slug = $(this).val();
+        if (slug && !/^[a-z0-9-]+$/.test(slug)) {
+            $('#slugError').text('Slug chỉ được chứa chữ thường, số và dấu gạch ngang');
+            $(this).addClass('is-invalid');
+        } else {
+            $('#slugError').text('');
+            $(this).removeClass('is-invalid');
+        }
+    });
+});
+</script>

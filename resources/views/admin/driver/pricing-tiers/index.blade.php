@@ -18,9 +18,9 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="card-title">Quản lý giá theo khoảng cách linh hoạt</h3>
-                            <a href="{{ route('admin.driver.pricing-tiers.create') }}" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary" onclick="openCreatePricingTierModal()">
                                 <i class="fas fa-plus"></i> Thêm mức giá mới
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -96,8 +96,8 @@
                                                 </td>
                                                 <td>
                                                     <div class="action-buttons">
-                                                        <a href="{{ route('admin.driver.pricing-tiers.edit', $tier->id) }}" 
-                                                           class="btn-action btn-edit" title="Chỉnh sửa">
+                                                        <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                                onclick="openEditPricingTierModal({{ $tier->id }})">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
                                                         <button type="button" class="btn-action btn-delete" title="Xóa" 
@@ -132,6 +132,45 @@
     </div>
 </div>
 @endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Pricing Tiers
+if (!window.pricingTiersModal) {
+    window.pricingTiersModal = new UniversalModal({
+        modalId: 'pricingTiersModal',
+        modalTitle: 'Mức giá',
+        formId: 'pricingTiersForm',
+        submitBtnId: 'pricingTiersSubmitBtn',
+        createRoute: '{{ route("admin.driver.pricing-tiers.store") }}',
+        updateRoute: '{{ route("admin.driver.pricing-tiers.update", ":id") }}',
+        getDataRoute: '{{ route("admin.driver.pricing-tiers.show", ":id") }}',
+        successMessage: 'Thao tác mức giá thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý mức giá',
+        viewPath: 'admin.driver.pricing-tiers.form',
+        viewData: {},
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreatePricingTierModal() {
+    window.pricingTiersModal.openCreateModal();
+}
+
+function openEditPricingTierModal(tierId) {
+    window.pricingTiersModal.openEditModal(tierId);
+}
+</script>
 
 @push('scripts')
 <script>

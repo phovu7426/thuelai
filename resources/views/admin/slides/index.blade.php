@@ -37,9 +37,9 @@
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
-                                    <a href="{{ route('admin.slides.create') }}" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" onclick="openCreateSlideModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm Slide
-                                    </a>
+                                    </button>
                                 @endcan
                             </div>
                         </div>
@@ -109,10 +109,10 @@
                                                 <td>
                                                     <div class="action-buttons">
                                                         @can('access_users')
-                                                            <a href="{{ route('admin.slides.edit', $slide->id) }}"
-                                                               class="btn-action btn-edit" title="Chỉnh sửa">
+                                                            <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                                    onclick="openEditSlideModal({{ $slide->id }})">
                                                                 <i class="fas fa-edit"></i>
-                                                            </a>
+                                                            </button>
                                                             <form action="{{ route('admin.slides.destroy', $slide->id) }}"
                                                                   method="POST" 
                                                                   style="display:inline;"
@@ -159,6 +159,42 @@
     <!--end::App Content-->
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
 @section('scripts')
-<!-- Sử dụng component chung admin-dropdowns.js -->
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Slides
+if (!window.slidesModal) {
+    window.slidesModal = new UniversalModal({
+        modalId: 'slidesModal',
+        modalTitle: 'Slide',
+        formId: 'slidesForm',
+        submitBtnId: 'slidesSubmitBtn',
+        createRoute: '{{ route("admin.slides.store") }}',
+        updateRoute: '{{ route("admin.slides.update", ":id") }}',
+        getDataRoute: '{{ route("admin.slides.show", ":id") }}',
+        successMessage: 'Thao tác slide thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý slide',
+        viewPath: 'admin.slides.form',
+        viewData: {},
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreateSlideModal() {
+    window.slidesModal.openCreateModal();
+}
+
+function openEditSlideModal(slideId) {
+    window.slidesModal.openEditModal(slideId);
+}
+</script>
 @endsection

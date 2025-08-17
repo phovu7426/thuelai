@@ -27,7 +27,8 @@ class UpdateRequest extends FormRequest
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'color' => 'nullable|string|max:7',
             'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'is_featured' => 'boolean'
         ];
     }
 

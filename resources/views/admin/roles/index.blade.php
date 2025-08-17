@@ -34,9 +34,9 @@
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
-                                    <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" onclick="openCreateRoleModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm Vai trò
-                                    </a>
+                                    </button>
                                 @endcan
                             </div>
                         </div>
@@ -81,7 +81,10 @@
                                     <td>
                                         <div class="action-buttons">
                                             @can('access_roles')
-                                                <a href="{{ route('admin.roles.edit', $role->id ?? '') }}" class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                                <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                        onclick="openEditRoleModal({{ $role->id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
                                                 <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteRole({{ $role->id }})"><i class="fas fa-trash-alt"></i></button>
                                             @endcan
                                         </div>
@@ -131,6 +134,58 @@
         </div>
     @endforeach
 @endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Đảm bảo jQuery và UniversalModal đã sẵn sàng
+$(document).ready(function() {
+    // Khởi tạo Universal Modal cho Roles
+    if (!window.rolesModal) {
+        window.rolesModal = new UniversalModal({
+            modalId: 'rolesModal',
+            modalTitle: 'Vai trò',
+            formId: 'rolesForm',
+            submitBtnId: 'rolesSubmitBtn',
+            createRoute: '{{ route("admin.roles.store") }}',
+            updateRoute: '{{ route("admin.roles.update", ":id") }}',
+            getDataRoute: '{{ route("admin.roles.show", ":id") }}',
+            successMessage: 'Thao tác vai trò thành công',
+            errorMessage: 'Có lỗi xảy ra khi xử lý vai trò',
+            viewPath: 'admin.roles.form',
+            viewData: {
+                permissions: @json($permissions ?? [])
+            },
+            onSuccess: function(response, isEdit, id) {
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        });
+    }
+});
+
+// Global functions để gọi từ HTML
+function openCreateRoleModal() {
+    if (window.rolesModal) {
+        window.rolesModal.openCreateModal();
+    } else {
+        console.error('Roles modal not initialized');
+    }
+}
+
+function openEditRoleModal(roleId) {
+    if (window.rolesModal) {
+        window.rolesModal.openEditModal(roleId);
+    } else {
+        console.error('Roles modal not initialized');
+    }
+}
+</script>
 
 @push('scripts')
 <script>

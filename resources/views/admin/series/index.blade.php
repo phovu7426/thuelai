@@ -32,7 +32,9 @@
                                 </form>
                             </div>
                             <div class="col-sm-3 d-flex">
-                                <a href="{{ route('admin.series.create') }}" class="btn btn-primary ms-auto">Thêm Series</a>
+                                <button type="button" class="btn btn-primary ms-auto" onclick="openCreateSeriesModal()">
+                                    <i class="bi bi-plus-circle"></i> Thêm Series
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -91,8 +93,10 @@
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <a href="{{ route('admin.series.edit', $each->id) }}"
-                                                   class="btn-action btn-edit" title="Sửa"><i class="fas fa-edit"></i></a>
+                                                <button type="button" class="btn-action btn-edit" title="Sửa"
+                                                        onclick="openEditSeriesModal({{ $each->id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
                                                 <form action="{{ route('admin.series.delete', $each->id) }}"
                                                       method="POST" style="display:inline;">
                                                     @csrf
@@ -119,7 +123,45 @@
     </div>
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
 @section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Series
+if (!window.seriesModal) {
+    window.seriesModal = new UniversalModal({
+        modalId: 'seriesModal',
+        modalTitle: 'Series',
+        formId: 'seriesForm',
+        submitBtnId: 'seriesSubmitBtn',
+        createRoute: '{{ route("admin.series.store") }}',
+        updateRoute: '{{ route("admin.series.update", ":id") }}',
+        getDataRoute: '{{ route("admin.series.show", ":id") }}',
+        successMessage: 'Thao tác series thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý series',
+        viewPath: 'admin.series.form',
+        viewData: {},
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreateSeriesModal() {
+    window.seriesModal.openCreateModal();
+}
+
+function openEditSeriesModal(seriesId) {
+    window.seriesModal.openEditModal(seriesId);
+}
+</script>
+
 <script>
 $(document).ready(function() {
     // Status select change

@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class SeriesController extends BaseController
 {
@@ -60,6 +61,30 @@ class SeriesController extends BaseController
         }
         return redirect()->route('admin.series.index')
             ->with('fail', $return['message'] ?? 'Thêm mới series thất bại.');
+    }
+
+    /**
+     * Hiển thị chi tiết series
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $series = $this->getService()->findById($id);
+        
+        if (!$series) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Series không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin series thành công.',
+            'data' => $series
+        ]);
     }
 
     /**

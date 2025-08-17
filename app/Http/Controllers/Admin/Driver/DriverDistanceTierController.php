@@ -68,6 +68,30 @@ class DriverDistanceTierController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết khoảng cách
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $distanceTier = $this->getService()->findById($id);
+        
+        if (!$distanceTier) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Khoảng cách không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin khoảng cách thành công.',
+            'data' => $distanceTier
+        ]);
+    }
+
+    /**
      * Hiển thị form chỉnh sửa khoảng cách
      * @param int $id
      * @return View|Application|Factory

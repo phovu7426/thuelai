@@ -6,6 +6,48 @@
     <li class="breadcrumb-item active" aria-current="page">Danh sách Danh Mục</li>
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Categories
+if (!window.categoriesModal) {
+    window.categoriesModal = new UniversalModal({
+        modalId: 'categoriesModal',
+        modalTitle: 'Danh mục',
+        formId: 'categoriesForm',
+        submitBtnId: 'categoriesSubmitBtn',
+        createRoute: '{{ route("admin.categories.store") }}',
+        updateRoute: '{{ route("admin.categories.update", ":id") }}',
+        getDataRoute: '{{ route("admin.categories.show", ":id") }}',
+        successMessage: 'Thao tác danh mục thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý danh mục',
+        viewPath: 'admin.categories.form',
+        viewData: {
+            categories: @json($categories ?? [])
+        },
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreateCategoryModal() {
+    window.categoriesModal.openCreateModal();
+}
+
+function openEditCategoryModal(categoryId) {
+    window.categoriesModal.openEditModal(categoryId);
+}
+</script>
+@endsection
+
 @section('content')
     <!--begin::App Content-->
     <div class="app-content">
@@ -29,7 +71,9 @@
                                 </div>
                             </div>
                             <div class="col-sm-3 d-flex">
-                                <a href="{{ route('admin.categories.create') }}" class="btn btn-primary ms-auto">Thêm Danh Mục</a>
+                                <button type="button" class="btn btn-primary ms-auto" onclick="openCreateCategoryModal()">
+                                    <i class="bi bi-plus-circle"></i> Thêm Danh Mục
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -88,8 +132,10 @@
                                             </td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                                       class="btn-action btn-edit" title="Sửa"><i class="fas fa-edit"></i></a>
+                                                    <button type="button" class="btn-action btn-edit" title="Sửa"
+                                                            onclick="openEditCategoryModal({{ $category->id }})">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
                                                     <button type="button" class="btn-action btn-delete" title="Xóa"
                                                             onclick="deleteCategory({{ $category->id }})">
                                                         <i class="fas fa-trash-alt"></i>

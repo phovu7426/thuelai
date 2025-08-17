@@ -64,6 +64,30 @@ class CategoryController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết danh mục
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $category = $this->getService()->findById($id);
+        
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Danh mục không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin danh mục thành công.',
+            'data' => $category
+        ]);
+    }
+
+    /**
      * Hiển thị form sửa danh mục
      * @param $id
      * @return View|Application|Factory

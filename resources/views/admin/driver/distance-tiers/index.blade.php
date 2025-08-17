@@ -18,9 +18,9 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="card-title">Quản lý khoảng cách</h3>
-                            <a href="{{ route('admin.driver.distance-tiers.create') }}" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary" onclick="openCreateDistanceTierModal()">
                                 <i class="fas fa-plus"></i> Thêm khoảng cách mới
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -90,10 +90,10 @@
                                             </td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('admin.driver.distance-tiers.edit', $tier->id) }}" 
-                                                       class="btn-action btn-edit" title="Chỉnh sửa">
+                                                    <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                            onclick="openEditDistanceTierModal({{ $tier->id }})">
                                                         <i class="fas fa-edit"></i>
-                                                    </a>
+                                                    </button>
                                                     <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteDistanceTier({{ $tier->id }})">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
@@ -123,6 +123,45 @@
     </div>
 </div>
 @endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Distance Tiers
+if (!window.distanceTiersModal) {
+    window.distanceTiersModal = new UniversalModal({
+        modalId: 'distanceTiersModal',
+        modalTitle: 'Khoảng cách',
+        formId: 'distanceTiersForm',
+        submitBtnId: 'distanceTiersSubmitBtn',
+        createRoute: '{{ route("admin.driver.distance-tiers.store") }}',
+        updateRoute: '{{ route("admin.driver.distance-tiers.update", ":id") }}',
+        getDataRoute: '{{ route("admin.driver.distance-tiers.show", ":id") }}',
+        successMessage: 'Thao tác khoảng cách thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý khoảng cách',
+        viewPath: 'admin.driver.distance-tiers.form',
+        viewData: {},
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreateDistanceTierModal() {
+    window.distanceTiersModal.openCreateModal();
+}
+
+function openEditDistanceTierModal(tierId) {
+    window.distanceTiersModal.openEditModal(tierId);
+}
+</script>
 
 @push('scripts')
 <script>

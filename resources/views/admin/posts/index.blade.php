@@ -46,9 +46,9 @@
                                 </div>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
-                                <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary" onclick="openCreatePostModal()">
                                     <i class="bi bi-plus-circle"></i> Thêm bài viết
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -130,10 +130,10 @@
                                             <td>{{ $post->created_at ? $post->created_at->format('d/m/Y') : 'N/A' }}</td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('admin.posts.edit', $post->id) }}" 
-                                                       class="btn-action btn-edit" title="Sửa">
+                                                    <button type="button" class="btn-action btn-edit" title="Sửa"
+                                                            onclick="openEditPostModal({{ $post->id }})">
                                                         <i class="fas fa-edit"></i>
-                                                    </a>
+                                                    </button>
                                                     <a href="{{ route('admin.posts.show', $post->id) }}" 
                                                        class="btn-action btn-view" title="Xem">
                                                         <i class="fas fa-eye"></i>
@@ -172,6 +172,47 @@
         </div>
     </div>
 @endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Posts
+if (!window.postsModal) {
+    window.postsModal = new UniversalModal({
+        modalId: 'postsModal',
+        modalTitle: 'Bài viết',
+        formId: 'postsForm',
+        submitBtnId: 'postsSubmitBtn',
+        createRoute: '{{ route("admin.posts.store") }}',
+        updateRoute: '{{ route("admin.posts.update", ":id") }}',
+        getDataRoute: '{{ route("admin.posts.show", ":id") }}',
+        successMessage: 'Thao tác bài viết thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý bài viết',
+        viewPath: 'admin.posts.form',
+        viewData: {
+            categories: @json($categories ?? [])
+        },
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreatePostModal() {
+    window.postsModal.openCreateModal();
+}
+
+function openEditPostModal(postId) {
+    window.postsModal.openEditModal(postId);
+}
+</script>
 
 @push('scripts')
 <script>

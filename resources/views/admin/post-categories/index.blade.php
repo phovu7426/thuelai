@@ -34,9 +34,9 @@
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
-                                    <a href="{{ route('admin.post-categories.create') }}" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" onclick="openCreatePostCategoryModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm danh mục
-                                    </a>
+                                    </button>
                                 @endcan
                             </div>
                         </div>
@@ -95,9 +95,11 @@
                                     <td>
                                         <div class="action-buttons">
                                             @can('access_users')
-                                                <a href="{{ route('admin.post-categories.edit', $category->id ?? '') }}"
-                                                   class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteCategory({{ $category->id }})">
+                                                <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                        onclick="openEditPostCategoryModal({{ $category->id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deletePostCategory({{ $category->id }})">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             @endcan
@@ -127,9 +129,105 @@
     <!--end::App Content-->
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script>
+// Đợi jQuery sẵn sàng trước khi khởi tạo Universal Modal
+function waitForJQuery(callback) {
+    if (typeof $ !== 'undefined') {
+        callback();
+    } else {
+        // Nếu jQuery chưa sẵn sàng, chờ DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof $ !== 'undefined') {
+                callback();
+            } else {
+                // Nếu vẫn chưa có jQuery, chờ thêm một chút
+                setTimeout(() => {
+                    if (typeof $ !== 'undefined') {
+                        callback();
+                    } else {
+                        console.error('jQuery is not loaded after waiting');
+                    }
+                }, 100);
+            }
+        });
+    }
+}
+
+// Khởi tạo Universal Modal
+waitForJQuery(function() {
+    // Kiểm tra jQuery đã sẵn sàng
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded');
+        return;
+    }
+    
+    // Khởi tạo Universal Modal cho Post Categories
+    if (!window.postCategoriesModal) {
+        window.postCategoriesModal = new UniversalModal({
+            modalId: 'postCategoriesModal',
+            modalTitle: 'Danh mục tin tức',
+            formId: 'postCategoriesForm',
+            submitBtnId: 'postCategoriesSubmitBtn',
+            createRoute: '{{ route("admin.post-categories.store") }}',
+            updateRoute: '{{ route("admin.post-categories.update", ":id") }}',
+            getDataRoute: '{{ route("admin.post-categories.show", ":id") }}',
+            successMessage: 'Thao tác danh mục tin tức thành công',
+            errorMessage: 'Có lỗi xảy ra khi xử lý danh mục tin tức',
+            viewPath: 'admin.post-categories.form',
+            viewData: {},
+            onSuccess: function(response, isEdit, id) {
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        });
+    }
+});
+
+// Global functions để gọi từ HTML
+function openCreatePostCategoryModal() {
+    if (window.postCategoriesModal) {
+        window.postCategoriesModal.openCreateModal();
+    } else {
+        console.error('Post Categories Modal not initialized');
+    }
+}
+
+function openEditPostCategoryModal(categoryId) {
+    if (window.postCategoriesModal) {
+        window.postCategoriesModal.openEditModal(categoryId);
+    } else {
+        console.error('Post Categories Modal not initialized');
+    }
+}
+</script>
+
 @push('scripts')
 <script>
 $(document).ready(function() {
+    // Search functionality
+    $('#btn-search').click(function() {
+        searchCategories();
+    });
+
+    // Reset search
+    $('#btn-reset').click(function() {
+        $('#search-name').val('');
+        searchCategories();
+    });
+
+    // Enter key search
+    $('#search-name').keypress(function(e) {
+        if (e.which == 13) {
+            searchCategories();
+        }
+    });
+
     // Status select change
     $('.status-select').change(function() {
         const categoryId = $(this).data('category-id');
@@ -164,55 +262,42 @@ $(document).ready(function() {
         });
     });
 
-    // Toggle featured
-    $('.toggle-featured').change(function() {
-        const categoryId = $(this).data('id');
-        const isChecked = $(this).is(':checked');
+    // Featured select change
+    $('.featured-select').change(function() {
+        const categoryId = $(this).data('category-id');
+        const newFeatured = $(this).val();
+        const currentFeatured = $(this).data('current-featured');
+        
+        if (newFeatured === currentFeatured) return;
         
         $.ajax({
             url: `/admin/post-categories/${categoryId}/toggle-featured`,
             method: 'POST',
             data: {
-                _token: '{{ csrf_token() }}'
+                _token: '{{ csrf_token() }}',
+                is_featured: newFeatured
             },
             success: function(response) {
                 if (response.success) {
                     showAlert('success', response.message);
-                    // Cập nhật label
-                    $(`.featured-label-${categoryId}`).text(isChecked ? 'Có' : 'Không');
+                    // Cập nhật current featured
+                    $(this).data('current-featured', newFeatured);
                 } else {
                     showAlert('danger', response.message);
-                    // Revert checkbox
-                    $(this).prop('checked', !isChecked);
+                    // Revert select
+                    $(this).val(currentFeatured);
                 }
-            },
+            }.bind(this),
             error: function() {
                 showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
-                // Revert checkbox
-                $(this).prop('checked', !isChecked);
-            }
+                // Revert select
+                $(this).val(currentFeatured);
+            }.bind(this)
         });
-    });
-
-    // Search
-    $('#btn-search').click(function() {
-        searchCategories();
-    });
-
-    // Reset search
-    $('#btn-reset').click(function() {
-        $('#search-name').val('');
-        searchCategories();
-    });
-
-    // Enter key search
-    $('#search-name').keypress(function(e) {
-        if (e.which == 13) {
-            searchCategories();
-        }
     });
 });
 
+// Search function
 function searchCategories(page = 1) {
     const name = $('#search-name').val();
     
@@ -236,28 +321,30 @@ function searchCategories(page = 1) {
     });
 }
 
-function deleteCategory(categoryId) {
-    if (confirm('Bạn có chắc chắn muốn xóa danh mục này không?')) {
-        $.ajax({
-            url: `/admin/post-categories/${categoryId}`,
-            method: 'DELETE',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    showAlert('success', response.message);
-                    // Remove row from table
-                    $(`tr[data-id="${categoryId}"]`).remove();
-                } else {
-                    showAlert('danger', response.message);
-                }
-            },
-            error: function() {
-                showAlert('danger', 'Có lỗi xảy ra khi xóa danh mục');
-            }
-        });
+// Global functions
+function deletePostCategory(categoryId) {
+    if (!confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
+        return;
     }
+    
+    $.ajax({
+        url: `/admin/post-categories/${categoryId}`,
+        method: 'DELETE',
+        data: {
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                showAlert('success', response.message);
+                $(`tr[data-id="${categoryId}"]`).remove();
+            } else {
+                showAlert('danger', response.message);
+            }
+        },
+        error: function() {
+            showAlert('danger', 'Có lỗi xảy ra khi xóa danh mục');
+        }
+    });
 }
 
 function bindEvents() {

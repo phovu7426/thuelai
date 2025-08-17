@@ -30,6 +30,29 @@ class SlideController extends Controller
         return redirect()->route('admin.slides.index')->with('success', 'Thêm slide thành công!');
     }
 
+    /**
+     * Hiển thị chi tiết slide
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(int $id)
+    {
+        try {
+            $slide = Slide::findOrFail($id);
+            return response()->json([
+                'success' => true,
+                'message' => 'Lấy thông tin slide thành công.',
+                'data' => $slide
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Slide không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+    }
+
     public function edit($id)
     {
         $slide = Slide::findOrFail($id);

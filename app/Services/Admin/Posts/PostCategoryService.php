@@ -34,13 +34,14 @@ class PostCategoryService extends BaseService
 
         try {
             $data['is_active'] = isset($data['is_active']);
+            $data['is_featured'] = isset($data['is_featured']);
             
             // Xử lý upload hình ảnh
             if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
                 $data['image'] = $data['image']->store('categories', 'public');
             }
             
-            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active'];
+            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active', 'is_featured'];
             $insertData = DataTable::getChangeData($data, $keys);
             
             if ($category = $this->getRepository()->create($insertData)) {
@@ -77,6 +78,7 @@ class PostCategoryService extends BaseService
             }
 
             $data['is_active'] = isset($data['is_active']);
+            $data['is_featured'] = isset($data['is_featured']);
             
             // Xử lý upload hình ảnh
             if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
@@ -87,7 +89,7 @@ class PostCategoryService extends BaseService
                 $data['image'] = $data['image']->store('categories', 'public');
             }
             
-            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active'];
+            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active', 'is_featured'];
             $updateData = DataTable::getChangeData($data, $keys);
             
             if ($this->getRepository()->update($category, $updateData)) {

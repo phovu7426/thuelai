@@ -101,6 +101,16 @@
                                             </div>
 
                                             <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="is_featured" name="is_featured" 
+                                                           value="1" {{ old('is_featured', $category->is_featured) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="is_featured">
+                                                        <i class="bi bi-star"></i> Nổi bật danh mục
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
                                                 <label for="image" class="form-label">
                                                     <i class="bi bi-image"></i> Hình ảnh
                                                 </label>

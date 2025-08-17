@@ -70,6 +70,30 @@ class DriverPricingRuleController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết quy tắc giá
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $pricingRule = $this->getService()->findById($id);
+        
+        if (!$pricingRule) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Quy tắc giá không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin quy tắc giá thành công.',
+            'data' => $pricingRule
+        ]);
+    }
+
+    /**
      * Hiển thị form chỉnh sửa quy tắc giá
      * @param int $id
      * @return View|Application|Factory

@@ -32,7 +32,32 @@
             
             this.isEditMode = false;
             this.currentId = null;
-            this.init();
+            
+            // Chờ jQuery sẵn sàng trước khi khởi tạo
+            this.waitForJQuery();
+        }
+
+        // Chờ jQuery sẵn sàng
+        waitForJQuery() {
+            if (typeof $ !== 'undefined') {
+                this.init();
+            } else {
+                // Nếu jQuery chưa sẵn sàng, chờ DOM ready
+                document.addEventListener('DOMContentLoaded', () => {
+                    if (typeof $ !== 'undefined') {
+                        this.init();
+                    } else {
+                        // Nếu vẫn chưa có jQuery, chờ thêm một chút
+                        setTimeout(() => {
+                            if (typeof $ !== 'undefined') {
+                                this.init();
+                            } else {
+                                console.error('jQuery is not loaded after waiting');
+                            }
+                        }, 100);
+                    }
+                });
+            }
         }
 
         init() {
@@ -41,6 +66,12 @@
         }
 
         bindEvents() {
+            // Đảm bảo jQuery đã sẵn sàng
+            if (typeof $ === 'undefined') {
+                console.error('jQuery is not loaded');
+                return;
+            }
+            
             // Xử lý submit form
             $(document).on('submit', `#${this.config.formId}`, (e) => this.handleSubmit(e));
             

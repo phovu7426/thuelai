@@ -72,6 +72,30 @@ class UserController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết tài khoản
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $user = $this->getService()->findById($id);
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tài khoản không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin tài khoản thành công.',
+            'data' => $user
+        ]);
+    }
+
+    /**
      * Hiển thị form chỉnh sửa tài khoản
      * @param int $id
      * @return View|Application|Factory|RedirectResponse

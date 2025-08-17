@@ -38,6 +38,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/index', [UserController::class, 'index'])->name('index'); // Hiển thị danh sách tài khoản
         Route::get('/create', [UserController::class, 'create'])->name('create'); // Hiển thị form tạo tài khoản
         Route::post('/store', [UserController::class, 'store'])->name('store'); // Xử lý tạo tài khoản
+        Route::get('/{id}', [UserController::class, 'show'])->name('show'); // Hiển thị chi tiết tài khoản
         Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit'); // Hiển thị form chỉnh sửa
         Route::post('/update/{id}', [UserController::class, 'update'])->name('update'); // Xử lý chỉnh sửa
         Route::post('/delete/{id}', [UserController::class, 'delete'])->name('delete'); // Xử lý xóa
@@ -62,6 +63,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/index', [RoleController::class, 'index'])->name('index'); // Hiển thị danh sách vai trò
         Route::get('/create', [RoleController::class, 'create'])->name('create'); // Hiển thị form tạo mới vai trò
         Route::post('/store', [RoleController::class, 'store'])->name('store'); // Xử lý thêm mới vai trò
+        Route::get('/{id}', [RoleController::class, 'show'])->name('show'); // Hiển thị chi tiết vai trò
         Route::get('/edit/{id}', [RoleController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [RoleController::class, 'update'])->name('update');
         Route::delete('/delete/{id}', [RoleController::class, 'delete'])->name('delete');
@@ -75,6 +77,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/index', [PermissionController::class, 'index'])->name('index'); // Hiển thị danh sách quyền
         Route::get('/create', [PermissionController::class, 'create'])->name('create'); // Hiển thị form tạo mới quyền
         Route::post('/store', [PermissionController::class, 'store'])->name('store'); // Xử lý thêm mới quyền
+        Route::get('/{id}', [PermissionController::class, 'show'])->name('show'); // Hiển thị chi tiết quyền
         Route::get('/edit/{id}', [PermissionController::class, 'edit'])->name('edit'); // Hiển thị form sửa quyền
         Route::put('/update/{id}', [PermissionController::class, 'update'])->name('update'); // Xử lý sửa quyền
         Route::delete('/delete/{id}', [PermissionController::class, 'delete'])->name('delete'); // Xử lý xóa quyền
@@ -97,19 +100,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Categories
     Route::resource('categories', CategoryController::class);
+    Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show'); // Hiển thị chi tiết danh mục
     Route::post('/categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
     Route::post('/categories/{category}/toggle-featured', [CategoryController::class, 'toggleFeatured'])->name('categories.toggle-featured');
 
     // Series
     Route::resource('series', SeriesController::class);
+    Route::get('/series/{series}', [SeriesController::class, 'show'])->name('series.show'); // Hiển thị chi tiết series
     Route::post('/series/{series}/toggle-status', [SeriesController::class, 'toggleStatus'])->name('series.toggle-status');
     Route::post('/series/{series}/toggle-featured', [SeriesController::class, 'toggleFeatured'])->name('series.toggle-featured');
 
     // Posts
     Route::resource('posts', PostController::class)->middleware('canAny:access_users');
+    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show'); // Hiển thị chi tiết bài viết
 
     // Slides
     Route::resource('slides', \App\Http\Controllers\Admin\Slides\SlideController::class)->middleware('canAny:access_users');
+    Route::get('/slides/{slide}', [\App\Http\Controllers\Admin\Slides\SlideController::class, 'show'])->name('slides.show'); // Hiển thị chi tiết slide
     Route::patch('/slides/{slide}/toggle-status', [\App\Http\Controllers\Admin\Slides\SlideController::class, 'toggleStatus'])->name('slides.toggle-status');
     Route::patch('/slides/{slide}/toggle-featured', [\App\Http\Controllers\Admin\Slides\SlideController::class, 'toggleFeatured'])->name('slides.toggle-featured');
 
@@ -118,6 +125,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PostController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\PostController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\PostController::class, 'store'])->name('store');
+        Route::get('/{post}', [\App\Http\Controllers\Admin\PostController::class, 'show'])->name('show'); // Hiển thị chi tiết bài viết
         Route::get('/{post}/edit', [\App\Http\Controllers\Admin\PostController::class, 'edit'])->name('edit');
         Route::put('/{post}', [\App\Http\Controllers\Admin\PostController::class, 'update'])->name('update');
         Route::delete('/{post}', [\App\Http\Controllers\Admin\PostController::class, 'destroy'])->name('destroy');
@@ -132,6 +140,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PostCategoryController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\PostCategoryController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\PostCategoryController::class, 'store'])->name('store');
+        Route::get('/{category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'show'])->name('show'); // Hiển thị chi tiết danh mục bài viết
         Route::get('/{category}/edit', [\App\Http\Controllers\Admin\PostCategoryController::class, 'edit'])->name('edit');
         Route::put('/{category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'update'])->name('update');
         Route::delete('/{category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'destroy'])->name('destroy');
@@ -146,6 +155,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PostTagController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\PostTagController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\PostTagController::class, 'store'])->name('store');
+        Route::get('/{tag}', [\App\Http\Controllers\Admin\PostTagController::class, 'show'])->name('show'); // Hiển thị chi tiết tag
         Route::get('/{tag}/edit', [\App\Http\Controllers\Admin\PostTagController::class, 'edit'])->name('edit');
         Route::put('/{tag}', [\App\Http\Controllers\Admin\PostTagController::class, 'update'])->name('update');
         Route::delete('/{tag}', [\App\Http\Controllers\Admin\PostTagController::class, 'destroy'])->name('destroy');
@@ -200,6 +210,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'index'])->name('index');
             Route::get('/create', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'create'])->name('create');
             Route::post('/', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'store'])->name('store');
+            Route::get('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'show'])->name('show'); // Hiển thị chi tiết khoảng cách
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'edit'])->name('edit');
             Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'update'])->name('update');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'destroy'])->name('destroy');
@@ -212,6 +223,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'index'])->name('index');
             Route::get('/create', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'create'])->name('create');
             Route::post('/', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'store'])->name('store');
+            Route::get('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'show'])->name('show'); // Hiển thị chi tiết mức giá
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'edit'])->name('edit');
             Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'update'])->name('update');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'destroy'])->name('destroy');
@@ -234,7 +246,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Quản lý liên hệ từ website lái xe
         Route::prefix('contacts')->name('contacts.')->middleware('canAny:access_driver_contacts')->group(function () {
             Route::resource('/', \App\Http\Controllers\Admin\Driver\DriverContactController::class)->except(['show']);
-            Route::get('/{id}', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'show'])->name('show');
+            Route::get('/{id}', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'show'])->name('show'); // Hiển thị chi tiết liên hệ
             Route::post('/{id}/status', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'updateStatus'])->name('update-status');
             Route::post('/{id}/mark-read', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'markAsRead'])->name('mark-read');
             Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverContactController::class, 'toggleStatus'])->name('toggle-status');

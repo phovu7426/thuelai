@@ -16,7 +16,8 @@ class PostCategorySeeder extends Seeder
                 'description' => 'Những mẹo và kinh nghiệm lái xe an toàn, tiết kiệm nhiên liệu',
                 'color' => '#28a745',
                 'sort_order' => 1,
-                'is_active' => true
+                'is_active' => true,
+                'is_featured' => true
             ],
             [
                 'name' => 'Tin tức',
@@ -24,7 +25,8 @@ class PostCategorySeeder extends Seeder
                 'description' => 'Tin tức mới nhất về giao thông, luật lệ và các sự kiện liên quan',
                 'color' => '#007bff',
                 'sort_order' => 2,
-                'is_active' => true
+                'is_active' => true,
+                'is_featured' => false
             ],
             [
                 'name' => 'An toàn giao thông',
@@ -32,7 +34,8 @@ class PostCategorySeeder extends Seeder
                 'description' => 'Kiến thức về an toàn giao thông, biển báo và quy tắc lái xe',
                 'color' => '#dc3545',
                 'sort_order' => 3,
-                'is_active' => true
+                'is_active' => true,
+                'is_featured' => true
             ],
             [
                 'name' => 'Dịch vụ',
@@ -40,7 +43,8 @@ class PostCategorySeeder extends Seeder
                 'description' => 'Thông tin về dịch vụ tài xế thuê lái và các tiện ích khác',
                 'color' => '#ffc107',
                 'sort_order' => 4,
-                'is_active' => true
+                'is_active' => true,
+                'is_featured' => false
             ],
             [
                 'name' => 'Công nghệ xe',
@@ -48,12 +52,16 @@ class PostCategorySeeder extends Seeder
                 'description' => 'Những tiến bộ công nghệ trong ngành ô tô và giao thông',
                 'color' => '#6f42c1',
                 'sort_order' => 5,
-                'is_active' => true
+                'is_active' => true,
+                'is_featured' => false
             ]
         ];
 
         foreach ($categories as $category) {
-            PostCategory::create($category);
+            PostCategory::updateOrCreate(
+                ['slug' => $category['slug']],
+                $category
+            );
         }
     }
 }

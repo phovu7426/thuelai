@@ -72,6 +72,30 @@ class RoleController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết vai trò
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $role = $this->getService()->findById($id);
+        
+        if (!$role) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vai trò không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin vai trò thành công.',
+            'data' => $role
+        ]);
+    }
+
+    /**
      * Hiển thị form sửa vai trò
      * @param $id
      * @return View|Application|Factory

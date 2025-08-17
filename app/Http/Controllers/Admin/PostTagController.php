@@ -68,6 +68,30 @@ class PostTagController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết tag
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $tag = $this->getService()->findById($id);
+        
+        if (!$tag) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tag không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin tag thành công.',
+            'data' => $tag
+        ]);
+    }
+
+    /**
      * Hiển thị form chỉnh sửa tag
      * @param int $id
      * @return View|Application|Factory

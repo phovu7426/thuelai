@@ -17,11 +17,13 @@ class PostCategory extends Model
         'image',
         'color',
         'sort_order',
-        'is_active'
+        'is_active',
+        'is_featured'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_featured' => 'boolean',
         'sort_order' => 'integer'
     ];
 

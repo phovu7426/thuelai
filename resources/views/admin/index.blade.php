@@ -16,6 +16,19 @@
 
     <!-- jQuery -->
     <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+    
+    <!-- Đảm bảo jQuery đã sẵn sàng -->
+    <script>
+        // Kiểm tra jQuery đã load
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery failed to load');
+        } else {
+            console.log('jQuery loaded successfully, version:', jQuery.fn.jquery);
+            // Đặt biến global để các script khác có thể sử dụng
+            window.jQuery = jQuery;
+            window.$ = jQuery;
+        }
+    </script>
 
     <!--end::Primary Meta Tags-->
     <!--begin::Fonts-->
@@ -90,9 +103,14 @@
     <link href="{{ asset('css/admin-toggle-buttons.css') }}" rel="stylesheet" />
     <!-- CSS hiện đại cho admin panel -->
     <link href="{{ asset('css/admin-modern.css') }}" rel="stylesheet" />
+    <!-- Universal Modal CSS -->
+    <link href="{{ asset('css/admin/universal-modal.css') }}" rel="stylesheet" />
     
     <!-- Admin Dropdowns Component -->
     <script src="{{ asset('js/admin-dropdowns.js') }}" defer></script>
+    
+    <!-- Universal Modal Component -->
+    <script src="{{ asset('js/admin/universal-modal.js') }}" defer></script>
     
     <script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
     @yield('styles')

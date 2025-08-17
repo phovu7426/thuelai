@@ -67,6 +67,30 @@ class PermissionController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết quyền
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $permission = $this->getService()->findById($id);
+        
+        if (!$permission) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Quyền không tồn tại.',
+                'data' => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy thông tin quyền thành công.',
+            'data' => $permission
+        ]);
+    }
+
+    /**
      * Hiển thị form sửa quyền
      * @param $id
      * @return View|Application|Factory

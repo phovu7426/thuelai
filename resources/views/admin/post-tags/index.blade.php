@@ -34,9 +34,9 @@
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
-                                    <a href="{{ route('admin.post-tags.create') }}" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" onclick="openCreateTagModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm tag
-                                    </a>
+                                    </button>
                                 @endcan
                             </div>
                         </div>
@@ -95,8 +95,10 @@
                                     <td>
                                         <div class="action-buttons">
                                             @can('access_users')
-                                                <a href="{{ route('admin.post-tags.edit', $tag->id ?? '') }}"
-                                                   class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                                <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                        onclick="openEditTagModal({{ $tag->id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
                                                 <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteTag({{ $tag->id }})">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
@@ -126,6 +128,45 @@
     </div>
     <!--end::App Content-->
 @endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Post Tags
+if (!window.postTagsModal) {
+    window.postTagsModal = new UniversalModal({
+        modalId: 'postTagsModal',
+        modalTitle: 'Tag',
+        formId: 'postTagsForm',
+        submitBtnId: 'postTagsSubmitBtn',
+        createRoute: '{{ route("admin.post-tags.store") }}',
+        updateRoute: '{{ route("admin.post-tags.update", ":id") }}',
+        getDataRoute: '{{ route("admin.post-tags.show", ":id") }}',
+        successMessage: 'Thao tác tag thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý tag',
+        viewPath: 'admin.post-tags.form',
+        viewData: {},
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreateTagModal() {
+    window.postTagsModal.openCreateModal();
+}
+
+function openEditTagModal(tagId) {
+    window.postTagsModal.openEditModal(tagId);
+}
+</script>
 
 @push('scripts')
 <script>

@@ -86,6 +86,16 @@
                                         </div>
 
                                         <div class="mb-3">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="is_featured" name="is_featured" 
+                                                       value="1" {{ old('is_featured', false) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="is_featured">
+                                                    Nổi bật danh mục
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
                                             <label for="image" class="form-label">Hình ảnh</label>
                                             <input type="file" class="form-control" 
                                                    id="image" name="image" accept="image/*">

@@ -36,9 +36,9 @@
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
-                                    <a href="{{ route('admin.driver.contacts.create') }}" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" onclick="openCreateContactModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm liên hệ mới
-                                    </a>
+                                    </button>
                                 @endcan
                             </div>
                         </div>
@@ -120,10 +120,10 @@
                                                            class="btn-action btn-view" title="Xem chi tiết">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.driver.contacts.edit', $contact['id']) }}" 
-                                                           class="btn-action btn-edit" title="Chỉnh sửa">
+                                                        <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                                onclick="openEditContactModal({{ $contact['id'] }})">
                                                             <i class="fas fa-edit"></i>
-                                                        </a>
+                                                        </button>
                                                         <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteContact({{ $contact['id'] }})">
                                                             <i class="fas fa-trash-alt"></i>
                                                         </button>
@@ -164,6 +164,45 @@
     </div>
     <!--end::App Content-->
 @endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Contacts
+if (!window.contactsModal) {
+    window.contactsModal = new UniversalModal({
+        modalId: 'contactsModal',
+        modalTitle: 'Liên hệ',
+        formId: 'contactsForm',
+        submitBtnId: 'contactsSubmitBtn',
+        createRoute: '{{ route("admin.driver.contacts.store") }}',
+        updateRoute: '{{ route("admin.driver.contacts.update", ":id") }}',
+        getDataRoute: '{{ route("admin.driver.contacts.show", ":id") }}',
+        successMessage: 'Thao tác liên hệ thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý liên hệ',
+        viewPath: 'admin.driver.contacts.form',
+        viewData: {},
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreateContactModal() {
+    window.contactsModal.openCreateModal();
+}
+
+function openEditContactModal(contactId) {
+    window.contactsModal.openEditModal(contactId);
+}
+</script>
 
 @push('scripts')
 <script>
