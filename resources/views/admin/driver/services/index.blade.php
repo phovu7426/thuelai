@@ -112,13 +112,13 @@
                                         </td>
                                         <td>{{ $service->sort_order }}</td>
                                         <td>
-                                            <div class="btn-group" role="group">
+                                            <div class="action-buttons">
                                                 <a href="{{ route('admin.driver.services.show', $service->id) }}" 
-                                                   class="btn btn-sm btn-info" title="Xem">
+                                                   class="btn-action btn-view" title="Xem">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                                 <a href="{{ route('admin.driver.services.edit', $service->id) }}" 
-                                                   class="btn btn-sm btn-warning" title="Sửa">
+                                                   class="btn-action btn-edit" title="Sửa">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <form action="{{ route('admin.driver.services.destroy', $service->id) }}" 
@@ -127,7 +127,7 @@
                                                       onsubmit="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                                    <button type="submit" class="btn-action btn-delete" title="Xóa">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>

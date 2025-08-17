@@ -83,11 +83,21 @@ class PostTagController extends Controller
 
     public function toggleStatus(PostTag $tag)
     {
-        $tag->update(['is_active' => !$tag->is_active]);
-        
-        $message = $tag->is_active ? 'Tag đã được kích hoạt!' : 'Tag đã được tạm dừng!';
-        
-        return redirect()->back()->with('success', $message);
+        try {
+            $tag->update(['is_active' => !$tag->is_active]);
+            
+            $status = $tag->is_active ? 'kích hoạt' : 'vô hiệu hóa';
+            return response()->json([
+                'success' => true,
+                'message' => "Tag đã được {$status} thành công!",
+                'status' => $tag->is_active
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
 

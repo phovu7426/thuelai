@@ -1,10 +1,10 @@
 @extends('admin.index')
 
-@section('page_title', 'Sửa dịch vụ lái xe')
+@section('page_title', 'Chỉnh sửa dịch vụ lái xe')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.driver.services.index') }}">Quản lý dịch vụ lái xe</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Sửa dịch vụ</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.driver.services.index') }}">Danh sách dịch vụ</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa dịch vụ</li>
 @endsection
 
 @section('content')
@@ -16,152 +16,179 @@
             <div class="row">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Thông tin dịch vụ</h5>
+                        <h3 class="card-title">
+                            <i class="bi bi-gear-gear"></i> Chỉnh sửa dịch vụ lái xe: {{ $driverService->name }}
+                        </h3>
                     </div>
                     <div class="card-body">
-                    <form action="{{ route('admin.driver.services.update', $driverService->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        
-                        <div class="row">
-                            <div class="col-md-8">
-                                <!-- Basic Information -->
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Tên dịch vụ <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                                           id="name" name="name" value="{{ old('name', $driverService->name) }}" required>
-                                    @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="short_description" class="form-label">Mô tả ngắn</label>
-                                    <textarea class="form-control @error('short_description') is-invalid @enderror" 
-                                              id="short_description" name="short_description" rows="3">{{ old('short_description', $driverService->short_description) }}</textarea>
-                                    @error('short_description')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <small class="form-text text-muted">Tối đa 500 ký tự</small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Mô tả chi tiết</label>
-                                    <textarea class="form-control @error('description') is-invalid @enderror" 
-                                              id="description" name="description" rows="5">{{ old('description', $driverService->description) }}</textarea>
-                                    @error('description')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-
-
-                                <div class="mb-3">
-                                    <label for="sort_order" class="form-label">Thứ tự hiển thị</label>
-                                    <input type="number" class="form-control @error('sort_order') is-invalid @enderror" 
-                                           id="sort_order" name="sort_order" value="{{ old('sort_order', $driverService->sort_order) }}" min="0">
-                                    @error('sort_order')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <!-- Current Images -->
-                                <div class="mb-3">
-                                    <h6>Hình ảnh hiện tại:</h6>
-                                    @if($driverService->image)
-                                        <div class="mb-2">
-                                            <img src="{{ asset('storage/' . $driverService->image) }}" 
-                                                 alt="{{ $driverService->name }}" 
-                                                 class="img-fluid rounded" 
-                                                 style="max-width: 100%; height: auto;">
-                                        </div>
-                                    @else
-                                        <div class="mb-2 bg-secondary rounded d-flex align-items-center justify-content-center" 
-                                             style="width: 100%; height: 150px;">
-                                            <i class="bi bi-image text-white" style="font-size: 2rem;"></i>
-                                        </div>
-                                    @endif
-                                    
-                                    @if($driverService->icon)
-                                        <div class="mb-2">
-                                            <small>Icon hiện tại:</small><br>
-                                            <img src="{{ asset('storage/' . $driverService->icon) }}" 
-                                                 alt="{{ $driverService->name }} icon" 
-                                                 class="img-fluid rounded" 
-                                                 style="max-width: 80px; height: auto;">
-                                        </div>
-                                    @else
-                                        <div class="mb-2 bg-secondary rounded d-flex align-items-center justify-content-center" 
-                                             style="width: 80px; height: 80px;">
-                                            <i class="bi bi-gear text-white"></i>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <!-- Image Upload -->
-                                <div class="mb-3">
-                                    <label for="image" class="form-label">Thay đổi hình ảnh dịch vụ</label>
-                                    <input type="file" class="form-control @error('image') is-invalid @enderror" 
-                                           id="image" name="image" accept="image/*">
-                                    @error('image')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <small class="form-text text-muted">Định dạng: JPEG, PNG, JPG, GIF. Tối đa 2MB</small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="icon" class="form-label">Thay đổi icon dịch vụ</label>
-                                    <input type="file" class="form-control @error('icon') is-invalid @enderror" 
-                                           id="icon" name="icon" accept="image/*">
-                                    @error('icon')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <small class="form-text text-muted">Định dạng: JPEG, PNG, JPG, GIF. Tối đa 2MB</small>
-                                </div>
-
-                                <!-- Status Options -->
-                                <div class="mb-3">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="status" name="status" 
-                                               {{ old('status', $driverService->status) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="status">
-                                            Kích hoạt dịch vụ
+                        <form action="{{ route('admin.driver.services.update', $driverService->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">
+                                            <i class="bi bi-gear"></i> Tên dịch vụ <span class="text-danger">*</span>
                                         </label>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                                               id="name" name="name" placeholder="🚗 Nhập tên dịch vụ..." 
+                                               value="{{ old('name', $driverService->name) }}" required>
+                                        @error('name')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="short_description" class="form-label">
+                                            <i class="bi bi-text-paragraph"></i> Mô tả ngắn
+                                        </label>
+                                        <textarea class="form-control @error('short_description') is-invalid @enderror" 
+                                                  id="short_description" name="short_description" rows="3" 
+                                                  placeholder="📝 Nhập mô tả ngắn...">{{ old('short_description', $driverService->short_description) }}</textarea>
+                                        @error('short_description')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                        <small class="form-text text-muted">Tối đa 500 ký tự</small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">
+                                            <i class="bi bi-file-text"></i> Mô tả chi tiết
+                                        </label>
+                                        <textarea class="form-control @error('description') is-invalid @enderror" 
+                                                  id="description" name="description" rows="5" 
+                                                  placeholder="📄 Nhập mô tả chi tiết...">{{ old('description', $driverService->description) }}</textarea>
+                                        @error('description')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="sort_order" class="form-label">
+                                                    <i class="bi bi-sort-numeric-down"></i> Thứ tự hiển thị
+                                                </label>
+                                                <input type="number" class="form-control @error('sort_order') is-invalid @enderror" 
+                                                       id="sort_order" name="sort_order" placeholder="0" 
+                                                       value="{{ old('sort_order', $driverService->sort_order) }}" min="0">
+                                                @error('sort_order')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="price" class="form-label">
+                                                    <i class="bi bi-currency-dollar"></i> Giá dịch vụ
+                                                </label>
+                                                <input type="number" class="form-control @error('price') is-invalid @enderror" 
+                                                       id="price" name="price" placeholder="0" 
+                                                       value="{{ old('price', $driverService->price) }}" min="0" step="0.01">
+                                                @error('price')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" 
-                                               {{ old('is_featured', $driverService->is_featured) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="is_featured">
-                                            Đánh dấu nổi bật
-                                        </label>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">
+                                                <i class="bi bi-gear"></i> Cài đặt
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label for="status" class="form-label">
+                                                    <i class="bi bi-toggle-on"></i> Trạng thái
+                                                </label>
+                                                <select class="form-select @error('status') is-invalid @enderror" 
+                                                        id="status" name="status">
+                                                    <option value="active" {{ old('status', $driverService->status) == 'active' ? 'selected' : '' }}>✅ Hoạt động</option>
+                                                    <option value="inactive" {{ old('status', $driverService->status) == 'inactive' ? 'selected' : '' }}>❌ Không hoạt động</option>
+                                                    <option value="draft" {{ old('status', $driverService->status) == 'draft' ? 'selected' : '' }}>📝 Bản nháp</option>
+                                                </select>
+                                                @error('status')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="is_featured" name="is_featured" 
+                                                           value="1" {{ old('is_featured', $driverService->is_featured) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="is_featured">
+                                                        <i class="bi bi-star"></i> Đánh dấu nổi bật
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="image" class="form-label">
+                                                    <i class="bi bi-image"></i> Hình ảnh dịch vụ
+                                                </label>
+                                                <input type="file" class="form-control @error('image') is-invalid @enderror" 
+                                                       id="image" name="image" accept="image/*">
+                                                @error('image')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                                <small class="form-text text-muted">Để trống nếu không muốn thay đổi hình ảnh</small>
+                                                
+                                                @if($driverService->image)
+                                                    <div class="mt-2">
+                                                        <img src="{{ asset('storage/' . $driverService->image) }}" 
+                                                             alt="{{ $driverService->name }}" 
+                                                             class="img-thumbnail" style="max-height: 150px">
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="icon" class="form-label">
+                                                    <i class="bi bi-emoji-smile"></i> Icon dịch vụ
+                                                </label>
+                                                <input type="file" class="form-control @error('icon') is-invalid @enderror" 
+                                                       id="icon" name="icon" accept="image/*">
+                                                @error('icon')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                                <small class="form-text text-muted">Để trống nếu không muốn thay đổi icon</small>
+                                                
+                                                @if($driverService->icon)
+                                                    <div class="mt-2">
+                                                        <img src="{{ asset('storage/' . $driverService->icon) }}" 
+                                                             alt="{{ $driverService->name }} icon" 
+                                                             class="img-thumbnail" style="max-height: 80px">
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Form Actions -->
-                        <div class="row">
-                            <div class="col-12">
-                                <hr>
-                                <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.driver.services.index') }}" class="btn btn-secondary">
-                                        <i class="bi bi-arrow-left"></i> Quay lại
-                                    </a>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-check"></i> Cập nhật dịch vụ
-                                    </button>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="{{ route('admin.driver.services.index') }}" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-left"></i> Quay lại
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle"></i> Cập nhật dịch vụ
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
                 </div>
-            </div>
-                </div>
+                <!-- /.card -->
             </div>
             <!--end::Row-->
         </div>

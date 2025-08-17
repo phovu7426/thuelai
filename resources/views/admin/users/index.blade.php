@@ -95,23 +95,25 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @can('access_users')
-                                            <a href="{{ route('admin.users.showAssignRolesForm', $user->id ?? '') }}" title="Gán vai trò"
-                                               class="btn btn-sm btn-warning"><i class="fas fa-user-tag"></i></a>
-                                        @endcan
-                                        @can('access_users')
-                                            <a href="{{ route('admin.profiles.edit', $user->id ?? '') }}"
-                                               class="btn btn-sm btn-warning" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                        @endcan
-                                        @can('access_users')
-                                            <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
-                                                  style="display:inline;">
-                                                @csrf
-                                                <button type="submit" title="Xóa" class="btn btn-sm btn-danger">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        @endcan
+                                        <div class="action-buttons">
+                                            @can('access_users')
+                                                <a href="{{ route('admin.users.showAssignRolesForm', $user->id ?? '') }}" title="Gán vai trò"
+                                                   class="btn-action btn-view"><i class="fas fa-user-tag"></i></a>
+                                            @endcan
+                                            @can('access_users')
+                                                <a href="{{ route('admin.profiles.edit', $user->id ?? '') }}"
+                                                   class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                            @endcan
+                                            @can('access_users')
+                                                <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
+                                                      style="display:inline;">
+                                                    @csrf
+                                                    <button type="submit" title="Xóa" class="btn-action btn-delete">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            @endcan
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

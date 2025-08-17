@@ -4,10 +4,12 @@
  */
 class AdminDropdowns {
     constructor() {
+        console.log('AdminDropdowns component initialized');
         this.init();
     }
 
     init() {
+        console.log('Initializing AdminDropdowns...');
         this.initStatusDropdowns();
         this.initFeaturedDropdowns();
     }
@@ -17,8 +19,10 @@ class AdminDropdowns {
      */
     initStatusDropdowns() {
         const statusSelects = document.querySelectorAll('.status-select');
+        console.log('Found status selects:', statusSelects.length);
         
         statusSelects.forEach(select => {
+            console.log('Adding event listener to status select:', select);
             select.addEventListener('change', (e) => this.handleStatusChange(e));
         });
     }
@@ -39,6 +43,8 @@ class AdminDropdowns {
      */
     handleStatusChange(event) {
         const select = event.target;
+        console.log('Status change detected:', select);
+        
         const itemId = select.dataset.itemId || select.dataset.userId || select.dataset.postId || 
                        select.dataset.categoryId || select.dataset.tagId || select.dataset.slideId || 
                        select.dataset.testimonialId || select.dataset.contactId || select.dataset.serviceId;
@@ -47,8 +53,17 @@ class AdminDropdowns {
         const apiEndpoint = select.dataset.statusApi || this.getDefaultStatusApi(select);
         const statusLabels = this.getStatusLabels(select);
 
+        console.log('Status change details:', {
+            itemId,
+            newStatus,
+            currentStatus,
+            apiEndpoint,
+            statusLabels
+        });
+
         // Nếu trạng thái không thay đổi thì không làm gì
         if (newStatus === currentStatus) {
+            console.log('Status unchanged, skipping update');
             return;
         }
 
@@ -80,6 +95,8 @@ class AdminDropdowns {
      * Cập nhật trạng thái
      */
     updateStatus(select, itemId, newStatus, currentStatus, apiEndpoint, statusLabels) {
+        console.log('Updating status:', { itemId, newStatus, apiEndpoint });
+        
         // Disable select để tránh thay đổi nhiều lần
         select.disabled = true;
 
@@ -89,6 +106,12 @@ class AdminDropdowns {
         formData.append('_method', 'PATCH');
         formData.append('status', newStatus);
 
+        console.log('FormData created:', {
+            token: this.getCsrfToken(),
+            method: 'PATCH',
+            status: newStatus
+        });
+
         // Gọi API để cập nhật trạng thái
         fetch(apiEndpoint, {
             method: 'POST',
@@ -97,8 +120,12 @@ class AdminDropdowns {
                 'Accept': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('API Response:', response);
+            return response.json();
+        })
         .then(data => {
+            console.log('API Data:', data);
             if (data.success) {
                 // Cập nhật current status
                 select.dataset.currentStatus = newStatus;

@@ -101,26 +101,28 @@
                                             </td>
                                             <td>{{ \Carbon\Carbon::parse($contact['created_at'])->format('d/m/Y') }}</td>
                                             <td>
-                                                @can('access_users')
-                                                    <a href="{{ route('admin.driver.contacts.show', $contact['id']) }}" 
-                                                       class="btn btn-sm btn-info" title="Xem chi tiết">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('admin.driver.contacts.edit', $contact['id']) }}" 
-                                                       class="btn btn-sm btn-warning" title="Chỉnh sửa">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <form action="{{ route('admin.driver.contacts.destroy', $contact['id']) }}" 
-                                                          method="POST" 
-                                                          style="display:inline;"
-                                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa liên hệ này?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
-                                                            <i class="fas fa-trash-alt"></i>
-                                                        </button>
-                                                    </form>
-                                                @endcan
+                                                <div class="action-buttons">
+                                                    @can('access_users')
+                                                        <a href="{{ route('admin.driver.contacts.show', $contact['id']) }}" 
+                                                           class="btn-action btn-view" title="Xem chi tiết">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                        <a href="{{ route('admin.driver.contacts.edit', $contact['id']) }}" 
+                                                           class="btn-action btn-edit" title="Chỉnh sửa">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <form action="{{ route('admin.driver.contacts.destroy', $contact['id']) }}" 
+                                                              method="POST" 
+                                                              style="display:inline;"
+                                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa liên hệ này?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn-action btn-delete" title="Xóa">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endcan
+                                                </div>
                                             </td>
                                         </tr>
                                         @endforeach

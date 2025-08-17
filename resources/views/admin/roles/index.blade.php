@@ -79,14 +79,16 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @can('access_roles')
-                                            <a href="{{ route('admin.roles.edit', $role->id ?? '') }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.roles.delete', $role->id ?? '') }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
-                                            </form>
-                                        @endcan
+                                        <div class="action-buttons">
+                                            @can('access_roles')
+                                                <a href="{{ route('admin.roles.edit', $role->id ?? '') }}" class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                                <form action="{{ route('admin.roles.delete', $role->id ?? '') }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn-action btn-delete" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                                </form>
+                                            @endcan
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

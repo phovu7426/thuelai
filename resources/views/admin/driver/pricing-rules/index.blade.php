@@ -86,9 +86,9 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <div class="btn-group" role="group">
+                                                <div class="action-buttons">
                                                     <a href="{{ route('admin.driver.pricing-rules.edit', $rule->id) }}" 
-                                                       class="btn btn-sm btn-primary">
+                                                       class="btn-action btn-edit" title="Chỉnh sửa">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <form action="{{ route('admin.driver.pricing-rules.destroy', $rule->id) }}" 
@@ -97,7 +97,7 @@
                                                           style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                        <button type="submit" class="btn-action btn-delete" title="Xóa">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>

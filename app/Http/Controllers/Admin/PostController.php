@@ -139,27 +139,51 @@ class PostController extends Controller
 
     public function toggleStatus(Post $post)
     {
-        if ($post->status === 'published') {
-            $post->update(['status' => 'draft']);
-            $message = 'Bài viết đã được chuyển về bản nháp!';
-        } else {
-            $post->update([
-                'status' => 'published',
-                'published_at' => now()
-            ]);
-            $message = 'Bài viết đã được xuất bản!';
-        }
+        try {
+            if ($post->status === 'published') {
+                $post->update(['status' => 'draft']);
+                $status = 'draft';
+                $message = 'Bài viết đã được chuyển về bản nháp!';
+            } else {
+                $post->update([
+                    'status' => 'published',
+                    'published_at' => now()
+                ]);
+                $status = 'published';
+                $message = 'Bài viết đã được xuất bản!';
+            }
 
-        return redirect()->back()->with('success', $message);
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'status' => $status
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function toggleFeatured(Post $post)
     {
-        $post->update(['featured' => !$post->featured]);
-        
-        $message = $post->featured ? 'Bài viết đã được đánh dấu nổi bật!' : 'Bài viết đã bỏ đánh dấu nổi bật!';
-        
-        return redirect()->back()->with('success', $message);
+        try {
+            $post->update(['featured' => !$post->featured]);
+            
+            $message = $post->featured ? 'Bài viết đã được đánh dấu nổi bật!' : 'Bài viết đã bỏ đánh dấu nổi bật!';
+            
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'featured' => $post->featured
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
 

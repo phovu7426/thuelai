@@ -104,11 +104,21 @@ class PostCategoryController extends Controller
 
     public function toggleStatus(PostCategory $category)
     {
-        $category->update(['is_active' => !$category->is_active]);
-        
-        $message = $category->is_active ? 'Danh mục đã được kích hoạt!' : 'Danh mục đã được tạm dừng!';
-        
-        return redirect()->back()->with('success', $message);
+        try {
+            $category->update(['is_active' => !$category->is_active]);
+            
+            $status = $category->is_active ? 'kích hoạt' : 'vô hiệu hóa';
+            return response()->json([
+                'success' => true,
+                'message' => "Danh mục đã được {$status} thành công!",
+                'status' => $category->is_active
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
 

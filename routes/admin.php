@@ -221,8 +221,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('testimonials')->name('testimonials.')->middleware('canAny:access_driver_testimonials')->group(function () {
             Route::resource('/', \App\Http\Controllers\Admin\Driver\TestimonialController::class)->except(['show']);
             Route::get('/{testimonial}', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'show'])->name('show');
-            Route::post('/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleStatus'])->name('toggle-status');
-            Route::post('/{testimonial}/toggle-featured', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleFeatured'])->name('toggle-featured');
+            Route::patch('/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleStatus'])->name('toggle-status');
+            Route::patch('/{testimonial}/toggle-featured', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleFeatured'])->name('toggle-featured');
             Route::post('/update-order', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'updateOrder'])->name('update-order');
             Route::get('/filter/status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'filterByStatus'])->name('filter-by-status');
             Route::get('/search', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'search'])->name('search');

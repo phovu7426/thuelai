@@ -75,17 +75,19 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                               class="btn btn-sm btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.categories.delete', $category->id) }}"
-                                                  method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
+                                            <div class="action-buttons">
+                                                <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                                   class="btn-action btn-edit" title="Sửa"><i class="fas fa-edit"></i></a>
+                                                <form action="{{ route('admin.categories.delete', $category->id) }}"
+                                                      method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn-action btn-delete" title="Xóa"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

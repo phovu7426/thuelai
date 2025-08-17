@@ -107,22 +107,24 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    @can('access_users')
-                                                        <a href="{{ route('admin.slides.edit', $slide->id) }}"
-                                                           class="btn btn-sm btn-warning" title="Chỉnh sửa">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                        <form action="{{ route('admin.slides.destroy', $slide->id) }}"
-                                                              method="POST" 
-                                                              style="display:inline;"
-                                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa slide này?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
-                                                                <i class="fas fa-trash-alt"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endcan
+                                                    <div class="action-buttons">
+                                                        @can('access_users')
+                                                            <a href="{{ route('admin.slides.edit', $slide->id) }}"
+                                                               class="btn-action btn-edit" title="Chỉnh sửa">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <form action="{{ route('admin.slides.destroy', $slide->id) }}"
+                                                                  method="POST" 
+                                                                  style="display:inline;"
+                                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa slide này?')">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn-action btn-delete" title="Xóa">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endcan
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -90,20 +90,22 @@
                                         </select>
                                     </td>
                                     <td>
-                                        @can('access_users')
-                                            <a href="{{ route('admin.post-categories.edit', $category->id ?? '') }}"
-                                               class="btn btn-sm btn-warning" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                            
-                                            <form action="{{ route('admin.post-categories.destroy', $category->id ?? '') }}" method="POST"
-                                                  style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" title="Xóa" class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        @endcan
+                                        <div class="action-buttons">
+                                            @can('access_users')
+                                                <a href="{{ route('admin.post-categories.edit', $category->id ?? '') }}"
+                                                   class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                                
+                                                <form action="{{ route('admin.post-categories.destroy', $category->id ?? '') }}" method="POST"
+                                                      style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" title="Xóa" class="btn-action btn-delete"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            @endcan
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
