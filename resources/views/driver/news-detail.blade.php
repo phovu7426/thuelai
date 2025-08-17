@@ -13,27 +13,86 @@
 
 @push('styles')
 <style>
-.news-detail-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 60px 0;
+.hero-section {
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-dark);
+    overflow: hidden;
+    padding-top: 80px; /* Add padding for fixed header */
+}
+
+.hero-video-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.8) 0%, 
+        rgba(139, 92, 246, 0.6) 50%, 
+        rgba(236, 72, 153, 0.4) 100%);
+}
+
+.hero-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    background-size: 400px 400px, 300px 300px, 200px 200px;
+    animation: float-particles 20s ease-in-out infinite;
+}
+
+@keyframes float-particles {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
     text-align: center;
+    color: var(--white);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    width: 100%;
 }
 
-.news-detail-hero h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    line-height: 1.3;
+.hero-title {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
 }
 
-.news-detail-hero .meta {
+.hero-meta {
     opacity: 0.9;
     font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .news-detail-content {
     padding: 60px 0;
+    margin-top: 20px; /* Add margin for better spacing */
 }
 
 .article-container {
@@ -345,8 +404,19 @@
 }
 
 @media (max-width: 768px) {
-    .news-detail-hero h1 {
+    .hero-section {
+        padding-top: 100px; /* Adjust padding for mobile */
+        min-height: 50vh;
+    }
+    
+    .hero-title {
         font-size: 2rem;
+    }
+    
+    .hero-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
     }
     
     .article-meta {
@@ -368,10 +438,18 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="news-detail-hero">
-    <div class="container">
-        <h1>{{ $post->title }}</h1>
-        <div class="meta">
+<section class="hero-section">
+    <div class="hero-video-bg">
+        <video autoplay muted loop class="hero-video-bg">
+            <source src="{{ asset('assets/videos/hero-video.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-particles"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">{{ $post->title }}</h1>
+        <div class="hero-meta">
             <span><i class="fas fa-calendar-alt"></i> {{ $post->created_at->format('d/m/Y') }}</span>
             @if($post->category)
             <span class="ms-3"><i class="fas fa-folder"></i> {{ $post->category->name }}</span>

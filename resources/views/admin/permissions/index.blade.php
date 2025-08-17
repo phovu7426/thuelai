@@ -15,33 +15,31 @@
             <div class="row">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row">
+                        <div class="row align-items-center">
                             <div class="col-sm-9">
                                 <!-- Form lọc -->
-                                <form action="{{ route('admin.permissions.index') }}" method="GET">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <input type="text" name="title" class="form-control" placeholder="Ý nghĩa quyền"
-                                                   value="{{ request('title') }}">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="text" name="name" class="form-control" placeholder="Tên quyền"
+                                <form action="{{ route('admin.permissions.index') }}" method="GET" class="mb-0">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <input type="text" name="name" class="form-control" placeholder="🔍 Nhập tên quyền"
                                                    value="{{ request('name') }}">
                                         </div>
-                                        <div class="col-md-3">
-                                            <input type="text" name="parent" class="form-control" placeholder="Quyền cha"
-                                                   value="{{ request('parent') }}">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.permissions.index') }}" class="btn btn-secondary">Reset</a>
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-search"></i> Lọc
+                                            </button>
+                                            <a href="{{ route('admin.permissions.index') }}" class="btn btn-secondary">
+                                                <i class="bi bi-arrow-clockwise"></i> Reset
+                                            </a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-sm-3 d-flex">
-                                @can('access_permissions')
-                                    <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary ms-auto">Thêm quyền</a>
+                            <div class="col-sm-3 d-flex justify-content-end">
+                                @can('access_users')
+                                    <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Thêm Quyền
+                                    </a>
                                 @endcan
                             </div>
                         </div>

@@ -19,6 +19,9 @@
 
     <!--end::Primary Meta Tags-->
     <!--begin::Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
         integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
     <!--end::Fonts-->
@@ -44,6 +47,14 @@
     <link rel="stylesheet" href="{{ asset('css/toastr.min.css') }}">
     <!-- Thêm CSS cho Select2 -->
     <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" />
+    <!-- CSS cho nút toggle đẹp mắt -->
+    <link href="{{ asset('css/admin-toggle-buttons.css') }}" rel="stylesheet" />
+    <!-- CSS hiện đại cho admin panel -->
+    <link href="{{ asset('css/admin-modern.css') }}" rel="stylesheet" />
+    
+    <!-- Admin Dropdowns Component -->
+    <script src="{{ asset('js/admin-dropdowns.js') }}" defer></script>
+    
     <script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
     @yield('styles')
 </head>

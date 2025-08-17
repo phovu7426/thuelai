@@ -53,4 +53,44 @@ class SlideController extends Controller
         $slide->delete();
         return redirect()->route('admin.slides.index')->with('success', 'Xoá slide thành công!');
     }
+
+    public function toggleStatus($id)
+    {
+        try {
+            $slide = Slide::findOrFail($id);
+            $slide->status = !$slide->status;
+            $slide->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã cập nhật trạng thái thành công',
+                'new_status' => $slide->status
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function toggleFeatured($id)
+    {
+        try {
+            $slide = Slide::findOrFail($id);
+            $slide->is_featured = !$slide->is_featured;
+            $slide->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã cập nhật trạng thái nổi bật thành công',
+                'new_featured' => $slide->is_featured
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

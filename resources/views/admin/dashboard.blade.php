@@ -5,13 +5,17 @@
 @section('styles')
 <style>
     .stat-card {
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
     }
     
     .stat-card:hover {
         transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
     }
     
     .stat-icon {
@@ -22,26 +26,35 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: var(--shadow-light);
     }
     
     .recent-item {
-        border-left: 3px solid #3498db;
+        border-left: 3px solid #667eea;
         padding-left: 15px;
         margin-bottom: 15px;
+        transition: all 0.3s ease;
     }
     
     .recent-item:hover {
-        background-color: #f8f9fa;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        transform: translateX(5px);
     }
     
     .chart-container {
         height: 350px;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-light);
     }
     
     .activity-timeline .timeline-item {
         position: relative;
         padding-left: 30px;
         margin-bottom: 15px;
+        transition: all 0.3s ease;
     }
     
     .activity-timeline .timeline-item:before {
@@ -51,7 +64,7 @@
         top: 0;
         height: 100%;
         width: 2px;
-        background-color: #e9ecef;
+        background: var(--primary-gradient);
     }
     
     .activity-timeline .timeline-item:after {
@@ -62,23 +75,65 @@
         height: 12px;
         width: 12px;
         border-radius: 50%;
-        background-color: #3498db;
+        background: var(--success-gradient);
+        box-shadow: var(--shadow-light);
+    }
+    
+    .activity-timeline .timeline-item:hover {
+        transform: translateX(5px);
     }
     
     .quick-action-btn {
-        border-radius: 10px;
+        border-radius: var(--border-radius);
         padding: 15px;
         text-align: center;
         transition: all 0.3s ease;
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        box-shadow: var(--shadow-light);
     }
     
     .quick-action-btn:hover {
         transform: scale(1.05);
+        box-shadow: var(--shadow-medium);
     }
     
     .quick-action-icon {
         font-size: 2rem;
         margin-bottom: 10px;
+    }
+    
+    .card {
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+    }
+    
+    .card:hover {
+        box-shadow: var(--shadow-medium);
+        transform: translateY(-2px);
+    }
+    
+    .card-header {
+        background: var(--primary-gradient);
+        color: white;
+        border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+        border: none;
+        padding: 1.5rem;
+    }
+    
+    .card-header h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+    
+    .card-body {
+        padding: 2rem;
     }
 </style>
 @endsection

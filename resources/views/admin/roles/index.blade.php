@@ -15,29 +15,31 @@
             <div class="row">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row">
+                        <div class="row align-items-center">
                             <div class="col-sm-9">
                                 <!-- Form lọc -->
-                                <form action="{{ route('admin.roles.index') }}" method="GET">
-                                    <div class="row">
+                                <form action="{{ route('admin.roles.index') }}" method="GET" class="mb-0">
+                                    <div class="row g-3">
                                         <div class="col-md-4">
-                                            <input type="text" name="title" class="form-control" placeholder="Nhập ý nghĩa"
-                                                   value="{{ request('title') }}">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" name="name" class="form-control" placeholder="Nhập tên"
+                                            <input type="text" name="name" class="form-control" placeholder="🔍 Nhập tên vai trò"
                                                    value="{{ request('name') }}">
                                         </div>
                                         <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">Reset</a>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-search"></i> Lọc
+                                            </button>
+                                            <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">
+                                                <i class="bi bi-arrow-clockwise"></i> Reset
+                                            </a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-sm-3 d-flex">
-                                @can('access_roles')
-                                    <a href="{{ route('admin.roles.create') }}" class="btn btn-primary ms-auto">Thêm Vai Trò</a>
+                            <div class="col-sm-3 d-flex justify-content-end">
+                                @can('access_users')
+                                    <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Thêm Vai trò
+                                    </a>
                                 @endcan
                             </div>
                         </div>

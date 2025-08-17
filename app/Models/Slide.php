@@ -13,6 +13,12 @@ class Slide extends Model
         'description',
         'image',
         'link',
-        'status'
+        'status',
+        'is_featured'
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
+        'is_featured' => 'boolean'
     ];
 }

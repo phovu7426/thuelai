@@ -1,130 +1,150 @@
 @extends('admin.index')
 
-@section('page_title', 'Danh sách Bài Đăng')
+@section('page_title', 'Danh sách tin tức')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">Danh sách Bài Đăng</li>
+    <li class="breadcrumb-item active" aria-current="page">Danh sách tin tức</li>
 @endsection
 
 @section('content')
+    <!--begin::App Content-->
     <div class="app-content">
+        <!--begin::Container-->
         <div class="container-fluid">
+            <!--begin::Row-->
             <div class="row">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row">
+                        <div class="row align-items-center">
                             <div class="col-sm-9">
-                                <form action="{{ route('admin.posts.index') }}" method="GET">
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="input-group">
-                                                <input type="text" name="name" class="form-control" placeholder="Tìm theo tiêu đề"
-                                                       value="{{ request('name') }}">
-                                                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                                                <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">Reset</a>
-                                            </div>
+                                <!-- Form lọc -->
+                                <form action="{{ route('admin.posts.index') }}" method="GET" class="mb-0">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <input type="text" name="title" class="form-control" placeholder="🔍 Nhập tiêu đề tin tức"
+                                                   value="{{ request('title') }}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-search"></i> Lọc
+                                            </button>
+                                            <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">
+                                                <i class="bi bi-arrow-clockwise"></i> Reset
+                                            </a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-sm-3 d-flex">
-                                @canany(['manage_declarations', 'create_declarations'])
-                                    <a href="{{ route('admin.posts.create') }}" class="btn btn-primary ms-auto">Thêm Bài Đăng</a>
-                                @endcanany
+                            <div class="col-sm-3 d-flex justify-content-end">
+                                @can('access_users')
+                                    <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Thêm tin tức
+                                    </a>
+                                @endcan
                             </div>
                         </div>
                     </div>
-
+                    <!-- /.card-header -->
                     <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success">{{ session('success') }}</div>
-                        @endif
-                        @if(session('error'))
-                            <div class="alert alert-danger">{{ session('error') }}</div>
-                        @endif
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered align-middle">
-                                <thead class="table-light">
+                        <table class="table table-bordered">
+                            <thead>
                                 <tr>
-                                    <th width="5%">ID</th>
-                                    <th width="10%">Hình Ảnh</th>
-                                    <th width="25%">Tiêu Đề</th>
-                                    <th width="30%">Mô Tả</th>
-                                    <th width="10%">Trạng Thái</th>
-                                    <th width="10%">Đăng Nhập</th>
-                                    <th width="10%">Hành Động</th>
+                                    <th>STT</th>
+                                    <th>Tiêu đề</th>
+                                    <th>Danh mục</th>
+                                    <th>Tác giả</th>
+                                    <th>Trạng thái</th>
+                                    <th>Nổi bật</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Thao tác</th>
                                 </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($posts as $index => $post)
-                                    <tr>
-                                        <td>{{ $post->id }}</td>
-                                        <td>
-                                            @if($post->image)
-                                                <img src="{{ asset($post->image) }}" width="80" height="50" class="img-thumbnail" style="object-fit: cover">
-                                            @else
-                                                <span class="text-muted">Không có ảnh</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <strong>{{ $post->name }}</strong>
-                                            <div class="text-muted small">
-                                                <i class="far fa-user me-1"></i> {{ $post->user->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="text-muted small">
-                                                <i class="far fa-calendar-alt me-1"></i> {{ $post->created_at->format('d/m/Y H:i') }}
-                                            </div>
-                                        </td>
-                                        <td>{{ Str::limit($post->description ?? strip_tags($post->content), 100) }}</td>
-                                        <td>
-                                            @if($post->status === 'active')
-                                                <span class="badge bg-success">Hiển thị</span>
-                                            @else
-                                                <span class="badge bg-secondary">Ẩn</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($post->require_login)
-                                                <span class="badge bg-warning text-dark">Yêu cầu</span>
-                                            @else
-                                                <span class="badge bg-info">Không yêu cầu</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.posts.edit', $post->id) }}"
-                                                   class="btn btn-sm btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>
-                                                <form action="{{ route('admin.posts.delete', $post->id) }}"
-                                                      method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Xóa"
-                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                
-                                @if($posts->isEmpty())
-                                    <tr>
-                                        <td colspan="7" class="text-center">Không có bài đăng nào</td>
-                                    </tr>
-                                @endif
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Hiển thị phân trang -->
-                        <div class="mt-4">
-                            {{ $posts->withQueryString()->links() }}
-                        </div>
+                            </thead>
+                            <tbody>
+                            @foreach($posts as $index => $post)
+                                <tr>
+                                    <td>{{ $posts->firstItem() + $index }}</td>
+                                    <td>
+                                        <strong>{{ Str::limit($post->title ?? '', 50) }}</strong>
+                                        @if($post->excerpt)
+                                            <br><small class="text-muted">{{ Str::limit($post->excerpt, 80) }}</small>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ $post->category->name ?? 'Không có' }}</span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ $post->author->name ?? 'Không có' }}</strong>
+                                    </td>
+                                    <td>
+                                                <select class="form-select form-select-sm status-select" 
+                                                        data-post-id="{{ $post->id }}" 
+                                                        data-current-status="{{ $post->status }}"
+                                                        data-status-type="posts">
+                                                    <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>
+                                                        Nháp
+                                                    </option>
+                                                    <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>
+                                                        Xuất bản
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-select form-select-sm featured-select" 
+                                                        data-post-id="{{ $post->id }}" 
+                                                        data-current-featured="{{ $post->featured ? '1' : '0' }}"
+                                                        data-featured-type="posts">
+                                                    <option value="0" {{ !$post->featured ? 'selected' : '' }}>
+                                                        Bình thường
+                                                    </option>
+                                                    <option value="1" {{ $post->featured ? 'selected' : '' }}>
+                                                        Nổi bật
+                                                    </option>
+                                                </select>
+                                            </td>
+                                    <td>{{ $post->created_at ? $post->created_at->format('d/m/Y') : 'N/A' }}</td>
+                                    <td>
+                                        @can('access_users')
+                                            <a href="{{ route('admin.posts.show', $post->id) }}" 
+                                               class="btn btn-sm btn-info" title="Xem chi tiết">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ route('admin.posts.edit', $post->id) }}" 
+                                               class="btn btn-sm btn-warning" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST"
+                                                  style="display:inline;"
+                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" title="Xóa" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        
+                        <!-- Phân trang -->
+                        @if($posts->hasPages())
+                            <div class="d-flex justify-content-center mt-3">
+                                {{ $posts->links() }}
+                            </div>
+                        @endif
                     </div>
+                    <!-- /.card-body -->
                 </div>
             </div>
+            <!--end::Row-->
         </div>
+        <!--end::Container-->
     </div>
+    <!--end::App Content-->
+@endsection
+
+@section('scripts')
+<!-- Sử dụng component chung admin-dropdowns.js -->
 @endsection

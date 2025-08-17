@@ -13,52 +13,54 @@
             <div class="row">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Thông tin vai trò</h5>
+                        <h3 class="card-title">
+                            <i class="bi bi-shield-plus"></i> Thêm mới vai trò
+                        </h3>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('admin.roles.store') }}" method="POST">
                             @csrf
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">
+                                            <i class="bi bi-tag"></i> Tên vai trò
+                                        </label>
+                                        <input type="text" name="name" class="form-control"
+                                            placeholder="🏷️ Nhập tên vai trò..." value="{{ old('name') }}" required>
+                                        @error('name')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
 
-                            {{-- Tên hiển thị --}}
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Tên hiển thị</label>
-                                <input type="text" id="title" name="title"
-                                    class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}"
-                                    required>
-                                @error('title')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">
+                                            <i class="bi bi-info-circle"></i> Mô tả
+                                        </label>
+                                        <input type="text" name="title" class="form-control"
+                                            placeholder="ℹ️ Nhập mô tả..." value="{{ old('title') }}" required>
+                                        @error('title')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
 
-                            {{-- Tên hệ thống --}}
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Tên hệ thống</label>
-                                <input type="text" id="name" name="name"
-                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
-                                    required>
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            {{-- Quyền --}}
-                            <div class="mb-3">
-                                <label class="form-label">Danh sách quyền</label>
-                                <select class="form-control select2 @error('permissions') is-invalid @enderror"
-                                    name="permissions[]" multiple data-field="name"
-                                    data-url="{{ route('admin.permissions.autocomplete') }}">
-                                    <option value="">Chọn quyền</option>
-                                </select>
-                                @error('permissions')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            {{-- Nút hành động --}}
-                            <button type="submit" class="btn btn-primary">Thêm vai trò</button>
-                            <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">Hủy</a>
+                                <div class="col-12">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="{{ route('admin.roles.index') }}" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-left"></i> Hủy
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle"></i> Thêm mới
+                                        </button>
+                                    </div>
+                                </div>
+                            </div> <!-- row -->
                         </form>
                     </div>
+                    <!-- /.card-body -->
                 </div>
             </div>
         </div>

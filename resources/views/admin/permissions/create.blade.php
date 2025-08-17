@@ -14,50 +14,55 @@
             <!--begin::Row-->
             <div class="row">
                 <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-key-plus"></i> Thêm mới quyền
+                        </h3>
+                    </div>
                     <div class="card-body">
                         <form action="{{ route('admin.permissions.store') }}" method="POST">
                             @csrf
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">
+                                            <i class="bi bi-key"></i> Tên quyền
+                                        </label>
+                                        <input type="text" name="name" class="form-control"
+                                            placeholder="🔑 Nhập tên quyền..." value="{{ old('name') }}" required>
+                                        @error('name')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
 
-                            <!-- Ý nghĩa quyền -->
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Ý nghĩa quyền</label>
-                                <input type="text" name="title" id="title"
-                                    class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}"
-                                    required>
-                                @error('title')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">
+                                            <i class="bi bi-info-circle"></i> Mô tả
+                                        </label>
+                                        <input type="text" name="title" class="form-control"
+                                            placeholder="ℹ️ Nhập mô tả..." value="{{ old('title') }}" required>
+                                        @error('title')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
 
-                            <!-- Tên quyền -->
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Tên quyền</label>
-                                <input type="text" name="name" id="name"
-                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
-                                    required>
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Quyền cha -->
-                            <div class="mb-3">
-                                <label for="parent_id" class="form-label">Quyền cha</label>
-                                <select class="form-control select2 @error('parent_id') is-invalid @enderror"
-                                    name="parent_id" data-selected="{{ old('parent_id') }}"
-                                    data-url="{{ route('admin.permissions.autocomplete') }}">
-                                    <option value="">Chọn quyền cha</option>
-                                </select>
-                                @error('parent_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Nút -->
-                            <button type="submit" class="btn btn-success">Thêm</button>
-                            <a href="{{ route('admin.permissions.index') }}" class="btn btn-secondary">Quay lại</a>
+                                <div class="col-12">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="{{ route('admin.permissions.index') }}" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-left"></i> Hủy
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle"></i> Thêm mới
+                                        </button>
+                                    </div>
+                                </div>
+                            </div> <!-- row -->
                         </form>
                     </div>
+                    <!-- /.card-body -->
                 </div>
             </div>
             <!--end::Row-->

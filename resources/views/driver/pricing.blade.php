@@ -83,64 +83,114 @@
             <div class="section-header">
                 <h2 class="section-title">Bảng giá chi tiết</h2>
                 <p class="section-subtitle">
-                    Xem chi tiết giá cả của tất cả các dịch vụ chúng tôi cung cấp
+                    Xem chi tiết giá cả theo khoảng cách và thời gian
                 </p>
             </div>
 
-            <div class="booking-form-container">
-                <div class="booking-form-modern">
+            <div class="pricing-table-container">
+                <div class="pricing-table-modern">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-bordered pricing-table">
                             <thead>
-                                <tr>
-                                    <th class="text-center" style="width: 50%;">Loại dịch vụ</th>
-                                    <th class="text-center" style="width: 50%;">Mô tả</th>
+                                <tr class="table-header">
+                                    <th class="text-center" style="width: {{ 100 / (count($distanceTiers) + 1) }}%;">Thời gian</th>
+                                    @foreach($distanceTiers as $tier)
+                                    <th class="text-center" style="width: {{ 100 / (count($distanceTiers) + 1) }}%;">{{ $tier->display_text }}</th>
+                                    @endforeach
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($services) > 0)
-                                    @foreach($services as $service)
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    @if($service->icon)
-                                                        <img src="{{ $service->icon_url }}" alt="{{ $service->name }}" class="me-3" style="width: 40px; height: 40px; border-radius: 50%;">
+                                @forelse($pricingRules as $rule)
+                                <tr class="pricing-row">
+                                    <td class="time-slot">
+                                        <div class="time-info">
+                                            <i class="{{ $rule->time_icon }}" style="color: {{ $rule->time_color }};"></i>
+                                            <span class="time-text">{{ $rule->time_slot }}</span>
+                                        </div>
+                                    </td>
+                                    @foreach($distanceTiers as $tier)
+                                    <td class="price-cell">
+                                        @php
+                                            $pricingDistance = $rule->pricingDistances->where('distance_tier_id', $tier->id)->first();
+                                        @endphp
+                                        @if($pricingDistance)
+                                            @if($pricingDistance->price_text)
+                                                <span class="price-negotiable">{{ $pricingDistance->price_text }}</span>
+                                            @else
+                                                <span class="price-amount">{{ number_format($pricingDistance->price / 1000, 0) }}k</span>
+                                                <small class="price-unit">
+                                                    @if($tier->from_distance == 0 && $tier->to_distance)
+                                                        /chuyến
                                                     @else
-                                                        <div class="service-icon-wrapper me-3" style="width: 40px; height: 40px;">
-                                                            <i class="fas fa-car"></i>
-                                                        </div>
+                                                        /km
                                                     @endif
-                                                    <div>
-                                                        <h6 class="mb-1">{{ $service->name }}</h6>
-                                                        <small class="text-muted">{{ $service->short_description }}</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <small class="text-muted">
-                                                    @if($service->is_featured)
-                                                        <span class="badge-modern">Nổi bật</span><br>
-                                                    @endif
-                                                    {{ $service->description ? Str::limit($service->description, 100) : 'Không có mô tả' }}
                                                 </small>
-                                            </td>
-                                        </tr>
+                                            @endif
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="2" class="text-center py-5">
-                                            <div class="empty-state">
-                                                <div class="empty-icon">
-                                                    <i class="fas fa-car"></i>
-                                                </div>
-                                                <h3>Chưa có dịch vụ nào</h3>
-                                                <p>Vui lòng quay lại sau hoặc liên hệ với chúng tôi.</p>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="{{ count($distanceTiers) + 1 }}" class="text-center py-5">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">
+                                                <i class="fas fa-calculator"></i>
                                             </div>
-                                        </td>
-                                    </tr>
-                                @endif
+                                            <h3>Chưa có bảng giá</h3>
+                                            <p>Vui lòng liên hệ với chúng tôi để được tư vấn về giá cả.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Additional Pricing Info -->
+                <div class="pricing-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Lưu ý về giá</h4>
+                                <ul>
+                                    <li>Giá trên chưa bao gồm phí cầu đường, bãi xe</li>
+                                    <li>Phí chờ: 50k/giờ (áp dụng sau 15 phút chờ)</li>
+                                    <li>Phí đi sân bay: +100k so với giá thường</li>
+                                    <li>Giá có thể thay đổi trong dịp lễ, Tết</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Liên hệ tư vấn</h4>
+                                <p>Để biết chính xác giá cho chuyến đi của bạn, vui lòng liên hệ:</p>
+                                <div class="contact-info">
+                                    <div class="contact-item">
+                                        <i class="fas fa-phone"></i>
+                                        <span>Hotline: 1900-xxxx</span>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-envelope"></i>
+                                        <span>Email: info@thuelai.vn</span>
+                                    </div>
+                                </div>
+                                <a href="{{ route('driver.contact') }}" class="btn-contact-advice">
+                                    <i class="fas fa-comments"></i>
+                                    Tư vấn miễn phí
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

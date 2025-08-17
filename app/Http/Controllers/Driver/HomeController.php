@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Driver;
 
 use App\Http\Controllers\Controller;
 use App\Models\DriverService;
+use App\Models\DriverPricingRule;
+use App\Models\DriverPricingTier;
+use App\Models\DriverDistanceTier;
 use App\Models\Testimonial;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -59,16 +62,55 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('driver.pricing', compact('services'));
+        $pricingRules = DriverPricingRule::with(['pricingDistances.distanceTier'])->active()->ordered()->get();
+        $distanceTiers = DriverDistanceTier::active()->ordered()->get();
+
+        return view('driver.pricing', compact('services', 'pricingRules', 'distanceTiers'));
     }
 
     public function news()
     {
-        $posts = Post::where('status', 'published')
+        $posts = Post::with(['category', 'author', 'tags'])
+            ->where('status', 'published')
             ->orderBy('created_at', 'desc')
             ->paginate(9);
 
-        return view('driver.news', compact('posts'));
+        // Get popular posts
+        $popularPosts = Post::where('status', 'published')
+            ->orderBy('views', 'desc')
+            ->take(4)
+            ->get();
+
+        // Get categories with post counts
+        $categories = \App\Models\PostCategory::where('is_active', true)
+            ->withCount(['posts' => function($query) {
+                $query->where('status', 'published');
+            }])
+            ->orderBy('sort_order')
+            ->get();
+
+        // Get category counts for filter buttons
+        $categoryCounts = [];
+        foreach ($categories as $category) {
+            $categoryCounts[$category->slug] = $category->posts_count;
+        }
+
+        // Get total posts count
+        $totalPosts = Post::where('status', 'published')->count();
+
+        // Get contact info
+        $contactInfo = (object) [
+            'hotline' => '1900-xxxx'
+        ];
+
+        return view('driver.news', compact(
+            'posts',
+            'popularPosts',
+            'categories',
+            'categoryCounts',
+            'totalPosts',
+            'contactInfo'
+        ));
     }
 
     public function contact()

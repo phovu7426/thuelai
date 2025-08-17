@@ -84,7 +84,35 @@
             </li>
             @endcan
 
-                        {{-- Stone menu items removed - stone functionality no longer exists --}}
+            {{-- Quản lý danh mục tin tức --}}
+            @can('access_users')
+            <li class="nav-item">
+                <a href="{{ route('admin.post-categories.index') }}" class="nav-link {{ isActive('admin.post-categories.*') }}">
+                    <i class="nav-icon bi bi-folder"></i>
+                    <p>Danh mục tin tức</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- Quản lý tin tức --}}
+            @can('access_users')
+            <li class="nav-item">
+                <a href="{{ route('admin.posts.index') }}" class="nav-link {{ isActive('admin.posts.*') }}">
+                    <i class="nav-icon bi bi-newspaper"></i>
+                    <p>Quản lý tin tức</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- Quản lý tags --}}
+            @can('access_users')
+            <li class="nav-item">
+                <a href="{{ route('admin.post-tags.index') }}" class="nav-link {{ isActive('admin.post-tags.*') }}">
+                    <i class="nav-icon bi bi-tags"></i>
+                    <p>Quản lý tags</p>
+                </a>
+            </li>
+            @endcan
 
             {{-- ===== DRIVER SERVICES SECTION ===== --}}
             {{-- Quản lý dịch vụ lái xe --}}
@@ -97,12 +125,35 @@
             </li>
             @endcan
 
-            {{-- Quản lý bảng giá --}}
+
+
+
+            {{-- Quản lý quy tắc giá --}}
             @can('access_driver_services')
             <li class="nav-item">
-                <a href="{{ route('admin.driver.pricing.index') }}" class="nav-link {{ isActive('admin.driver.pricing.*') }}">
-                    <i class="nav-icon bi bi-tags"></i>
-                    <p>Bảng giá</p>
+                <a href="{{ route('admin.driver.pricing-rules.index') }}" class="nav-link {{ isActive('admin.driver.pricing-rules.*') }}">
+                    <i class="nav-icon bi bi-calculator"></i>
+                    <p>Quy tắc giá</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- Quản lý khoảng cách --}}
+            @can('access_driver_services')
+            <li class="nav-item">
+                <a href="{{ route('admin.driver.distance-tiers.index') }}" class="nav-link {{ isActive('admin.driver.distance-tiers.*') }}">
+                    <i class="nav-icon bi bi-route"></i>
+                    <p>Khoảng cách</p>
+                </a>
+            </li>
+            @endcan
+
+            {{-- Quản lý giá theo khoảng cách --}}
+            @can('access_driver_services')
+            <li class="nav-item">
+                <a href="{{ route('admin.driver.pricing-tiers.index') }}" class="nav-link {{ isActive('admin.driver.pricing-tiers.*') }}">
+                    <i class="nav-icon bi bi-graph-up"></i>
+                    <p>Giá theo khoảng cách</p>
                 </a>
             </li>
             @endcan

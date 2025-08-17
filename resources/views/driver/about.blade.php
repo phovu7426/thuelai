@@ -9,47 +9,148 @@
 
 @push('styles')
 <style>
-.about-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 100px 0;
-    text-align: center;
+.hero-section {
     position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: var(--gradient-dark);
     overflow: hidden;
+    padding-top: 80px; /* Add padding for fixed header */
 }
 
-.about-hero::before {
-    content: '';
+.hero-video-bg {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('{{ asset("images/bg-pattern-dark.png") }}') repeat;
-    opacity: 0.1;
+    z-index: 1;
 }
 
-.about-hero .container {
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.8) 0%, 
+        rgba(139, 92, 246, 0.6) 50%, 
+        rgba(236, 72, 153, 0.4) 100%);
+}
+
+.hero-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    background-size: 400px 400px, 300px 300px, 200px 200px;
+    animation: float-particles 20s ease-in-out infinite;
+}
+
+@keyframes float-particles {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.hero-content {
     position: relative;
     z-index: 2;
+    text-align: center;
+    color: var(--white);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    width: 100%;
 }
 
-.about-hero h1 {
-    font-size: 3.5rem;
-    font-weight: 700;
+.hero-badge {
+    margin-bottom: 2rem;
+}
+
+.badge-glow {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
     margin-bottom: 1.5rem;
 }
 
-.about-hero p {
-    font-size: 1.3rem;
+.title-line {
+    display: block;
+}
+
+.title-highlight {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-description {
+    font-size: 1.25rem;
+    margin-bottom: 3rem;
     opacity: 0.9;
-    max-width: 700px;
-    margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.7;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.scroll-arrow {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    animation: bounce 2s infinite;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.scroll-arrow:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-50%) scale(1.1);
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-10px); }
+    60% { transform: translateX(-50%) translateY(-5px); }
 }
 
 .about-content {
     padding: 80px 0;
+    margin-top: 20px; /* Add margin for better spacing */
 }
 
 .section-title {
@@ -413,12 +514,17 @@
 }
 
 @media (max-width: 768px) {
-    .about-hero h1 {
-        font-size: 2.5rem;
+    .hero-section {
+        padding-top: 100px; /* Adjust padding for mobile */
+        min-height: 80vh;
     }
     
-    .about-hero p {
-        font-size: 1.1rem;
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
     }
     
     .section-title h2 {
@@ -448,15 +554,36 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="about-hero">
-    <div class="container">
-        <h1>Về Chúng Tôi</h1>
-        <p>Chúng tôi là đơn vị tiên phong trong lĩnh vực dịch vụ tài xế thuê lái tại Việt Nam, cam kết mang đến sự an toàn, tiện lợi và chuyên nghiệp cho mọi khách hàng.</p>
+<section class="hero-section">
+    <div class="hero-video-bg">
+        <video autoplay muted loop>
+            <source src="{{ asset('videos/hero-video.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-particles"></div>
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="badge-glow">Dịch vụ tài xế thuê lái</span>
+        </div>
+        <h1 class="hero-title">
+            <span class="title-line">Về</span>
+            <span class="title-highlight">Chúng Tôi</span>
+        </h1>
+        <p class="hero-description">
+            Chúng tôi là đơn vị tiên phong trong lĩnh vực dịch vụ tài xế thuê lái tại Việt Nam, cam kết mang đến sự an toàn, tiện lợi và chuyên nghiệp cho mọi khách hàng.
+        </p>
+        <a href="#about-story" class="scroll-indicator">
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </a>
     </div>
 </section>
 
 <!-- About Story Section -->
-<section class="about-content">
+<section class="about-content" id="about-story">
     <div class="container">
         <div class="section-title">
             <h2>Câu Chuyện Của Chúng Tôi</h2>

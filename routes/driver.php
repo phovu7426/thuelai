@@ -18,5 +18,10 @@ Route::name('driver.')->group(function () {
     // Contact form submission
     Route::post('/lien-he', [ContactController::class, 'submit'])->name('contact.submit');
     
+    // News Routes
+    Route::get('/news', [\App\Http\Controllers\Driver\NewsController::class, 'index'])->name('news');
+    Route::get('/news/{slug}', [\App\Http\Controllers\Driver\NewsController::class, 'show'])->name('news.detail');
+    Route::get('/news/category/{slug}', [\App\Http\Controllers\Driver\NewsController::class, 'category'])->name('news.category');
+    Route::get('/news/tag/{slug}', [\App\Http\Controllers\Driver\NewsController::class, 'tag'])->name('news.tag');
 
 });

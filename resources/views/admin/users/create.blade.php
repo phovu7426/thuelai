@@ -16,15 +16,22 @@
             <!--begin::Row-->
             <div class="row">
                 <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-person-plus"></i> Thêm mới tài khoản
+                        </h3>
+                    </div>
                     <div class="card-body">
                         <form action="{{ route('admin.users.store') }}" method="POST">
                             @csrf
-                            <div class="row">
+                            <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
+                                        <label for="email" class="form-label">
+                                            <i class="bi bi-envelope"></i> Email
+                                        </label>
                                         <input type="email" name="email" class="form-control"
-                                            placeholder="Nhập email..." value="{{ old('email') }}" required>
+                                            placeholder="📧 Nhập email..." value="{{ old('email') }}" required>
                                         @error('email')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -33,9 +40,11 @@
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="password" class="form-label">Mật khẩu</label>
+                                        <label for="password" class="form-label">
+                                            <i class="bi bi-lock"></i> Mật khẩu
+                                        </label>
                                         <input type="password" name="password" class="form-control"
-                                            placeholder="Nhập mật khẩu..." required>
+                                            placeholder="🔒 Nhập mật khẩu..." required>
                                         @error('password')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -44,9 +53,11 @@
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="password_confirmation" class="form-label">Xác nhận mật khẩu</label>
+                                        <label for="password_confirmation" class="form-label">
+                                            <i class="bi bi-lock-fill"></i> Xác nhận mật khẩu
+                                        </label>
                                         <input type="password" name="password_confirmation" class="form-control"
-                                            placeholder="Nhập lại mật khẩu..." required>
+                                            placeholder="🔒 Nhập lại mật khẩu..." required>
                                         @error('password_confirmation')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -54,9 +65,13 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <div class="d-grid gap-2">
-                                        <button type="submit" class="btn btn-primary">Thêm mới</button>
-                                        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Hủy</a>
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-left"></i> Hủy
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle"></i> Thêm mới
+                                        </button>
                                     </div>
                                 </div>
                             </div> <!-- row -->

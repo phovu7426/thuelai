@@ -456,4 +456,69 @@ class DriverContactController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    /**
+     * Toggle trạng thái liên hệ
+     */
+    public function toggleStatus($id)
+    {
+        try {
+            $contacts = collect(session('driver_contacts', []));
+            $contact = $contacts->firstWhere('id', $id);
+
+            if (!$contact) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy liên hệ'
+                ], 404);
+            }
+
+            // Chuyển đổi trạng thái theo thứ tự: unread -> read -> replied -> unread
+            $statusMap = [
+                'unread' => 'read',
+                'read' => 'replied',
+                'replied' => 'unread'
+            ];
+
+            $newStatus = $statusMap[$contact['status']] ?? 'unread';
+            
+            // Cập nhật trạng thái
+            $contacts = $contacts->map(function($item) use ($id, $newStatus) {
+                if ($item['id'] === $id) {
+                    $item['status'] = $newStatus;
+                    $item['updated_at'] = now();
+                }
+                return $item;
+            });
+
+            session(['driver_contacts' => $contacts->toArray()]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã cập nhật trạng thái thành công',
+                'new_status' => $newStatus,
+                'status_text' => $this->getStatusText($newStatus)
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Lấy text hiển thị cho trạng thái
+     */
+    private function getStatusText($status)
+    {
+        $statusLabels = [
+            'unread' => 'Chưa đọc',
+            'read' => 'Đã đọc',
+            'replied' => 'Đã trả lời'
+        ];
+
+        return $statusLabels[$status] ?? ucfirst($status);
+    }
 }

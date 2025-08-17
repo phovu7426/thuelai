@@ -85,26 +85,30 @@
                                         </td>
                                         <td>{{ Str::limit($service->short_description, 100) }}</td>
                                         <td>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input toggle-status" 
-                                                       type="checkbox" 
-                                                       data-id="{{ $service->id }}"
-                                                       {{ $service->status ? 'checked' : '' }}>
-                                                <label class="form-check-label">
-                                                    {{ $service->status ? 'Kích hoạt' : 'Vô hiệu' }}
-                                                </label>
-                                            </div>
+                                            <select class="form-select form-select-sm status-select" 
+                                                    data-service-id="{{ $service->id }}" 
+                                                    data-current-status="{{ $service->status ? '1' : '0' }}"
+                                                    data-status-type="default">
+                                                <option value="0" {{ !$service->status ? 'selected' : '' }}>
+                                                    Vô hiệu
+                                                </option>
+                                                <option value="1" {{ $service->status ? 'selected' : '' }}>
+                                                    Kích hoạt
+                                                </option>
+                                            </select>
                                         </td>
                                         <td>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input toggle-featured" 
-                                                       type="checkbox" 
-                                                       data-id="{{ $service->id }}"
-                                                       {{ $service->is_featured ? 'checked' : '' }}>
-                                                <label class="form-check-label">
-                                                    {{ $service->is_featured ? 'Nổi bật' : 'Bình thường' }}
-                                                </label>
-                                            </div>
+                                            <select class="form-select form-select-sm featured-select" 
+                                                    data-service-id="{{ $service->id }}" 
+                                                    data-current-featured="{{ $service->is_featured ? '1' : '0' }}"
+                                                    data-featured-type="default">
+                                                <option value="0" {{ !$service->is_featured ? 'selected' : '' }}>
+                                                    Bình thường
+                                                </option>
+                                                <option value="1" {{ $service->is_featured ? 'selected' : '' }}>
+                                                    Nổi bật
+                                                </option>
+                                            </select>
                                         </td>
                                         <td>{{ $service->sort_order }}</td>
                                         <td>
@@ -158,81 +162,5 @@
 @endsection
 
 @section('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle trạng thái dịch vụ
-    document.querySelectorAll('.toggle-status').forEach(function(toggle) {
-        toggle.addEventListener('change', function() {
-            const serviceId = this.getAttribute('data-id');
-            const isChecked = this.checked;
-            
-            fetch(`/admin/driver/services/${serviceId}/toggle-status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Cập nhật label
-                    const label = this.nextElementSibling;
-                    label.textContent = isChecked ? 'Kích hoạt' : 'Vô hiệu';
-                    
-                    // Hiển thị thông báo
-                    alert(data.message);
-                } else {
-                    // Khôi phục trạng thái cũ
-                    this.checked = !isChecked;
-                    alert('Có lỗi xảy ra: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                this.checked = !isChecked;
-                alert('Có lỗi xảy ra khi cập nhật trạng thái');
-            });
-        });
-    });
-
-    // Toggle trạng thái featured
-    document.querySelectorAll('.toggle-featured').forEach(function(toggle) {
-        toggle.addEventListener('change', function() {
-            const serviceId = this.getAttribute('data-id');
-            const isChecked = this.checked;
-            
-            fetch(`/admin/driver/services/${serviceId}/toggle-featured`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Cập nhật label
-                    const label = this.nextElementSibling;
-                    label.textContent = isChecked ? 'Nổi bật' : 'Bình thường';
-                    
-                    // Hiển thị thông báo
-                    alert(data.message);
-                } else {
-                    // Khôi phục trạng thái cũ
-                    this.checked = !isChecked;
-                    alert('Có lỗi xảy ra: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                this.checked = !isChecked;
-                alert('Có lỗi xảy ra khi cập nhật trạng thái nổi bật');
-            });
-        });
-    });
-});
-</script>
+<!-- Sử dụng component chung admin-dropdowns.js -->
 @endsection

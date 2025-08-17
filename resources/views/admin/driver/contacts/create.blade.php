@@ -1,174 +1,156 @@
-@extends('admin.layouts.main')
+@extends('admin.index')
 
-@section('title', 'Tạo liên hệ mới')
+@section('page_title', 'Tạo liên hệ mới')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.driver.dashboard') }}">Dịch vụ lái xe</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.driver.contacts.index') }}">Liên hệ lái xe</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Tạo mới</li>
+@endsection
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Tạo liên hệ mới</h3>
-                    <div class="card-tools">
-                        <a href="{{ route('admin.driver.contacts.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Quay lại
-                        </a>
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-envelope-plus"></i> Tạo liên hệ mới
+                        </h3>
                     </div>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.driver.contacts.store') }}" method="POST">
-                        @csrf
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="name">Họ tên <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                                           id="name" name="name" value="{{ old('name') }}" required>
-                                    @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
+                    <div class="card-body">
+                        <form action="{{ route('admin.driver.contacts.store') }}" method="POST">
+                            @csrf
                             
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="phone">Số điện thoại <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('phone') is-invalid @enderror" 
-                                           id="phone" name="phone" value="{{ old('phone') }}" required>
-                                    @error('phone')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">
+                                            <i class="bi bi-person"></i> Họ tên <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                                               id="name" name="name" placeholder="👤 Nhập họ tên..." value="{{ old('name') }}" required>
+                                        @error('name')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                           id="email" name="email" value="{{ old('email') }}">
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">
+                                            <i class="bi bi-telephone"></i> Số điện thoại <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control @error('phone') is-invalid @enderror" 
+                                               id="phone" name="phone" placeholder="📱 Nhập số điện thoại..." value="{{ old('phone') }}" required>
+                                        @error('phone')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="subject">Tiêu đề <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('subject') is-invalid @enderror" 
-                                           id="subject" name="subject" value="{{ old('subject') }}" required>
-                                    @error('subject')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">
+                                            <i class="bi bi-envelope"></i> Email
+                                        </label>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                                               id="email" name="email" placeholder="📧 Nhập email..." value="{{ old('email') }}">
+                                        @error('email')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="message">Nội dung tin nhắn <span class="text-danger">*</span></label>
-                            <textarea class="form-control @error('message') is-invalid @enderror" 
-                                      id="message" name="message" rows="6" required>{{ old('message') }}</textarea>
-                            @error('message')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="contact_type">Loại liên hệ</label>
-                                    <select class="form-control @error('contact_type') is-invalid @enderror" 
-                                            id="contact_type" name="contact_type">
-                                        <option value="general" {{ old('contact_type') == 'general' ? 'selected' : '' }}>Liên hệ chung</option>
-
-                                        <option value="support" {{ old('contact_type') == 'support' ? 'selected' : '' }}>Hỗ trợ</option>
-                                        <option value="complaint" {{ old('contact_type') == 'complaint' ? 'selected' : '' }}>Khiếu nại</option>
-                                        <option value="feedback" {{ old('contact_type') == 'feedback' ? 'selected' : '' }}>Phản hồi</option>
-                                    </select>
-                                    @error('contact_type')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="subject" class="form-label">
+                                            <i class="bi bi-chat-text"></i> Tiêu đề <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control @error('subject') is-invalid @enderror" 
+                                               id="subject" name="subject" placeholder="📝 Nhập tiêu đề..." value="{{ old('subject') }}" required>
+                                        @error('subject')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="status">Trạng thái</label>
-                                    <select class="form-control @error('status') is-invalid @enderror" 
-                                            id="status" name="status">
-                                        <option value="new" {{ old('status') == 'new' ? 'selected' : '' }}>Mới</option>
-                                        <option value="read" {{ old('status') == 'read' ? 'selected' : '' }}>Đã đọc</option>
-                                        <option value="replied" {{ old('status') == 'replied' ? 'selected' : '' }}>Đã trả lời</option>
-                                        <option value="closed" {{ old('status') == 'closed' ? 'selected' : '' }}>Đã đóng</option>
-                                    </select>
-                                    @error('status')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="priority">Mức độ ưu tiên</label>
-                                    <select class="form-control @error('priority') is-invalid @enderror" 
-                                            id="priority" name="priority">
-                                        <option value="low" {{ old('priority') == 'low' ? 'selected' : '' }}>Thấp</option>
-                                        <option value="normal" {{ old('priority') == 'normal' ? 'selected' : '' }}>Bình thường</option>
-                                        <option value="high" {{ old('priority') == 'high' ? 'selected' : '' }}>Cao</option>
-                                        <option value="urgent" {{ old('priority') == 'urgent' ? 'selected' : '' }}>Khẩn cấp</option>
-                                    </select>
-                                    @error('priority')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label for="message" class="form-label">
+                                            <i class="bi bi-chat-dots"></i> Nội dung tin nhắn <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea class="form-control @error('message') is-invalid @enderror" 
+                                                  id="message" name="message" rows="6" 
+                                                  placeholder="💬 Nhập nội dung tin nhắn..." required>{{ old('message') }}</textarea>
+                                        @error('message')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="source">Nguồn liên hệ</label>
-                                    <select class="form-control @error('source') is-invalid @enderror" 
-                                            id="source" name="source">
-                                        <option value="website" {{ old('source') == 'website' ? 'selected' : '' }}>Website</option>
-                                        <option value="phone" {{ old('source') == 'phone' ? 'selected' : '' }}>Điện thoại</option>
-                                        <option value="email" {{ old('source') == 'email' ? 'selected' : '' }}>Email</option>
-                                        <option value="social" {{ old('source') == 'social' ? 'selected' : '' }}>Mạng xã hội</option>
-                                        <option value="referral" {{ old('source') == 'referral' ? 'selected' : '' }}>Giới thiệu</option>
-                                    </select>
-                                    @error('source')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="contact_type" class="form-label">
+                                            <i class="bi bi-tags"></i> Loại liên hệ
+                                        </label>
+                                        <select class="form-control @error('contact_type') is-invalid @enderror" 
+                                                id="contact_type" name="contact_type">
+                                            <option value="">🏷️ Chọn loại liên hệ</option>
+                                            <option value="general" {{ old('contact_type') == 'general' ? 'selected' : '' }}>Liên hệ chung</option>
+                                            <option value="support" {{ old('contact_type') == 'support' ? 'selected' : '' }}>Hỗ trợ</option>
+                                            <option value="complaint" {{ old('contact_type') == 'complaint' ? 'selected' : '' }}>Khiếu nại</option>
+                                            <option value="feedback" {{ old('contact_type') == 'feedback' ? 'selected' : '' }}>Phản hồi</option>
+                                        </select>
+                                        @error('contact_type')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="status" class="form-label">
+                                            <i class="bi bi-toggle-on"></i> Trạng thái
+                                        </label>
+                                        <select class="form-control @error('status') is-invalid @enderror" 
+                                                id="status" name="status">
+                                            <option value="">🔄 Chọn trạng thái</option>
+                                            <option value="unread" {{ old('status') == 'unread' ? 'selected' : '' }}>Chưa đọc</option>
+                                            <option value="read" {{ old('status') == 'read' ? 'selected' : '' }}>Đã đọc</option>
+                                            <option value="replied" {{ old('status') == 'replied' ? 'selected' : '' }}>Đã trả lời</option>
+                                        </select>
+                                        @error('status')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
 
-                        <div class="form-group">
-                            <label for="notes">Ghi chú</label>
-                            <textarea class="form-control @error('notes') is-invalid @enderror" 
-                                      id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
-                            @error('notes')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Tạo liên hệ
-                            </button>
-                            <a href="{{ route('admin.driver.contacts.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Hủy
-                            </a>
-                        </div>
-                    </form>
+                                <div class="col-12">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="{{ route('admin.driver.contacts.index') }}" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-left"></i> Hủy
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle"></i> Tạo mới
+                                        </button>
+                                    </div>
+                                </div>
+                            </div> <!-- row -->
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
                 </div>
             </div>
+            <!--end::Row-->
         </div>
+        <!--end::Container-->
     </div>
-</div>
+    <!--end::App Content-->
 @endsection
 
 @section('scripts')

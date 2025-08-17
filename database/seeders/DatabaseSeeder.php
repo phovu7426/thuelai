@@ -47,6 +47,13 @@ class DatabaseSeeder extends Seeder
             $admin->assignRole($adminRole);
         }
 
+        // Seed posts data
+        $this->call([
+            PostCategorySeeder::class,
+            PostTagSeeder::class,
+            PostSeeder::class,
+        ]);
+
         // Run content seeders
         $this->call([
             // Stone content removed - stone functionality no longer exists

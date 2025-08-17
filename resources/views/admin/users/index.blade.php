@@ -15,25 +15,31 @@
             <div class="row">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row">
+                        <div class="row align-items-center">
                             <div class="col-sm-9">
                                 <!-- Form lọc -->
-                                <form action="{{ route('admin.users.index') }}" method="GET">
-                                    <div class="row">
+                                <form action="{{ route('admin.users.index') }}" method="GET" class="mb-0">
+                                    <div class="row g-3">
                                         <div class="col-md-4">
-                                            <input type="email" name="email" class="form-control" placeholder="Nhập email"
+                                            <input type="email" name="email" class="form-control" placeholder="🔍 Nhập email"
                                                    value="{{ request('email') }}">
                                         </div>
                                         <div class="col-md-4">
-                                            <button type="submit" class="btn btn-primary">Lọc</button>
-                                            <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Reset</a>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-search"></i> Lọc
+                                            </button>
+                                            <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
+                                                <i class="bi bi-arrow-clockwise"></i> Reset
+                                            </a>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-sm-3 d-flex">
+                            <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
-                                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary ms-auto">Thêm Tài khoản</a>
+                                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Thêm Tài khoản
+                                    </a>
                                 @endcan
                             </div>
                         </div>
@@ -44,6 +50,7 @@
                             <thead>
                             <tr>
                                 <th>STT</th>
+                                <th>Tên</th>
                                 <th>Email</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th>
@@ -55,9 +62,22 @@
                             @foreach($users as $index => $user)
                                 <tr>
                                     <td>{{ $users->firstItem() + $index }}</td>
+                                    <td>{{ $user->name ?? '' }}</td>
                                     <td>{{ $user->email ?? '' }}</td>
                                     <td>{{ $user->created_at->format('d/m/Y') }}</td>
-                                    <td>{{ !empty($user->is_blocked) ? 'Khóa' : 'Không khóa' }}</td>
+                                    <td>
+                                        <select class="form-select form-select-sm status-select" 
+                                                data-user-id="{{ $user->id }}" 
+                                                data-current-status="{{ $user->is_blocked ? '1' : '0' }}"
+                                                data-status-type="users">
+                                            <option value="0" {{ !$user->is_blocked ? 'selected' : '' }}>
+                                                Hoạt động
+                                            </option>
+                                            <option value="1" {{ $user->is_blocked ? 'selected' : '' }}>
+                                                Khóa
+                                            </option>
+                                        </select>
+                                    </td>
                                     <td>
                                         @php
                                             $roleCount = $user->roles->count();
@@ -82,14 +102,6 @@
                                         @can('access_users')
                                             <a href="{{ route('admin.profiles.edit', $user->id ?? '') }}"
                                                class="btn btn-sm btn-warning" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.users.toggleBlock', $user->id ?? '') }}" method="POST"
-                                                  style="display:inline;">
-                                                @csrf
-                                                <input type="hidden" name="status" value="{{ !empty($user->is_blocked) ? 0 : 1 }}">
-                                                <button type="submit" title="Đổi trạng thái" class="btn btn-sm btn-warning">
-                                                    <i class="bi {{ !empty($user->is_blocked) ? 'bi-unlock-fill' : 'bi-lock-fill' }}"></i>
-                                                </button>
-                                            </form>
                                         @endcan
                                         @can('access_users')
                                             <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
@@ -149,4 +161,8 @@
             </div>
         </div>
     @endforeach
+@endsection
+
+@section('scripts')
+<!-- Sử dụng component chung admin-dropdowns.js -->
 @endsection

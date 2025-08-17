@@ -14,6 +14,7 @@ class PermissionSeeder extends Seeder
             'roles' => ['view', 'create', 'edit', 'delete'],
             'permissions' => ['view', 'create', 'edit', 'delete'],
             'declarations' => ['view', 'create', 'edit', 'delete'],
+            'posts' => ['view', 'create', 'edit', 'delete', 'publish'],
         ];
         // Tạo từng quyền
         foreach ($permissions as $module => $actions) {
@@ -24,6 +25,16 @@ class PermissionSeeder extends Seeder
                     'is_default' => true
                 ]
             );
+            
+            // Tạo quyền access cho module
+            Permission::firstOrCreate(
+                ['name' => "access_{$module}", 'guard_name' => 'web'],
+                [
+                    'title' => 'Quyền truy cập ' . "{$module}",
+                    'is_default' => true
+                ]
+            );
+            
             foreach ($actions as $action) {
                 Permission::firstOrCreate(
                     ['name' => "{$action}_{$module}", 'guard_name' => 'web'],

@@ -165,4 +165,28 @@ class UserController extends BaseController
         return response()->json($user);
     }
 
+    /**
+     * Toggle block status for AJAX request
+     */
+    public function toggleBlock($id, Request $request)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $newStatus = $request->input('status', 0);
+            
+            $user->is_blocked = $newStatus;
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã cập nhật trạng thái thành công',
+                'new_status' => $newStatus
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
