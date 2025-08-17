@@ -46,8 +46,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // 🚀 Xử lý gán vai trò cho người dùng
         Route::post('/assign-roles/{id}', [UserController::class, 'assignRoles'])->name('assignRoles');
         Route::post('/toggle-block/{id}', [UserController::class, 'toggleBlock'])->name('toggleBlock');
+        Route::get('/get-user-info/{id}', [UserController::class, 'getUserInfo'])->name('getUserInfo'); // Lấy thông tin user
         Route::get('/autocomplete', [UserController::class, 'autocomplete'])->name('autocomplete'); // Lấy vai trò theo từ
     });
+
+    // Route cho load view
+    Route::post('/load-view', [\App\Http\Controllers\Admin\ViewController::class, 'loadView'])->name('loadView');
 
     Route::prefix('profiles')->name('profiles.')->group(function () { // Chức năng quản lý hồ sơ
         Route::get('/edit/{user_id}', [ProfileController::class, 'edit'])->name('edit'); // Hiển thị form chỉnh sửa

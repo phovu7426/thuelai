@@ -37,9 +37,9 @@
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_users')
-                                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" onclick="openCreateModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm Tài khoản
-                                    </a>
+                                    </button>
                                 @endcan
                             </div>
                         </div>
@@ -101,8 +101,10 @@
                                                    class="btn-action btn-view"><i class="fas fa-user-tag"></i></a>
                                             @endcan
                                             @can('access_users')
-                                                <a href="{{ route('admin.profiles.edit', $user->id ?? '') }}"
-                                                   class="btn-action btn-edit" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                                <button type="button" class="btn-action btn-edit" title="Chỉnh sửa" 
+                                                        onclick="openEditModal({{ $user->id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
                                             @endcan
                                             @can('access_users')
                                                 <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
@@ -132,6 +134,8 @@
         <!--end::Container-->
     </div>
     <!--end::App Content-->
+
+
 
     <!-- Modals hiển thị danh sách vai trò của từng tài khoản -->
     @foreach($users as $user)
@@ -165,6 +169,45 @@
     @endforeach
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
 @section('scripts')
-<!-- Sử dụng component chung admin-dropdowns.js -->
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
+<script>
+// Khởi tạo Universal Modal cho Users (chỉ khởi tạo một lần)
+if (!window.usersModal) {
+    window.usersModal = new UniversalModal({
+    modalId: 'usersModal',
+    modalTitle: 'Tài khoản',
+    formId: 'usersForm',
+    submitBtnId: 'usersSubmitBtn',
+    createRoute: '{{ route("admin.users.store") }}',
+    updateRoute: '{{ route("admin.users.update", ":id") }}',
+    getDataRoute: '{{ route("admin.users.getUserInfo", ":id") }}',
+    successMessage: 'Thao tác tài khoản thành công',
+    errorMessage: 'Có lỗi xảy ra khi xử lý tài khoản',
+    viewPath: 'admin.users.form',
+    viewData: {
+        roles: @json($roles ?? []),
+        permissions: @json($permissions ?? [])
+    },
+    onSuccess: function(response, isEdit, id) {
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+    }
+});
+}
+
+// Global functions để gọi từ HTML
+function openCreateModal() {
+    window.usersModal.openCreateModal();
+}
+
+function openEditModal(userId) {
+    window.usersModal.openEditModal(userId);
+}
+</script>
 @endsection
