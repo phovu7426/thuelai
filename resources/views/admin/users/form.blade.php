@@ -1,6 +1,8 @@
 {{-- Form cho Users Modal --}}
 @csrf
 
+{{-- All variables ($name, $email, $status, $phone, $address, $birth_date, $gender, $isEdit) are prepared server-side --}}
+
 <div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
@@ -28,34 +30,32 @@
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="password" class="form-label">
-                <i class="bi bi-lock"></i> Mật khẩu
-            </label>
-            <input type="password" name="password" id="password" class="form-control" 
-                   placeholder="Nhập mật khẩu...">
-            <small class="form-text text-muted">
-                @if($isEdit)
-                    Để trống nếu không đổi mật khẩu
-                @else
+    @if(empty($isEdit) || !$isEdit)
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="password" class="form-label">
+                    <i class="bi bi-lock"></i> Mật khẩu
+                </label>
+                <input type="password" name="password" id="password" class="form-control" 
+                       placeholder="Nhập mật khẩu...">
+                <small class="form-text text-muted">
                     Mật khẩu phải có ít nhất 8 ký tự
-                @endif
-            </small>
-            <div class="invalid-feedback" id="passwordError"></div>
+                </small>
+                <div class="invalid-feedback" id="passwordError"></div>
+            </div>
         </div>
-    </div>
 
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="password_confirmation" class="form-label">
-                <i class="bi bi-lock-fill"></i> Xác nhận mật khẩu
-            </label>
-            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
-                   placeholder="Nhập lại mật khẩu...">
-            <div class="invalid-feedback" id="password_confirmationError"></div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">
+                    <i class="bi bi-lock-fill"></i> Xác nhận mật khẩu
+                </label>
+                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
+                       placeholder="Nhập lại mật khẩu...">
+                <div class="invalid-feedback" id="password_confirmationError"></div>
+            </div>
         </div>
-    </div>
+    @endif
 
     <div class="col-md-6">
         <div class="mb-3">

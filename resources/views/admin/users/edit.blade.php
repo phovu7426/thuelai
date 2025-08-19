@@ -63,28 +63,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="password" class="form-label">
-                                            <i class="bi bi-lock"></i> Mật khẩu mới (để trống nếu không đổi)
-                                        </label>
-                                        <input type="password" name="password" class="form-control" 
-                                               placeholder="🔒 Nhập mật khẩu mới...">
-                                        @error('password')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="password_confirmation" class="form-label">
-                                            <i class="bi bi-lock-fill"></i> Xác nhận mật khẩu mới
-                                        </label>
-                                        <input type="password" name="password_confirmation" class="form-control" 
-                                               placeholder="🔒 Nhập lại mật khẩu mới...">
-                                    </div>
-                                </div>
+                                
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
@@ -92,7 +71,7 @@
                                             <i class="bi bi-telephone"></i> Số điện thoại
                                         </label>
                                         <input type="tel" name="phone" class="form-control" 
-                                               placeholder="Nhập số điện thoại..." value="{{ optional($user->profile)->phone }}">
+                                               placeholder="Nhập số điện thoại..." value="{{ $user->profile->phone ?? '' }}">
                                     </div>
                                 </div>
 
@@ -102,7 +81,7 @@
                                             <i class="bi bi-calendar"></i> Ngày sinh
                                         </label>
                                         <input type="date" name="birth_date" class="form-control" 
-                                               value="{{ optional($user->profile)->birth_date }}">
+                                               value="{{ $user->profile->birth_date ?? '' }}">
                                     </div>
                                 </div>
 
@@ -111,7 +90,7 @@
                                         <label for="address" class="form-label">
                                             <i class="bi bi-geo-alt"></i> Địa chỉ
                                         </label>
-                                        <textarea name="address" class="form-control" rows="3" placeholder="Nhập địa chỉ...">{{ optional($user->profile)->address }}</textarea>
+                                        <textarea name="address" class="form-control" rows="3" placeholder="Nhập địa chỉ...">{{ $user->profile->address ?? '' }}</textarea>
                                     </div>
                                 </div>
 
@@ -120,7 +99,7 @@
                                         <label for="gender" class="form-label">
                                             <i class="bi bi-gender-ambiguous"></i> Giới tính
                                         </label>
-                                        @php $g = optional($user->profile)->gender; @endphp
+                                        @php $g = $user->profile->gender ?? ''; @endphp
                                         <select name="gender" class="form-control">
                                             <option value="">-- Chọn --</option>
                                             <option value="male" {{ $g === 'male' ? 'selected' : '' }}>Nam</option>

@@ -3,18 +3,16 @@
 namespace App\Services\Admin\Users;
 
 use App\Repositories\Admin\Users\ProfileRepository;
+use App\Models\User;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
 use lib\DataTable;
 
 class ProfileService extends BaseService
 {
-    protected UserService $userService;
-
-    public function __construct(ProfileRepository $profileRepository, UserService $userService)
+    public function __construct(ProfileRepository $profileRepository)
     {
         $this->repository = $profileRepository;
-        $this->userService = $userService;
     }
 
     protected function getRepository(): ProfileRepository
@@ -48,7 +46,7 @@ class ProfileService extends BaseService
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($user_id)
             && !empty($updateData)
-            && $this->userService->findById($user_id)
+            && User::query()->where('id', $user_id)->exists()
             && $this->getRepository()->updateProfile($user_id, $updateData)
         ) {
             $return['success'] = true;

@@ -86,7 +86,7 @@
             
             const modalHtml = `
                 <div class="modal fade" id="${this.config.modalId}" tabindex="-1" aria-labelledby="${this.config.modalId}Label" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
+                    <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="${this.config.modalId}Label">
@@ -95,7 +95,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                             </div>
                             <form id="${this.config.formId}" method="POST">
-                                <div class="modal-body" id="${this.config.modalId}Body">
+                                <div class="modal-body" id="${this.config.modalId}Body" style="max-height:70vh; overflow-y:auto;">
                                     <div class="text-center">
                                         <div class="spinner-border" role="status">
                                             <span class="visually-hidden">Loading...</span>
@@ -195,8 +195,10 @@
             $(`#${this.config.formId} input[name="_method"]`).remove(); // Xóa nếu có
             $(`#${this.config.formId}`).append('<input type="hidden" name="_method" value="POST">');
             
-            // Load dữ liệu và giao diện
-            if (customData) {
+            // Ưu tiên gọi API getDataRoute để lấy dữ liệu mới nhất nếu cấu hình
+            if (this.config.getDataRoute) {
+                this.loadData(id);
+            } else if (customData) {
                 this.loadView(this.config.viewPath, {
                     ...this.config.viewData,
                     data: customData,
@@ -205,8 +207,6 @@
                     id: id
                 });
                 $(`#${this.config.modalId}`).modal('show');
-            } else if (this.config.getDataRoute) {
-                this.loadData(id);
             } else {
                 this.loadView(this.config.viewPath, {
                     ...this.config.viewData,

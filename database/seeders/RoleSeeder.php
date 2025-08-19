@@ -28,22 +28,18 @@ class RoleSeeder extends Seeder
 
             // Assign permissions based on role
             if ($roleName === 'admin') {
-                $allPermissionNames = Permission::pluck('name')->all();
+                $allPermissionNames = Permission::where('name', 'like', 'access_%')->pluck('name')->all();
                 $role->syncPermissions($allPermissionNames);
             } elseif ($roleName === 'editor') {
                 $postPermissionNames = Permission::whereIn('name', [
                     'access_posts',
-                    'view_posts',
-                    'create_posts',
-                    'edit_posts',
-                    'delete_posts',
-                    'publish_posts',
+                    'access_post-categories',
+                    'access_post-tags',
                 ])->pluck('name')->all();
                 $role->syncPermissions($postPermissionNames);
             } else { // user
                 $basicPermissionNames = Permission::whereIn('name', [
                     'access_posts',
-                    'view_posts',
                 ])->pluck('name')->all();
                 $role->syncPermissions($basicPermissionNames);
             }

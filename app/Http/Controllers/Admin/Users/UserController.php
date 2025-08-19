@@ -78,7 +78,7 @@ class UserController extends BaseController
      */
     public function show(int $id): JsonResponse
     {
-        $user = $this->getService()->findById($id);
+        $user = $this->getService()->findById($id, ['relations' => ['profile']]);
         
         if (!$user) {
             return response()->json([

@@ -112,9 +112,12 @@ abstract class BaseRepository
     public function findById(int $id, array $options = []): ?Model
     {
         $relations = $options['relations'] ?? [];
-        $query = $this->getModel()->find($id);
-        $this->applyRelations($query, $relations);
-        return $query;
+        $columns = $options['columns'] ?? ['*'];
+        $query = $this->getModel()->newQuery()->select($columns);
+        if (!empty($relations)) {
+            $query->with($relations);
+        }
+        return $query->find($id);
     }
 
     /**

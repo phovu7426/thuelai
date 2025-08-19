@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin\Users;
 
-use App\Repositories\Admin\Users\UserRepository;
+use App\Repositories\User\Users\UserRepository;
 use App\Services\Admin\Users\ProfileService;
 use App\Models\User;
 use App\Services\BaseService;
@@ -88,7 +88,7 @@ class UserService extends BaseService
         }
         $userKeys = ['name', 'email', 'password', 'google_id', 'image', 'status'];
         $updateData = DataTable::getChangeData($data, $userKeys);
-        if (($user = $this->getRepository()->findById($id))) {
+        if (($user = $this->getRepository()->findById($id, ['relations' => ['profile']]))) {
             $updated = true;
             if (!empty($updateData)) {
                 $updated = (bool) $this->getRepository()->update($user, $updateData);

@@ -26,6 +26,7 @@ class ViewController extends BaseController
 
             $viewPath = $request->input('view');
             $data = json_decode($request->input('data', '{}'), true) ?? [];
+            $id = $request->input('id');
             
             // Log để debug
             Log::info('Loading view', [
@@ -55,10 +56,36 @@ class ViewController extends BaseController
             if (!is_array($data)) {
                 $data = [];
             }
+
+            // Nếu không truyền data từ client nhưng có id và là users form, tự fetch server-side
+            if (empty($data) && !empty($id) && $viewPath === 'admin.users.form') {
+                $user = \App\Models\User::with('profile')->findOrFail((int)$id);
+                $data = [
+                    'data' => $user->toArray(),
+                    'mode' => 'edit',
+                    'isEdit' => true,
+                    'id' => (int)$id,
+                ];
+            }
             
-            // Khởi tạo các biến cần thiết nếu không có
-            if (!isset($data['data'])) {
-                $data['data'] = [];
+            // Chuẩn hóa biến cho view users.form nếu được yêu cầu
+            if ($viewPath === 'admin.users.form') {
+                $record = $data['data'] ?? $data;
+                $isEditFlag = $data['isEdit'] ?? ((($data['mode'] ?? '') === 'edit') || !empty($data['id']));
+
+                $prepared = [
+                    'name' => data_get($record, 'name'),
+                    'email' => data_get($record, 'email'),
+                    'status' => data_get($record, 'status', 'active'),
+                    'phone' => data_get($record, 'profile.phone'),
+                    'address' => data_get($record, 'profile.address'),
+                    'birth_date' => data_get($record, 'profile.birth_date'),
+                    'gender' => data_get($record, 'profile.gender'),
+                    'isEdit' => (bool) $isEditFlag,
+                ];
+
+                // Merge để view có biến phẳng sử dụng trực tiếp
+                $data = array_merge($data, $prepared);
             }
 
             // Render view với data
