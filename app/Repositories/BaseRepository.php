@@ -9,6 +9,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Throwable;
 
@@ -146,7 +147,9 @@ abstract class BaseRepository
     public function create(array $data): ?Model
     {
         try {
-            $data['user_id'] = Auth::id() ?? 0;
+            if ($this->hasColumn('user_id')) {
+                $data['user_id'] = Auth::id() ?? 0;
+            }
             $create = $this->getModel()->create($data);
             if ($create && $this->getModel()->where('id', $create->id)->exists()) {
                 return $create;
@@ -154,7 +157,7 @@ abstract class BaseRepository
                 return null;
             }
         } catch (Throwable $e) {
-            dd($e);
+            Log::error('Repository create error: ' . $e->getMessage(), ['exception' => $e]);
             return null;
         }
     }
@@ -168,13 +171,15 @@ abstract class BaseRepository
     public function update(Model $model, array $data): bool
     {
         try {
-            $data['user_id'] = Auth::id() ?? 0;
+            if ($this->hasColumn('user_id')) {
+                $data['user_id'] = Auth::id() ?? 0;
+            }
             if ($model->update($data)) {
                 return true;
             }
             return false;
         } catch (Throwable $e) {
-            dd($e);
+            Log::error('Repository update error: ' . $e->getMessage(), ['exception' => $e]);
             return false;
         }
     }
@@ -196,7 +201,7 @@ abstract class BaseRepository
             }
             return false;
         } catch (Throwable $e) {
-            dd($e);
+            Log::error('Repository updateOrCreate error: ' . $e->getMessage(), ['exception' => $e]);
             return false;
         }
     }

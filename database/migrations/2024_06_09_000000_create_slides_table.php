@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('image');
             $table->string('link')->nullable();
             $table->boolean('status')->default(1); // 1: hiển thị, 0: ẩn
+            $table->boolean('is_featured')->default(false);
             $table->integer('order')->default(0);
             $table->timestamps();
         });
