@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
@@ -14,54 +12,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Check if we're running large data seeder
-        // if (app()->environment('local') && $this->command->confirm('Would you like to seed 1000 records for each table?', false)) {
-        //     $seeder = new LargeDataSeeder();
-        //     if ($this->command) {
-        //         $seeder->setCommand($this->command);
-        //     }
-        //     $seeder->run();
-        //     return;
-        // }
-        
-        // Create admin user
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@gmail.com', 'name' => 'Admin'],
-            [
-                'password' => Hash::make('12345678'),
-                'status' => 'active',
-            ]
-        );
-
-        // Run permission seeders
+        // Order is important: permissions -> roles -> users (assign roles if needed)
         $this->call([
-            AdminSidebarSeeder::class, // Thêm dòng này để seed quyền, vai trò, tài khoản admin theo sidebar
             PermissionSeeder::class,
-            RolePermissionSeeder::class,
-            DriverPermissionsSeeder::class, // Thêm permissions cho driver services
-        ]);
-
-        // Assign admin role to admin user
-        $adminRole = Role::where('name', 'admin')->first();
-        if ($adminRole) {
-            $admin->assignRole($adminRole);
-        }
-
-        // Seed posts data
-        $this->call([
-            PostCategorySeeder::class,
-            PostTagSeeder::class,
-            PostSeeder::class,
-        ]);
-
-        // Run content seeders
-        $this->call([
-            // Stone content removed - stone functionality no longer exists
-            
-            // Other content if needed
-            // PostSeeder::class,
-            DriverServiceSeeder::class,
-            DriverContactSeeder::class,
+            RoleSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }
