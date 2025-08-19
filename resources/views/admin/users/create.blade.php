@@ -22,7 +22,7 @@
                         </h3>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.users.store') }}" method="POST">
+                        <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -72,6 +72,18 @@
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bi bi-check-circle"></i> Thêm mới
                                         </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="image" class="form-label">
+                                            <i class="bi bi-image"></i> Ảnh đại diện
+                                        </label>
+                                        <input type="file" name="image" class="form-control" accept="image/*">
+                                        @error('image')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                 </div>
                             </div> <!-- row -->

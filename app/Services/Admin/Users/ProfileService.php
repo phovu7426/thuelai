@@ -44,12 +44,12 @@ class ProfileService extends BaseService
             'success' => false,
             'messages' => 'Cập nhật hồ sơ thất bại'
         ];
-        $keys = ['name', 'address', 'phone', 'birth_date', 'gender'];
+        $keys = ['address', 'phone', 'birth_date', 'gender'];
         $updateData = DataTable::getChangeData($data, $keys);
         if (!empty($user_id)
             && !empty($updateData)
             && $this->userService->findById($user_id)
-            && $this->getRepository()->updateProfile($user_id, $data)
+            && $this->getRepository()->updateProfile($user_id, $updateData)
         ) {
             $return['success'] = true;
             $return['messages'] = 'Cập nhật hồ sơ thành công';

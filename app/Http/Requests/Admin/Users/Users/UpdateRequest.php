@@ -4,12 +4,13 @@ namespace App\Http\Requests\Admin\Users\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check();
+        return Auth::check();
     }
 
     /**
@@ -23,6 +24,17 @@ class UpdateRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+            ],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($this->route('id')),
+            ],
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',
+                'confirmed',
             ],
             'phone' => [
                 'nullable',
@@ -44,6 +56,16 @@ class UpdateRequest extends FormRequest
                 'nullable',
                 'in:male,female,other',
             ],
+            'status' => [
+                'nullable',
+                'in:active,inactive',
+            ],
+            'image' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg,gif,webp',
+                'max:2048',
+            ],
         ];
     }
 
@@ -57,6 +79,11 @@ class UpdateRequest extends FormRequest
             'name.required' => 'Tên không được để trống.',
             'name.string' => 'Tên phải là chuỗi văn bản.',
             'name.max' => 'Tên không được quá 255 ký tự.',
+            'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email đã tồn tại.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
             'phone.string' => 'Số điện thoại phải là chuỗi.',
             'phone.max' => 'Số điện thoại không được quá 15 ký tự.',
             'phone.regex' => 'Số điện thoại chỉ có thể chứa các ký tự số.',
@@ -65,6 +92,10 @@ class UpdateRequest extends FormRequest
             'birth_date.date' => 'Ngày sinh không hợp lệ.',
             'birth_date.before' => 'Ngày sinh phải trước hôm nay.',
             'gender.in' => 'Giới tính phải là Nam, Nữ hoặc Khác.',
+            'status.in' => 'Trạng thái không hợp lệ.',
+            'image.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
+            'image.mimes' => 'Ảnh đại diện phải có định dạng: jpeg, png, jpg, gif, webp.',
+            'image.max' => 'Ảnh đại diện không được vượt quá 2MB.',
         ];
     }
 }

@@ -193,7 +193,7 @@
             
             // Thêm method PUT bằng _method parameter
             $(`#${this.config.formId} input[name="_method"]`).remove(); // Xóa nếu có
-            $(`#${this.config.formId}`).append('<input type="hidden" name="_method" value="PUT">');
+            $(`#${this.config.formId}`).append('<input type="hidden" name="_method" value="POST">');
             
             // Load dữ liệu và giao diện
             if (customData) {

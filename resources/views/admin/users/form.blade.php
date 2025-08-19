@@ -9,7 +9,7 @@
             </label>
             <input type="text" name="name" id="name" class="form-control" 
                    placeholder="Nhập tên người dùng..." 
-                   value="{{ $data['name'] ?? old('name') }}" 
+                   value="{{ $name ?? old('name') }}" 
                    required>
             <div class="invalid-feedback" id="nameError"></div>
         </div>
@@ -22,7 +22,7 @@
             </label>
             <input type="email" name="email" id="email" class="form-control" 
                    placeholder="Nhập email..." 
-                   value="{{ $data['email'] ?? old('email') }}" 
+                   value="{{ $email ?? old('email') }}" 
                    required>
             <div class="invalid-feedback" id="emailError"></div>
         </div>
@@ -64,7 +64,7 @@
             </label>
             <input type="tel" name="phone" id="phone" class="form-control" 
                    placeholder="Nhập số điện thoại..." 
-                   value="{{ $data['phone'] ?? old('phone') }}">
+                   value="{{ $phone ?? old('phone') }}">
             <div class="invalid-feedback" id="phoneError"></div>
         </div>
     </div>
@@ -74,9 +74,10 @@
             <label for="status" class="form-label">
                 <i class="bi bi-toggle-on"></i> Trạng thái
             </label>
+            @php $statusVal = $status ?? 'active'; @endphp
             <select name="status" id="status" class="form-control">
-                <option value="1" {{ ($data['status'] ?? 1) == 1 ? 'selected' : '' }}>Hoạt động</option>
-                <option value="0" {{ ($data['status'] ?? 1) == 0 ? 'selected' : '' }}>Không hoạt động</option>
+                <option value="active" {{ $statusVal === 'active' ? 'selected' : '' }}>Hoạt động</option>
+                <option value="inactive" {{ $statusVal === 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
             </select>
             <div class="invalid-feedback" id="statusError"></div>
         </div>
@@ -89,21 +90,45 @@
             </label>
             <textarea name="address" id="address" class="form-control" 
                       placeholder="Nhập địa chỉ..." 
-                      rows="3">{{ $data['address'] ?? old('address') }}</textarea>
+                      rows="3">{{ $address ?? old('address') }}</textarea>
             <div class="invalid-feedback" id="addressError"></div>
         </div>
     </div>
 
     <div class="col-md-12">
         <div class="mb-3">
-            <div class="form-check">
-                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" 
-                       value="1" {{ ($data['is_active'] ?? 1) == 1 ? 'checked' : '' }}>
-                <label class="form-check-label" for="is_active">
-                    <i class="bi bi-check-circle"></i> Tài khoản hoạt động
-                </label>
-            </div>
-            <div class="invalid-feedback" id="is_activeError"></div>
+            <label for="image" class="form-label">
+                <i class="bi bi-image"></i> Ảnh đại diện
+            </label>
+            <input type="file" name="image" id="image" class="form-control" accept="image/*">
+            <div class="invalid-feedback" id="imageError"></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="birth_date" class="form-label">
+                <i class="bi bi-calendar"></i> Ngày sinh
+            </label>
+            <input type="date" name="birth_date" id="birth_date" class="form-control" 
+                   value="{{ $birth_date ?? old('birth_date') }}">
+            <div class="invalid-feedback" id="birth_dateError"></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="gender" class="form-label">
+                <i class="bi bi-gender-ambiguous"></i> Giới tính
+            </label>
+            <select name="gender" id="gender" class="form-control">
+                <option value="">-- Chọn --</option>
+                @php $genderVal = $gender ?? '' @endphp
+                <option value="male" {{ $genderVal === 'male' ? 'selected' : '' }}>Nam</option>
+                <option value="female" {{ $genderVal === 'female' ? 'selected' : '' }}>Nữ</option>
+                <option value="other" {{ $genderVal === 'other' ? 'selected' : '' }}>Khác</option>
+            </select>
+            <div class="invalid-feedback" id="genderError"></div>
         </div>
     </div>
 </div>

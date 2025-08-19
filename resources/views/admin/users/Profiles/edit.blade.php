@@ -20,15 +20,7 @@
                         <form action="{{ route('admin.profiles.update', request('user_id')) }}" method="POST">
                             @csrf
 
-                            <!-- Tên -->
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Tên</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" value="{{ old('name', $profile->name ?? '') }}" required>
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            <!-- Tên đã được loại bỏ khỏi Profile -->
 
                             <!-- Số điện thoại -->
                             <div class="mb-3">

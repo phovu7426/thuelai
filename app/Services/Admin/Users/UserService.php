@@ -3,19 +3,25 @@
 namespace App\Services\Admin\Users;
 
 use App\Repositories\Admin\Users\UserRepository;
+use App\Services\Admin\Users\ProfileService;
 use App\Models\User;
 use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use lib\DataTable;
 
 class UserService extends BaseService
 {
-    public function __construct(UserRepository $userRepository)
+    protected ProfileService $profileService;
+
+    public function __construct(UserRepository $userRepository, ProfileService $profileService)
     {
         $this->repository = $userRepository;
+        $this->profileService = $profileService;
     }
 
     protected function getRepository(): UserRepository
@@ -32,17 +38,30 @@ class UserService extends BaseService
     {
         $return = [
             'success' => false,
-            'messages' => 'Thêm mới tài khoản thất bại'
+            'message' => 'Thêm mới tài khoản thất bại'
         ];
         if (empty($data['name'])) {
             $data['name'] = $data['email'];
         }
-        $keys = ['name', 'email', 'password'];
-        if (($insertData = DataTable::getChangeData($data, $keys))
-            && $this->getRepository()->create($insertData)
-        ) {
+        // Handle image upload
+        if (!empty($data['image']) && $data['image'] instanceof UploadedFile) {
+            $storedPath = $data['image']->store('users', 'public');
+            $data['image'] = 'storage/' . $storedPath;
+        }
+        // Map users table fields
+        $userKeys = ['name', 'email', 'password', 'google_id', 'image', 'status'];
+        $insertData = DataTable::getChangeData($data, $userKeys);
+        if ($insertData && ($user = $this->getRepository()->create($insertData))) {
+            // Also create/update profile
+            $profileKeys = ['phone', 'address', 'birth_date', 'gender'];
+            $profileData = DataTable::getChangeData($data, $profileKeys) ?? [];
+            if (!empty($profileData)) {
+                $this->profileService->update($user->id, $profileData);
+            }
+
             $return['success'] = true;
-            $return['messages'] = 'Thêm mới tài khoản thành công';
+            $return['message'] = 'Thêm mới tài khoản thành công';
+            $return['data'] = $user;
         }
         return $return;
     }
@@ -57,19 +76,36 @@ class UserService extends BaseService
     {
         $return = [
             'success' => false,
-            'messages' => 'Cập nhật tài khoản thất bại'
+            'message' => 'Cập nhật tài khoản thất bại'
         ];
         if (empty($data['name'])) {
             $data['name'] = $data['email'];
         }
-        $keys = ['name', 'email'];
-        $updateData = DataTable::getChangeData($data, $keys);
-        if (!empty($updateData)
-            && ($user = $this->getRepository()->findById($id))
-            && $this->getRepository()->update($user, $data)
-        ) {
-            $return['success'] = true;
-            $return['messages'] = 'Cập nhật tài khoản thành công';
+        // Handle image upload
+        if (!empty($data['image']) && $data['image'] instanceof UploadedFile) {
+            $storedPath = $data['image']->store('users', 'public');
+            $data['image'] = 'storage/' . $storedPath;
+        }
+        $userKeys = ['name', 'email', 'password', 'google_id', 'image', 'status'];
+        $updateData = DataTable::getChangeData($data, $userKeys);
+        if (($user = $this->getRepository()->findById($id))) {
+            $updated = true;
+            if (!empty($updateData)) {
+                $updated = (bool) $this->getRepository()->update($user, $updateData);
+            }
+
+            // Update or create profile
+            $profileKeys = ['phone', 'address', 'birth_date', 'gender'];
+            $profileData = DataTable::getChangeData($data, $profileKeys) ?? [];
+            if (!empty($profileData)) {
+                $this->profileService->update($user->id, $profileData);
+            }
+
+            if ($updated) {
+                $return['success'] = true;
+                $return['message'] = 'Cập nhật tài khoản thành công';
+                $return['data'] = $user->fresh('profile');
+            }
         }
         return $return;
     }
