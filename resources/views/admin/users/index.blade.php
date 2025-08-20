@@ -66,14 +66,15 @@
                                     <td>{{ $user->email ?? '' }}</td>
                                     <td>{{ $user->created_at->format('d/m/Y') }}</td>
                                     <td>
+                                        @php $isBlocked = ($user->status ?? 'active') === 'inactive'; @endphp
                                         <select class="form-select form-select-sm status-select" 
                                                 data-user-id="{{ $user->id }}" 
-                                                data-current-status="{{ $user->is_blocked ? '1' : '0' }}"
+                                                data-current-status="{{ $isBlocked ? '1' : '0' }}"
                                                 data-status-type="users">
-                                            <option value="0" {{ !$user->is_blocked ? 'selected' : '' }}>
+                                            <option value="0" {{ !$isBlocked ? 'selected' : '' }}>
                                                 Hoạt động
                                             </option>
-                                            <option value="1" {{ $user->is_blocked ? 'selected' : '' }}>
+                                            <option value="1" {{ $isBlocked ? 'selected' : '' }}>
                                                 Khóa
                                             </option>
                                         </select>

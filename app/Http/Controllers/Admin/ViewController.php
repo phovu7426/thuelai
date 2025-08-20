@@ -26,7 +26,6 @@ class ViewController extends BaseController
 
             $viewPath = $request->input('view');
             $data = json_decode($request->input('data', '{}'), true) ?? [];
-            $id = $request->input('id');
             
             // Log để debug
             Log::info('Loading view', [
@@ -56,36 +55,34 @@ class ViewController extends BaseController
             if (!is_array($data)) {
                 $data = [];
             }
-
-            // Nếu không truyền data từ client nhưng có id và là users form, tự fetch server-side
-            if (empty($data) && !empty($id) && $viewPath === 'admin.users.form') {
-                $user = \App\Models\User::with('profile')->findOrFail((int)$id);
-                $data = [
-                    'data' => $user->toArray(),
-                    'mode' => 'edit',
-                    'isEdit' => true,
-                    'id' => (int)$id,
-                ];
-            }
             
-            // Chuẩn hóa biến cho view users.form nếu được yêu cầu
-            if ($viewPath === 'admin.users.form') {
-                $record = $data['data'] ?? $data;
-                $isEditFlag = $data['isEdit'] ?? ((($data['mode'] ?? '') === 'edit') || !empty($data['id']));
+            // Nếu có key 'data' (ví dụ dữ liệu bản ghi), làm phẳng để Blade dùng biến 1 cấp
+            if (isset($data['data']) && is_array($data['data'])) {
+                $record = $data['data'];
+                unset($data['data']);
 
-                $prepared = [
-                    'name' => data_get($record, 'name'),
-                    'email' => data_get($record, 'email'),
-                    'status' => data_get($record, 'status', 'active'),
-                    'phone' => data_get($record, 'profile.phone'),
-                    'address' => data_get($record, 'profile.address'),
-                    'birth_date' => data_get($record, 'profile.birth_date'),
-                    'gender' => data_get($record, 'profile.gender'),
-                    'isEdit' => (bool) $isEditFlag,
-                ];
+                // Nếu có profile lồng bên trong thì merge lên 1 cấp
+                if (isset($record['profile']) && is_array($record['profile'])) {
+                    $record = array_merge($record, $record['profile']);
+                    unset($record['profile']);
+                }
 
-                // Merge để view có biến phẳng sử dụng trực tiếp
-                $data = array_merge($data, $prepared);
+                // Nếu có permissions (quan hệ) thì trích danh sách tên để dùng cho select2
+                if (isset($record['permissions']) && is_array($record['permissions'])) {
+                    $selectedPermissionNames = [];
+                    foreach ($record['permissions'] as $perm) {
+                        if (is_array($perm) && isset($perm['name'])) {
+                            $selectedPermissionNames[] = $perm['name'];
+                        } elseif (is_object($perm) && isset($perm->name)) {
+                            $selectedPermissionNames[] = $perm->name;
+                        }
+                    }
+                    $data['permissions_selected'] = $selectedPermissionNames;
+                    unset($record['permissions']);
+                }
+
+                // Merge các field của record lên $data để Blade nhận biến 1 cấp
+                $data = array_merge($data, $record);
             }
 
             // Render view với data

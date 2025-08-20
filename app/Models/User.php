@@ -43,8 +43,6 @@ class User extends Authenticatable {
         'remember_token',
     ];
 
-    // Do not append profile fields to avoid flattening sensitive or nested data
-
     /**
      * Get the attributes that should be cast.
      *
@@ -56,8 +54,6 @@ class User extends Authenticatable {
             'password' => 'hashed',
         ];
     }
-
-    // Accessors for profile fields removed to keep API clean
 
     public function can($permission, $arguments = []): bool
     {
@@ -101,8 +97,7 @@ class User extends Authenticatable {
 
     public function positions(): BelongsToMany
     {
-        // Reference via fully qualified string to avoid static analysis error if class is conditionally present
-        return $this->belongsToMany('App\\Models\\Position', 'position_users');
+        return $this->belongsToMany(Position::class, 'position_users');
     }
 
     /**

@@ -9,7 +9,7 @@
             </label>
             <input type="text" name="title" id="title" class="form-control"
                    placeholder="Nhập ý nghĩa vai trò..."
-                   value="{{ $data['title'] ?? old('title') }}"
+                   value="{{ $title ?? old('title') }}"
                    required>
             <div class="invalid-feedback" id="titleError"></div>
         </div>
@@ -22,22 +22,9 @@
             </label>
             <input type="text" name="name" id="name" class="form-control"
                    placeholder="Nhập tên vai trò (ví dụ: admin, user)..."
-                   value="{{ $data['name'] ?? old('name') }}"
+                   value="{{ $name ?? old('name') }}"
                    required>
             <div class="invalid-feedback" id="nameError"></div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-3">
-    <div class="col-md-12">
-        <div class="mb-3">
-            <label for="description" class="form-label">
-                <i class="bi bi-text-paragraph"></i> Mô tả
-            </label>
-            <textarea name="description" id="description" class="form-control" rows="3"
-                      placeholder="Nhập mô tả vai trò...">{{ $data['description'] ?? old('description') }}</textarea>
-            <div class="invalid-feedback" id="descriptionError"></div>
         </div>
     </div>
 </div>
@@ -48,22 +35,12 @@
             <label class="form-label">
                 <i class="bi bi-shield-check"></i> Quyền hạn
             </label>
-            <div class="row">
-                @foreach($permissions ?? [] as $permission)
-                    <div class="col-md-4 mb-2">
-                        <div class="form-check">
-                            <input type="checkbox" name="permissions[]" 
-                                   id="permission_{{ $permission->id }}" 
-                                   class="form-check-input" 
-                                   value="{{ $permission->id }}"
-                                   {{ in_array($permission->id, $data['permissions'] ?? []) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="permission_{{ $permission->id }}">
-                                {{ $permission->title ?? $permission->name }}
-                            </label>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+            <select class="form-control select2" name="permissions[]" multiple data-field="name" data-display-field="title"
+                    data-selected='@json($permissions_selected ?? [])'
+                    data-url="{{ route('admin.permissions.autocomplete') }}">
+                <option value="">🔐 Chọn quyền</option>
+            </select>
+            <small class="form-text text-muted">Có thể chọn nhiều quyền</small>
             <div class="invalid-feedback" id="permissionsError"></div>
         </div>
     </div>
@@ -72,25 +49,14 @@
 <div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
-            <div class="form-check">
-                <input type="checkbox" name="is_active" id="is_active" class="form-check-input" value="1"
-                       {{ ($data['is_active'] ?? old('is_active', true)) ? 'checked' : '' }}>
-                <label class="form-check-label" for="is_active">
-                    <i class="bi bi-toggle-on"></i> Kích hoạt
-                </label>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6">
-        <div class="mb-3">
-            <div class="form-check">
-                <input type="checkbox" name="is_system" id="is_system" class="form-check-input" value="1"
-                       {{ ($data['is_system'] ?? old('is_system')) ? 'checked' : '' }}>
-                <label class="form-check-label" for="is_system">
-                    <i class="bi bi-gear"></i> Vai trò hệ thống
-                </label>
-            </div>
+            <label for="status" class="form-label">
+                <i class="bi bi-toggle-on"></i> Trạng thái
+            </label>
+            <select name="status" id="status" class="form-control">
+                <option value="active" {{ $status === 'active' ? 'selected' : '' }}>Hoạt động</option>
+                <option value="inactive" {{ $status === 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
+            </select>
+            <div class="invalid-feedback" id="statusError"></div>
         </div>
     </div>
 </div>
@@ -98,6 +64,7 @@
 {{-- Script để xử lý form --}}
 <script>
 $(document).ready(function() {
+    // Dùng init Select2 chung từ public/js/main.js (class .select2 với data-* đã đủ)
     // Auto-generate name from title
     $('#title').on('input', function() {
         const title = $(this).val();
@@ -106,18 +73,6 @@ $(document).ready(function() {
                 .replace(/[^a-z0-9\s]/g, '')
                 .replace(/\s+/g, '_');
             $('#name').val(name);
-        }
-    });
-    
-    // Validate permissions
-    $('input[name="permissions[]"]').on('change', function() {
-        const checkedPermissions = $('input[name="permissions[]"]:checked').length;
-        if (checkedPermissions === 0) {
-            $('#permissionsError').text('Vui lòng chọn ít nhất một quyền');
-            $(this).closest('.form-check').addClass('is-invalid');
-        } else {
-            $('#permissionsError').text('');
-            $('.form-check').removeClass('is-invalid');
         }
     });
 });

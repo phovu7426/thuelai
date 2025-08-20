@@ -1,8 +1,6 @@
 {{-- Form cho Users Modal --}}
 @csrf
 
-{{-- All variables ($name, $email, $status, $phone, $address, $birth_date, $gender, $isEdit) are prepared server-side --}}
-
 <div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
@@ -74,10 +72,9 @@
             <label for="status" class="form-label">
                 <i class="bi bi-toggle-on"></i> Trạng thái
             </label>
-            @php $statusVal = $status ?? 'active'; @endphp
             <select name="status" id="status" class="form-control">
-                <option value="active" {{ $statusVal === 'active' ? 'selected' : '' }}>Hoạt động</option>
-                <option value="inactive" {{ $statusVal === 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
+                <option value="active" {{ $status === 'active' ? 'selected' : '' }}>Hoạt động</option>
+                <option value="inactive" {{ $status === 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
             </select>
             <div class="invalid-feedback" id="statusError"></div>
         </div>
@@ -123,10 +120,9 @@
             </label>
             <select name="gender" id="gender" class="form-control">
                 <option value="">-- Chọn --</option>
-                @php $genderVal = $gender ?? '' @endphp
-                <option value="male" {{ $genderVal === 'male' ? 'selected' : '' }}>Nam</option>
-                <option value="female" {{ $genderVal === 'female' ? 'selected' : '' }}>Nữ</option>
-                <option value="other" {{ $genderVal === 'other' ? 'selected' : '' }}>Khác</option>
+                <option value="male" {{ $gender === 'male' ? 'selected' : '' }}>Nam</option>
+                <option value="female" {{ $gender === 'female' ? 'selected' : '' }}>Nữ</option>
+                <option value="other" {{ $gender === 'other' ? 'selected' : '' }}>Khác</option>
             </select>
             <div class="invalid-feedback" id="genderError"></div>
         </div>

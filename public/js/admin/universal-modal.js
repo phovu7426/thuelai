@@ -195,10 +195,8 @@
             $(`#${this.config.formId} input[name="_method"]`).remove(); // Xóa nếu có
             $(`#${this.config.formId}`).append('<input type="hidden" name="_method" value="POST">');
             
-            // Ưu tiên gọi API getDataRoute để lấy dữ liệu mới nhất nếu cấu hình
-            if (this.config.getDataRoute) {
-                this.loadData(id);
-            } else if (customData) {
+            // Load dữ liệu và giao diện
+            if (customData) {
                 this.loadView(this.config.viewPath, {
                     ...this.config.viewData,
                     data: customData,
@@ -207,6 +205,8 @@
                     id: id
                 });
                 $(`#${this.config.modalId}`).modal('show');
+            } else if (this.config.getDataRoute) {
+                this.loadData(id);
             } else {
                 this.loadView(this.config.viewPath, {
                     ...this.config.viewData,

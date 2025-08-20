@@ -150,3 +150,8 @@ class NewsController extends Controller
 
 
 
+
+
+
+
+

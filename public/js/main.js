@@ -60,6 +60,9 @@ $(document).ready(function () {
             }
         });
     }
+    // Expose for external calls (e.g., after modal loads)
+    window.initializeSelect2 = initializeSelect2;
+
     // Khởi tạo Select2 ban đầu
     initializeSelect2();
 
