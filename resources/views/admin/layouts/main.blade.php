@@ -129,8 +129,8 @@
 <!--begin::Script-->
 <!--begin::Third Party Plugin(OverlayScrollbars)-->
 <script src="{{ asset('js/toastr.min.js') }}"></script>
-<script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('js/select2.min.js') }}"></script>
+<script src="{{ asset('js/main.js') }}"></script>
 <script
     src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
     crossorigin="anonymous"

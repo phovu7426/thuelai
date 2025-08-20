@@ -41,8 +41,9 @@ class PostController extends BaseController
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $posts = $this->getService()->getList($filters, $options);
+        $categories = PostCategory::active()->ordered()->get();
         
-        return view('admin.posts.index', compact('posts', 'filters', 'options'));
+        return view('admin.posts.index', compact('posts', 'filters', 'options', 'categories'));
     }
 
     /**

@@ -138,6 +138,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PostCategoryController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\PostCategoryController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\PostCategoryController::class, 'store'])->name('store');
+        Route::get('/autocomplete', [\App\Http\Controllers\Admin\PostCategoryController::class, 'autocomplete'])->name('autocomplete');
         Route::get('/{category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'show'])->name('show'); // Hiển thị chi tiết danh mục bài viết
         Route::get('/{category}/edit', [\App\Http\Controllers\Admin\PostCategoryController::class, 'edit'])->name('edit');
         Route::post('/{category}', [\App\Http\Controllers\Admin\PostCategoryController::class, 'update'])->name('update');

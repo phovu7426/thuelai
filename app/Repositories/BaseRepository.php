@@ -228,13 +228,16 @@ abstract class BaseRepository
 
     /**
      * Hàm dùng chung cho autocomplete
-     * @param string $term
+     * @param string|null $term
      * @param string $column
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    public function autocomplete(?string $term = '', string $column = 'title', int $limit = 10): JsonResponse
     {
+        // Convert null to empty string
+        $term = $term ?? '';
+        
         $columns = $this->getColumns();
         $selectColumns[] = 'id';
         if (in_array('name', $columns)) {

@@ -1,8 +1,23 @@
 $(document).ready(function () {
     function initializeSelect2() {
+        // Kiểm tra xem Select2 đã được load chưa
+        if (typeof $.fn.select2 === 'undefined') {
+            console.error('Select2 is not loaded');
+            return;
+        }
+        
         $('.select2').each(function () {
             const selectElement = $(this);
             const url = selectElement.data('url'); // Lấy URL từ data-url
+            
+            // Chỉ khởi tạo Select2 cho elements có data-url (autocomplete)
+            if (!url) {
+                console.log('Skipping select2 init - no data-url:', selectElement.attr('id'));
+                return;
+            }
+            
+            console.log('Initializing Select2 for:', selectElement.attr('id'), 'with URL:', url);
+            
             const field = selectElement.data('field') || 'id'; // Trường lấy giá trị
             const displayField = selectElement.data('display-field') || 'name'; // Trường hiển thị
             const selectedData = selectElement.attr('data-selected'); // Dữ liệu đã chọn
@@ -16,7 +31,12 @@ $(document).ready(function () {
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
-                        return {term: params.term};
+                        const data = {term: params.term || ''};
+                        const excludeId = selectElement.data('exclude-id');
+                        if (excludeId) {
+                            data.exclude_id = excludeId;
+                        }
+                        return data;
                     },
                     processResults: function (data) {
                         return {

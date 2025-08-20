@@ -33,22 +33,11 @@ class PostCategoryController extends BaseController
      * @param Request $request
      * @return View|Application|Factory|JsonResponse
      */
-    public function index(Request $request): View|Application|Factory|JsonResponse
+    public function index(Request $request): View|Application|Factory
     {
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $categories = $this->getService()->getList($filters, $options);
-        
-        // Nếu là AJAX request, trả về JSON
-        if ($request->ajax()) {
-            $html = view('admin.post-categories.partials.table', compact('categories'))->render();
-            $pagination = view('admin.post-categories.partials.pagination', compact('categories'))->render();
-            
-            return response()->json([
-                'html' => $html,
-                'pagination' => $pagination
-            ]);
-        }
         
         return view('admin.post-categories.index', compact('categories', 'filters', 'options'));
     }
@@ -168,20 +157,21 @@ class PostCategoryController extends BaseController
     }
 
     /**
-     * Thay đổi trạng thái nổi bật của danh mục
-     * @param int $id
+     * Autocomplete cho danh mục
+     * @param Request $request
      * @return JsonResponse
      */
-    public function toggleFeatured(int $id): JsonResponse
+    public function autocomplete(Request $request): JsonResponse
     {
-        $result = $this->getService()->toggleFeatured($id);
+        $term = $request->get('term', '');
+        $limit = $request->get('limit', 10);
+        $excludeId = $request->get('exclude_id');
         
-        return response()->json([
-            'success' => $result['success'] ?? false,
-            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
-            'data' => $result['data'] ?? null
-        ]);
+        $categories = $this->getService()->autocomplete($term, 'name', $limit, $excludeId);
+        
+        return $categories;
     }
+
 }
 
 

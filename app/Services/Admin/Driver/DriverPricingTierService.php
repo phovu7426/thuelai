@@ -156,7 +156,7 @@ class DriverPricingTierService extends BaseService
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'time_slot', int $limit = 10): JsonResponse
+    public function autocomplete(?string $term = '', string $column = 'time_slot', int $limit = 10): JsonResponse
     {
         return parent::autocomplete($term, $column, $limit);
     }

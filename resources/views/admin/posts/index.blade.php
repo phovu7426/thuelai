@@ -101,8 +101,7 @@
                                             <td>
                                                 <select class="form-select form-select-sm status-select" 
                                                         data-post-id="{{ $post->id }}" 
-                                                        data-current-status="{{ $post->status }}"
-                                                        data-status-type="posts">
+                                                        data-current-status="{{ $post->status }}">
                                                     <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>
                                                         Bản nháp
                                                     </option>
@@ -117,8 +116,7 @@
                                             <td>
                                                 <select class="form-select form-select-sm featured-select" 
                                                         data-post-id="{{ $post->id }}" 
-                                                        data-current-featured="{{ $post->featured ? '1' : '0' }}"
-                                                        data-featured-type="posts">
+                                                        data-current-featured="{{ $post->featured ? '1' : '0' }}">
                                                     <option value="0" {{ !$post->featured ? 'selected' : '' }}>
                                                         Không nổi bật
                                                     </option>
@@ -175,6 +173,15 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+<style>
+/* Đảm bảo Select2 hiển thị đúng trong modal */
+.select2-container {
+    z-index: 9999;
+}
+.select2-dropdown {
+    z-index: 9999;
+}
+</style>
 @endsection
 
 @section('scripts')
@@ -252,18 +259,18 @@ function updatePostStatus(postId, status) {
             if (response.success) {
                 showAlert('success', response.message);
                 // Update current status
-                $(`select[data-post-id="${postId}"]`).data('current-status', status);
+                $(`.status-select[data-post-id="${postId}"]`).data('current-status', status);
             } else {
                 showAlert('danger', response.message);
                 // Revert select
-                const select = $(`select[data-post-id="${postId}"]`);
+                const select = $(`.status-select[data-post-id="${postId}"]`);
                 select.val(select.data('current-status'));
             }
         },
         error: function() {
             showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
             // Revert select
-            const select = $(`select[data-post-id="${postId}"]`);
+            const select = $(`.status-select[data-post-id="${postId}"]`);
             select.val(select.data('current-status'));
         }
     });
@@ -281,18 +288,18 @@ function updatePostFeatured(postId, featured) {
             if (response.success) {
                 showAlert('success', response.message);
                 // Update current featured
-                $(`select[data-post-id="${postId}"]`).data('current-featured', featured);
+                $(`.featured-select[data-post-id="${postId}"]`).data('current-featured', featured);
             } else {
                 showAlert('danger', response.message);
                 // Revert select
-                const select = $(`select[data-post-id="${postId}"]`);
+                const select = $(`.featured-select[data-post-id="${postId}"]`);
                 select.val(select.data('current-featured'));
             }
         },
         error: function() {
             showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
             // Revert select
-            const select = $(`select[data-post-id="${postId}"]`);
+            const select = $(`.featured-select[data-post-id="${postId}"]`);
             select.val(select.data('current-featured'));
         }
     });

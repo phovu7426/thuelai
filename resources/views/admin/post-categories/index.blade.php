@@ -53,7 +53,6 @@
                                 <th>Tên danh mục</th>
                                 <th>Mô tả</th>
                                 <th>Trạng thái</th>
-                                <th>Nổi bật</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
@@ -79,6 +78,15 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+<style>
+/* Đảm bảo Select2 hiển thị đúng trong modal */
+.select2-container {
+    z-index: 9999;
+}
+.select2-dropdown {
+    z-index: 9999;
+}
+</style>
 @endsection
 
 @section('scripts')
@@ -89,12 +97,12 @@ function waitForJQuery(callback) {
         callback();
     } else {
         // Nếu jQuery chưa sẵn sàng, chờ DOM ready
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             if (typeof $ !== 'undefined') {
                 callback();
             } else {
                 // Nếu vẫn chưa có jQuery, chờ thêm một chút
-                setTimeout(() => {
+                setTimeout(function() {
                     if (typeof $ !== 'undefined') {
                         callback();
                     } else {
@@ -127,11 +135,9 @@ waitForJQuery(function() {
             successMessage: 'Thao tác danh mục tin tức thành công',
             errorMessage: 'Có lỗi xảy ra khi xử lý danh mục tin tức',
             viewPath: 'admin.post-categories.form',
-            viewData: {
-                categories: @json($categories ?? [])
-            },
+            viewData: {},
             onSuccess: function(response, isEdit, id) {
-                setTimeout(() => {
+                setTimeout(function() {
                     location.reload();
                 }, 1500);
             }

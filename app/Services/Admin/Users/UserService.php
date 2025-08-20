@@ -161,7 +161,7 @@ class UserService extends BaseService
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    public function autocomplete(?string $term = '', string $column = 'title', int $limit = 10): JsonResponse
     {
         return parent::autocomplete($term, 'email', $limit);
     }

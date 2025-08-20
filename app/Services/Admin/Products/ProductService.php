@@ -129,7 +129,7 @@ class ProductService extends BaseService
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'name', int $limit = 10): JsonResponse
+    public function autocomplete(?string $term = '', string $column = 'name', int $limit = 10): JsonResponse
     {
         return parent::autocomplete($term, $column, $limit);
     }
