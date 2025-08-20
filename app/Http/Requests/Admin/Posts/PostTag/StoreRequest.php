@@ -25,7 +25,12 @@ class StoreRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'color' => 'nullable|string|max:7',
-            'is_active' => 'boolean'
+            'icon' => 'nullable|string|max:255',
+            'is_active' => 'boolean',
+            'is_featured' => 'boolean',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:500'
         ];
     }
 

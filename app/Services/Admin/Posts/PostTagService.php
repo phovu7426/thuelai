@@ -33,8 +33,14 @@ class PostTagService extends BaseService
 
         try {
             $data['is_active'] = isset($data['is_active']);
+            $data['is_featured'] = isset($data['is_featured']);
             
-            $keys = ['name', 'description', 'color', 'is_active'];
+            // Tự động sinh slug từ name
+            if (!empty($data['name'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            }
+            
+            $keys = ['name', 'description', 'color', 'icon', 'is_active', 'is_featured', 'slug', 'meta_title', 'meta_description', 'meta_keywords'];
             $insertData = DataTable::getChangeData($data, $keys);
             
             if ($tag = $this->getRepository()->create($insertData)) {
@@ -71,8 +77,14 @@ class PostTagService extends BaseService
             }
 
             $data['is_active'] = isset($data['is_active']);
+            $data['is_featured'] = isset($data['is_featured']);
             
-            $keys = ['name', 'description', 'color', 'is_active'];
+            // Tự động sinh slug từ name
+            if (!empty($data['name'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            }
+            
+            $keys = ['name', 'description', 'color', 'icon', 'is_active', 'is_featured', 'slug', 'meta_title', 'meta_description', 'meta_keywords'];
             $updateData = DataTable::getChangeData($data, $keys);
             
             if ($this->getRepository()->update($tag, $updateData)) {

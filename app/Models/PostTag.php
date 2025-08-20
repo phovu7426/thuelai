@@ -15,11 +15,17 @@ class PostTag extends Model
         'slug',
         'description',
         'color',
-        'is_active'
+        'icon',
+        'is_active',
+        'is_featured',
+        'meta_title',
+        'meta_description',
+        'meta_keywords'
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'is_featured' => 'boolean'
     ];
 
     // Relationships
@@ -41,21 +47,9 @@ class PostTag extends Model
     }
 
     // Mutators
-    public function setSlugAttribute($value)
-    {
-        if (empty($value)) {
-            $this->attributes['slug'] = Str::slug($this->name);
-        } else {
-            $this->attributes['slug'] = Str::slug($value);
-        }
-    }
-
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = $value;
-        if (empty($this->attributes['slug'])) {
-            $this->attributes['slug'] = Str::slug($value);
-        }
     }
 }
 

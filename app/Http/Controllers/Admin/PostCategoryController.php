@@ -31,13 +31,24 @@ class PostCategoryController extends BaseController
     /**
      * Hiển thị danh sách danh mục
      * @param Request $request
-     * @return View|Application|Factory
+     * @return View|Application|Factory|JsonResponse
      */
-    public function index(Request $request): View|Application|Factory
+    public function index(Request $request): View|Application|Factory|JsonResponse
     {
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $categories = $this->getService()->getList($filters, $options);
+        
+        // Nếu là AJAX request, trả về JSON
+        if ($request->ajax()) {
+            $html = view('admin.post-categories.partials.table', compact('categories'))->render();
+            $pagination = view('admin.post-categories.partials.pagination', compact('categories'))->render();
+            
+            return response()->json([
+                'html' => $html,
+                'pagination' => $pagination
+            ]);
+        }
         
         return view('admin.post-categories.index', compact('categories', 'filters', 'options'));
     }

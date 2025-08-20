@@ -2,7 +2,7 @@
 @csrf
 
 <div class="row g-3">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="mb-3">
             <label for="name" class="form-label">
                 <i class="bi bi-tag"></i> Tên tag <span class="text-danger">*</span>
@@ -12,18 +12,9 @@
                    value="{{ $data['name'] ?? old('name') }}"
                    required>
             <div class="invalid-feedback" id="nameError"></div>
-        </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="mb-3">
-            <label for="slug" class="form-label">
-                <i class="bi bi-link"></i> Slug
-            </label>
-            <input type="text" name="slug" id="slug" class="form-control"
-                   placeholder="Tự động tạo từ tên..."
-                   value="{{ $data['slug'] ?? old('slug') }}">
-            <div class="invalid-feedback" id="slugError"></div>
+            <div class="form-text">
+                <small><i class="bi bi-info-circle"></i> Slug sẽ được tự động tạo từ tên tag</small>
+            </div>
         </div>
     </div>
 </div>
@@ -120,20 +111,23 @@
     </div>
 </div>
 
+<div class="row g-3">
+    <div class="col-md-12">
+        <div class="mb-3">
+            <label for="meta_keywords" class="form-label">
+                <i class="bi bi-tags"></i> Meta Keywords
+            </label>
+            <input type="text" name="meta_keywords" id="meta_keywords" class="form-control"
+                   placeholder="Nhập meta keywords (phân cách bằng dấu phẩy)..."
+                   value="{{ $data['meta_keywords'] ?? old('meta_keywords') }}">
+            <div class="invalid-feedback" id="meta_keywordsError"></div>
+        </div>
+    </div>
+</div>
+
 {{-- Script để xử lý form --}}
 <script>
 $(document).ready(function() {
-    // Auto-generate slug from name
-    $('#name').on('input', function() {
-        const name = $(this).val();
-        if (name && !$('#slug').val()) {
-            const slug = name.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, '-');
-            $('#slug').val(slug);
-        }
-    });
-    
     // Auto-generate meta title from name
     $('#name').on('input', function() {
         const name = $(this).val();
@@ -148,18 +142,6 @@ $(document).ready(function() {
         if (description && !$('#meta_description').val()) {
             const metaDesc = description.length > 160 ? description.substring(0, 157) + '...' : description;
             $('#meta_description').val(metaDesc);
-        }
-    });
-    
-    // Validate slug format
-    $('#slug').on('input', function() {
-        const slug = $(this).val();
-        if (slug && !/^[a-z0-9-]+$/.test(slug)) {
-            $('#slugError').text('Slug chỉ được chứa chữ thường, số và dấu gạch ngang');
-            $(this).addClass('is-invalid');
-        } else {
-            $('#slugError').text('');
-            $(this).removeClass('is-invalid');
         }
     });
 });
