@@ -3,7 +3,12 @@
 
 @php
     $statusValue = $status ?? old('status', 'active');
-    $parentIdValue = $parent_id ?? old('parent_id');
+    // Chuẩn hóa parent thành object để truy cập đồng nhất (hỗ trợ cả array/object)
+    $parentObj = isset($parent)
+        ? (is_array($parent) ? (object) $parent : $parent)
+        : null;
+    $parentIdValue = $parent_id ?? ($parentObj->id ?? old('parent_id'));
+    $parentText = $parentObj ? ($parentObj->title ?? $parentObj->name ?? null) : null;
 @endphp
 
 <div class="row g-3">
@@ -35,19 +40,6 @@
 </div>
 
 <div class="row g-3">
-    <div class="col-md-12">
-        <div class="mb-3">
-            <label for="description" class="form-label">
-                <i class="bi bi-text-paragraph"></i> Mô tả
-            </label>
-            <textarea name="description" id="description" class="form-control" rows="3"
-                      placeholder="Nhập mô tả quyền...">{{ $description ?? old('description') }}</textarea>
-            <div class="invalid-feedback" id="descriptionError"></div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
             <label for="parent_id" class="form-label">
@@ -57,16 +49,9 @@
                     data-url="{{ route('admin.permissions.autocomplete') }}"
                     data-field="id"
                     data-display-field="title"
-                    data-selected='@json($parentIdValue)'>
+                    data-selected='@json($parentIdValue)'
+                    data-fetch-url="{{ url('/admin/permissions/:id') }}">
                 <option value="">Không có quyền cha</option>
-                @foreach($permissions ?? [] as $permission)
-                    @if(isset($permission['id']) && $permission['id'] != ($data['id'] ?? 0))
-                        <option value="{{ $permission['id'] }}" 
-                                {{ (isset($data['parent_id']) ? $data['parent_id'] : old('parent_id')) == $permission['id'] ? 'selected' : '' }}>
-                            {{ $permission['title'] ?? '' }}
-                        </option>
-                    @endif
-                @endforeach
             </select>
             <div class="invalid-feedback" id="parent_idError"></div>
         </div>

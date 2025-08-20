@@ -164,9 +164,7 @@ waitForJQuery(function() {
             successMessage: 'Thao tác quyền hạn thành công',
             errorMessage: 'Có lỗi xảy ra khi xử lý quyền hạn',
             viewPath: 'admin.permissions.form',
-            viewData: {
-                permissions: @json($permissions ?? [])
-            },
+            viewData: {},
             onSuccess: function(response, isEdit, id) {
                 setTimeout(() => {
                     location.reload();

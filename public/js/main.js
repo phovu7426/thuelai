@@ -40,14 +40,29 @@ $(document).ready(function () {
                 : selectedValues !== null && selectedValues !== '' && typeof selectedValues !== 'undefined';
 
             if (hasSelected) {
+                const selectedTextAttr = selectElement.attr('data-selected-text');
+                if (selectedTextAttr && !isMultiple) {
+                    // Nếu đã có sẵn text của option được chọn, không cần gọi server
+                    if (selectElement.find("option[value='" + selectedValues + "']").length === 0) {
+                        selectElement.append(new Option(selectedTextAttr, selectedValues, true, true));
+                    }
+                    selectElement.val(selectedValues).trigger('change');
+                    return;
+                }
+                // Ưu tiên yêu cầu theo id/ids để chắc chắn lấy được các item đã chọn
+                const requestData = isMultiple
+                    ? { ids: selectedValues }
+                    : { id: selectedValues };
+
                 $.ajax({
                     url: url,
+                    data: requestData,
                     dataType: 'json',
                     success: function (data) {
                         if (isMultiple) {
                             selectedValues.forEach(function(value) {
                                 if (selectElement.find("option[value='" + value + "']").length === 0) {
-                                    let item = data.find(item => item[field] == value);
+                                    let item = Array.isArray(data) ? data.find(item => item[field] == value) : null;
                                     let text = item ? item[displayField] : value;
                                     selectElement.append(new Option(text, value, true, true));
                                 }
@@ -56,7 +71,7 @@ $(document).ready(function () {
                         } else {
                             let value = selectedValues;
                             if (selectElement.find("option[value='" + value + "']").length === 0) {
-                                let item = data.find(item => item[field] == value);
+                                let item = Array.isArray(data) ? data.find(item => item[field] == value) : null;
                                 let text = item ? item[displayField] : value;
                                 selectElement.append(new Option(text, value, true, true));
                             }

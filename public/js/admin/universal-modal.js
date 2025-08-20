@@ -195,7 +195,7 @@
             $(`#${this.config.formId}`).attr('action', updateRoute);
             $(`#${this.config.formId}`).attr('method', 'POST');
             
-            // Thêm method PUT bằng _method parameter
+            // Thêm method PUT bằng _method parameter để khớp route update
             $(`#${this.config.formId} input[name="_method"]`).remove(); // Xóa nếu có
             $(`#${this.config.formId}`).append('<input type="hidden" name="_method" value="POST">');
             
