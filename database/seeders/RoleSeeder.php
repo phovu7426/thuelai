@@ -28,20 +28,29 @@ class RoleSeeder extends Seeder
 
             // Assign permissions based on role
             if ($roleName === 'admin') {
+                // Admin có tất cả quyền
                 $allPermissionNames = Permission::where('name', 'like', 'access_%')->pluck('name')->all();
                 $role->syncPermissions($allPermissionNames);
             } elseif ($roleName === 'editor') {
-                $postPermissionNames = Permission::whereIn('name', [
-                    'access_posts',
+                // Editor có quyền quản lý nội dung và một số quyền khác
+                $editorPermissionNames = Permission::whereIn('name', [
+                    'access_dashboard',
+                    'access_slides',
                     'access_post-categories',
+                    'access_posts',
                     'access_post-tags',
+                    'access_driver_services',
+                    'access_driver_testimonials',
+                    'access_driver_contacts',
                 ])->pluck('name')->all();
-                $role->syncPermissions($postPermissionNames);
+                $role->syncPermissions($editorPermissionNames);
             } else { // user
-                $basicPermissionNames = Permission::whereIn('name', [
+                // User chỉ có quyền xem dashboard và một số quyền cơ bản
+                $userPermissionNames = Permission::whereIn('name', [
+                    'access_dashboard',
                     'access_posts',
                 ])->pluck('name')->all();
-                $role->syncPermissions($basicPermissionNames);
+                $role->syncPermissions($userPermissionNames);
             }
         }
     }
