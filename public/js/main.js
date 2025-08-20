@@ -35,7 +35,11 @@ $(document).ready(function () {
             });
 
             // Nếu có dữ liệu đã chọn, đảm bảo option tồn tại rồi mới set giá trị
-            if (selectedValues && selectedValues.length > 0) {
+            const hasSelected = isMultiple
+                ? Array.isArray(selectedValues) && selectedValues.length > 0
+                : selectedValues !== null && selectedValues !== '' && typeof selectedValues !== 'undefined';
+
+            if (hasSelected) {
                 $.ajax({
                     url: url,
                     dataType: 'json',

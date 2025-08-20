@@ -1,6 +1,11 @@
 {{-- Form cho Users Modal --}}
 @csrf
 
+@php
+    $statusValue = $status ?? old('status', 'active');
+    $genderValue = $gender ?? old('gender');
+@endphp
+
 <div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
@@ -73,8 +78,8 @@
                 <i class="bi bi-toggle-on"></i> Trạng thái
             </label>
             <select name="status" id="status" class="form-control">
-                <option value="active" {{ $status === 'active' ? 'selected' : '' }}>Hoạt động</option>
-                <option value="inactive" {{ $status === 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
+                <option value="active" {{ ($statusValue ?? '') === 'active' ? 'selected' : '' }}>Hoạt động</option>
+                <option value="inactive" {{ ($statusValue ?? '') === 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
             </select>
             <div class="invalid-feedback" id="statusError"></div>
         </div>
@@ -120,9 +125,9 @@
             </label>
             <select name="gender" id="gender" class="form-control">
                 <option value="">-- Chọn --</option>
-                <option value="male" {{ $gender === 'male' ? 'selected' : '' }}>Nam</option>
-                <option value="female" {{ $gender === 'female' ? 'selected' : '' }}>Nữ</option>
-                <option value="other" {{ $gender === 'other' ? 'selected' : '' }}>Khác</option>
+                <option value="male" {{ ($genderValue ?? '') === 'male' ? 'selected' : '' }}>Nam</option>
+                <option value="female" {{ ($genderValue ?? '') === 'female' ? 'selected' : '' }}>Nữ</option>
+                <option value="other" {{ ($genderValue ?? '') === 'other' ? 'selected' : '' }}>Khác</option>
             </select>
             <div class="invalid-feedback" id="genderError"></div>
         </div>

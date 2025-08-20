@@ -70,7 +70,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/store', [RoleController::class, 'store'])->name('store'); // Xử lý thêm mới vai trò
         Route::get('/{id}', [RoleController::class, 'show'])->whereNumber('id')->name('show'); // Hiển thị chi tiết vai trò
         Route::get('/edit/{id}', [RoleController::class, 'edit'])->whereNumber('id')->name('edit');
-        Route::put('/update/{id}', [RoleController::class, 'update'])->whereNumber('id')->name('update');
+        Route::post('/update/{id}', [RoleController::class, 'update'])->whereNumber('id')->name('update');
         Route::delete('/delete/{id}', [RoleController::class, 'delete'])->whereNumber('id')->name('delete');
         Route::get('/autocomplete', [RoleController::class, 'autocomplete'])->name('autocomplete'); // Lấy vai trò theo từ
         Route::post('/{role}/toggle-status', [RoleController::class, 'toggleStatus'])->name('toggle-status');
@@ -84,7 +84,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/store', [PermissionController::class, 'store'])->name('store'); // Xử lý thêm mới quyền
         Route::get('/{id}', [PermissionController::class, 'show'])->whereNumber('id')->name('show'); // Hiển thị chi tiết quyền
         Route::get('/edit/{id}', [PermissionController::class, 'edit'])->whereNumber('id')->name('edit'); // Hiển thị form sửa quyền
-        Route::put('/update/{id}', [PermissionController::class, 'update'])->whereNumber('id')->name('update'); // Xử lý sửa quyền
+        Route::post('/update/{id}', [PermissionController::class, 'update'])->whereNumber('id')->name('update'); // Xử lý sửa quyền
         Route::delete('/delete/{id}', [PermissionController::class, 'delete'])->whereNumber('id')->name('delete'); // Xử lý xóa quyền
         Route::post('/{permission}/toggle-status', [PermissionController::class, 'toggleStatus'])->name('toggle-status');
         Route::post('/{permission}/toggle-featured', [PermissionController::class, 'toggleFeatured'])->name('toggle-featured');
@@ -107,12 +107,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show'); // Hiển thị chi tiết danh mục
     Route::post('/categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
     Route::post('/categories/{category}/toggle-featured', [CategoryController::class, 'toggleFeatured'])->name('categories.toggle-featured');
-
-    // Series
-    Route::resource('series', SeriesController::class);
-    Route::get('/series/{series}', [SeriesController::class, 'show'])->name('series.show'); // Hiển thị chi tiết series
-    Route::post('/series/{series}/toggle-status', [SeriesController::class, 'toggleStatus'])->name('series.toggle-status');
-    Route::post('/series/{series}/toggle-featured', [SeriesController::class, 'toggleFeatured'])->name('series.toggle-featured');
 
     // Posts
     Route::resource('posts', PostController::class)->middleware('canAny:access_users');

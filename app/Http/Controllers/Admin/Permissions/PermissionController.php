@@ -145,10 +145,10 @@ class PermissionController extends BaseController
         $raw = $this->service->autocomplete($term, 'name');
         $data = $raw->getData(true);
         $list = is_array($data) && isset($data[0]) ? $data : ($data['data'] ?? []);
-        // Chuẩn hóa theo init chung: form có data-field="name", data-display-field="title"
+        // Chuẩn hóa theo init chung: trả về đủ cả id, name, title để các form dùng linh hoạt
         $results = array_map(function ($item) {
-            // đảm bảo trả về name và title để script chung map
             return [
+                'id' => $item['id'] ?? null,
                 'name' => $item['name'] ?? ($item['id'] ?? ''),
                 'title' => $item['title'] ?? ($item['name'] ?? ''),
             ];
