@@ -129,6 +129,21 @@
                                             </div>
 
                                             <div class="mb-3">
+                                                <label for="topic" class="form-label">
+                                                    <i class="bi bi-tags"></i> Chủ đề <span class="text-danger">*</span>
+                                                </label>
+                                                <select class="form-select" 
+                                                        id="topic" name="topic" required>
+                                                    <option value="">🏷️ Chọn chủ đề</option>
+                                                    <option value="khiếu nại" {{ old('topic', $contact['topic'] ?? '') == 'khiếu nại' ? 'selected' : '' }}>Khiếu nại</option>
+                                                    <option value="tư vấn dịch vụ" {{ old('topic', $contact['topic'] ?? '') == 'tư vấn dịch vụ' ? 'selected' : '' }}>Tư vấn dịch vụ</option>
+                                                    <option value="phản hồi" {{ old('topic', $contact['topic'] ?? '') == 'phản hồi' ? 'selected' : '' }}>Phản hồi</option>
+                                                    <option value="khác" {{ old('topic', $contact['topic'] ?? '') == 'khác' ? 'selected' : '' }}>Khác</option>
+                                                </select>
+                                                <div class="invalid-feedback" id="topic-error"></div>
+                                            </div>
+
+                                            <div class="mb-3">
                                                 <label for="priority" class="form-label">
                                                     <i class="bi bi-flag"></i> Độ ưu tiên
                                                 </label>

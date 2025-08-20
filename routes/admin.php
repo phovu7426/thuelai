@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\ContactInfoController;
+
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Permissions\PermissionController;
 use App\Http\Controllers\Admin\Posts\PostController;
@@ -25,7 +25,7 @@ use App\Http\Controllers\Admin\Categories\CategoryController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Dashboard
-    Route::middleware('canAny:access_dashboard,access_users,access_roles,access_permissions,access_slides,access_contact-info')->get('/', function () {
+    Route::middleware('canAny:access_dashboard,access_users,access_roles,access_permissions,access_slides')->get('/', function () {
         // Chuyển hướng dựa trên quyền truy cập
         return redirect()->route('admin.dashboard');
     })->name('index');
@@ -164,9 +164,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/{tag}/toggle-featured', [\App\Http\Controllers\Admin\PostTagController::class, 'toggleFeatured'])->name('toggle-featured-json');
     });
 
-    // Cấu hình thông tin liên hệ
-    Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->middleware('canAny:access_contact-info')->name('contact-info.edit');
-    Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->middleware('canAny:access_contact-info')->name('contact-info.update');
+
 
 
 

@@ -42,7 +42,7 @@ class PermissionSeeder extends Seeder
             'access_driver_contacts' => 'Quản lý liên hệ lái xe',
             
             // Cấu hình hệ thống
-            'access_contact-info' => 'Cấu hình hệ thống',
+    
         ];
 
         foreach ($permissions as $permissionName => $permissionTitle) {

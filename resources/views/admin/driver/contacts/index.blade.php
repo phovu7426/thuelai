@@ -57,6 +57,7 @@
                                             <th>Tên</th>
                                             <th>Email</th>
                                             <th>Số điện thoại</th>
+                                            <th>Chủ đề</th>
                                             <th>Tiêu đề</th>
                                             <th>Trạng thái</th>
                                             <th>Nổi bật</th>
@@ -80,6 +81,15 @@
                                                 <a href="tel:{{ $contact['phone'] }}" class="text-decoration-none">
                                                     <i class="bi bi-telephone"></i> {{ $contact['phone'] }}
                                                 </a>
+                                            </td>
+                                            <td>
+                                                @if(isset($contact['topic']))
+                                                    <span class="badge {{ $contact['topic'] == 'khiếu nại' ? 'badge-danger' : ($contact['topic'] == 'tư vấn dịch vụ' ? 'badge-info' : ($contact['topic'] == 'phản hồi' ? 'badge-success' : 'badge-secondary')) }}">
+                                                        {{ $contact['topic'] }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-secondary">Khác</span>
+                                                @endif
                                             </td>
                                             <td>
                                                 {{ $contact['subject'] ?? 'Không có tiêu đề' }}

@@ -180,15 +180,7 @@
 
             {{-- ===== END DRIVER SERVICES SECTION ===== --}}
 
-            {{-- Cấu hình --}}
-            @can('access_contact-info')
-            <li class="nav-item">
-                <a href="{{ route('admin.contact-info.edit') }}" class="nav-link {{ isActive('admin.contact-info.*') }}">
-                    <i class="nav-icon bi bi-gear"></i>
-                    <p>Cấu hình hệ thống</p>
-                </a>
-            </li>
-            @endcan
+
         </ul>
         <!--end::Sidebar Menu-->
     </nav>

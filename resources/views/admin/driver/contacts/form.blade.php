@@ -45,6 +45,24 @@
     
     <div class="col-md-6">
         <div class="mb-3">
+            <label for="topic" class="form-label">
+                <i class="bi bi-tags"></i> Chủ đề <span class="text-danger">*</span>
+            </label>
+            <select name="topic" id="topic" class="form-control" required>
+                <option value="">Chọn chủ đề</option>
+                <option value="khiếu nại" {{ ($data['topic'] ?? old('topic')) == 'khiếu nại' ? 'selected' : '' }}>Khiếu nại</option>
+                <option value="tư vấn dịch vụ" {{ ($data['topic'] ?? old('topic')) == 'tư vấn dịch vụ' ? 'selected' : '' }}>Tư vấn dịch vụ</option>
+                <option value="phản hồi" {{ ($data['topic'] ?? old('topic')) == 'phản hồi' ? 'selected' : '' }}>Phản hồi</option>
+                <option value="khác" {{ ($data['topic'] ?? old('topic')) == 'khác' ? 'selected' : '' }}>Khác</option>
+            </select>
+            <div class="invalid-feedback" id="topicError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
             <label for="subject" class="form-label">
                 <i class="bi bi-type"></i> Tiêu đề
             </label>
@@ -202,6 +220,28 @@ $(document).ready(function() {
         if (message && !$('#subject').val()) {
             const subject = message.length > 50 ? message.substring(0, 47) + '...' : message;
             $('#subject').val(subject);
+        }
+    });
+    
+    // Auto-fill subject based on topic
+    $('#topic').on('change', function() {
+        const topic = $(this).val();
+        const subject = $('#subject');
+        
+        if (!subject.val()) {
+            switch(topic) {
+                case 'khiếu nại':
+                    subject.val('Khiếu nại dịch vụ');
+                    break;
+                case 'tư vấn dịch vụ':
+                    subject.val('Yêu cầu tư vấn dịch vụ');
+                    break;
+                case 'phản hồi':
+                    subject.val('Phản hồi dịch vụ');
+                    break;
+                default:
+                    subject.val('Liên hệ chung');
+            }
         }
     });
     

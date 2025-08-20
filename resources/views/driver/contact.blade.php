@@ -133,18 +133,25 @@
                     </div>
                     
                     <div class="form-group">
-                                <label for="subject">
+                                <label for="topic">
                                     <i class="fas fa-tag"></i>
                                     Chủ đề
                                 </label>
-                                <select id="subject" name="subject" required>
+                                <select id="topic" name="topic" required>
                             <option value="">Chọn chủ đề</option>
-                                    <option value="tư_vấn">Tư vấn dịch vụ</option>
-
-                                    <option value="phản_hồi">Phản hồi</option>
-                                    <option value="khiếu_nại">Khiếu nại</option>
+                                    <option value="tư vấn dịch vụ">Tư vấn dịch vụ</option>
+                                    <option value="phản hồi">Phản hồi</option>
+                                    <option value="khiếu nại">Khiếu nại</option>
                                     <option value="khác">Khác</option>
                         </select>
+                    </div>
+                    
+                    <div class="form-group">
+                                <label for="subject">
+                                    <i class="fas fa-heading"></i>
+                                    Tiêu đề
+                                </label>
+                                <input type="text" id="subject" name="subject" placeholder="Nhập tiêu đề tin nhắn...">
                     </div>
                     
                             <div class="form-group full-width">
@@ -289,28 +296,71 @@ document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
+            e.preventDefault();
+            
             const submitBtn = this.querySelector('.btn-submit');
             const originalText = submitBtn.innerHTML;
 
-        // Show loading state
-        submitBtn.disabled = true;
+            // Show loading state
+            submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang gửi...</span>';
             
-            // Simulate form submission (replace with actual AJAX call)
-            setTimeout(() => {
-                // Show success notification
-                showNotification('Tin nhắn đã được gửi thành công! Chúng tôi sẽ phản hồi sớm nhất có thể.', 'success');
-                
-                // Reset form
-                contactForm.reset();
-                
+            // Get form data
+            const formData = new FormData(this);
+            
+            // Send AJAX request
+            fetch('{{ route("driver.contact.submit") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                    contactForm.reset();
+                } else {
+                    showNotification(data.message || 'Có lỗi xảy ra, vui lòng thử lại.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+            })
+            .finally(() => {
                 // Reset button
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
-            }, 2000);
+            });
         });
+        
+        // Auto-fill subject based on topic
+        const topicSelect = document.getElementById('topic');
+        const subjectInput = document.getElementById('subject');
+        
+        if (topicSelect && subjectInput) {
+            topicSelect.addEventListener('change', function() {
+                const topic = this.value;
+                
+                if (!subjectInput.value) {
+                    switch(topic) {
+                        case 'khiếu nại':
+                            subjectInput.value = 'Khiếu nại dịch vụ';
+                            break;
+                        case 'tư vấn dịch vụ':
+                            subjectInput.value = 'Yêu cầu tư vấn dịch vụ';
+                            break;
+                        case 'phản hồi':
+                            subjectInput.value = 'Phản hồi dịch vụ';
+                            break;
+                        default:
+                            subjectInput.value = 'Liên hệ chung';
+                    }
+                }
+            });
+        }
     }
 
     // Smooth scroll for scroll indicator
