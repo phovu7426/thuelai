@@ -179,7 +179,9 @@ waitForJQuery(function() {
             successMessage: 'Thao tác danh mục tin tức thành công',
             errorMessage: 'Có lỗi xảy ra khi xử lý danh mục tin tức',
             viewPath: 'admin.post-categories.form',
-            viewData: {},
+            viewData: {
+                categories: @json($categories ?? [])
+            },
             onSuccess: function(response, isEdit, id) {
                 setTimeout(() => {
                     location.reload();

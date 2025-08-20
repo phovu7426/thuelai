@@ -36,12 +36,17 @@ class PostCategoryService extends BaseService
             $data['is_active'] = isset($data['is_active']);
             $data['is_featured'] = isset($data['is_featured']);
             
+            // Tự động sinh slug từ name
+            if (!empty($data['name'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            }
+            
             // Xử lý upload hình ảnh
             if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
                 $data['image'] = $data['image']->store('categories', 'public');
             }
             
-            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active', 'is_featured'];
+            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active', 'is_featured', 'slug'];
             $insertData = DataTable::getChangeData($data, $keys);
             
             if ($category = $this->getRepository()->create($insertData)) {
@@ -80,6 +85,11 @@ class PostCategoryService extends BaseService
             $data['is_active'] = isset($data['is_active']);
             $data['is_featured'] = isset($data['is_featured']);
             
+            // Tự động sinh slug từ name
+            if (!empty($data['name'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
+            }
+            
             // Xử lý upload hình ảnh
             if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
                 // Xóa ảnh cũ
@@ -89,7 +99,7 @@ class PostCategoryService extends BaseService
                 $data['image'] = $data['image']->store('categories', 'public');
             }
             
-            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active', 'is_featured'];
+            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active', 'is_featured', 'slug'];
             $updateData = DataTable::getChangeData($data, $keys);
             
             if ($this->getRepository()->update($category, $updateData)) {

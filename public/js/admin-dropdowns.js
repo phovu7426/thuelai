@@ -87,7 +87,7 @@ class AdminDropdowns {
         // Tạo form data
         const formData = new FormData();
         formData.append('_token', this.getCsrfToken());
-        formData.append('_method', 'PATCH');
+        formData.append('_method', 'POST');
         formData.append('status', newStatus);
 
         // Gọi API để cập nhật trạng thái
@@ -136,7 +136,7 @@ class AdminDropdowns {
         // Tạo form data
         const formData = new FormData();
         formData.append('_token', this.getCsrfToken());
-        formData.append('_method', 'PATCH');
+        formData.append('_method', 'POST');
 
         // Gọi API để cập nhật trạng thái nổi bật
         fetch(apiEndpoint, {
