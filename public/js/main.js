@@ -27,6 +27,9 @@ $(document).ready(function () {
                     },
                     cache: true
                 },
+                dropdownParent: selectElement.closest('.modal').length ? selectElement.closest('.modal') : $(document.body),
+                width: '100%',
+                minimumInputLength: 0,
                 placeholder: 'Chọn mục',
                 allowClear: true
             });

@@ -54,6 +54,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Route cho load view
     Route::post('/load-view', [\App\Http\Controllers\Admin\ViewController::class, 'loadView'])->name('loadView');
 
+    // Autocomplete permissions (allow roles or permissions access)
+    Route::get('/permissions/autocomplete', [PermissionController::class, 'autocomplete'])
+        ->middleware('canAny:access_roles,access_permissions')
+        ->name('permissions.autocomplete');
+
     Route::prefix('profiles')->name('profiles.')->group(function () { // Chức năng quản lý hồ sơ
         Route::get('/edit/{user_id}', [ProfileController::class, 'edit'])->name('edit'); // Hiển thị form chỉnh sửa
         Route::post('/update/{user_id}', [ProfileController::class, 'update'])->name('update'); // Xử lý chỉnh sửa
@@ -81,7 +86,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/edit/{id}', [PermissionController::class, 'edit'])->whereNumber('id')->name('edit'); // Hiển thị form sửa quyền
         Route::put('/update/{id}', [PermissionController::class, 'update'])->whereNumber('id')->name('update'); // Xử lý sửa quyền
         Route::delete('/delete/{id}', [PermissionController::class, 'delete'])->whereNumber('id')->name('delete'); // Xử lý xóa quyền
-        Route::get('/autocomplete', [PermissionController::class, 'autocomplete'])->name('autocomplete'); // Lấy quyền theo từ
         Route::post('/{permission}/toggle-status', [PermissionController::class, 'toggleStatus'])->name('toggle-status');
         Route::post('/{permission}/toggle-featured', [PermissionController::class, 'toggleFeatured'])->name('toggle-featured');
     });

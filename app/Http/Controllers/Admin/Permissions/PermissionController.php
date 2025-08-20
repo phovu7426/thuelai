@@ -134,4 +134,25 @@ class PermissionController extends BaseController
         return redirect()->route('admin.permissions.index')
             ->with('fail', $return['message'] ?? 'Xóa quyền thất bại.');
     }
+
+    /**
+     * Autocomplete for select2 – returns [{id, text}] or {data: [...]}
+     */
+    public function autocomplete(Request $request): JsonResponse
+    {
+        $term = $request->input('term', '');
+        // Lấy danh sách theo BaseService::autocomplete (trả về JsonResponse)
+        $raw = $this->service->autocomplete($term, 'name');
+        $data = $raw->getData(true);
+        $list = is_array($data) && isset($data[0]) ? $data : ($data['data'] ?? []);
+        // Chuẩn hóa theo init chung: form có data-field="name", data-display-field="title"
+        $results = array_map(function ($item) {
+            // đảm bảo trả về name và title để script chung map
+            return [
+                'name' => $item['name'] ?? ($item['id'] ?? ''),
+                'title' => $item['title'] ?? ($item['name'] ?? ''),
+            ];
+        }, $list);
+        return response()->json($results);
+    }
 }

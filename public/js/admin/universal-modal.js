@@ -138,6 +138,10 @@
                 success: (response) => {
                     if (response.success) {
                         modalBody.html(response.html);
+                        // Re-init common UI initializers for dynamically injected content
+                        if (typeof window.initializeSelect2 === 'function') {
+                            window.initializeSelect2();
+                        }
                     } else {
                         modalBody.html('<div class="alert alert-danger">Không thể tải giao diện</div>');
                     }
