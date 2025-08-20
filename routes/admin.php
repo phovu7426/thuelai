@@ -235,6 +235,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('testimonials')->name('testimonials.')->middleware('canAny:access_driver_testimonials')->group(function () {
             Route::resource('/', \App\Http\Controllers\Admin\Driver\TestimonialController::class)->except(['show']);
             Route::get('/{testimonial}', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'show'])->name('show');
+            Route::get('/{testimonial}/info', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'getTestimonialInfo'])->name('getTestimonialInfo');
             Route::post('/{testimonial}/toggle-status', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleStatus'])->name('toggle-status');
             Route::post('/{testimonial}/toggle-featured', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'toggleFeatured'])->name('toggle-featured');
             Route::post('/update-order', [\App\Http\Controllers\Admin\Driver\TestimonialController::class, 'updateOrder'])->name('update-order');

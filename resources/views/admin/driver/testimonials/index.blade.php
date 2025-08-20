@@ -35,10 +35,10 @@
                                 </div>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
-                                @can('access_users')
-                                    <a href="{{ route('admin.driver.testimonials.create') }}" class="btn btn-primary">
+                                @can('access_driver_testimonials')
+                                    <button type="button" class="btn btn-primary" onclick="openCreateModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm đánh giá mới
-                                    </a>
+                                    </button>
                                 @endcan
                             </div>
                         </div>
@@ -127,15 +127,15 @@
                                             <td>{{ $testimonial->created_at ? $testimonial->created_at->format('d/m/Y') : 'N/A' }}</td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    @can('access_users')
+                                                    @can('access_driver_testimonials')
                                                         <a href="{{ route('admin.driver.testimonials.show', $testimonial->id) }}"
                                                            class="btn-action btn-view" title="Xem chi tiết">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.driver.testimonials.edit', $testimonial->id) }}"
-                                                           class="btn-action btn-edit" title="Chỉnh sửa">
+                                                        <button type="button" class="btn-action btn-edit" title="Chỉnh sửa" 
+                                                                onclick="openEditModal({{ $testimonial->id }})">
                                                             <i class="fas fa-edit"></i>
-                                                        </a>
+                                                        </button>
                                                         <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteTestimonial({{ $testimonial->id }})">
                                                             <i class="fas fa-trash-alt"></i>
                                                         </button>
@@ -161,9 +161,9 @@
                                 <i class="bi bi-chat-quote display-1 text-muted"></i>
                                 <h4 class="mt-3 text-muted">Chưa có đánh giá nào</h4>
                                 <p class="text-muted">Hãy thêm đánh giá đầu tiên để bắt đầu!</p>
-                                <a href="{{ route('admin.driver.testimonials.create') }}" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary" onclick="openCreateModal()">
                                     <i class="bi bi-plus-circle"></i> Thêm đánh giá mới
-                                </a>
+                                </button>
                             </div>
                         @endif
                     </div>
@@ -177,8 +177,44 @@
     <!--end::App Content-->
 @endsection
 
-@push('scripts')
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/admin/universal-modal.js') }}"></script>
 <script>
+// Khởi tạo Universal Modal cho Testimonials (chỉ khởi tạo một lần)
+if (!window.testimonialsModal) {
+    window.testimonialsModal = new UniversalModal({
+        modalId: 'testimonialsModal',
+        modalTitle: 'Đánh giá khách hàng',
+        formId: 'testimonialsForm',
+        submitBtnId: 'testimonialsSubmitBtn',
+        createRoute: '{{ route("admin.driver.testimonials.store") }}',
+        updateRoute: '{{ route("admin.driver.testimonials.update", ":id") }}',
+        getDataRoute: '{{ route("admin.driver.testimonials.getTestimonialInfo", ":id") }}',
+        successMessage: 'Thao tác đánh giá khách hàng thành công',
+        errorMessage: 'Có lỗi xảy ra khi xử lý đánh giá khách hàng',
+        viewPath: 'admin.driver.testimonials.form',
+        viewData: {},
+        onSuccess: function(response, isEdit, id) {
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        }
+    });
+}
+
+// Global functions để gọi từ HTML
+function openCreateModal() {
+    window.testimonialsModal.openCreateModal();
+}
+
+function openEditModal(testimonialId) {
+    window.testimonialsModal.openEditModal(testimonialId);
+}
+
 $(document).ready(function() {
     // Toggle status
     $('.toggle-status').change(function() {
@@ -378,4 +414,4 @@ function showAlert(type, message) {
     }, 5000);
 }
 </script>
-@endpush
+@endsection
