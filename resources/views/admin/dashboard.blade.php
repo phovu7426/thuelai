@@ -163,23 +163,30 @@
 
     <!-- Contacts Status Chart -->
     <div class="row g-4 mb-4">
-        <div class="col-xl-6 col-lg-6">
-            <div class="chart-card card border-0 shadow-sm h-100">
-                <div class="card-header bg-transparent border-0 p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-envelope text-warning me-2"></i>
-                            Trạng thái liên hệ
-                        </h5>
-                    </div>
-                </div>
-                <div class="card-body p-4">
-                    <div class="chart-container" style="height: 250px;">
-                        <canvas id="contactsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+                 <div class="col-xl-6 col-lg-6">
+             <div class="chart-card card border-0 shadow-sm h-100">
+                 <div class="card-header bg-transparent border-0 p-4">
+                     <div class="d-flex align-items-center justify-content-between">
+                         <h5 class="card-title mb-0">
+                             <i class="fas fa-envelope text-warning me-2"></i>
+                             Trạng thái liên hệ
+                         </h5>
+                     </div>
+                 </div>
+                 <div class="card-body p-4">
+                     <div class="chart-container" style="height: 250px;">
+                         <canvas id="contactsChart"></canvas>
+                         <div id="contactsChartPlaceholder" class="chart-placeholder" style="display: none;">
+                             <div class="text-center py-5">
+                                 <i class="fas fa-chart-pie text-muted fa-3x mb-3"></i>
+                                 <p class="text-muted">Chưa có dữ liệu liên hệ</p>
+                                 <small class="text-muted">Hoặc tất cả đều bằng 0</small>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
         <div class="col-xl-6 col-lg-6">
             <div class="quick-stats-card card border-0 shadow-sm h-100">
                 <div class="card-header bg-transparent border-0 p-4">
@@ -496,6 +503,19 @@
     margin: auto;
 }
 
+.chart-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
 /* Responsive improvements */
 @media (max-width: 768px) {
     .stat-number {
@@ -546,6 +566,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const servicesData = JSON.parse(dataEl.getAttribute('data-services-data') || '[]');
     const contactsLabels = JSON.parse(dataEl.getAttribute('data-contacts-labels') || '[]');
     const contactsData = JSON.parse(dataEl.getAttribute('data-contacts-data') || '[]');
+    
+    // Debug data
+    console.log('Contacts Labels:', contactsLabels);
+    console.log('Contacts Data:', contactsData);
 
     // Monthly Stats Chart
     const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
@@ -637,35 +661,52 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Contacts Status Chart
-    const contactsCtx = document.getElementById('contactsChart').getContext('2d');
-    new Chart(contactsCtx, {
-        type: 'doughnut',
-        data: {
-            labels: contactsLabels,
-            datasets: [{
-                data: contactsData,
-                backgroundColor: [
-                    'rgba(40, 167, 69, 0.8)',
-                    'rgba(255, 193, 7, 0.8)'
-                ],
-                borderWidth: 0,
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 20
+    const contactsCtx = document.getElementById('contactsChart');
+    const contactsPlaceholder = document.getElementById('contactsChartPlaceholder');
+    
+    if (contactsCtx) {
+        // Kiểm tra nếu có dữ liệu
+        if (contactsData.length > 0 && contactsData.some(value => value > 0)) {
+            // Ẩn placeholder và hiển thị chart
+            if (contactsPlaceholder) contactsPlaceholder.style.display = 'none';
+            contactsCtx.style.display = 'block';
+            
+            new Chart(contactsCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: contactsLabels,
+                    datasets: [{
+                        data: contactsData,
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
                     }
                 }
-            }
+            });
+        } else {
+            // Hiển thị placeholder khi không có dữ liệu
+            contactsCtx.style.display = 'none';
+            if (contactsPlaceholder) contactsPlaceholder.style.display = 'block';
         }
-    });
+    } else {
+        console.error('Contacts chart canvas not found');
+    }
 });
 </script>
 @endsection
