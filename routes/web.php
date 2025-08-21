@@ -56,7 +56,7 @@ Route::prefix('home')->name('home.')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
+        return redirect()->route('admin.dashboard');
     })->name('dashboard');
 });
 
