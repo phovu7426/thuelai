@@ -28,7 +28,7 @@ class DashboardController extends Controller
             // Thống kê liên hệ
             $totalContacts = DriverContact::count();
             $newContacts = DriverContact::where('created_at', '>=', now()->subDays(7))->count();
-            $unreadContacts = DriverContact::where('status', 0)->count();
+            $unreadContacts = DriverContact::where('status', 'unread')->count();
             
             // Thống kê đánh giá
             $totalTestimonials = Testimonial::count();
@@ -152,8 +152,8 @@ class DashboardController extends Controller
     private function getContactsByStatus()
     {
         try {
-            $readContacts = DriverContact::where('status', 1)->count();
-            $unreadContacts = DriverContact::where('status', 0)->count();
+            $readContacts = DriverContact::whereIn('status', ['read', 'replied', 'closed'])->count();
+            $unreadContacts = DriverContact::where('status', 'unread')->count();
             
             return [
                 'labels' => ['Đã đọc', 'Chưa đọc'],

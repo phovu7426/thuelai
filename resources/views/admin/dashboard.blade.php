@@ -299,13 +299,13 @@
                                     <i class="fas fa-envelope text-warning"></i>
                                 </div>
                                 <div class="activity-content flex-grow-1">
-                                    <h6 class="mb-1">{{ $contact->customer_name ?? 'N/A' }}</h6>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <span class="badge bg-{{ $contact->status == 1 ? 'success' : 'warning' }} bg-opacity-10 text-{{ $contact->status == 1 ? 'success' : 'warning' }}">
-                                            {{ $contact->status == 1 ? 'Đã đọc' : 'Chưa đọc' }}
-                                        </span>
-                                        <small class="text-muted">{{ $contact->created_at ? $contact->created_at->format('d/m/Y') : 'N/A' }}</small>
-                                    </div>
+                                    <h6 class="mb-1">{{ $contact->name ?? 'N/A' }}</h6>
+                                                                         <div class="d-flex align-items-center justify-content-between">
+                                         <span class="badge bg-{{ $contact->status == 'unread' ? 'warning' : 'success' }} bg-opacity-10 text-{{ $contact->status == 'unread' ? 'warning' : 'success' }}">
+                                             {{ $contact->status_text ?? 'N/A' }}
+                                         </span>
+                                         <small class="text-muted">{{ $contact->created_at ? $contact->created_at->format('d/m/Y') : 'N/A' }}</small>
+                                     </div>
                                 </div>
                             </div>
                             @endforeach
