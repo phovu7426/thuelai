@@ -265,4 +265,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('upload/ckeditor', [\App\Http\Controllers\UploadController::class, 'uploadImage'])
         ->middleware('auth')
         ->name('upload.ckeditor');
+
+    
 });

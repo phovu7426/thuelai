@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Home\Posts\PostController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Home\Posts\PostController as HomePostController;
 use App\Http\Controllers\Home\SlideController as HomeSlideController;
@@ -69,6 +70,11 @@ Route::get('/posts/{slug}', [HomePostController::class, 'show'])->name('home.pos
 require __DIR__ . '/admin.php';
 
 Route::get('/slides', [HomeSlideController::class, 'index'])->name('home.slides');
+
+// Review routes
+Route::post('/review/send-email', [ReviewController::class, 'sendReviewEmail'])->name('review.send-email');
+Route::get('/review/{token}', [ReviewController::class, 'showReviewForm'])->where('token', '[A-Fa-f0-9]{32}')->name('review.form');
+Route::post('/review/{token}', [ReviewController::class, 'submitReview'])->where('token', '[A-Fa-f0-9]{32}')->name('review.submit');
 
 Route::get('/sitemap.xml', function () {
     $sitemap = Sitemap::create()

@@ -167,7 +167,9 @@
                             <button type="submit" class="btn-submit">
                                 <i class="fas fa-paper-plane"></i>
                                 <span>Gửi tin nhắn</span>
-                    </button>
+                            </button>
+                            
+                            
                         </div>
                 </form>
             </div>
@@ -270,6 +272,8 @@
 </section>
 @endsection
 
+ 
+
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -291,6 +295,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.animate-in').forEach(el => {
         observer.observe(el);
     });
+
+    
 
     // Handle contact form submission
     const contactForm = document.getElementById('contactForm');
@@ -376,6 +382,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    
 
     // Notification function
     function showNotification(message, type = 'success') {

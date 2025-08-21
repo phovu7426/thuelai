@@ -14,6 +14,7 @@ Route::name('driver.')->group(function () {
     Route::get('/tin-tuc', [HomeController::class, 'news'])->name('news');
     Route::get('/tin-tuc/{slug}', [HomeController::class, 'newsDetail'])->name('news.detail');
     Route::get('/lien-he', [HomeController::class, 'contact'])->name('contact');
+    Route::view('/gui-danh-gia', 'driver.review_request')->name('review.request');
     
     // Contact form submission
     Route::post('/lien-he', [ContactController::class, 'submit'])->name('contact.submit');
