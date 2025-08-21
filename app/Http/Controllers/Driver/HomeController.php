@@ -30,7 +30,7 @@ class HomeController extends Controller
         $testimonials = Testimonial::where('status', true)
             ->where('is_featured', true)
             ->orderBy('sort_order')
-            ->take(3)
+            ->take(6)
             ->get();
 
         $posts = Post::where('status', 'published')
