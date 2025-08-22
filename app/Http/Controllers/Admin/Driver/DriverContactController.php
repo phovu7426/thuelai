@@ -70,16 +70,31 @@ class DriverContactController extends BaseController
     /**
      * Hiển thị chi tiết liên hệ
      * @param int $id
-     * @return View|Application|Factory
+     * @return View|Application|Factory|JsonResponse
      */
-    public function show(int $id): View|Application|Factory
+    public function show(int $id): View|Application|Factory|JsonResponse
     {
         $contact = $this->getService()->findById($id);
         
         if (!$contact) {
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Liên hệ không tồn tại.'
+                ], 404);
+            }
             abort(404, 'Liên hệ không tồn tại.');
         }
         
+        // Nếu là AJAX request, trả về JSON
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'data' => $contact
+            ]);
+        }
+        
+        // Nếu không phải AJAX, trả về view
         return view('admin.driver.contacts.show', compact('contact'));
     }
 

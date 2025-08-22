@@ -9,7 +9,7 @@
             </label>
             <input type="text" name="name" id="name" class="form-control"
                    placeholder="Nhập tên khách hàng..."
-                   value="{{ $data['name'] ?? old('name') }}"
+                   value="{{ $name ?? old('name') }}"
                    required>
             <div class="invalid-feedback" id="nameError"></div>
         </div>
@@ -22,7 +22,7 @@
             </label>
             <input type="email" name="email" id="email" class="form-control"
                    placeholder="Nhập email..."
-                   value="{{ $data['email'] ?? old('email') }}"
+                   value="{{ $email ?? old('email') }}"
                    required>
             <div class="invalid-feedback" id="emailError"></div>
         </div>
@@ -37,7 +37,7 @@
             </label>
             <input type="tel" name="phone" id="phone" class="form-control"
                    placeholder="Nhập số điện thoại..."
-                   value="{{ $data['phone'] ?? old('phone') }}"
+                   value="{{ $phone ?? old('phone') }}"
                    required>
             <div class="invalid-feedback" id="phoneError"></div>
         </div>
@@ -50,10 +50,10 @@
             </label>
             <select name="topic" id="topic" class="form-control" required>
                 <option value="">Chọn chủ đề</option>
-                <option value="khiếu nại" {{ ($data['topic'] ?? old('topic')) == 'khiếu nại' ? 'selected' : '' }}>Khiếu nại</option>
-                <option value="tư vấn dịch vụ" {{ ($data['topic'] ?? old('topic')) == 'tư vấn dịch vụ' ? 'selected' : '' }}>Tư vấn dịch vụ</option>
-                <option value="phản hồi" {{ ($data['topic'] ?? old('topic')) == 'phản hồi' ? 'selected' : '' }}>Phản hồi</option>
-                <option value="khác" {{ ($data['topic'] ?? old('topic')) == 'khác' ? 'selected' : '' }}>Khác</option>
+                <option value="khiếu nại" {{ ($topic ?? old('topic')) == 'khiếu nại' ? 'selected' : '' }}>Khiếu nại</option>
+                <option value="tư vấn dịch vụ" {{ ($topic ?? old('topic')) == 'tư vấn dịch vụ' ? 'selected' : '' }}>Tư vấn dịch vụ</option>
+                <option value="phản hồi" {{ ($topic ?? old('topic')) == 'phản hồi' ? 'selected' : '' }}>Phản hồi</option>
+                <option value="khác" {{ ($topic ?? old('topic')) == 'khác' ? 'selected' : '' }}>Khác</option>
             </select>
             <div class="invalid-feedback" id="topicError"></div>
         </div>
@@ -68,7 +68,7 @@
             </label>
             <input type="text" name="subject" id="subject" class="form-control"
                    placeholder="Nhập tiêu đề liên hệ..."
-                   value="{{ $data['subject'] ?? old('subject') }}">
+                   value="{{ $subject ?? old('subject') }}">
             <div class="invalid-feedback" id="subjectError"></div>
         </div>
     </div>
@@ -81,7 +81,7 @@
                 <i class="bi bi-chat-text"></i> Nội dung tin nhắn <span class="text-danger">*</span>
             </label>
             <textarea name="message" id="message" class="form-control" rows="5"
-                      placeholder="Nhập nội dung tin nhắn...">{{ $data['message'] ?? old('message') }}</textarea>
+                      placeholder="Nhập nội dung tin nhắn...">{{ $message ?? old('message') }}</textarea>
             <div class="invalid-feedback" id="messageError"></div>
         </div>
     </div>
@@ -94,9 +94,9 @@
                 <i class="bi bi-toggle-on"></i> Trạng thái
             </label>
             <select name="status" id="status" class="form-control">
-                <option value="unread" {{ ($data['status'] ?? old('status')) == 'unread' ? 'selected' : '' }}>Chưa đọc</option>
-                <option value="read" {{ ($data['status'] ?? old('status')) == 'read' ? 'selected' : '' }}>Đã đọc</option>
-                <option value="replied" {{ ($data['status'] ?? old('status')) == 'replied' ? 'selected' : '' }}>Đã trả lời</option>
+                <option value="unread" {{ ($status ?? old('status')) == 'unread' ? 'selected' : '' }}>Chưa đọc</option>
+                <option value="read" {{ ($status ?? old('status')) == 'read' ? 'selected' : '' }}>Đã đọc</option>
+                <option value="replied" {{ ($status ?? old('status')) == 'replied' ? 'selected' : '' }}>Đã trả lời</option>
             </select>
             <div class="invalid-feedback" id="statusError"></div>
         </div>
@@ -108,10 +108,10 @@
                 <i class="bi bi-flag"></i> Độ ưu tiên
             </label>
             <select name="priority" id="priority" class="form-control">
-                <option value="low" {{ ($data['priority'] ?? old('priority')) == 'low' ? 'selected' : '' }}>Thấp</option>
-                <option value="medium" {{ ($data['priority'] ?? old('priority')) == 'medium' ? 'selected' : '' }}>Trung bình</option>
-                <option value="high" {{ ($data['priority'] ?? old('priority')) == 'high' ? 'selected' : '' }}>Cao</option>
-                <option value="urgent" {{ ($data['priority'] ?? old('priority')) == 'urgent' ? 'selected' : '' }}>Khẩn cấp</option>
+                <option value="low" {{ ($priority ?? old('priority')) == 'low' ? 'selected' : '' }}>Thấp</option>
+                <option value="medium" {{ ($priority ?? old('priority')) == 'medium' ? 'selected' : '' }}>Trung bình</option>
+                <option value="high" {{ ($priority ?? old('priority')) == 'high' ? 'selected' : '' }}>Cao</option>
+                <option value="urgent" {{ ($priority ?? old('priority')) == 'urgent' ? 'selected' : '' }}>Khẩn cấp</option>
             </select>
             <div class="invalid-feedback" id="priorityError"></div>
         </div>
@@ -126,7 +126,7 @@
             </label>
             <input type="text" name="pickup_location" id="pickup_location" class="form-control"
                    placeholder="Nhập điểm đón..."
-                   value="{{ $data['pickup_location'] ?? old('pickup_location') }}">
+                   value="{{ $pickup_location ?? old('pickup_location') }}">
             <div class="invalid-feedback" id="pickup_locationError"></div>
         </div>
     </div>
@@ -138,7 +138,7 @@
             </label>
             <input type="text" name="dropoff_location" id="dropoff_location" class="form-control"
                    placeholder="Nhập điểm đến..."
-                   value="{{ $data['dropoff_location'] ?? old('dropoff_location') }}">
+                   value="{{ $dropoff_location ?? old('dropoff_location') }}">
             <div class="invalid-feedback" id="dropoff_locationError"></div>
         </div>
     </div>
@@ -151,7 +151,7 @@
                 <i class="bi bi-calendar-event"></i> Ngày đón
             </label>
             <input type="datetime-local" name="pickup_date" id="pickup_date" class="form-control"
-                   value="{{ $data['pickup_date'] ?? old('pickup_date') }}">
+                   value="{{ $pickup_date ?? old('pickup_date') }}">
             <div class="invalid-feedback" id="pickup_dateError"></div>
         </div>
     </div>
@@ -163,7 +163,7 @@
             </label>
             <input type="number" name="passengers" id="passengers" class="form-control"
                    placeholder="Nhập số hành khách..."
-                   value="{{ $data['passengers'] ?? old('passengers', 1) }}"
+                   value="{{ $passengers ?? old('passengers', 1) }}"
                    min="1" max="10">
             <div class="invalid-feedback" id="passengersError"></div>
         </div>
@@ -177,7 +177,7 @@
                 <i class="bi bi-sticky"></i> Ghi chú
             </label>
             <textarea name="notes" id="notes" class="form-control" rows="3"
-                      placeholder="Nhập ghi chú...">{{ $data['notes'] ?? old('notes') }}</textarea>
+                      placeholder="Nhập ghi chú...">{{ $notes ?? old('notes') }}</textarea>
             <div class="invalid-feedback" id="notesError"></div>
         </div>
     </div>
