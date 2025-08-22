@@ -229,7 +229,6 @@
     <!--begin::Script-->
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script src="{{ asset('js/toastr.min.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.10.1/browser/overlayscrollbars.browser.es6.min.js"
             onerror="console.warn('OverlayScrollbars JS failed to load')"></script>

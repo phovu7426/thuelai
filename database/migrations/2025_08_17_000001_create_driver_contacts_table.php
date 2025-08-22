@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('message');
             $table->enum('status', ['unread', 'read', 'replied', 'closed'])->default('unread');
             $table->text('admin_notes')->nullable();
+            $table->enum('topic', ['khiếu nại', 'tư vấn dịch vụ', 'phản hồi', 'khác'])->default('khác')->after('phone');
             $table->timestamps();
             $table->softDeletes();
         });

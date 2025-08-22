@@ -76,10 +76,7 @@
     
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="image" class="form-label">
-                <i class="bi bi-image"></i> Ảnh đại diện
-            </label>
-            <input type="file" name="image" id="image" class="form-control" accept="image/*">
+            <x-uploads.file-upload name="image" label="Ảnh đại diện" :value="$image ?? old('image')" />
             <div class="invalid-feedback" id="imageError"></div>
         </div>
     </div>

@@ -206,35 +206,59 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Xử lý upload ảnh và cập nhật URL vào input tương ứng
-    document.querySelectorAll('.upload-field').forEach((input) => {
-        input.addEventListener('change', function (event) {
-            let file = event.target.files[0]; // Lấy file đầu tiên
-            if (!file) return; // Nếu không chọn file, thoát luôn, không chạy tiếp
+    // Xử lý upload ảnh và cập nhật URL vào input tương ứng (event delegation)
+    function handleUploadChange(inputEl) {
+        const file = inputEl.files && inputEl.files[0];
+        if (!file) return;
 
-            let targetInput = document.getElementById(this.getAttribute('data-target'));
-            let formData = new FormData();
-            let uploadUrl = this.getAttribute('data-url'); // Lấy URL từ data-attribute
-            formData.append('file', file);
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+        const targetId = inputEl.getAttribute('data-target');
+        const targetInput = targetId ? document.getElementById(targetId) : null;
+        if (!targetInput) {
+            console.error('Không tìm thấy input đích để gán URL (data-target).');
+            return;
+        }
+        const uploadUrl = inputEl.getAttribute('data-url');
+        if (!uploadUrl) {
+            console.error('Thiếu data-url trên input upload-field.');
+            return;
+        }
 
-            fetch(uploadUrl, {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        targetInput.value = data.url; // Cập nhật đường dẫn file vào input
-                    } else {
-                        alert('Upload thất bại: ' + data.message);
+        const formData = new FormData();
+        formData.append('file', file);
+        const csrf = document.querySelector('meta[name="csrf-token"]');
+        if (csrf) formData.append('_token', csrf.content);
+
+        fetch(uploadUrl, { method: 'POST', body: formData })
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.success) {
+                    targetInput.value = data.url;
+                    const previewId = inputEl.getAttribute('data-preview');
+                    if (previewId) {
+                        const img = document.getElementById(previewId);
+                        if (img) { img.src = data.url; img.style.display = ''; }
                     }
-                })
-                .catch(error => console.error('Lỗi:', error));
-        });
-    });
+                } else {
+                    alert('Upload thất bại: ' + ((data && (data.message || data.messages)) || 'Không xác định'));
+                }
+            })
+            .catch(err => {
+                console.error('Upload error:', err);
+                alert('Không thể tải lên. Vui lòng thử lại.');
+            });
+    }
 
+    if (!window.__uploadHandlerRegistered) {
+        document.addEventListener('change', function(e) {
+            const target = e.target;
+            if (target && target.classList && target.classList.contains('upload-field')) {
+                handleUploadChange(target);
+            }
+        });
+        window.__uploadHandlerRegistered = true;
+    }
 });
+
 
 // tinymce.init({
 //     selector: "textarea[data-editor='true']", // Hoặc "#content"
@@ -274,5 +298,3 @@ document.addEventListener("DOMContentLoaded", function () {
 //         });
 //     });
 // });
-
-

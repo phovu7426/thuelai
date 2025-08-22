@@ -173,4 +173,22 @@ class PermissionController extends BaseController
         }, $list);
         return response()->json($results);
     }
+
+    /**
+     * Thay đổi trạng thái quyền
+     * @param $id
+     * @return JsonResponse
+     */
+    public function toggleStatus($id): JsonResponse
+    {
+        $result = $this->getService()->toggleStatus($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+
 }

@@ -49,31 +49,15 @@
 <div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="image" class="form-label">
-                <i class="bi bi-image"></i> Ảnh dịch vụ
-            </label>
-            <input type="file" name="image" id="image" class="form-control" accept="image/*">
+            <x-uploads.file-upload name="image" label="Ảnh dịch vụ" :value="($image ?? ($dataObj->image ?? null)) ? '/storage/' . ($image ?? $dataObj->image) : old('image')" />
             <div class="invalid-feedback" id="imageError"></div>
-            @if(($image ?? ($dataObj->image ?? null)))
-                <div class="mt-2">
-                    <img src="/storage/{{ $image ?? $dataObj->image }}" class="img-thumbnail" width="100">
-                </div>
-            @endif
         </div>
     </div>
     
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="icon" class="form-label">
-                <i class="bi bi-star"></i> Icon dịch vụ
-            </label>
-            <input type="file" name="icon" id="icon" class="form-control" accept="image/*">
+            <x-uploads.file-upload name="icon" label="Icon dịch vụ" :value="($icon ?? ($dataObj->icon ?? null)) ? '/storage/' . ($icon ?? $dataObj->icon) : old('icon')" />
             <div class="invalid-feedback" id="iconError"></div>
-            @if(($icon ?? ($dataObj->icon ?? null)))
-                <div class="mt-2">
-                    <img src="/storage/{{ $icon ?? $dataObj->icon }}" class="img-thumbnail" width="60">
-                </div>
-            @endif
         </div>
     </div>
 </div>

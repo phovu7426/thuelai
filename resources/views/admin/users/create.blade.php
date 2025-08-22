@@ -77,10 +77,7 @@
                                 
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label for="image" class="form-label">
-                                            <i class="bi bi-image"></i> Ảnh đại diện
-                                        </label>
-                                        <input type="file" name="image" class="form-control" accept="image/*">
+                                        <x-uploads.file-upload name="image" label="Ảnh đại diện" :value="old('image')" />
                                         @error('image')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror

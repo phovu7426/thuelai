@@ -92,8 +92,7 @@
 
                                     <div class="mb-3">
                                         <label for="featured_image" class="form-label">Ảnh đại diện</label>
-                                        <input type="file" class="form-control @error('featured_image') is-invalid @enderror" 
-                                               id="featured_image" name="featured_image" accept="image/*">
+                                        <x-uploads.file-upload name="featured_image" label="Ảnh đại diện" :value="old('featured_image')" />
                                         @error('featured_image')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

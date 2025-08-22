@@ -72,7 +72,7 @@
                                                 <label for="image" class="form-label">
                                                     <i class="bi bi-image"></i> Hình ảnh
                                                 </label>
-                                                <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                                <x-uploads.file-upload name="image" label="Hình ảnh" :value="$slide->image" :required="true" />
                                                 <small class="form-text text-muted">Để trống nếu không muốn thay đổi hình ảnh</small>
                                                 @error('image')
                                                     <span class="text-danger">{{ $message }}</span>

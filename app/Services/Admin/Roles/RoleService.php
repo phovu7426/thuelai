@@ -97,14 +97,15 @@ class RoleService extends BaseService
                 return $return;
             }
 
-            $role->update(['is_active' => !$role->is_active]);
+            $newStatus = $role->status === 'active' ? 'inactive' : 'active';
+            $role->update(['status' => $newStatus]);
             
-            $status = $role->is_active ? 'kích hoạt' : 'vô hiệu hóa';
+            $status = $newStatus === 'active' ? 'kích hoạt' : 'vô hiệu hóa';
             $message = "Vai trò đã được {$status} thành công!";
             
             $return['success'] = true;
             $return['message'] = $message;
-            $return['data'] = ['status' => $role->is_active];
+            $return['data'] = ['status' => $newStatus];
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }

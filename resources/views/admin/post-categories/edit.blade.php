@@ -120,8 +120,7 @@
                                                              class="img-thumbnail" style="max-width: 200px;">
                                                     </div>
                                                 @endif
-                                                <input type="file" class="form-control" 
-                                                       id="image" name="image" accept="image/*">
+                                                <x-uploads.file-upload name="image" label="Hình ảnh" :value="$category->image" />
                                                 <div class="invalid-feedback" id="image-error"></div>
                                                 <small class="form-text text-muted">Định dạng: JPG, PNG, GIF. Kích thước tối đa: 2MB</small>
                                             </div>

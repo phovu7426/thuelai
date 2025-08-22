@@ -92,4 +92,42 @@ class PermissionService extends BaseService
         }
         return $return;
     }
+
+    /**
+     * Thay đổi trạng thái quyền
+     * @param $id
+     * @return array
+     */
+    public function toggleStatus($id): array
+    {
+        $return = [
+            'success' => false,
+            'message' => 'Thay đổi trạng thái thất bại'
+        ];
+
+        try {
+            $permission = $this->getRepository()->findById($id);
+            
+            if (!$permission) {
+                $return['message'] = 'Quyền không tồn tại';
+                return $return;
+            }
+
+            $newStatus = $permission->status === 'active' ? 'inactive' : 'active';
+            $permission->update(['status' => $newStatus]);
+            
+            $status = $newStatus === 'active' ? 'kích hoạt' : 'vô hiệu hóa';
+            $message = "Quyền đã được {$status} thành công!";
+            
+            $return['success'] = true;
+            $return['message'] = $message;
+            $return['data'] = ['status' => $newStatus];
+        } catch (\Exception $e) {
+            $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+        }
+        
+        return $return;
+    }
+
+
 }

@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
             // users.status is enum('active','inactive')
             'status' => 'nullable|in:active,inactive',
             // user avatar
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image' => 'nullable|string|max:500',
             // Profile fields
             'phone' => 'nullable|string|max:15|regex:/^[0-9]+$/',
             'address' => 'nullable|string|max:255',
@@ -51,9 +51,8 @@ class StoreRequest extends FormRequest
             'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
             'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
             'status.in' => 'Trạng thái không hợp lệ.',
-            'image.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
-            'image.mimes' => 'Ảnh đại diện phải có định dạng: jpeg, png, jpg, gif, webp.',
-            'image.max' => 'Ảnh đại diện không được vượt quá 2MB.',
+            'image.string' => 'Đường dẫn ảnh đại diện phải là chuỗi.',
+            'image.max' => 'Đường dẫn ảnh đại diện không được vượt quá 500 ký tự.',
             'phone.string' => 'Số điện thoại phải là chuỗi.',
             'phone.max' => 'Số điện thoại không được quá 15 ký tự.',
             'phone.regex' => 'Số điện thoại chỉ có thể chứa các ký tự số.',

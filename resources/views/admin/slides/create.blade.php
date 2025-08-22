@@ -44,7 +44,7 @@
                     <div class="col-md-4">
                         <div class="form-group mb-3">
                             <label for="image">Hình ảnh <span class="text-danger">*</span></label>
-                            <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                            <x-uploads.file-upload name="image" label="Hình ảnh" :value="old('image')" :required="true" />
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

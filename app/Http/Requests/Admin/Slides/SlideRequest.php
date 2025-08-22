@@ -16,7 +16,7 @@ class SlideRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => $this->isMethod('post') ? 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => $this->isMethod('post') ? 'required|string|max:500' : 'nullable|string|max:500',
             'link' => 'nullable|url',
             'status' => 'required|boolean',
         ];

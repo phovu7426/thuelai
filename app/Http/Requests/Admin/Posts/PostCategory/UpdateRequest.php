@@ -27,7 +27,8 @@ class UpdateRequest extends FormRequest
             'slug' => 'nullable|string|max:255|unique:post_categories,slug,' . $categoryId,
             'description' => 'nullable|string',
             'parent_id' => 'nullable|exists:post_categories,id',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|string|max:500'
         ];
     }
 
@@ -46,6 +47,8 @@ class UpdateRequest extends FormRequest
             'parent_id.exists' => 'Danh mục cha không tồn tại.',
             'status.required' => 'Trạng thái là bắt buộc.',
             'status.in' => 'Trạng thái không hợp lệ.',
+            'image.string' => 'Đường dẫn ảnh phải là chuỗi.',
+            'image.max' => 'Đường dẫn ảnh không được vượt quá 500 ký tự.',
         ];
     }
 }

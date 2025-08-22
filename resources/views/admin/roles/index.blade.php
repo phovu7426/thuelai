@@ -53,6 +53,7 @@
                                 <th>Ý nghĩa vai trò</th>
                                 <th>Tên vai trò</th>
                                 <th>Quyền</th>
+                                <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
                             </thead>
@@ -79,13 +80,29 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @php $isInactive = ($role->status ?? 'active') === 'inactive'; @endphp
+                                        <select class="form-select form-select-sm status-select" 
+                                                data-role-id="{{ $role->id }}" 
+                                                data-current-status="{{ $isInactive ? '1' : '0' }}"
+                                                data-status-type="roles">
+                                            <option value="0" {{ !$isInactive ? 'selected' : '' }}>
+                                                Hoạt động
+                                            </option>
+                                            <option value="1" {{ $isInactive ? 'selected' : '' }}>
+                                                Không hoạt động
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
                                         <div class="action-buttons">
                                             @can('access_roles')
                                                 <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
                                                         onclick="openEditRoleModal({{ $role->id }})">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteRole({{ $role->id }})"><i class="fas fa-trash-alt"></i></button>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteRole({{ $role->id }})">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             @endcan
                                         </div>
                                     </td>
@@ -235,6 +252,9 @@ $(document).ready(function() {
             searchRoles();
         }
     });
+    
+    // Bind initial events
+    bindEvents();
 });
 
 function searchRoles(page = 1) {
@@ -248,8 +268,12 @@ function searchRoles(page = 1) {
             page: page
         },
         success: function(response) {
-            $('#roles-table-body').html(response.html);
-            $('#pagination-container').html(response.pagination);
+            if (response.html) {
+                $('#roles-table-body').html(response.html);
+            }
+            if (response.pagination) {
+                $('#pagination-container').html(response.pagination);
+            }
             
             // Rebind events
             bindEvents();
@@ -290,6 +314,17 @@ function bindEvents() {
         const roleId = $(this).closest('tr').data('id');
         deleteRole(roleId);
     });
+    
+    // Bind status change events
+    $('.status-select').off('change').on('change', function() {
+        const roleId = $(this).data('role-id');
+        const status = $(this).val();
+        const statusType = $(this).data('status-type');
+        
+        if (statusType === 'roles') {
+            updateRoleStatus(roleId);
+        }
+    });
 }
 
 function showAlert(type, message) {
@@ -310,17 +345,19 @@ function showAlert(type, message) {
 
 function updateRoleStatus(roleId, status) {
     $.ajax({
-        url: `/admin/roles/${roleId}/toggle-status`,
+        url: `{{ route('admin.roles.toggle-status', ':id') }}`.replace(':id', roleId),
         method: 'POST',
         data: {
-            _token: '{{ csrf_token() }}',
-            status: status
+            _token: '{{ csrf_token() }}'
         },
         success: function(response) {
             if (response.success) {
                 showAlert('success', response.message);
                 // Update current status
-                $(`select[data-role-id="${roleId}"]`).data('current-status', status);
+                const select = $(`select[data-role-id="${roleId}"]`);
+                const newStatus = response.data.status === 'active' ? '0' : '1';
+                select.val(newStatus);
+                select.data('current-status', newStatus);
             } else {
                 showAlert('danger', response.message);
                 // Revert select

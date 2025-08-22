@@ -87,7 +87,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/update/{id}', [PermissionController::class, 'update'])->whereNumber('id')->name('update'); // Xử lý sửa quyền
         Route::delete('/delete/{id}', [PermissionController::class, 'delete'])->whereNumber('id')->name('delete'); // Xử lý xóa quyền
         Route::post('/{permission}/toggle-status', [PermissionController::class, 'toggleStatus'])->name('toggle-status');
-        Route::post('/{permission}/toggle-featured', [PermissionController::class, 'toggleFeatured'])->name('toggle-featured');
     });
 
     // Profile

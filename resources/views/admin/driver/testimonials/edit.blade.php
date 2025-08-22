@@ -153,18 +153,9 @@
                                                 <label for="customer_avatar" class="form-label">
                                                     <i class="bi bi-person-circle"></i> Ảnh đại diện
                                                 </label>
-                                                <input type="file" class="form-control" 
-                                                       id="customer_avatar" name="customer_avatar" accept="image/*">
+                                                <x-uploads.file-upload name="customer_avatar" label="Ảnh đại diện" :value="$testimonial->customer_avatar" />
                                                 <div class="invalid-feedback" id="customer_avatar-error"></div>
                                                 <small class="form-text text-muted">Để trống nếu không muốn thay đổi ảnh</small>
-                                                
-                                                @if($testimonial->customer_avatar)
-                                                    <div class="mt-2">
-                                                        <img src="{{ asset('storage/' . $testimonial->customer_avatar) }}" 
-                                                             alt="{{ $testimonial->customer_name }}" 
-                                                             class="img-thumbnail" style="max-height: 150px">
-                                                    </div>
-                                                @endif
                                             </div>
                                         </div>
                                     </div>

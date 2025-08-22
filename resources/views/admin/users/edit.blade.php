@@ -122,15 +122,7 @@
                                 
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label for="image" class="form-label">
-                                            <i class="bi bi-image"></i> Ảnh đại diện
-                                        </label>
-                                        <input type="file" name="image" class="form-control" accept="image/*">
-                                        @if($user->image)
-                                            <div class="mt-2">
-                                                <img src="{{ asset($user->image) }}" alt="avatar" style="max-height: 100px;">
-                                            </div>
-                                        @endif
+                                        <x-uploads.file-upload name="image" label="Ảnh đại diện" :value="$user->image" />
                                     </div>
                                 </div>
                             </div> <!-- row -->
