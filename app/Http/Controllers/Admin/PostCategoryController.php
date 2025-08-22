@@ -157,6 +157,22 @@ class PostCategoryController extends BaseController
     }
 
     /**
+     * Thay đổi trạng thái nổi bật của tag
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function toggleFeatured(int $id): JsonResponse
+    {
+        $result = $this->getService()->toggleFeatured($id);
+        
+        return response()->json([
+            'success' => $result['success'] ?? false,
+            'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
+            'data' => $result['data'] ?? null
+        ]);
+    }
+
+    /**
      * Autocomplete cho danh mục
      * @param Request $request
      * @return JsonResponse

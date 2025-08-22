@@ -177,6 +177,41 @@ class PostCategoryService extends BaseService
         return $return;
     }
 
+    /**
+     * Hàm thay đổi trạng thái nổi bật của tag
+     * @param int $id
+     * @return array
+     */
+    public function toggleFeatured(int $id): array
+    {
+        $return = [
+            'success' => false,
+            'message' => 'Thay đổi trạng thái nổi bật thất bại'
+        ];
+
+        try {
+            $tag = $this->getRepository()->findById($id);
+            
+            if (!$tag) {
+                $return['message'] = 'Tag không tồn tại';
+                return $return;
+            }
+
+            $tag->update(['is_featured' => !$tag->is_featured]);
+            
+            $status = $tag->is_featured ? 'nổi bật' : 'không nổi bật';
+            $message = "Tag đã được {$status} thành công!";
+            
+            $return['success'] = true;
+            $return['message'] = $message;
+            $return['data'] = ['is_featured' => $tag->is_featured];
+        } catch (\Exception $e) {
+            $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+        }
+        
+        return $return;
+    }
+
 
 
     /**
