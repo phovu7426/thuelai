@@ -53,17 +53,70 @@
                                 <th>Tên danh mục</th>
                                 <th>Mô tả</th>
                                 <th>Trạng thái</th>
+                                <th>Nổi bật</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody id="categories-table-body">
-                            @include('admin.post-categories.partials.table')
+                            @foreach($categories as $index => $category)
+                                <tr data-id="{{ $category->id }}">
+                                    <td>{{ $categories->firstItem() + $index }}</td>
+                                    <td>
+                                        <strong>{{ $category->name ?? '' }}</strong>
+                                        <br><small class="text-muted">Slug: {{ $category->slug ?? '' }}</small>
+                                    </td>
+                                    <td>{{ Str::limit($category->description ?? '', 80) }}</td>
+                                    <td>
+                                        <select class="form-select form-select-sm status-select" 
+                                                data-category-id="{{ $category->id }}" 
+                                                data-current-status="{{ $category->is_active ? '1' : '0' }}"
+                                                data-status-type="post-categories">
+                                            <option value="0" {{ !$category->is_active ? 'selected' : '' }}>
+                                                Vô hiệu
+                                            </option>
+                                            <option value="1" {{ $category->is_active ? 'selected' : '' }}>
+                                                Kích hoạt
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm featured-select" 
+                                                data-category-id="{{ $category->id }}" 
+                                                data-current-featured="{{ $category->is_featured ? '1' : '0' }}"
+                                                data-featured-type="post-categories">
+                                            <option value="0" {{ !$category->is_featured ? 'selected' : '' }}>
+                                                Không nổi bật
+                                            </option>
+                                            <option value="1" {{ $category->is_featured ? 'selected' : '' }}>
+                                                Nổi bật
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            @can('access_users')
+                                                <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                                        onclick="openEditPostCategoryModal({{ $category->id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deletePostCategory({{ $category->id }})">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            @endcan
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                         
                         <!-- Phân trang -->
                         <div id="pagination-container">
-                            @include('admin.post-categories.partials.pagination')
+                            @if($categories->hasPages())
+                                <div class="d-flex justify-content-center mt-3">
+                                    {{ $categories->links() }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <!-- /.card-body -->
@@ -78,15 +131,6 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
-<style>
-/* Đảm bảo Select2 hiển thị đúng trong modal */
-.select2-container {
-    z-index: 9999;
-}
-.select2-dropdown {
-    z-index: 9999;
-}
-</style>
 @endsection
 
 @section('scripts')
@@ -97,12 +141,12 @@ function waitForJQuery(callback) {
         callback();
     } else {
         // Nếu jQuery chưa sẵn sàng, chờ DOM ready
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             if (typeof $ !== 'undefined') {
                 callback();
             } else {
                 // Nếu vẫn chưa có jQuery, chờ thêm một chút
-                setTimeout(function() {
+                setTimeout(() => {
                     if (typeof $ !== 'undefined') {
                         callback();
                     } else {
@@ -135,9 +179,11 @@ waitForJQuery(function() {
             successMessage: 'Thao tác danh mục tin tức thành công',
             errorMessage: 'Có lỗi xảy ra khi xử lý danh mục tin tức',
             viewPath: 'admin.post-categories.form',
-            viewData: {},
+            viewData: {
+                categories: @json($categories ?? [])
+            },
             onSuccess: function(response, isEdit, id) {
-                setTimeout(function() {
+                setTimeout(() => {
                     location.reload();
                 }, 1500);
             }
