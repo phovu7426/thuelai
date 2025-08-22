@@ -84,7 +84,6 @@ class PostService extends BaseService
 
         try {
             $post = $this->getRepository()->findById($id);
-            
             if (!$post) {
                 $return['message'] = 'Bài viết không tồn tại';
                 return $return;

@@ -9,7 +9,7 @@
             </label>
             <input type="text" name="name" id="name" class="form-control"
                    placeholder="Nhập tên tag..."
-                   value="{{ $data['name'] ?? old('name') }}"
+                   value="{{ $name ?? old('name') }}"
                    required>
             <div class="invalid-feedback" id="nameError"></div>
             <div class="form-text">
@@ -26,7 +26,7 @@
                 <i class="bi bi-text-paragraph"></i> Mô tả
             </label>
             <textarea name="description" id="description" class="form-control" rows="3"
-                      placeholder="Nhập mô tả tag...">{{ $data['description'] ?? old('description') }}</textarea>
+                      placeholder="Nhập mô tả tag...">{{ $description ?? old('description') }}</textarea>
             <div class="invalid-feedback" id="descriptionError"></div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                 <i class="bi bi-palette"></i> Màu sắc
             </label>
             <input type="color" name="color" id="color" class="form-control form-control-color"
-                   value="{{ $data['color'] ?? old('color', '#007bff') }}"
+                   value="{{ $color ?? old('color', '#007bff') }}"
                    title="Chọn màu sắc cho tag">
             <div class="invalid-feedback" id="colorError"></div>
         </div>
@@ -52,7 +52,7 @@
             </label>
             <input type="text" name="icon" id="icon" class="form-control"
                    placeholder="Nhập tên icon (ví dụ: bi-tag)..."
-                   value="{{ $data['icon'] ?? old('icon') }}">
+                   value="{{ $icon ?? old('icon') }}">
             <div class="invalid-feedback" id="iconError"></div>
         </div>
     </div>
@@ -65,8 +65,8 @@
                 <i class="bi bi-toggle-on"></i> Trạng thái
             </label>
             <select name="is_active" id="is_active" class="form-control">
-                <option value="0" {{ ($data['is_active'] ?? old('is_active', 1)) == '0' ? 'selected' : '' }}>Vô hiệu</option>
-                <option value="1" {{ ($data['is_active'] ?? old('is_active', 1)) == '1' ? 'selected' : '' }}>Kích hoạt</option>
+                <option value="0" {{ ($is_active ?? old('is_active', 1)) == '0' ? 'selected' : '' }}>Vô hiệu</option>
+                <option value="1" {{ ($is_active ?? old('is_active', 1)) == '1' ? 'selected' : '' }}>Kích hoạt</option>
             </select>
             <div class="invalid-feedback" id="is_activeError"></div>
         </div>
@@ -76,7 +76,7 @@
         <div class="mb-3">
             <div class="form-check">
                 <input type="checkbox" name="is_featured" id="is_featured" class="form-check-input" value="1"
-                       {{ ($data['is_featured'] ?? old('is_featured')) ? 'checked' : '' }}>
+                       {{ ($is_featured ?? old('is_featured')) ? 'checked' : '' }}>
                 <label class="form-check-label" for="is_featured">
                     <i class="bi bi-star"></i> Nổi bật
                 </label>
@@ -93,7 +93,7 @@
             </label>
             <input type="text" name="meta_title" id="meta_title" class="form-control"
                    placeholder="Nhập meta title..."
-                   value="{{ $data['meta_title'] ?? old('meta_title') }}">
+                   value="{{ $meta_title ?? old('meta_title') }}">
             <div class="invalid-feedback" id="meta_titleError"></div>
         </div>
     </div>
@@ -105,7 +105,7 @@
             </label>
             <input type="text" name="meta_description" id="meta_description" class="form-control"
                    placeholder="Nhập meta description..."
-                   value="{{ $data['meta_description'] ?? old('meta_description') }}">
+                   value="{{ $meta_description ?? old('meta_description') }}">
             <div class="invalid-feedback" id="meta_descriptionError"></div>
         </div>
     </div>
@@ -119,7 +119,7 @@
             </label>
             <input type="text" name="meta_keywords" id="meta_keywords" class="form-control"
                    placeholder="Nhập meta keywords (phân cách bằng dấu phẩy)..."
-                   value="{{ $data['meta_keywords'] ?? old('meta_keywords') }}">
+                   value="{{ $meta_keywords ?? old('meta_keywords') }}">
             <div class="invalid-feedback" id="meta_keywordsError"></div>
         </div>
     </div>

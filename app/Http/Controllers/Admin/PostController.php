@@ -111,7 +111,7 @@ class PostController extends BaseController
      */
     public function update(UpdateRequest $request, Post $post): JsonResponse
     {
-        $result = $this->getService()->update($post->id, $request->validated());
+        $result = $this->getService()->update($post->id, $request->all());
         
         return response()->json([
             'success' => $result['success'] ?? false,

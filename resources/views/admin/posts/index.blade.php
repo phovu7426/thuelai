@@ -75,7 +75,7 @@
                                             <td>{{ $posts->firstItem() + $index }}</td>
                                             <td>
                                                 @if($post->image)
-                                                    <img src="{{ asset('storage/' . $post->image) }}" 
+                                                    <img src="{{ asset($post->image) }}" 
                                                          alt="{{ $post->title }}" 
                                                          class="img-thumbnail" style="max-width: 80px;">
                                                 @else
@@ -132,10 +132,6 @@
                                                             onclick="openEditPostModal({{ $post->id }})">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    <a href="{{ route('admin.posts.show', $post->id) }}" 
-                                                       class="btn-action btn-view" title="Xem">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
                                                     <button type="button" class="btn-action btn-delete" title="Xóa"
                                                             onclick="deletePost({{ $post->id }})">
                                                         <i class="fas fa-trash-alt"></i>
