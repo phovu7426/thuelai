@@ -121,12 +121,20 @@ class ReviewController extends Controller
                 'review_token' => bin2hex(random_bytes(16)),
             ]);
 
-            // Không gửi email, chỉ trả về đường link để admin copy
             $reviewUrl = route('review.form', $review->review_token);
+
+            // Send email to customer
+            Mail::send('emails.review-request', [
+                'customerName' => $request->name,
+                'reviewUrl' => $reviewUrl
+            ], function ($message) use ($request) {
+                $message->to($request->email, $request->name)
+                        ->subject('Mời bạn đánh giá dịch vụ của chúng tôi');
+            });
 
             return response()->json([
                 'success' => true,
-                'message' => 'Tạo link đánh giá thành công.',
+                'message' => 'Đã gửi email mời đánh giá thành công đến ' . $request->email,
                 'review_url' => $reviewUrl,
             ]);
 
@@ -135,7 +143,7 @@ class ReviewController extends Controller
             
             return response()->json([
                 'success' => false,
-                'message' => 'Có lỗi xảy ra, vui lòng thử lại sau.'
+                'message' => 'Có lỗi xảy ra khi gửi email, vui lòng thử lại sau.'
             ], 500);
         }
     }

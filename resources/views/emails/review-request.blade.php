@@ -57,7 +57,7 @@
     </div>
     
     <div class="content">
-        <p>Xin chào <strong>{{ $review->customer_name }}</strong>,</p>
+        <p>Xin chào <strong>{{ $customerName }}</strong>,</p>
         
         <p>Cảm ơn bạn đã sử dụng dịch vụ của <strong>ThuêLai.vn</strong>!</p>
         
@@ -79,11 +79,7 @@
         
         <p><strong>Thông tin đánh giá:</strong></p>
         <ul>
-            <li>Họ và tên: {{ $review->customer_name }}</li>
-            <li>Email: {{ $review->customer_email }}</li>
-            @if($review->customer_phone)
-                <li>Số điện thoại: {{ $review->customer_phone }}</li>
-            @endif
+            <li>Họ và tên: {{ $customerName }}</li>
             <li>Dịch vụ: Dịch vụ tài xế</li>
         </ul>
         
