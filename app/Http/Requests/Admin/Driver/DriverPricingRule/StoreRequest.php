@@ -21,13 +21,21 @@ class StoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'time_slot' => 'required|string|max:255',
             'time_icon' => 'required|string|max:255',
             'time_color' => 'required|string|max:255',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
         ];
+
+        // Add dynamic price rules for each distance tier
+        $distanceTiers = \App\Models\DriverDistanceTier::all();
+        foreach ($distanceTiers as $tier) {
+            $rules["price_{$tier->id}"] = 'nullable|string|max:255';
+        }
+
+        return $rules;
     }
 
     /**
@@ -49,5 +57,3 @@ class StoreRequest extends FormRequest
         ];
     }
 }
-
-

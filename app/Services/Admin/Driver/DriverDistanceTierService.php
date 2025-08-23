@@ -33,10 +33,10 @@ class DriverDistanceTierService extends BaseService
 
         try {
             $data['is_active'] = isset($data['is_active']);
-            
-            $keys = ['name', 'description', 'from_distance', 'to_distance', 'display_text', 'sort_order', 'is_active'];
+
+            $keys = ['name', 'description', 'from_distance', 'to_distance', 'display_text', 'sort_order', 'is_active', 'color', 'icon'];
             $insertData = DataTable::getChangeData($data, $keys);
-            
+
             if ($distanceTier = $this->getRepository()->create($insertData)) {
                 $return['success'] = true;
                 $return['message'] = 'Thêm mới khoảng cách thành công';
@@ -45,7 +45,7 @@ class DriverDistanceTierService extends BaseService
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }
-        
+
         return $return;
     }
 
@@ -64,17 +64,17 @@ class DriverDistanceTierService extends BaseService
 
         try {
             $distanceTier = $this->getRepository()->findById($id);
-            
+
             if (!$distanceTier) {
                 $return['message'] = 'Khoảng cách không tồn tại';
                 return $return;
             }
 
             $data['is_active'] = isset($data['is_active']);
-            
-            $keys = ['name', 'description', 'from_distance', 'to_distance', 'display_text', 'sort_order', 'is_active'];
+
+            $keys = ['name', 'description', 'from_distance', 'to_distance', 'display_text', 'sort_order', 'is_active', 'color', 'icon'];
             $updateData = DataTable::getChangeData($data, $keys);
-            
+
             if ($this->getRepository()->update($distanceTier, $updateData)) {
                 $return['success'] = true;
                 $return['message'] = 'Cập nhật khoảng cách thành công';
@@ -83,7 +83,7 @@ class DriverDistanceTierService extends BaseService
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }
-        
+
         return $return;
     }
 
@@ -101,12 +101,12 @@ class DriverDistanceTierService extends BaseService
 
         try {
             $distanceTier = $this->getRepository()->findById($id);
-            
+
             if (!$distanceTier) {
                 $return['message'] = 'Khoảng cách không tồn tại';
                 return $return;
             }
-            
+
             if ($this->getRepository()->delete($distanceTier)) {
                 $return['success'] = true;
                 $return['message'] = 'Xóa khoảng cách thành công';
@@ -114,7 +114,7 @@ class DriverDistanceTierService extends BaseService
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }
-        
+
         return $return;
     }
 
@@ -132,24 +132,24 @@ class DriverDistanceTierService extends BaseService
 
         try {
             $distanceTier = $this->getRepository()->findById($id);
-            
+
             if (!$distanceTier) {
                 $return['message'] = 'Khoảng cách không tồn tại';
                 return $return;
             }
 
             $distanceTier->update(['is_active' => !$distanceTier->is_active]);
-            
+
             $status = $distanceTier->is_active ? 'kích hoạt' : 'vô hiệu hóa';
             $message = "Khoảng cách đã được {$status} thành công!";
-            
+
             $return['success'] = true;
             $return['message'] = $message;
             $return['data'] = ['status' => $distanceTier->is_active];
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }
-        
+
         return $return;
     }
 
@@ -167,24 +167,24 @@ class DriverDistanceTierService extends BaseService
 
         try {
             $distanceTier = $this->getRepository()->findById($id);
-            
+
             if (!$distanceTier) {
                 $return['message'] = 'Khoảng cách không tồn tại';
                 return $return;
             }
 
             $distanceTier->update(['is_highlighted' => !$distanceTier->is_highlighted]);
-            
+
             $status = $distanceTier->is_highlighted ? 'nổi bật' : 'không nổi bật';
             $message = "Khoảng cách đã được {$status} thành công!";
-            
+
             $return['success'] = true;
             $return['message'] = $message;
             $return['data'] = ['is_highlighted' => $distanceTier->is_highlighted];
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }
-        
+
         return $return;
     }
 
@@ -200,5 +200,3 @@ class DriverDistanceTierService extends BaseService
         return parent::autocomplete($term, $column, $limit);
     }
 }
-
-

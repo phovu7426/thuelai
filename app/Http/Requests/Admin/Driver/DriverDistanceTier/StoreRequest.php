@@ -29,6 +29,8 @@ class StoreRequest extends FormRequest
             'display_text' => 'required|string|max:255',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
+            'color' => 'nullable|string|max:7',
+            'icon' => 'nullable|string|max:255',
         ];
     }
 
@@ -53,8 +55,8 @@ class StoreRequest extends FormRequest
             'display_text.max' => 'Text hiển thị không được vượt quá 255 ký tự.',
             'sort_order.integer' => 'Thứ tự sắp xếp phải là số nguyên.',
             'sort_order.min' => 'Thứ tự sắp xếp không được nhỏ hơn 0.',
+            'color.max' => 'Màu sắc không được vượt quá 7 ký tự.',
+            'icon.max' => 'Icon không được vượt quá 255 ký tự.',
         ];
     }
 }
-
-

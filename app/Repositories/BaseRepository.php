@@ -196,7 +196,8 @@ abstract class BaseRepository
     public function updateOrCreate(array $filters, array $data): bool
     {
         try {
-            if (!empty($filters)
+            if (
+                !empty($filters)
                 && !empty($data)
                 && $this->getModel()->updateOrCreate($filters, $data)
             ) {

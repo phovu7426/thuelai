@@ -37,9 +37,14 @@ class DriverPricingRuleController extends BaseController
     {
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
-        $pricingRules = $this->getService()->getList($filters, $options);
+
+        // Load pricing rules with relationships
+        $pricingRules = \App\Models\DriverPricingRule::with(['pricingDistances.distanceTier'])
+            ->orderBy('sort_order')
+            ->paginate($options['perPage'] ?? 10);
+
         $distanceTiers = \App\Models\DriverDistanceTier::active()->ordered()->get();
-        
+
         return view('admin.driver.pricing-rules.index', compact('pricingRules', 'distanceTiers', 'filters', 'options'));
     }
 
@@ -56,17 +61,20 @@ class DriverPricingRuleController extends BaseController
     /**
      * Xử lý tạo quy tắc giá
      * @param StoreRequest $request
-     * @return JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreRequest $request): JsonResponse
+    public function store(StoreRequest $request): \Illuminate\Http\RedirectResponse
     {
         $result = $this->getService()->create($request->validated());
-        
-        return response()->json([
-            'success' => $result['success'] ?? false,
-            'message' => $result['message'] ?? 'Tạo quy tắc giá thất bại.',
-            'data' => $result['data'] ?? null
-        ]);
+
+        if ($result['success']) {
+            return redirect()->route('admin.driver.pricing-rules.index')
+                ->with('success', $result['message'] ?? 'Tạo quy tắc giá thành công.');
+        } else {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $result['message'] ?? 'Tạo quy tắc giá thất bại.');
+        }
     }
 
     /**
@@ -77,7 +85,7 @@ class DriverPricingRuleController extends BaseController
     public function show(int $id): JsonResponse
     {
         $pricingRule = $this->getService()->findById($id);
-        
+
         if (!$pricingRule) {
             return response()->json([
                 'success' => false,
@@ -85,7 +93,7 @@ class DriverPricingRuleController extends BaseController
                 'data' => null
             ], 404);
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Lấy thông tin quy tắc giá thành công.',
@@ -101,11 +109,11 @@ class DriverPricingRuleController extends BaseController
     public function edit(int $id): View|Application|Factory
     {
         $pricingRule = $this->getService()->findById($id);
-        
+
         if (!$pricingRule) {
             abort(404, 'Quy tắc giá không tồn tại.');
         }
-        
+
         $distanceTiers = \App\Models\DriverDistanceTier::active()->ordered()->get();
         return view('admin.driver.pricing-rules.edit', compact('pricingRule', 'distanceTiers'));
     }
@@ -114,33 +122,38 @@ class DriverPricingRuleController extends BaseController
      * Xử lý chỉnh sửa quy tắc giá
      * @param UpdateRequest $request
      * @param int $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateRequest $request, int $id): JsonResponse
+    public function update(UpdateRequest $request, int $id): \Illuminate\Http\RedirectResponse
     {
         $result = $this->getService()->update($id, $request->validated());
-        
-        return response()->json([
-            'success' => $result['success'] ?? false,
-            'message' => $result['message'] ?? 'Cập nhật quy tắc giá thất bại.',
-            'data' => $result['data'] ?? null
-        ]);
+
+        if ($result['success']) {
+            return redirect()->route('admin.driver.pricing-rules.index')
+                ->with('success', $result['message'] ?? 'Cập nhật quy tắc giá thành công.');
+        } else {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $result['message'] ?? 'Cập nhật quy tắc giá thất bại.');
+        }
     }
 
     /**
      * Xử lý xóa quy tắc giá
      * @param int $id
-     * @return JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
         $result = $this->getService()->delete($id);
-        
-        return response()->json([
-            'success' => $result['success'] ?? false,
-            'message' => $result['message'] ?? 'Xóa quy tắc giá thất bại.',
-            'data' => $result['data'] ?? null
-        ]);
+
+        if ($result['success']) {
+            return redirect()->route('admin.driver.pricing-rules.index')
+                ->with('success', $result['message'] ?? 'Xóa quy tắc giá thành công.');
+        } else {
+            return redirect()->back()
+                ->with('error', $result['message'] ?? 'Xóa quy tắc giá thất bại.');
+        }
     }
 
     /**
@@ -151,7 +164,7 @@ class DriverPricingRuleController extends BaseController
     public function toggleStatus(int $id): JsonResponse
     {
         $result = $this->getService()->toggleStatus($id);
-        
+
         return response()->json([
             'success' => $result['success'] ?? false,
             'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
@@ -167,7 +180,7 @@ class DriverPricingRuleController extends BaseController
     public function toggleFeatured(int $id): JsonResponse
     {
         $result = $this->getService()->toggleFeatured($id);
-        
+
         return response()->json([
             'success' => $result['success'] ?? false,
             'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
