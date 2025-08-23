@@ -154,6 +154,38 @@
                                 <input type="text" id="subject" name="subject" placeholder="Nhập tiêu đề tin nhắn...">
                     </div>
                     
+                    <div class="form-group">
+                                <label for="pickup_location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Điểm đón
+                                </label>
+                                <input type="text" id="pickup_location" name="pickup_location" placeholder="Nhập điểm đón...">
+                    </div>
+
+                    <div class="form-group">
+                                <label for="dropoff_location">
+                                    <i class="fas fa-map-pin"></i>
+                                    Điểm đến
+                                </label>
+                                <input type="text" id="dropoff_location" name="dropoff_location" placeholder="Nhập điểm đến...">
+                    </div>
+
+                    <div class="form-group">
+                                <label for="pickup_date">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Ngày đón
+                                </label>
+                                <input type="datetime-local" id="pickup_date" name="pickup_date">
+                    </div>
+
+                    <div class="form-group">
+                                <label for="passengers">
+                                    <i class="fas fa-users"></i>
+                                    Số hành khách
+                                </label>
+                                <input type="number" id="passengers" name="passengers" placeholder="1" min="1" max="10" value="1">
+                    </div>
+                    
                             <div class="form-group full-width">
                                 <label for="message">
                                     <i class="fas fa-comment"></i>
