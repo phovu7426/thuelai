@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\ContactInfoHelper;
 use App\Models\ContactInfo;
 use Illuminate\Support\Facades\Schema;
 
@@ -16,7 +17,7 @@ class ContactInfoService
         if (!Schema::hasTable('contact_infos')) {
             return null;
         }
-        
+
         return ContactInfo::first();
     }
 
@@ -39,12 +40,15 @@ class ContactInfoService
             }
 
             $contact = ContactInfo::first();
-            
+
             if (!$contact) {
                 $contact = ContactInfo::create($data);
             } else {
                 $contact->update($data);
             }
+
+            // Xóa cache sau khi cập nhật thành công
+            ContactInfoHelper::clearCache();
 
             $return['success'] = true;
             $return['message'] = 'Cập nhật thông tin liên hệ thành công!';
@@ -52,9 +56,7 @@ class ContactInfoService
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }
-        
+
         return $return;
     }
 }
-
-

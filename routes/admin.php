@@ -166,8 +166,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     // Cấu hình thông tin liên hệ
-    Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->middleware('canAny:access_contact-info')->name('contact-info.edit');
-    Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->middleware('canAny:access_contact-info')->name('contact-info.update');
+    Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->name('contact-info.edit');
+    Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->name('contact-info.update');
+
+    // Debug route
+    Route::post('contact-info-debug', function (\Illuminate\Http\Request $request) {
+        try {
+            $service = app(\App\Services\Admin\ContactInfoService::class);
+            $result = $service->updateContactInfo($request->all());
+
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi: ' . $e->getMessage(),
+                'error' => $e->getTraceAsString()
+            ], 500);
+        }
+    })->name('contact-info.debug');
 
 
 

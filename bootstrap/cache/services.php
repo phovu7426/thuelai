@@ -35,6 +35,7 @@
     31 => 'Spatie\\Permission\\PermissionServiceProvider',
     32 => 'Spatie\\Sitemap\\SitemapServiceProvider',
     33 => 'App\\Providers\\AppServiceProvider',
+    34 => 'App\\Providers\\ContactInfoServiceProvider',
   ),
   'eager' => 
   array (
@@ -56,6 +57,7 @@
     15 => 'Spatie\\Permission\\PermissionServiceProvider',
     16 => 'Spatie\\Sitemap\\SitemapServiceProvider',
     17 => 'App\\Providers\\AppServiceProvider',
+    18 => 'App\\Providers\\ContactInfoServiceProvider',
   ),
   'deferred' => 
   array (

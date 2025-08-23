@@ -38,9 +38,16 @@ class ContactController extends Controller
         }
 
         try {
-            // Here you can save to database if you have a contact_messages table
-            // For now, we'll just send email
-            
+            // Save to database
+            $contact = \App\Models\DriverContact::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'subject' => $request->subject ?: 'Liên hệ từ website',
+                'message' => $request->message,
+                'status' => 'unread',
+            ]);
+
             // Prepare email data
             $emailData = [
                 'name' => $request->name,
@@ -63,10 +70,9 @@ class ContactController extends Controller
                 'success' => true,
                 'message' => 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.'
             ]);
-
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Contact form error: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra, vui lòng thử lại sau.'
