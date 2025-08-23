@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         //     $seeder->run();
         //     return;
         // }
-        
+
         // Create admin user
         $admin = User::firstOrCreate(
             ['email' => 'admin@gmail.com', 'name' => 'Admin'],
@@ -57,11 +57,12 @@ class DatabaseSeeder extends Seeder
         // Run content seeders
         $this->call([
             // Stone content removed - stone functionality no longer exists
-            
+
             // Other content if needed
             // PostSeeder::class,
             DriverServiceSeeder::class,
             DriverContactSeeder::class,
+            PricingSeeder::class, // Thêm pricing seeder
         ]);
     }
 }

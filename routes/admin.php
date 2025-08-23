@@ -173,12 +173,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // ===== DRIVER SERVICE ADMIN ROUTES =====
     Route::prefix('driver')->name('driver.')->middleware('canAny:access_driver_services,access_driver_testimonials,access_driver_contacts')->group(function () {
-        
+
         // Dashboard
         Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverDashboardController::class, 'index'])->name('dashboard');
         Route::get('/chart-data', [\App\Http\Controllers\Admin\Driver\DriverDashboardController::class, 'getChartData'])->name('chart-data');
         Route::get('/real-time-stats', [\App\Http\Controllers\Admin\Driver\DriverDashboardController::class, 'getRealTimeStats'])->name('real-time-stats');
-        
+
         // Quản lý dịch vụ lái xe
         Route::prefix('services')->name('services.')->middleware('auth')->group(function () {
             Route::get('/', [\App\Http\Controllers\Admin\Driver\DriverServiceController::class, 'index'])->name('index');
@@ -202,6 +202,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'edit'])->name('edit');
             Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'update'])->name('update');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/delete', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'destroy'])->name('destroy-post');
             Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'toggleStatus'])->name('toggle-status');
             Route::post('/{id}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'toggleFeatured'])->name('toggle-featured');
         });
@@ -213,8 +214,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'store'])->name('store');
             Route::get('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'show'])->name('show'); // Hiển thị chi tiết khoảng cách
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'update'])->name('update');
+            Route::post('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'update'])->name('update');
+            Route::post('/{id}/update', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'update'])->name('update-post');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/delete', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'destroy'])->name('destroy-post');
             Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'toggleStatus'])->name('toggle-status');
             Route::post('/{id}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverDistanceTierController::class, 'toggleFeatured'])->name('toggle-featured');
         });
@@ -226,10 +229,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'store'])->name('store');
             Route::get('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'show'])->name('show'); // Hiển thị chi tiết mức giá
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'update'])->name('update');
+            Route::post('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'update'])->name('update');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'destroy'])->name('destroy');
             Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'toggleStatus'])->name('toggle-status');
             Route::post('/{id}/toggle-featured', [\App\Http\Controllers\Admin\Driver\DriverPricingTierController::class, 'toggleFeatured'])->name('toggle-featured');
+        });
+
+        // Test routes (temporary)
+        Route::prefix('test')->name('test.')->group(function () {
+            Route::get('/pricing', [\App\Http\Controllers\Admin\Driver\TestPricingController::class, 'test'])->name('pricing');
+            Route::get('/distance-tiers', [\App\Http\Controllers\Admin\Driver\TestPricingController::class, 'testDistanceTiers'])->name('distance-tiers');
+            Route::get('/pricing-rules', [\App\Http\Controllers\Admin\Driver\TestPricingController::class, 'testPricingRules'])->name('pricing-rules');
+            Route::get('/pricing-tiers', [\App\Http\Controllers\Admin\Driver\TestPricingController::class, 'testPricingTiers'])->name('pricing-tiers');
         });
 
         // Quản lý testimonials

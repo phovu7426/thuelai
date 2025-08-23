@@ -112,9 +112,13 @@ abstract class BaseRepository
     public function findById(int $id, array $options = []): ?Model
     {
         $relations = $options['relations'] ?? [];
-        $query = $this->getModel()->find($id);
-        $this->applyRelations($query, $relations);
-        return $query;
+        $query = $this->getModel()->newQuery();
+
+        if (!empty($relations)) {
+            $query->with($relations);
+        }
+
+        return $query->find($id);
     }
 
     /**
@@ -193,7 +197,8 @@ abstract class BaseRepository
     public function updateOrCreate(array $filters, array $data): bool
     {
         try {
-            if (!empty($filters)
+            if (
+                !empty($filters)
                 && !empty($data)
                 && $this->getModel()->updateOrCreate($filters, $data)
             ) {

@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class DriverDistanceTier extends Model
 {
     protected $fillable = [
-        'name', 'description', 'from_distance', 'to_distance', 'display_text', 'is_active', 'sort_order'
+        'name',
+        'description',
+        'from_distance',
+        'to_distance',
+        'display_text',
+        'is_active',
+        'sort_order',
+        'color',
+        'icon'
     ];
 
     protected $casts = [
@@ -34,4 +42,3 @@ class DriverDistanceTier extends Model
         return "Từ {$this->from_distance}km đến {$this->to_distance}km";
     }
 }
-
