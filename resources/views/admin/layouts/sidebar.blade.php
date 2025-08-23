@@ -142,7 +142,7 @@
             @can('access_driver_services')
             <li class="nav-item">
                 <a href="{{ route('admin.driver.distance-tiers.index') }}" class="nav-link {{ isActive('admin.driver.distance-tiers.*') }}">
-                    <i class="nav-icon bi bi-route"></i>
+                    <i class="nav-icon fa fa-route"></i>
                     <p>Khoảng cách</p>
                 </a>
             </li>
