@@ -90,7 +90,7 @@
                                             @can('access_permissions')
                                                 <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
                                                         onclick="openEditPermissionModal({{ $permission->id }})">
-                                                    <i class="bi bi-edit"></i>
+                                                    <i class="fas fa-edit"></i>
                                                 </button>
                                                 <form action="{{ route('admin.permissions.delete', $permission->id) }}" method="POST"
                                                       style="display:inline;"

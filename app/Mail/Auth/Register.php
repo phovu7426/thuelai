@@ -39,6 +39,7 @@ class Register extends Mailable
     {
         return new Content(
             view: 'emails.auth.register',
+            with: ['data' => $this->data],
         );
     }
 
