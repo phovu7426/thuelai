@@ -53,7 +53,6 @@
             <select name="status" id="status" class="form-control">
                 <option value="draft" {{ ($statusValue ?? '') === 'draft' ? 'selected' : '' }}>Bản nháp</option>
                 <option value="published" {{ ($statusValue ?? '') === 'published' ? 'selected' : '' }}>Đã xuất bản</option>
-                <option value="archived" {{ ($statusValue ?? '') === 'archived' ? 'selected' : '' }}>Đã lưu trữ</option>
             </select>
             <div class="invalid-feedback" id="statusError"></div>
         </div>
@@ -61,19 +60,6 @@
 </div>
 
 <div class="row g-3">
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="featured" class="form-label">
-                <i class="bi bi-star"></i> Nổi bật
-            </label>
-            <select name="featured" id="featured" class="form-control">
-                <option value="0" {{ ($featuredValue ?? '') == '0' ? 'selected' : '' }}>Không nổi bật</option>
-                <option value="1" {{ ($featuredValue ?? '') == '1' ? 'selected' : '' }}>Nổi bật</option>
-            </select>
-            <div class="invalid-feedback" id="featuredError"></div>
-        </div>
-    </div>
-    
     <div class="col-md-6">
         <div class="mb-3">
             <x-uploads.file-upload name="image" label="Ảnh đại diện" :value="$image ?? old('image')" />

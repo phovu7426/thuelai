@@ -65,7 +65,7 @@ class PostController extends BaseController
      */
     public function store(StoreRequest $request): JsonResponse
     {
-        $result = $this->getService()->create($request->validated());
+        $result = $this->getService()->create($request->all());
         
         return response()->json([
             'success' => $result['success'] ?? false,

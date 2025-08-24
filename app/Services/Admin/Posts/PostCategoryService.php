@@ -162,14 +162,15 @@ class PostCategoryService extends BaseService
             }
 
             $newStatus = $category->status === 'active' ? 'inactive' : 'active';
-            $category->update(['status' => $newStatus]);
             
-            $status = $newStatus === 'active' ? 'kích hoạt' : 'vô hiệu hóa';
-            $message = "Danh mục đã được {$status} thành công!";
-            
-            $return['success'] = true;
-            $return['message'] = $message;
-            $return['data'] = ['status' => $newStatus];
+            if ($this->getRepository()->update($category, ['status' => $newStatus])) {
+                $status = $newStatus === 'active' ? 'kích hoạt' : 'vô hiệu hóa';
+                $message = "Danh mục đã được {$status} thành công!";
+                
+                $return['success'] = true;
+                $return['message'] = $message;
+                $return['data'] = ['status' => $newStatus];
+            }
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }

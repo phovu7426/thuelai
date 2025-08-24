@@ -117,14 +117,16 @@ class CategoryService extends BaseService
                 return $return;
             }
 
-            $category->update(['is_featured' => !$category->is_featured]);
-            
-            $status = $category->is_featured ? 'nổi bật' : 'không nổi bật';
-            $message = "Danh mục đã được {$status} thành công!";
-            
-            $return['success'] = true;
-            $return['message'] = $message;
-            $return['data'] = ['is_featured' => $category->is_featured];
+            $newFeaturedState = !$category->is_featured;
+
+            if ($this->getRepository()->update($category, ['is_featured' => $newFeaturedState])) {
+                $status = $newFeaturedState ? 'nổi bật' : 'không nổi bật';
+                $message = "Danh mục đã được {$status} thành công!";
+                
+                $return['success'] = true;
+                $return['message'] = $message;
+                $return['data'] = ['is_featured' => $newFeaturedState];
+            }
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }

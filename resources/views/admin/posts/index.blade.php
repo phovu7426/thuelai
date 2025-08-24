@@ -108,9 +108,6 @@
                                                     <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>
                                                         Đã xuất bản
                                                     </option>
-                                                    <option value="archived" {{ $post->status == 'archived' ? 'selected' : '' }}>
-                                                        Đã lưu trữ
-                                                    </option>
                                                 </select>
                                             </td>
                                             <td>

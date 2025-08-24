@@ -98,7 +98,6 @@ class PostController extends BaseController
      */
     public function update(UpdateRequest $request, $id): RedirectResponse
     {
-        dd($request->all());
         $return = $this->getService()->update($id, $request->all());
         if (!empty($return['success'])) {
             return redirect()->route('admin.posts.index')

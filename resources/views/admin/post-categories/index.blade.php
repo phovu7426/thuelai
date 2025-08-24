@@ -53,7 +53,6 @@
                                 <th>Tên danh mục</th>
                                 <th>Mô tả</th>
                                 <th>Trạng thái</th>
-                                <th>Nổi bật</th>
                                 <th>Hành Động</th>
                             </tr>
                             </thead>
@@ -69,26 +68,13 @@
                                     <td>
                                         <select class="form-select form-select-sm status-select" 
                                                 data-category-id="{{ $category->id }}" 
-                                                data-current-status="{{ $category->is_active ? '1' : '0' }}"
+                                                data-current-status="{{ $category->status == 'active' ? 'active' : 'inactive' }}"
                                                 data-status-type="post-categories">
-                                            <option value="0" {{ !$category->is_active ? 'selected' : '' }}>
+                                            <option value="inactive" {{ $category->status != 'active' ? 'selected' : '' }}>
                                                 Vô hiệu
                                             </option>
-                                            <option value="1" {{ $category->is_active ? 'selected' : '' }}>
+                                            <option value="active" {{ $category->status == 'active' ? 'selected' : '' }}>
                                                 Kích hoạt
-                                            </option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-select form-select-sm featured-select" 
-                                                data-category-id="{{ $category->id }}" 
-                                                data-current-featured="{{ $category->is_featured ? '1' : '0' }}"
-                                                data-featured-type="post-categories">
-                                            <option value="0" {{ !$category->is_featured ? 'selected' : '' }}>
-                                                Không nổi bật
-                                            </option>
-                                            <option value="1" {{ $category->is_featured ? 'selected' : '' }}>
-                                                Nổi bật
                                             </option>
                                         </select>
                                     </td>
@@ -242,14 +228,13 @@ $(document).ready(function() {
             url: `/admin/post-categories/${categoryId}/toggle-status`,
             method: 'POST',
             data: {
-                _token: '{{ csrf_token() }}',
-                status: newStatus
+                _token: '{{ csrf_token() }}'
             },
             success: function(response) {
                 if (response.success) {
                     showAlert('success', response.message);
                     // Cập nhật current status
-                    $(this).data('current-status', newStatus);
+                    $(this).data('current-status', response.data.status);
                 } else {
                     showAlert('danger', response.message);
                     // Revert select
@@ -362,14 +347,13 @@ function bindEvents() {
             url: `/admin/post-categories/${categoryId}/toggle-status`,
             method: 'POST',
             data: {
-                _token: '{{ csrf_token() }}',
-                status: newStatus
+                _token: '{{ csrf_token() }}'
             },
             success: function(response) {
                 if (response.success) {
                     showAlert('success', response.message);
                     // Cập nhật current status
-                    $(this).data('current-status', newStatus);
+                    $(this).data('current-status', response.data.status);
                 } else {
                     showAlert('danger', response.message);
                     // Revert select
