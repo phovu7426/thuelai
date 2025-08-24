@@ -3,7 +3,7 @@
 @section('page_title', 'Liên hệ - Dịch vụ tài xế thuê lái')
 
 @section('content')
-<!-- Hero Section -->
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-video-bg">
             <div class="hero-overlay"></div>
@@ -23,7 +23,7 @@
                     <span class="title-line">để được tư vấn</span>
                 </h1>
                 <p class="hero-description">
-                    Đội ngũ chăm sóc khách hàng chuyên nghiệp sẵn sàng hỗ trợ bạn 
+                    Đội ngũ chăm sóc khách hàng chuyên nghiệp sẵn sàng hỗ trợ bạn
                     mọi lúc, mọi nơi với nhiều kênh liên lạc thuận tiện
                 </p>
             </div>
@@ -37,13 +37,13 @@
 
     <!-- Contact Section -->
     <section class="contact-section">
-    <div class="container">
+        <div class="container">
             <div class="contact-content">
                 <div class="contact-info">
                     <h2>Thông tin liên hệ</h2>
                     <p>Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn mọi vấn đề</p>
                 </div>
-                
+
                 <div class="contact-methods">
                     <div class="contact-method">
                         <div class="method-icon">
@@ -90,12 +90,12 @@
                     </div>
                 </div>
             </div>
-    </div>
-</section>
+        </div>
+    </section>
 
     <!-- Contact Form Section -->
     <section class="booking-section">
-    <div class="container">
+        <div class="container">
             <div class="booking-content">
                 <div class="section-header">
                     <h2 class="section-title">Gửi tin nhắn cho chúng tôi</h2>
@@ -106,25 +106,25 @@
 
                 <div class="booking-form-container">
                     <form class="booking-form-modern" id="contactForm">
-                    @csrf
+                        @csrf
                         <div class="form-grid">
-                    <div class="form-group">
+                            <div class="form-group">
                                 <label for="name">
                                     <i class="fas fa-user"></i>
                                     Họ và tên
                                 </label>
                                 <input type="text" id="name" name="name" required>
-                    </div>
-                    
-                    <div class="form-group">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="email">
                                     <i class="fas fa-envelope"></i>
                                     Email
                                 </label>
                                 <input type="email" id="email" name="email" required>
-                    </div>
-                    
-                    <div class="form-group">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="phone">
                                     <i class="fas fa-phone"></i>
                                     Số điện thoại
@@ -135,7 +135,7 @@
                     <div class="form-group">
                                 <label for="topic">
                                     <i class="fas fa-tag"></i>
-                                    Chủ đề
+                                    Tiêu đề
                                 </label>
                                 <select id="topic" name="topic" required>
                             <option value="">Chọn chủ đề</option>
@@ -191,10 +191,11 @@
                                     <i class="fas fa-comment"></i>
                                     Nội dung tin nhắn
                                 </label>
-                                <textarea id="message" name="message" rows="5" required placeholder="Vui lòng mô tả chi tiết yêu cầu của bạn..."></textarea>
+                                <textarea id="message" name="message" rows="5" required
+                                    placeholder="Vui lòng mô tả chi tiết yêu cầu của bạn..."></textarea>
                             </div>
-                    </div>
-                    
+                        </div>
+
                         <div class="form-submit">
                             <button type="submit" class="btn-submit">
                                 <i class="fas fa-paper-plane"></i>
@@ -203,10 +204,10 @@
                             
                             
                         </div>
-                </form>
-            </div>
-                    </div>
+                    </form>
                 </div>
+            </div>
+        </div>
     </section>
 
     <!-- Features Section -->
@@ -217,8 +218,8 @@
                 <p class="section-subtitle">
                     Những lý do khiến ThuêLai.vn trở thành lựa chọn hàng đầu
                 </p>
-                </div>
-                
+            </div>
+
             <div class="features-grid">
                 <div class="feature-item animate-in">
                     <div class="feature-icon">
@@ -229,7 +230,7 @@
                         <p>Đội ngũ chăm sóc khách hàng chuyên nghiệp, sẵn sàng hỗ trợ mọi vấn đề</p>
                     </div>
                 </div>
-                
+
                 <div class="feature-item animate-in">
                     <div class="feature-icon">
                         <i class="fas fa-clock"></i>
@@ -257,15 +258,15 @@
                     <div class="feature-content">
                         <h3>Giá cả hợp lý</h3>
                         <p>Bảng giá minh bạch, không phát sinh chi phí ẩn và nhiều ưu đãi hấp dẫn</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Map Section -->
+    <!-- Map Section -->
     <section class="services-section">
-    <div class="container">
+        <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Vị trí của chúng tôi</h2>
                 <p class="section-subtitle">
@@ -279,49 +280,50 @@
                         <div class="col-md-6">
                             <h4><i class="fas fa-map-marker-alt text-primary me-2"></i>Địa chỉ văn phòng</h4>
                             <p class="mb-3">123 Đường ABC, Quận XYZ, Hà Nội, Việt Nam</p>
-                            
+
                             <h4><i class="fas fa-clock text-primary me-2"></i>Giờ làm việc</h4>
                             <p class="mb-3">Thứ 2 - Thứ 6: 8:00 - 18:00<br>
-                            Thứ 7: 8:00 - 12:00<br>
-                            Chủ nhật: Nghỉ</p>
-                            
+                                Thứ 7: 8:00 - 12:00<br>
+                                Chủ nhật: Nghỉ</p>
+
                             <h4><i class="fas fa-phone text-primary me-2"></i>Liên hệ</h4>
                             <p class="mb-3">Điện thoại: 1900 1234<br>
-                            Email: info@thuelai.vn</p>
+                                Email: info@thuelai.vn</p>
                         </div>
                         <div class="col-md-6">
-                            <div class="map-placeholder" style="height: 300px; background: var(--gray-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--gray-600);">
+                            <div class="map-placeholder"
+                                style="height: 300px; background: var(--gray-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--gray-600);">
                                 <div class="text-center">
                                     <i class="fas fa-map fa-3x mb-3"></i>
                                     <p>Bản đồ sẽ được hiển thị tại đây</p>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 @endsection
 
  
 
 @section('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Intersection Observer for animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, observerOptions);
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
 
     // Observe all elements with animate-in class
     document.querySelectorAll('.animate-in').forEach(el => {
@@ -417,32 +419,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
 
-    // Notification function
-    function showNotification(message, type = 'success') {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `
+            // Notification function
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.innerHTML = `
             <div class="notification-content">
                 <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
                 <span>${message}</span>
             </div>
         `;
-        
-        document.body.appendChild(notification);
-        
-        // Show notification
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 100);
-        
-        // Hide notification after 5 seconds
-        setTimeout(() => {
-            notification.classList.remove('show');
-        setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 5000);
-    }
-});
-</script>
+
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+
+                // Hide notification after 5 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 5000);
+            }
+        });
+    </script>
 @endsection

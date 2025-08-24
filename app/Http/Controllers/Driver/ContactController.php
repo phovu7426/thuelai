@@ -76,10 +76,9 @@ class ContactController extends Controller
                 'success' => true,
                 'message' => 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.'
             ]);
-
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Contact form error: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra, vui lòng thử lại sau.'
