@@ -38,7 +38,7 @@ class NewsController extends Controller
                                 ->withCount(['posts' => function($query) {
                                     $query->published();
                                 }])
-                                ->ordered()
+
                                 ->get();
 
         // Get category counts for filter buttons

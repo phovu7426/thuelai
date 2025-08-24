@@ -82,7 +82,7 @@ class HomeController extends Controller
             ->get();
 
         // Get categories with post counts
-        $categories = \App\Models\PostCategory::where('is_active', true)
+        $categories = \App\Models\PostCategory::where('status', true)
             ->withCount(['posts' => function($query) {
                 $query->where('status', 'published');
             }])
