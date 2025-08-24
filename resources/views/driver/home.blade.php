@@ -122,7 +122,7 @@
                             <div class="service-header">
                                     <div class="service-icon-wrapper">
                                         @if($service->icon)
-                                        <img src="{{ $service->icon_url }}" alt="{{ $service->name }}">
+                                        <img src="{{ $service->icon }}" alt="{{ $service->name }}">
                                         @else
                                         <i class="fas fa-car"></i>
                                         @endif
