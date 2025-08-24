@@ -46,7 +46,7 @@
 
                     <!-- Hình ảnh chính -->
                     @if ($post->image)
-                        <div class="mb-4">
+                        <div class="mb-4   edfdfd">
                             <img src="{{ asset($post->image) }}" alt="{{ $post->name }}" class="post-header-image">
                         </div>
                     @endif
@@ -106,7 +106,7 @@
                                 @endif
                                 <div class="card-body">
                                     <h6 class="card-title">
-                                        <a href="{{ route('home.posts.show', $relatedPost->id) }}"
+                                        <a href="{{ route('home.posts.show', $relatedPost->slug) }}"
                                             class="text-decoration-none text-dark stretched-link">
                                             {{ Str::limit($relatedPost->name, 50) }}
                                         </a>

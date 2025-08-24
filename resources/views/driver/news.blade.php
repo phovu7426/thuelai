@@ -302,7 +302,7 @@
     <div class="container">
         <div class="row">
             <!-- Main Content -->
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <!-- Filters -->
                 <div class="news-filters">
                     <a href="{{ route('driver.news') }}" class="filter-btn {{ request()->get('category') ? '' : 'active' }}">Tất cả</a>
@@ -314,10 +314,10 @@
                 <!-- News Grid -->
                 <div class="row">
                     @forelse($posts as $post)
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-4 mb-4">
                             <article class="news-card">
                                 <div class="news-image">
-                                    <img src="{{ $post->image_url ?? asset('images/default-post.jpg') }}" alt="{{ $post->title }}">
+                                    <img src="{{ $post->image ?? asset('images/default-post.jpg') }}" alt="{{ $post->title }}">
                                     @if($post->category)
                                     <a href="{{ route('driver.news.category', $post->category->slug) }}" class="news-category">
                                         {{ $post->category->name }}
@@ -358,7 +358,7 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="news-sidebar">
                     <!-- Popular News -->
                     <div class="popular-news mb-5">
@@ -366,7 +366,7 @@
                         @forelse($popularPosts as $popularPost)
                         <div class="popular-news-item">
                             <div class="popular-news-image">
-                                <img src="{{ $popularPost->image_url ?? asset('images/default-post.jpg') }}" alt="{{ $popularPost->title }}">
+                                <img src="{{ $popularPost->image ?? asset('images/default-post.jpg') }}" alt="{{ $popularPost->title }}">
                             </div>
                             <div class="popular-news-content">
                                 <h5><a href="{{ route('driver.news.detail', $popularPost->slug) }}">{{ Str::limit($popularPost->title, 50) }}</a></h5>

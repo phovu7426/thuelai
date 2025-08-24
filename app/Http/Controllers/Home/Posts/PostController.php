@@ -45,12 +45,12 @@ class PostController extends BaseController
     
     /**
      * Hiển thị chi tiết bài đăng
-     * @param int $id
+     * @param string $slug
      * @return View|Application|Factory
      */
-    public function show(int $id): View|Application|Factory
+    public function show(string $slug): View|Application|Factory
     {
-        $post = $this->getService()->show($id);
+        $post = $this->getService()->showBySlug($slug);
         abort_if(!$post, 404, 'Bài đăng không tồn tại hoặc yêu cầu đăng nhập');
         $relatedPosts = $this->getService()->getRelatedPosts($post->id);
         return view('home.posts.show', compact('post', 'relatedPosts'));
