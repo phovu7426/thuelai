@@ -37,7 +37,7 @@ class LoginService
         $data = ['email' => $credentials['email'], 'password' => $credentials['password']];
         if ($this->loginRepository->login($data, $remember)) {
             $user = auth()->user();
-            $redirectUrl = route('home'); // Default redirect for non-admins
+            $redirectUrl = route('driver.home'); // Default redirect for non-admins
             if ($user->hasRole('admin')) { // Assuming admin role is named 'admin'
                 $redirectUrl = route('admin.index');
             }

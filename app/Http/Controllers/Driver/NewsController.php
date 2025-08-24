@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\PostTag;
+use App\Helpers\ContactInfoHelper;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
@@ -50,10 +51,8 @@ class NewsController extends Controller
         // Get total posts count
         $totalPosts = Post::published()->count();
 
-        // Get contact info (you can customize this)
-        $contactInfo = (object) [
-            'hotline' => '1900-xxxx'
-        ];
+        // Get contact info
+        $contactInfo = ContactInfoHelper::getContactInfo();
 
         return view('driver.news', compact(
             'posts',
@@ -143,17 +142,3 @@ class NewsController extends Controller
         return view('driver.news-tag', compact('tag', 'posts'));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
