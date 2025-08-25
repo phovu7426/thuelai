@@ -163,9 +163,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/{tag}/toggle-featured', [\App\Http\Controllers\Admin\PostTagController::class, 'toggleFeatured'])->name('toggle-featured-json');
     });
 
-    // Cấu hình thông tin liên hệ
-    Route::get('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'edit'])->name('contact-info.edit');
-    Route::post('contact-info', [\App\Http\Controllers\Admin\ContactInfoController::class, 'update'])->name('contact-info.update');
+    // Cấu hình thông tin liên hệ (chỉ có 1 bản ghi)
+    Route::prefix('contact-info')->name('contact-info.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ContactInfoController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\ContactInfoController::class, 'store'])->name('store');
+        Route::get('/show', [\App\Http\Controllers\Admin\ContactInfoController::class, 'show'])->name('show');
+    });
 
     // Debug route
     Route::post('contact-info-debug', function (\Illuminate\Http\Request $request) {
@@ -293,6 +296,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('upload/ckeditor', [\App\Http\Controllers\UploadController::class, 'uploadImage'])
         ->middleware('auth')
         ->name('upload.ckeditor');
-
-    
 });

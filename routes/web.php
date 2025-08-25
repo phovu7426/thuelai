@@ -31,6 +31,45 @@ Route::get('/_log', function () {
 // Trang chủ mới - Dịch vụ lái xe
 Route::get('/', [App\Http\Controllers\Driver\HomeController::class, 'index'])->name('driver.home');
 
+// Demo route for contact info components
+Route::get('/demo/contact-info', function () {
+    return view('demo.contact-info');
+})->name('demo.contact-info');
+
+// Test contact info helper
+Route::get('/test/contact-info', function () {
+    return view('test-contact');
+})->name('test.contact-info');
+
+// Test admin contact info
+Route::get('/test/admin-contact-info', function () {
+    return view('test-admin-form');
+})->name('test.admin-contact-info');
+
+// Test global contact variables
+Route::get('/test/global-contact', function () {
+    return view('test-global-contact');
+})->name('test.global-contact');
+
+// Test updated pages
+Route::get('/test/home-updated', function () {
+    return view('driver.home');
+})->name('test.home-updated');
+
+Route::get('/test/contact-updated', function () {
+    return view('driver.contact');
+})->name('test.contact-updated');
+
+// Test all pages
+Route::get('/test/all-pages', function () {
+    return view('test-all-pages');
+})->name('test.all-pages');
+
+// Test driver layout with updated footer
+Route::get('/test/driver-layout', function () {
+    return view('driver.home');
+})->name('test.driver-layout');
+
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'index'])->name('login.index'); // Hiển thị form login
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post'); // Xử lý đăng nhập
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout'); // Xử lý đăng xuất

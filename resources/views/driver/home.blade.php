@@ -120,10 +120,10 @@
                     @foreach ($services as $service)
                         <div class="service-card-modern">
                             <div class="service-header">
-                                    <div class="service-icon-wrapper">
-                                        @if($service->icon)
+                                <div class="service-icon-wrapper">
+                                    @if ($service->icon)
                                         <img src="{{ $service->icon }}" alt="{{ $service->name }}">
-                                        @else
+                                    @else
                                         <i class="fas fa-car"></i>
                                     @endif
                                 </div>
@@ -448,38 +448,44 @@
                     <p>Đội ngũ tư vấn chuyên nghiệp luôn sẵn sàng hỗ trợ bạn</p>
 
                     <div class="contact-methods">
-                        <div class="contact-method">
-                            <div class="method-icon">
-                                <i class="fas fa-phone"></i>
+                        @if ($contactPhone)
+                            <div class="contact-method">
+                                <div class="method-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="method-info">
+                                    <h4>Hotline</h4>
+                                    <p>{{ $contactPhone }}</p>
+                                    <span>{{ $contactWorkingTime ?: 'Hỗ trợ 24/7' }}</span>
+                                </div>
                             </div>
-                            <div class="method-info">
-                                <h4>Hotline</h4>
-                                <p>1900 xxxx</p>
-                                <span>Hỗ trợ 24/7</span>
-                            </div>
-                        </div>
+                        @endif
 
-                        <div class="contact-method">
-                            <div class="method-icon">
-                                <i class="fas fa-envelope"></i>
+                        @if ($contactEmail)
+                            <div class="contact-method">
+                                <div class="method-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="method-info">
+                                    <h4>Email</h4>
+                                    <p>{{ $contactEmail }}</p>
+                                    <span>Phản hồi nhanh</span>
+                                </div>
                             </div>
-                            <div class="method-info">
-                                <h4>Email</h4>
-                                <p>info@thuelai.vn</p>
-                                <span>Phản hồi nhanh</span>
-                            </div>
-                        </div>
+                        @endif
 
-                        <div class="contact-method">
-                            <div class="method-icon">
-                                <i class="fas fa-map-marker-alt"></i>
+                        @if ($contactAddress)
+                            <div class="contact-method">
+                                <div class="method-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="method-info">
+                                    <h4>Địa chỉ</h4>
+                                    <p>{{ $contactAddress }}</p>
+                                    <span>Trụ sở chính</span>
+                                </div>
                             </div>
-                            <div class="method-info">
-                                <h4>Địa chỉ</h4>
-                                <p>Hà Nội, Việt Nam</p>
-                                <span>Trụ sở chính</span>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -542,7 +548,7 @@
             // Observe elements
             document.querySelectorAll(
                 '.service-card-modern, .feature-item, .process-step, .testimonial-card-modern, .pricing-card-modern, .hero-stats'
-                ).forEach(el => {
+            ).forEach(el => {
                 observer.observe(el);
             });
 

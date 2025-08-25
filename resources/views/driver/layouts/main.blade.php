@@ -126,24 +126,36 @@
             <div class="social-close-btn" id="socialCloseBtn">
                 <i class="fas fa-times"></i>
             </div>
-            <div class="social-item" id="zaloBtn">
-                <div class="social-icon zalo">
-                    <i class="fas fa-phone"></i>
+
+            {{-- Phone/Zalo --}}
+            @if ($contactPhone)
+                <div class="social-item" id="phoneBtn">
+                    <div class="social-icon phone">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <span class="social-label">Hotline</span>
                 </div>
-                <span class="social-label">Zalo</span>
-            </div>
-            <div class="social-item" id="facebookBtn">
-                <div class="social-icon facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </div>
-                <span class="social-label">Facebook</span>
-            </div>
-            <div class="social-item" id="phoneBtn">
-                <div class="social-icon phone">
-                    <i class="fas fa-phone-alt"></i>
-                </div>
-                <span class="social-label">Hotline</span>
-            </div>
+            @endif
+
+            {{-- Social Links --}}
+            @if (!empty($globalSocialLinks))
+                @foreach ($globalSocialLinks as $key => $social)
+                    <div class="social-item" id="{{ $key }}Btn">
+                        <div class="social-icon {{ $key }}">
+                            @if ($key == 'facebook')
+                                <i class="fab fa-facebook-f"></i>
+                            @elseif($key == 'instagram')
+                                <i class="fab fa-instagram"></i>
+                            @elseif($key == 'youtube')
+                                <i class="fab fa-youtube"></i>
+                            @elseif($key == 'linkedin')
+                                <i class="fab fa-linkedin"></i>
+                            @endif
+                        </div>
+                        <span class="social-label">{{ $social['name'] }}</span>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
 
@@ -173,20 +185,24 @@
                             </div>
                             <p>Dịch vụ lái xe thuê chuyên nghiệp, an toàn và uy tín hàng đầu Việt Nam. Cam kết mang đến
                                 trải nghiệm dịch vụ tốt nhất cho khách hàng.</p>
-                            <div class="social-links">
-                                <a href="#" class="social-link">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fab fa-youtube"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fab fa-tiktok"></i>
-                                </a>
-                            </div>
+                            @if (!empty($globalSocialLinks))
+                                <div class="social-links">
+                                    @foreach ($globalSocialLinks as $key => $social)
+                                        <a href="{{ $social['url'] }}" target="_blank" class="social-link"
+                                            title="{{ $social['name'] }}">
+                                            @if ($key == 'facebook')
+                                                <i class="fab fa-facebook-f"></i>
+                                            @elseif($key == 'youtube')
+                                                <i class="fab fa-youtube"></i>
+                                            @elseif($key == 'instagram')
+                                                <i class="fab fa-instagram"></i>
+                                            @elseif($key == 'linkedin')
+                                                <i class="fab fa-linkedin"></i>
+                                            @endif
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -215,42 +231,53 @@
                     <div class="footer-section">
                         <h4>Liên hệ</h4>
                         <div class="contact-info">
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-phone"></i>
+                            @if ($contactPhone)
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="contact-details">
+                                        <span class="contact-label">Hotline</span>
+                                        <span class="contact-value">{{ $contactPhone }}</span>
+                                    </div>
                                 </div>
-                                <div class="contact-details">
-                                    <span class="contact-label">Hotline</span>
-                                    <span class="contact-value">1900 xxxx</span>
+                            @endif
+
+                            @if ($contactEmail)
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-details">
+                                        <span class="contact-label">Email</span>
+                                        <span class="contact-value">{{ $contactEmail }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-envelope"></i>
+                            @endif
+
+                            @if ($contactAddress)
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-details">
+                                        <span class="contact-label">Địa chỉ</span>
+                                        <span class="contact-value">{{ $contactAddress }}</span>
+                                    </div>
                                 </div>
-                                <div class="contact-details">
-                                    <span class="contact-label">Email</span>
-                                    <span class="contact-value">info@thuelai.vn</span>
+                            @endif
+
+                            @if ($contactWorkingTime)
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="contact-details">
+                                        <span class="contact-label">Thời gian</span>
+                                        <span class="contact-value">{{ $contactWorkingTime }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </div>
-                                <div class="contact-details">
-                                    <span class="contact-label">Địa chỉ</span>
-                                    <span class="contact-value">Hà Nội, Việt Nam</span>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="contact-details">
-                                    <span class="contact-label">Thời gian</span>
-                                    <span class="contact-value">24/7</span>
-                                </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -273,6 +300,16 @@
 
     <!-- Bootstrap JS -->
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Contact Data for JavaScript -->
+    <script>
+        window.contactData = {
+            phone: @json($contactPhone ?? ''),
+            email: @json($contactEmail ?? ''),
+            socialLinks: @json($globalSocialLinks ?? [])
+        };
+    </script>
+
     <!-- Custom JS -->
     <script src="{{ asset('js/driver.js') }}"></script>
 

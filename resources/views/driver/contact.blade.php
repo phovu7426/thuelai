@@ -45,49 +45,63 @@
                 </div>
 
                 <div class="contact-methods">
-                    <div class="contact-method">
-                        <div class="method-icon">
-                            <i class="fas fa-phone"></i>
+                    @if ($contactPhone)
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="method-info">
+                                <h4>Gọi điện thoại</h4>
+                                <p>{{ $contactPhone }}</p>
+                                <span>{{ $contactWorkingTime ?: 'Hỗ trợ 24/7' }}</span>
+                            </div>
                         </div>
-                        <div class="method-info">
-                            <h4>Gọi điện thoại</h4>
-                            <p>1900 1234</p>
-                            <span>Hỗ trợ 24/7</span>
-                        </div>
-                    </div>
+                    @endif
 
-                    <div class="contact-method">
-                        <div class="method-icon">
-                            <i class="fas fa-envelope"></i>
+                    @if ($contactEmail)
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="method-info">
+                                <h4>Gửi email</h4>
+                                <p>{{ $contactEmail }}</p>
+                                <span>Phản hồi trong 2h</span>
+                            </div>
                         </div>
-                        <div class="method-info">
-                            <h4>Gửi email</h4>
-                            <p>info@thuelai.vn</p>
-                            <span>Phản hồi trong 2h</span>
-                        </div>
-                    </div>
+                    @endif
 
-                    <div class="contact-method">
-                        <div class="method-icon">
-                            <i class="fas fa-comments"></i>
+                    @if (!empty($globalSocialLinks))
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="method-info">
+                                <h4>Chat trực tuyến</h4>
+                                <p>
+                                    @if (isset($globalSocialLinks['facebook']))
+                                        Zalo, Facebook
+                                    @else
+                                        Liên hệ trực tiếp
+                                    @endif
+                                </p>
+                                <span>Phản hồi ngay lập tức</span>
+                            </div>
                         </div>
-                        <div class="method-info">
-                            <h4>Chat trực tuyến</h4>
-                            <p>Zalo, Facebook</p>
-                            <span>Phản hồi ngay lập tức</span>
-                        </div>
-                    </div>
+                    @endif
 
-                    <div class="contact-method">
-                        <div class="method-icon">
-                            <i class="fas fa-map-marker-alt"></i>
+                    @if ($contactAddress)
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="method-info">
+                                <h4>Văn phòng</h4>
+                                <p>{{ $contactAddress }}</p>
+                                <span>{{ $contactAddress }}</span>
+                            </div>
                         </div>
-                        <div class="method-info">
-                            <h4>Văn phòng</h4>
-                            <p>123 Đường ABC, Quận XYZ</p>
-                            <span>Hà Nội, Việt Nam</span>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -130,62 +144,65 @@
                                     Số điện thoại
                                 </label>
                                 <input type="tel" id="phone" name="phone" required>
-                    </div>
-                    
-                    <div class="form-group">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="topic">
                                     <i class="fas fa-tag"></i>
                                     Tiêu đề
                                 </label>
                                 <select id="topic" name="topic" required>
-                            <option value="">Chọn chủ đề</option>
+                                    <option value="">Chọn chủ đề</option>
                                     <option value="tư vấn dịch vụ">Tư vấn dịch vụ</option>
                                     <option value="phản hồi">Phản hồi</option>
                                     <option value="khiếu nại">Khiếu nại</option>
                                     <option value="khác">Khác</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
+                                </select>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="subject">
                                     <i class="fas fa-heading"></i>
                                     Tiêu đề
                                 </label>
                                 <input type="text" id="subject" name="subject" placeholder="Nhập tiêu đề tin nhắn...">
-                    </div>
-                    
-                    <div class="form-group">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="pickup_location">
                                     <i class="fas fa-map-marker-alt"></i>
                                     Điểm đón
                                 </label>
-                                <input type="text" id="pickup_location" name="pickup_location" placeholder="Nhập điểm đón...">
-                    </div>
+                                <input type="text" id="pickup_location" name="pickup_location"
+                                    placeholder="Nhập điểm đón...">
+                            </div>
 
-                    <div class="form-group">
+                            <div class="form-group">
                                 <label for="dropoff_location">
                                     <i class="fas fa-map-pin"></i>
                                     Điểm đến
                                 </label>
-                                <input type="text" id="dropoff_location" name="dropoff_location" placeholder="Nhập điểm đến...">
-                    </div>
+                                <input type="text" id="dropoff_location" name="dropoff_location"
+                                    placeholder="Nhập điểm đến...">
+                            </div>
 
-                    <div class="form-group">
+                            <div class="form-group">
                                 <label for="pickup_date">
                                     <i class="fas fa-calendar-alt"></i>
                                     Ngày đón
                                 </label>
                                 <input type="datetime-local" id="pickup_date" name="pickup_date">
-                    </div>
+                            </div>
 
-                    <div class="form-group">
+                            <div class="form-group">
                                 <label for="passengers">
                                     <i class="fas fa-users"></i>
                                     Số hành khách
                                 </label>
-                                <input type="number" id="passengers" name="passengers" placeholder="1" min="1" max="10" value="1">
-                    </div>
-                    
+                                <input type="number" id="passengers" name="passengers" placeholder="1" min="1"
+                                    max="10" value="1">
+                            </div>
+
                             <div class="form-group full-width">
                                 <label for="message">
                                     <i class="fas fa-comment"></i>
@@ -201,8 +218,8 @@
                                 <i class="fas fa-paper-plane"></i>
                                 <span>Gửi tin nhắn</span>
                             </button>
-                            
-                            
+
+
                         </div>
                     </form>
                 </div>
@@ -278,26 +295,41 @@
                 <div class="booking-form-modern">
                     <div class="row">
                         <div class="col-md-6">
-                            <h4><i class="fas fa-map-marker-alt text-primary me-2"></i>Địa chỉ văn phòng</h4>
-                            <p class="mb-3">123 Đường ABC, Quận XYZ, Hà Nội, Việt Nam</p>
+                            @if ($contactAddress)
+                                <h4><i class="fas fa-map-marker-alt text-primary me-2"></i>Địa chỉ văn phòng</h4>
+                                <p class="mb-3">{{ $contactAddress }}</p>
+                            @endif
 
-                            <h4><i class="fas fa-clock text-primary me-2"></i>Giờ làm việc</h4>
-                            <p class="mb-3">Thứ 2 - Thứ 6: 8:00 - 18:00<br>
-                                Thứ 7: 8:00 - 12:00<br>
-                                Chủ nhật: Nghỉ</p>
+                            @if ($contactWorkingTime)
+                                <h4><i class="fas fa-clock text-primary me-2"></i>Giờ làm việc</h4>
+                                <p class="mb-3">{{ $contactWorkingTime }}</p>
+                            @endif
 
                             <h4><i class="fas fa-phone text-primary me-2"></i>Liên hệ</h4>
-                            <p class="mb-3">Điện thoại: 1900 1234<br>
-                                Email: info@thuelai.vn</p>
+                            <p class="mb-3">
+                                @if ($contactPhone)
+                                    Điện thoại: {{ $contactPhone }}<br>
+                                @endif
+                                @if ($contactEmail)
+                                    Email: {{ $contactEmail }}
+                                @endif
+                            </p>
                         </div>
                         <div class="col-md-6">
-                            <div class="map-placeholder"
-                                style="height: 300px; background: var(--gray-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--gray-600);">
-                                <div class="text-center">
-                                    <i class="fas fa-map fa-3x mb-3"></i>
-                                    <p>Bản đồ sẽ được hiển thị tại đây</p>
+                            @if ($contactMapEmbed)
+                                <div class="map-container"
+                                    style="height: 300px; border-radius: var(--radius-lg); overflow: hidden;">
+                                    {!! $contactMapEmbed !!}
                                 </div>
-                            </div>
+                            @else
+                                <div class="map-placeholder"
+                                    style="height: 300px; background: var(--gray-100); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--gray-600);">
+                                    <div class="text-center">
+                                        <i class="fas fa-map fa-3x mb-3"></i>
+                                        <p>Bản đồ sẽ được hiển thị tại đây</p>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -306,7 +338,7 @@
     </section>
 @endsection
 
- 
+
 
 @section('scripts')
     <script>
@@ -325,99 +357,101 @@
                 });
             }, observerOptions);
 
-    // Observe all elements with animate-in class
-    document.querySelectorAll('.animate-in').forEach(el => {
-        observer.observe(el);
-    });
-
-    
-
-    // Handle contact form submission
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = this.querySelector('.btn-submit');
-            const originalText = submitBtn.innerHTML;
-
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang gửi...</span>';
-            
-            // Get form data
-            const formData = new FormData(this);
-            
-            // Send AJAX request
-            fetch('{{ route("driver.contact.submit") }}', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification(data.message, 'success');
-                    contactForm.reset();
-                } else {
-                    showNotification(data.message || 'Có lỗi xảy ra, vui lòng thử lại.', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('Có lỗi xảy ra, vui lòng thử lại.', 'error');
-            })
-            .finally(() => {
-                // Reset button
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+            // Observe all elements with animate-in class
+            document.querySelectorAll('.animate-in').forEach(el => {
+                observer.observe(el);
             });
-        });
-        
-        // Auto-fill subject based on topic
-        const topicSelect = document.getElementById('topic');
-        const subjectInput = document.getElementById('subject');
-        
-        if (topicSelect && subjectInput) {
-            topicSelect.addEventListener('change', function() {
-                const topic = this.value;
-                
-                if (!subjectInput.value) {
-                    switch(topic) {
-                        case 'khiếu nại':
-                            subjectInput.value = 'Khiếu nại dịch vụ';
-                            break;
-                        case 'tư vấn dịch vụ':
-                            subjectInput.value = 'Yêu cầu tư vấn dịch vụ';
-                            break;
-                        case 'phản hồi':
-                            subjectInput.value = 'Phản hồi dịch vụ';
-                            break;
-                        default:
-                            subjectInput.value = 'Liên hệ chung';
+
+
+
+            // Handle contact form submission
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const submitBtn = this.querySelector('.btn-submit');
+                    const originalText = submitBtn.innerHTML;
+
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang gửi...</span>';
+
+                    // Get form data
+                    const formData = new FormData(this);
+
+                    // Send AJAX request
+                    fetch('{{ route('driver.contact.submit') }}', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                    .getAttribute('content')
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showNotification(data.message, 'success');
+                                contactForm.reset();
+                            } else {
+                                showNotification(data.message || 'Có lỗi xảy ra, vui lòng thử lại.',
+                                    'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showNotification('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+                        })
+                        .finally(() => {
+                            // Reset button
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalText;
+                        });
+                });
+
+                // Auto-fill subject based on topic
+                const topicSelect = document.getElementById('topic');
+                const subjectInput = document.getElementById('subject');
+
+                if (topicSelect && subjectInput) {
+                    topicSelect.addEventListener('change', function() {
+                        const topic = this.value;
+
+                        if (!subjectInput.value) {
+                            switch (topic) {
+                                case 'khiếu nại':
+                                    subjectInput.value = 'Khiếu nại dịch vụ';
+                                    break;
+                                case 'tư vấn dịch vụ':
+                                    subjectInput.value = 'Yêu cầu tư vấn dịch vụ';
+                                    break;
+                                case 'phản hồi':
+                                    subjectInput.value = 'Phản hồi dịch vụ';
+                                    break;
+                                default:
+                                    subjectInput.value = 'Liên hệ chung';
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Smooth scroll for scroll indicator
+            const scrollArrow = document.querySelector('.scroll-arrow');
+            if (scrollArrow) {
+                scrollArrow.addEventListener('click', function() {
+                    const contactSection = document.querySelector('.contact-section');
+                    if (contactSection) {
+                        contactSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
-                }
-            });
-        }
-    }
-
-    // Smooth scroll for scroll indicator
-    const scrollArrow = document.querySelector('.scroll-arrow');
-    if (scrollArrow) {
-        scrollArrow.addEventListener('click', function() {
-            const contactSection = document.querySelector('.contact-section');
-            if (contactSection) {
-                contactSection.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
                 });
             }
-        });
-    }
 
-    
+
 
             // Notification function
             function showNotification(message, type = 'success') {

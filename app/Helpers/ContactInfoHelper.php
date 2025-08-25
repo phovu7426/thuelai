@@ -34,7 +34,7 @@ class ContactInfoHelper
     public static function getContactInfoArray(): array
     {
         $contact = self::getContactInfo();
-        
+
         if (!$contact) {
             return [
                 'address' => '',
@@ -70,15 +70,15 @@ class ContactInfoHelper
     public static function formatPhone(?string $phone): string
     {
         if (!$phone) return '';
-        
+
         // Remove all non-numeric characters
         $phone = preg_replace('/\D/', '', $phone);
-        
+
         // Format Vietnamese phone number
         if (strlen($phone) === 10 && str_starts_with($phone, '0')) {
             return substr($phone, 0, 4) . ' ' . substr($phone, 4, 3) . ' ' . substr($phone, 7);
         }
-        
+
         return $phone;
     }
 
@@ -90,12 +90,77 @@ class ContactInfoHelper
     public static function getSocialLink(?string $url): string
     {
         if (!$url) return '#';
-        
+
         // Add https:// if not present
         if (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
             $url = 'https://' . $url;
         }
-        
+
         return $url;
+    }
+
+    /**
+     * Lấy thông tin liên hệ cụ thể
+     * @param string $key
+     * @return string
+     */
+    public static function get(string $key): string
+    {
+        $contactInfo = self::getContactInfoArray();
+        return $contactInfo[$key] ?? '';
+    }
+
+    /**
+     * Kiểm tra có thông tin liên hệ hay không
+     * @return bool
+     */
+    public static function hasContactInfo(): bool
+    {
+        $contactInfo = self::getContactInfoArray();
+        return !empty(array_filter($contactInfo));
+    }
+
+    /**
+     * Lấy danh sách mạng xã hội có link
+     * @return array
+     */
+    public static function getSocialLinks(): array
+    {
+        $contactInfo = self::getContactInfoArray();
+        $socialLinks = [];
+
+        if (!empty($contactInfo['facebook'])) {
+            $socialLinks['facebook'] = [
+                'url' => $contactInfo['facebook'],
+                'icon' => 'bi-facebook',
+                'name' => 'Facebook'
+            ];
+        }
+
+        if (!empty($contactInfo['instagram'])) {
+            $socialLinks['instagram'] = [
+                'url' => $contactInfo['instagram'],
+                'icon' => 'bi-instagram',
+                'name' => 'Instagram'
+            ];
+        }
+
+        if (!empty($contactInfo['youtube'])) {
+            $socialLinks['youtube'] = [
+                'url' => $contactInfo['youtube'],
+                'icon' => 'bi-youtube',
+                'name' => 'YouTube'
+            ];
+        }
+
+        if (!empty($contactInfo['linkedin'])) {
+            $socialLinks['linkedin'] = [
+                'url' => $contactInfo['linkedin'],
+                'icon' => 'bi-linkedin',
+                'name' => 'LinkedIn'
+            ];
+        }
+
+        return $socialLinks;
     }
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,7 +37,7 @@
         }
 
         .navbar {
-            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
             background-color: white;
         }
 
@@ -91,13 +92,13 @@
             border-radius: 10px;
             overflow: hidden;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             background-color: white;
         }
 
         .post-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
         .post-image {
@@ -117,7 +118,7 @@
 
         .post-card .card-footer {
             background-color: white;
-            border-top: 1px solid rgba(0,0,0,0.05);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .login-required-badge {
@@ -135,7 +136,7 @@
 
         .footer {
             background-color: white;
-            border-top: 1px solid rgba(0,0,0,0.05);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
             padding: 3rem 0;
             margin-top: 5rem;
         }
@@ -184,13 +185,13 @@
             border: none;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
 
         .related-post-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
         }
 
         .related-post-image {
@@ -207,28 +208,33 @@
 
     @yield('styles')
 </head>
+
 <body>
     <!-- Header -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">{{ config('app.name', 'Laravel') }}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Trang Chủ</a>
+                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Trang
+                            Chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('home/posts*') ? 'active' : '' }}" href="{{ route('home.posts.index') }}">Bài Đăng</a>
+                        <a class="nav-link {{ request()->is('home/posts*') ? 'active' : '' }}"
+                            href="{{ route('home.posts.index') }}">Bài Đăng</a>
                     </li>
                 </ul>
 
                 <!-- Tìm kiếm -->
                 <form class="d-flex me-3" action="{{ route('home.posts.index') }}" method="GET">
                     <div class="input-group">
-                        <input class="form-control" type="search" name="search" placeholder="Tìm bài đăng..." aria-label="Search" value="{{ request('search') }}">
+                        <input class="form-control" type="search" name="search" placeholder="Tìm bài đăng..."
+                            aria-label="Search" value="{{ request('search') }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
@@ -250,14 +256,17 @@
                         </li>
                     @else
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{{ route('dashboard') }}">
-                                    <i class="fas fa-tachometer-alt me-1"></i> Bảng Điều Khiển
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                        <i class="fas fa-tachometer-alt me-1"></i> Bảng Điều Khiển
+                                    </a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
@@ -285,31 +294,54 @@
             <div class="row">
                 <div class="col-md-5">
                     <h5>{{ config('app.name', 'Laravel') }}</h5>
-                    <p class="text-muted">Trang web chia sẻ thông tin và kiến thức hữu ích cho cộng đồng. Mang đến những bài viết chất lượng và đáng tin cậy.</p>
+                    <p class="text-muted">Trang web chia sẻ thông tin và kiến thức hữu ích cho cộng đồng. Mang đến những
+                        bài viết chất lượng và đáng tin cậy.</p>
                     <p class="text-muted">© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
                 </div>
                 <div class="col-md-3">
                     <h5>Liên Kết</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="{{ url('/') }}" class="text-decoration-none text-muted">Trang Chủ</a></li>
-                        <li class="mb-2"><a href="{{ route('home.posts.index') }}" class="text-decoration-none text-muted">Bài Đăng</a></li>
-                        <li class="mb-2"><a href="{{ route('login.index') }}" class="text-decoration-none text-muted">Đăng Nhập</a></li>
-                        <li class="mb-2"><a href="{{ route('register.index') }}" class="text-decoration-none text-muted">Đăng Ký</a></li>
+                        <li class="mb-2"><a href="{{ url('/') }}" class="text-decoration-none text-muted">Trang
+                                Chủ</a></li>
+                        <li class="mb-2"><a href="{{ route('home.posts.index') }}"
+                                class="text-decoration-none text-muted">Bài Đăng</a></li>
+                        <li class="mb-2"><a href="{{ route('login.index') }}"
+                                class="text-decoration-none text-muted">Đăng Nhập</a></li>
+                        <li class="mb-2"><a href="{{ route('register.index') }}"
+                                class="text-decoration-none text-muted">Đăng Ký</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5>Liên Hệ</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-envelope me-2"></i> info@example.com</li>
-                        <li class="mb-2"><i class="fas fa-phone me-2"></i> (123) 456-7890</li>
-                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> 123 Đường ABC, Quận XYZ, TP. HCM</li>
+                        @if ($contactEmail)
+                            <li class="mb-2"><i class="fas fa-envelope me-2"></i> {{ $contactEmail }}</li>
+                        @endif
+                        @if ($contactPhone)
+                            <li class="mb-2"><i class="fas fa-phone me-2"></i> {{ $contactPhone }}</li>
+                        @endif
+                        @if ($contactAddress)
+                            <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> {{ $contactAddress }}</li>
+                        @endif
                     </ul>
-                    <div class="mt-3">
-                        <a href="#" class="text-decoration-none me-2"><i class="fab fa-facebook fa-lg"></i></a>
-                        <a href="#" class="text-decoration-none me-2"><i class="fab fa-twitter fa-lg"></i></a>
-                        <a href="#" class="text-decoration-none me-2"><i class="fab fa-instagram fa-lg"></i></a>
-                        <a href="#" class="text-decoration-none me-2"><i class="fab fa-youtube fa-lg"></i></a>
-                    </div>
+                    @if (!empty($globalSocialLinks))
+                        <div class="mt-3">
+                            @foreach ($globalSocialLinks as $key => $social)
+                                <a href="{{ $social['url'] }}" target="_blank" class="text-decoration-none me-2"
+                                    title="{{ $social['name'] }}">
+                                    @if ($key == 'facebook')
+                                        <i class="fab fa-facebook fa-lg"></i>
+                                    @elseif($key == 'instagram')
+                                        <i class="fab fa-instagram fa-lg"></i>
+                                    @elseif($key == 'youtube')
+                                        <i class="fab fa-youtube fa-lg"></i>
+                                    @elseif($key == 'linkedin')
+                                        <i class="fab fa-linkedin fa-lg"></i>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -320,4 +352,5 @@
 
     @yield('scripts')
 </body>
+
 </html>

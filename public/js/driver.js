@@ -369,9 +369,15 @@ function initFloatingSocial() {
     const socialToggle = document.getElementById("socialToggle");
     const socialMenu = document.getElementById("socialMenu");
     const socialCloseBtn = document.getElementById("socialCloseBtn");
-    const zaloBtn = document.getElementById("zaloBtn");
-    const facebookBtn = document.getElementById("facebookBtn");
     const phoneBtn = document.getElementById("phoneBtn");
+
+    // Get dynamic social buttons
+    const socialButtons = {};
+    if (window.contactData?.socialLinks) {
+        Object.keys(window.contactData.socialLinks).forEach((key) => {
+            socialButtons[key] = document.getElementById(key + "Btn");
+        });
+    }
 
     if (!socialContainer || !socialToggle || !socialMenu) return;
 
@@ -476,12 +482,30 @@ function initFloatingSocial() {
     // Phone call
     if (phoneBtn) {
         phoneBtn.addEventListener("click", () => {
-            const phoneNumber = "0987654321"; // Thay bằng số điện thoại thực tế của bạn
+            const phoneNumber = window.contactData?.phone || "0987654321";
             window.open(`tel:${phoneNumber}`, "_self");
 
             // Ẩn menu sau khi click
             socialMenu.classList.remove("show");
             isMenuOpen = false;
+        });
+    }
+
+    // Handle dynamic social buttons
+    if (window.contactData?.socialLinks) {
+        Object.keys(window.contactData.socialLinks).forEach((key) => {
+            const button = socialButtons[key];
+            const socialData = window.contactData.socialLinks[key];
+
+            if (button && socialData?.url) {
+                button.addEventListener("click", () => {
+                    window.open(socialData.url, "_blank");
+
+                    // Ẩn menu sau khi click
+                    socialMenu.classList.remove("show");
+                    isMenuOpen = false;
+                });
+            }
         });
     }
 
