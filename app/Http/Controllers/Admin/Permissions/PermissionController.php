@@ -122,15 +122,14 @@ class PermissionController extends BaseController
      * @param $id
      * @return RedirectResponse
      */
-    public function delete($id): RedirectResponse
+    public function delete($id): JsonResponse
     {
         $return = $this->getService()->delete($id);
-        if (!empty($return['success'])) {
-            return redirect()->route('admin.permissions.index')
-                ->with('success', $return['message'] ?? 'Xóa quyền thành công.');
-        }
-        return redirect()->route('admin.permissions.index')
-            ->with('fail', $return['message'] ?? 'Xóa quyền thất bại.');
+        return response()->json([
+            'success' => $return['success'] ?? false,
+            'message' => $return['success'] ? 'Xóa thành công' : 'Xóa thất bại.',
+            'data' => $return['data'] ?? null
+        ]);
     }
 
     /**

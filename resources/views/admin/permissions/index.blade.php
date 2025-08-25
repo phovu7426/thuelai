@@ -93,7 +93,7 @@
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <button type="button" class="btn-action btn-delete" title="Xóa" 
-                                                        onclick="deleteData('/admin/permissions/delete/{{ $permission->id }}')">
+                                                        onclick="deleteData('/admin/permissions/delete/{{ $permission->id }}', 'DELETE')">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             @endcan

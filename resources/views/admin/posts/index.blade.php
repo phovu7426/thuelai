@@ -130,7 +130,7 @@
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <button type="button" class="btn-action btn-delete" title="Xóa"
-                                                            onclick="deletePost({{ $post->id }})">
+                                                            onclick="deleteData('/admin/posts/{{ $post->id }}', 'DELETE')">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </div>

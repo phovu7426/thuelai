@@ -134,9 +134,6 @@
                                                                 onclick="openEditContactModal({{ $contact['id'] }})">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
-                                                        <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteContact({{ $contact['id'] }})">
-                                                            <i class="fas fa-trash-alt"></i>
-                                                        </button>
                                                         <button type="button" class="btn-action btn-review" title="Gửi đánh giá"
                                                                 data-name="{{ $contact['name'] }}"
                                                                 data-email="{{ $contact['email'] }}"

@@ -136,9 +136,6 @@
                                                                 onclick="openEditModal({{ $testimonial->id }})">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
-                                                        <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteTestimonial({{ $testimonial->id }})">
-                                                            <i class="fas fa-trash-alt"></i>
-                                                        </button>
                                                     @endcan
                                                 </div>
                                             </td>

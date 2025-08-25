@@ -101,7 +101,7 @@
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <button type="button" class="btn-action btn-delete" title="Xóa"
-                                                            onclick="deleteService({{ $service->id }})">
+                                                            onclick="deleteData('/admin/driver/services/{{ $service->id }}', 'DELETE')">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </div>
