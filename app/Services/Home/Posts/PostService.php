@@ -38,31 +38,6 @@ class PostService extends BaseService
         }
         return $post;
     }
-
-    /**
-     * Lấy chi tiết bài đăng theo slug
-     * @param string $slug
-     * @return Model|null
-     */
-    public function showBySlug(string $slug): ?Model
-    {
-        $post = $this->getRepository()->getModel()
-            ->where('slug', $slug)
-            ->where('status', BasicStatus::ACTIVE->value)
-            ->with('user')
-            ->first();
-            
-        if (!$post) {
-            return null;
-        }
-        
-        // Kiểm tra quyền xem bài đăng yêu cầu đăng nhập
-        if (!Auth::check() && !empty($post->require_login)) {
-            return null;
-        }
-        
-        return $post;
-    }
     
     /**
      * Lấy bài đăng liên quan

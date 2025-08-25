@@ -37,12 +37,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!--end::Fonts-->
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.10.1/styles/overlayscrollbars.min.css" 
-          onerror="console.warn('OverlayScrollbars CSS failed to load')">
+    <link rel="stylesheet" href="{{ asset('vendor/overlayscrollbars/overlayscrollbars.min.css') }}">
     <!--end::Third Party Plugin(OverlayScrollbars)-->
     <!--begin::Third Party Plugin(Bootstrap Icons)-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
-          onerror="console.warn('Bootstrap Icons CSS failed to load')">
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/font/bootstrap-icons.min.css') }}">
     <!-- Fallback: Sử dụng Font Awesome nếu Bootstrap Icons không load được -->
     <script>
         // Kiểm tra nếu Bootstrap Icons không load được thì sử dụng Font Awesome
@@ -89,12 +87,10 @@
     <link rel="stylesheet" href="{{ asset('adminlte/css/adminlte.css') }}" />
     <!--end::Required Plugin(AdminLTE)-->
     <!-- apexcharts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.37.1/apexcharts.min.css"
-          onerror="console.warn('ApexCharts CSS failed to load')">
+    <link rel="stylesheet" href="{{ asset('vendor/apexcharts/apexcharts.min.css') }}">
     <!-- jsvectormap -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsvectormap/1.5.3/css/jsvectormap.min.css"
-          onerror="console.warn('JSVectorMap CSS failed to load')">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/jsvectormap/jsvectormap.min.css') }}">
+    <link href="{{ asset('fontawesome-free-6.5.1-web/css/all.min.css') }}" rel="stylesheet">
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="{{ asset('css/toastr.min.css') }}">
     <!-- Thêm CSS cho Select2 -->
@@ -230,14 +226,11 @@
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script src="{{ asset('js/toastr.min.js') }}"></script>
     <script src="{{ asset('js/select2.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.10.1/browser/overlayscrollbars.browser.es6.min.js"
-            onerror="console.warn('OverlayScrollbars JS failed to load')"></script>
+    <script src="{{ asset('vendor/overlayscrollbars/overlayscrollbars.browser.es6.min.js') }}"></script>
     <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
-            onerror="console.warn('Popper.js failed to load')"></script>
+    <script src="{{ asset('vendor/popperjs/popper.min.js') }}"></script>
     <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
-            onerror="console.warn('Bootstrap JS failed to load')"></script>
+    <script src="{{ asset('vendor/bootstrap/bootstrap.min.js') }}"></script>
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
     <script src="{{ asset('adminlte/js/adminlte.js') }}"></script>
     <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
