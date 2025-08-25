@@ -108,13 +108,10 @@
                                                 </button>
                                             @endcan
                                             @can('access_users')
-                                                <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
-                                                      style="display:inline;">
-                                                    @csrf
-                                                    <button type="submit" title="Xóa" class="btn-action btn-delete">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" 
+                                                        onclick="deleteData('/admin/users/delete/{{ $user->id }}')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             @endcan
                                         </div>
                                     </td>

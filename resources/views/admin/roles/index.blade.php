@@ -100,7 +100,8 @@
                                                         onclick="openEditRoleModal({{ $role->id }})">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteRole({{ $role->id }})">
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" 
+                                                        onclick="deleteData('/admin/roles/delete/{{ $role->id }}')">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             @endcan

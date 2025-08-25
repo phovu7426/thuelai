@@ -92,15 +92,10 @@
                                                         onclick="openEditPermissionModal({{ $permission->id }})">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <form action="{{ route('admin.permissions.delete', $permission->id) }}" method="POST"
-                                                      style="display:inline;"
-                                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete" title="Xóa">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" 
+                                                        onclick="deleteData('/admin/permissions/delete/{{ $permission->id }}')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             @endcan
                                         </div>
                                     </td>
