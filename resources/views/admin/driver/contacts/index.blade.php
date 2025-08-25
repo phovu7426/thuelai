@@ -57,6 +57,7 @@
                                             <th>Tên</th>
                                             <th>Email</th>
                                             <th>Số điện thoại</th>
+                                            <th>Chủ đề</th>
                                             <th>Tiêu đề</th>
                                             <th>Trạng thái</th>
                                             <th>Nổi bật</th>
@@ -80,6 +81,15 @@
                                                 <a href="tel:{{ $contact['phone'] }}" class="text-decoration-none">
                                                     <i class="bi bi-telephone"></i> {{ $contact['phone'] }}
                                                 </a>
+                                            </td>
+                                            <td>
+                                                @if(isset($contact['topic']))
+                                                    <span class="badge {{ $contact['topic'] == 'khiếu nại' ? 'badge-danger' : ($contact['topic'] == 'tư vấn dịch vụ' ? 'badge-info' : ($contact['topic'] == 'phản hồi' ? 'badge-success' : 'badge-secondary')) }}">
+                                                        {{ $contact['topic'] }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-secondary">Khác</span>
+                                                @endif
                                             </td>
                                             <td>
                                                 {{ $contact['subject'] ?? 'Không có tiêu đề' }}
@@ -124,8 +134,11 @@
                                                                 onclick="openEditContactModal({{ $contact['id'] }})">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
-                                                        <button type="button" class="btn-action btn-delete" title="Xóa" onclick="deleteContact({{ $contact['id'] }})">
-                                                            <i class="fas fa-trash-alt"></i>
+                                                        <button type="button" class="btn-action btn-review" title="Gửi đánh giá"
+                                                                data-name="{{ $contact['name'] }}"
+                                                                data-email="{{ $contact['email'] }}"
+                                                                onclick="sendReviewEmail(this)">
+                                                            <i class="bi bi-star-half"></i>
                                                         </button>
                                                     @endcan
                                                 </div>
@@ -201,6 +214,51 @@ function openCreateContactModal() {
 
 function openEditContactModal(contactId) {
     window.contactsModal.openEditModal(contactId);
+}
+
+// Global function to send review email (ensure it's available for inline onclick)
+window.sendReviewEmail = function(button) {
+    const name = $(button).data('name');
+    const email = $(button).data('email');
+    const phone = $(button).data('phone') || '';
+
+    if (!email) {
+        showAlert('danger', 'Liên hệ không có email hợp lệ.');
+        return;
+    }
+
+    if (confirm(`Tạo link mời đánh giá cho ${name || '(khách không tên)'} (${email})?`)) {
+        $.ajax({
+            url: '{{ route('review.send-email') }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                name: name || 'Khách hàng',
+                email: email,
+                phone: phone
+            },
+            success: function(response) {
+                if (response.success) {
+                    let msg = response.message;
+                    if (response.review_url) {
+                        msg += ` — Link trực tiếp: <a href="${response.review_url}" target="_blank">${response.review_url}</a>`;
+                    }
+                    showAlert('success', msg);
+                } else {
+                    showAlert('danger', response.message || 'Gửi email thất bại.');
+                }
+            },
+            error: function(xhr) {
+                if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errs = xhr.responseJSON.errors;
+                    const flat = Object.values(errs).flat().join('<br/>');
+                    showAlert('danger', flat);
+                } else {
+                    showAlert('danger', 'Có lỗi xảy ra khi gửi email đánh giá');
+                }
+            }
+        });
+    }
 }
 </script>
 
@@ -324,6 +382,50 @@ function bindEvents() {
             updateContactStatus(contactId, newStatus);
         }
     });
+}
+
+function sendReviewEmail(button) {
+    const name = $(button).data('name');
+    const email = $(button).data('email');
+    const phone = $(button).data('phone') || '';
+
+    if (!email) {
+        showAlert('danger', 'Liên hệ không có email hợp lệ.');
+        return;
+    }
+
+    if (confirm(`Tạo link mời đánh giá cho ${name || '(khách không tên)'} (${email})?`)) {
+        $.ajax({
+            url: '{{ route('review.send-email') }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                name: name || 'Khách hàng',
+                email: email,
+                phone: phone
+            },
+            success: function(response) {
+                if (response.success) {
+                    let msg = response.message;
+                    if (response.review_url) {
+                        msg += ` — Link trực tiếp: <a href="${response.review_url}" target="_blank">${response.review_url}</a>`;
+                    }
+                    showAlert('success', msg);
+                } else {
+                    showAlert('danger', response.message || 'Gửi email thất bại.');
+                }
+            },
+            error: function(xhr) {
+                if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errs = xhr.responseJSON.errors;
+                    const flat = Object.values(errs).flat().join('<br/>');
+                    showAlert('danger', flat);
+                } else {
+                    showAlert('danger', 'Có lỗi xảy ra khi gửi email đánh giá');
+                }
+            }
+        });
+    }
 }
 
 function showAlert(type, message) {

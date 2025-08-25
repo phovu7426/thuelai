@@ -31,7 +31,7 @@ class PostCategoryController extends BaseController
     /**
      * Hiển thị danh sách danh mục
      * @param Request $request
-     * @return View|Application|Factory
+     * @return View|Application|Factory|JsonResponse
      */
     public function index(Request $request): View|Application|Factory
     {
@@ -157,7 +157,7 @@ class PostCategoryController extends BaseController
     }
 
     /**
-     * Thay đổi trạng thái nổi bật của danh mục
+     * Thay đổi trạng thái nổi bật của tag
      * @param int $id
      * @return JsonResponse
      */
@@ -171,6 +171,23 @@ class PostCategoryController extends BaseController
             'data' => $result['data'] ?? null
         ]);
     }
+
+    /**
+     * Autocomplete cho danh mục
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function autocomplete(Request $request): JsonResponse
+    {
+        $term = $request->get('term', '');
+        $limit = $request->get('limit', 10);
+        $excludeId = $request->get('exclude_id');
+        
+        $categories = $this->getService()->autocomplete($term, 'name', $limit, $excludeId);
+        
+        return $categories;
+    }
+
 }
 
 

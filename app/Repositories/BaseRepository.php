@@ -112,12 +112,11 @@ abstract class BaseRepository
     public function findById(int $id, array $options = []): ?Model
     {
         $relations = $options['relations'] ?? [];
-        $query = $this->getModel()->newQuery();
-
+        $columns = $options['columns'] ?? ['*'];
+        $query = $this->getModel()->newQuery()->select($columns);
         if (!empty($relations)) {
             $query->with($relations);
         }
-
         return $query->find($id);
     }
 
@@ -230,13 +229,16 @@ abstract class BaseRepository
 
     /**
      * Hàm dùng chung cho autocomplete
-     * @param string $term
+     * @param string|null $term
      * @param string $column
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    public function autocomplete(?string $term = '', string $column = 'title', int $limit = 10): JsonResponse
     {
+        // Convert null to empty string
+        $term = $term ?? '';
+        
         $columns = $this->getColumns();
         $selectColumns[] = 'id';
         if (in_array('name', $columns)) {

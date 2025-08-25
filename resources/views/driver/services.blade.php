@@ -247,7 +247,7 @@
                             <div class="service-header">
                                 @if($service->image)
                                     <div class="service-icon-wrapper">
-                                        <img src="{{ $service->image_url }}" alt="{{ $service->name }}">
+                                        <img src="{{ $service->image }}" alt="{{ $service->name }}">
                                     </div>
                                 @else
                                     <div class="service-icon-wrapper">

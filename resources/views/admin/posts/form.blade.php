@@ -1,61 +1,28 @@
 {{-- Form cho Posts Modal --}}
 @csrf
 
+@php
+    $statusValue = $status ?? old('status', 'draft');
+    $featuredValue = $featured ?? old('featured', 0);
+    // Chuẩn hóa category thành object để truy cập đồng nhất
+    $categoryObj = isset($category)
+        ? (is_array($category) ? (object) $category : $category)
+        : null;
+    $categoryIdValue = $category_id ?? ($categoryObj->id ?? old('category_id'));
+    $categoryText = $categoryObj ? ($categoryObj->name ?? null) : null;
+@endphp
+
 <div class="row g-3">
-    <div class="col-md-8">
+    <div class="col-12">
         <div class="mb-3">
             <label for="title" class="form-label">
-                <i class="bi bi-type"></i> Tiêu đề <span class="text-danger">*</span>
+                <i class="bi bi-file-text"></i> Tiêu đề bài viết <span class="text-danger">*</span>
             </label>
             <input type="text" name="title" id="title" class="form-control"
                    placeholder="Nhập tiêu đề bài viết..."
-                   value="{{ $data['title'] ?? old('title') }}"
+                   value="{{ $title ?? old('title') }}"
                    required>
             <div class="invalid-feedback" id="titleError"></div>
-        </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="mb-3">
-            <label for="category_id" class="form-label">
-                <i class="bi bi-tag"></i> Danh mục
-            </label>
-            <select name="category_id" id="category_id" class="form-control">
-                <option value="">Chọn danh mục</option>
-                @foreach($categories ?? [] as $category)
-                    <option value="{{ $category->id }}" 
-                            {{ ($data['category_id'] ?? old('category_id')) == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
-                @endforeach
-            </select>
-            <div class="invalid-feedback" id="category_idError"></div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-3">
-    <div class="col-md-12">
-        <div class="mb-3">
-            <label for="excerpt" class="form-label">
-                <i class="bi bi-text-paragraph"></i> Tóm tắt
-            </label>
-            <textarea name="excerpt" id="excerpt" class="form-control" rows="3"
-                      placeholder="Nhập tóm tắt bài viết...">{{ $data['excerpt'] ?? old('excerpt') }}</textarea>
-            <div class="invalid-feedback" id="excerptError"></div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-3">
-    <div class="col-md-12">
-        <div class="mb-3">
-            <label for="content" class="form-label">
-                <i class="bi bi-file-text"></i> Nội dung <span class="text-danger">*</span>
-            </label>
-            <textarea name="content" id="content" class="form-control" rows="8"
-                      placeholder="Nhập nội dung bài viết...">{{ $data['content'] ?? old('content') }}</textarea>
-            <div class="invalid-feedback" id="contentError"></div>
         </div>
     </div>
 </div>
@@ -63,16 +30,18 @@
 <div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="image" class="form-label">
-                <i class="bi bi-image"></i> Ảnh đại diện
+            <label for="category_id" class="form-label">
+                <i class="bi bi-folder"></i> Danh mục
             </label>
-            <input type="file" name="image" id="image" class="form-control" accept="image/*">
-            @if(isset($data['image']) && $data['image'])
-                <div class="mt-2">
-                    <img src="{{ asset('storage/' . $data['image']) }}" alt="Ảnh hiện tại" class="img-thumbnail" style="max-width: 200px;">
-                </div>
-            @endif
-            <div class="invalid-feedback" id="imageError"></div>
+            <select name="category_id" id="category_id" class="form-control select2"
+                    data-url="{{ route('admin.post-categories.autocomplete') }}"
+                    data-field="id"
+                    data-display-field="name"
+                    data-selected='@json($categoryIdValue)'
+                    data-fetch-url="{{ url('/admin/post-categories/:id') }}">
+                <option value="">Chọn danh mục</option>
+            </select>
+            <div class="invalid-feedback" id="category_idError"></div>
         </div>
     </div>
     
@@ -82,21 +51,84 @@
                 <i class="bi bi-toggle-on"></i> Trạng thái
             </label>
             <select name="status" id="status" class="form-control">
-                <option value="draft" {{ ($data['status'] ?? old('status')) == 'draft' ? 'selected' : '' }}>Bản nháp</option>
-                <option value="published" {{ ($data['status'] ?? old('status')) == 'published' ? 'selected' : '' }}>Đã xuất bản</option>
-                <option value="archived" {{ ($data['status'] ?? old('status')) == 'archived' ? 'selected' : '' }}>Đã lưu trữ</option>
+                <option value="draft" {{ ($statusValue ?? '') === 'draft' ? 'selected' : '' }}>Bản nháp</option>
+                <option value="published" {{ ($statusValue ?? '') === 'published' ? 'selected' : '' }}>Đã xuất bản</option>
             </select>
             <div class="invalid-feedback" id="statusError"></div>
         </div>
-        
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
         <div class="mb-3">
-            <div class="form-check">
-                <input type="checkbox" name="featured" id="featured" class="form-check-input" value="1"
-                       {{ ($data['featured'] ?? old('featured')) ? 'checked' : '' }}>
-                <label class="form-check-label" for="featured">
-                    <i class="bi bi-star"></i> Nổi bật
-                </label>
-            </div>
+            <x-uploads.file-upload name="image" label="Ảnh đại diện" :value="$image ?? old('image')" />
+            <div class="invalid-feedback" id="imageError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12">
+        <div class="mb-3">
+            <label for="excerpt" class="form-label">
+                <i class="bi bi-text-paragraph"></i> Tóm tắt
+            </label>
+            <textarea name="excerpt" id="excerpt" class="form-control" rows="3"
+                      placeholder="Nhập tóm tắt bài viết...">{{ $excerpt ?? old('excerpt') }}</textarea>
+            <div class="invalid-feedback" id="excerptError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12">
+        <div class="mb-3">
+            <label for="content" class="form-label">
+                <i class="bi bi-file-earmark-text"></i> Nội dung <span class="text-danger">*</span>
+            </label>
+            <textarea name="content" id="content" class="form-control" rows="8"
+                      placeholder="Nhập nội dung bài viết...">{{ $content ?? old('content') }}" required></textarea>
+            <div class="invalid-feedback" id="contentError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="meta_title" class="form-label">
+                <i class="bi bi-tag"></i> Meta Title
+            </label>
+            <input type="text" name="meta_title" id="meta_title" class="form-control"
+                   placeholder="Meta title cho SEO..."
+                   value="{{ $meta_title ?? old('meta_title') }}">
+            <div class="invalid-feedback" id="meta_titleError"></div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="mb-3">
+            <label for="meta_keywords" class="form-label">
+                <i class="bi bi-tags"></i> Meta Keywords
+            </label>
+            <input type="text" name="meta_keywords" id="meta_keywords" class="form-control"
+                   placeholder="Từ khóa SEO, phân cách bằng dấu phẩy..."
+                   value="{{ $meta_keywords ?? old('meta_keywords') }}">
+            <div class="invalid-feedback" id="meta_keywordsError"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12">
+        <div class="mb-3">
+            <label for="meta_description" class="form-label">
+                <i class="bi bi-card-text"></i> Meta Description
+            </label>
+            <textarea name="meta_description" id="meta_description" class="form-control" rows="3"
+                      placeholder="Mô tả meta cho SEO...">{{ $meta_description ?? old('meta_description') }}</textarea>
+            <div class="invalid-feedback" id="meta_descriptionError"></div>
         </div>
     </div>
 </div>
@@ -104,24 +136,28 @@
 {{-- Script để xử lý form --}}
 <script>
 $(document).ready(function() {
-    // Auto-resize textarea
-    $('#excerpt, #content').on('input', function() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-    });
-    
-    // Image preview
-    $('#image').on('change', function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = $('<div class="mt-2"><img src="' + e.target.result + '" class="img-thumbnail" style="max-width: 200px;"></div>');
-                $('#image').next('.mt-2').remove();
-                $('#image').after(preview);
-            };
-            reader.readAsDataURL(file);
+    // Auto-generate meta title from title if empty
+    $('#title').on('input', function() {
+        const title = $(this).val();
+        if (title && !$('#meta_title').val()) {
+            $('#meta_title').val(title);
         }
     });
+    
+    // Auto-generate excerpt from content if empty
+    $('#content').on('input', function() {
+        const content = $(this).val();
+        if (content && !$('#excerpt').val()) {
+            const excerpt = content.substring(0, 200).trim();
+            $('#excerpt').val(excerpt);
+        }
+    });
+    
+    // Đảm bảo Select2 được khởi tạo với delay
+    setTimeout(function() {
+        if (typeof initializeSelect2 === 'function') {
+            initializeSelect2();
+        }
+    }, 100);
 });
 </script>

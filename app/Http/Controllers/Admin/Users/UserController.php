@@ -78,7 +78,7 @@ class UserController extends BaseController
      */
     public function show(int $id): JsonResponse
     {
-        $user = $this->getService()->findById($id);
+        $user = $this->getService()->findById($id, ['relations' => ['profile']]);
         
         if (!$user) {
             return response()->json([
@@ -246,14 +246,14 @@ class UserController extends BaseController
             
             $user = User::findOrFail($id);
             $newStatus = $request->boolean('status');
-            
-            $user->is_blocked = $newStatus;
+            // Map boolean to enum status: true => inactive (blocked), false => active
+            $user->status = $newStatus ? 'inactive' : 'active';
             $user->save();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Đã cập nhật trạng thái thành công',
-                'new_status' => $newStatus
+                'new_status' => $user->status
             ]);
         } catch (\Exception $e) {
             return response()->json([

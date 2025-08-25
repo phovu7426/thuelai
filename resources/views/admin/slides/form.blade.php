@@ -45,15 +45,7 @@
 <div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="image" class="form-label">
-                <i class="bi bi-image"></i> Hình ảnh <span class="text-danger">*</span>
-            </label>
-            <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
-            @if(isset($data['image']) && $data['image'])
-                <div class="mt-2">
-                    <img src="{{ asset('storage/' . $data['image']) }}" alt="Ảnh hiện tại" class="img-thumbnail" style="max-width: 200px;">
-                </div>
-            @endif
+            <x-uploads.file-upload name="image" label="Hình ảnh" :value="isset($data['image']) && $data['image'] ? asset('storage/' . $data['image']) : old('image')" :required="true" />
             <div class="invalid-feedback" id="imageError"></div>
         </div>
     </div>

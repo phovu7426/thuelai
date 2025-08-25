@@ -15,6 +15,11 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('color')->default('#6c757d');
             $table->boolean('is_active')->default(true);
+            $table->string('icon')->nullable()->after('color');
+            $table->boolean('is_featured')->default(false)->after('is_active');
+            $table->string('meta_title')->nullable()->after('is_featured');
+            $table->text('meta_description')->nullable()->after('meta_title');
+            $table->text('meta_keywords')->nullable()->after('meta_description');
             $table->timestamps();
             $table->softDeletes();
 
@@ -27,6 +32,13 @@ return new class extends Migration
         Schema::dropIfExists('post_tags');
     }
 };
+
+
+
+
+
+
+
 
 
 

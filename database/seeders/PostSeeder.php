@@ -2,83 +2,82 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Post;
 use App\Models\PostCategory;
-use App\Models\PostTag;
 use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PostSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get first user as author
-        $author = User::first();
-        if (!$author) {
-            $author = User::factory()->create();
-        }
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Post::truncate();
+        PostCategory::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Get categories
-        $categories = PostCategory::all();
-        $tags = PostTag::all();
+        $user = User::first() ?? User::factory()->create(['name' => 'Admin', 'email' => 'admin@example.com']);
+
+        $categories = [
+            ['name' => 'Mẹo lái xe', 'slug' => 'meo-lai-xe', 'description' => 'Các mẹo và kỹ năng lái xe an toàn', 'status' => 'active'],
+            ['name' => 'Quy định giao thông', 'slug' => 'quy-dinh-giao-thong', 'description' => 'Cập nhật các quy định giao thông mới nhất', 'status' => 'active'],
+            ['name' => 'Dịch vụ thuê tài xế', 'slug' => 'dich-vu-thue-tai-xe', 'description' => 'Thông tin về dịch vụ thuê tài xế', 'status' => 'active'],
+            ['name' => 'Bảo dưỡng xe', 'slug' => 'bao-duong-xe', 'description' => 'Hướng dẫn bảo dưỡng và chăm sóc xe', 'status' => 'active'],
+            ['name' => 'Tin tức ngành', 'slug' => 'tin-tuc-nganh', 'description' => 'Tin tức và xu hướng trong ngành vận tải', 'status' => 'active'],
+        ];
+
+        $createdCategories = [];
+        foreach ($categories as $cat) {
+            $createdCategories[$cat['slug']] = PostCategory::create($cat);
+        }
+        $this->command->info('Đã tạo ' . count($categories) . ' danh mục bài viết.');
 
         $posts = [
-            [
-                'title' => '10 Mẹo Lái Xe An Toàn Cho Người Mới',
-                'excerpt' => 'Những mẹo cơ bản giúp bạn lái xe an toàn hơn khi mới bắt đầu học lái xe.',
-                'content' => '<h2>1. Luôn thắt dây an toàn</h2><p>Dây an toàn là thiết bị quan trọng nhất giúp bảo vệ tính mạng khi xảy ra tai nạn. Hãy luôn thắt dây an toàn trước khi khởi động xe.</p><h2>2. Kiểm tra gương chiếu hậu</h2><p>Điều chỉnh gương chiếu hậu để có tầm nhìn tốt nhất về phía sau và hai bên xe.</p><h2>3. Giữ khoảng cách an toàn</h2><p>Luôn giữ khoảng cách ít nhất 2 giây với xe phía trước để có đủ thời gian phản ứng khi cần thiết.</p>',
-                'category_id' => $categories->where('slug', 'tips')->first()->id,
-                'author_id' => $author->id,
-                'status' => 'published',
-                'published_at' => now()->subDays(5),
-                'featured' => true,
-                'views' => 1250,
-                'reading_time' => 3
-            ],
-            [
-                'title' => 'Cập Nhật Luật Giao Thông Mới Năm 2024',
-                'excerpt' => 'Những thay đổi quan trọng trong luật giao thông đường bộ có hiệu lực từ năm 2024.',
-                'content' => '<h2>Thay đổi về tốc độ</h2><p>Năm 2024, tốc độ tối đa trên đường cao tốc được tăng lên 120km/h cho xe ô tô con.</p><h2>Quy định về điện thoại</h2><p>Nghiêm cấm sử dụng điện thoại khi lái xe, kể cả khi dừng đèn đỏ.</p><h2>Xử phạt vi phạm</h2><p>Mức phạt tiền cho các vi phạm giao thông được tăng lên đáng kể.</p>',
-                'category_id' => $categories->where('slug', 'news')->first()->id,
-                'author_id' => $author->id,
-                'status' => 'published',
-                'published_at' => now()->subDays(3),
-                'featured' => false,
-                'views' => 890,
-                'reading_time' => 4
-            ],
-            [
-                'title' => 'Hướng Dẫn Bảo Dưỡng Xe Định Kỳ',
-                'excerpt' => 'Lịch trình bảo dưỡng xe ô tô định kỳ để đảm bảo xe luôn hoạt động tốt và an toàn.',
-                'content' => '<h2>Bảo dưỡng sau 5.000km</h2><p>Thay dầu nhớt động cơ, kiểm tra hệ thống phanh và lốp xe.</p><h2>Bảo dưỡng sau 10.000km</h2><p>Thay bộ lọc gió, kiểm tra hệ thống làm mát và ắc quy.</p><h2>Bảo dưỡng sau 20.000km</h2><p>Thay bộ lọc nhiên liệu, kiểm tra hệ thống treo và lái.</p>',
-                'category_id' => $categories->where('slug', 'service')->first()->id,
-                'author_id' => $author->id,
-                'status' => 'published',
-                'published_at' => now()->subDays(1),
-                'featured' => false,
-                'views' => 567,
-                'reading_time' => 5
-            ],
-            [
-                'title' => 'Xu Hướng Xe Điện Trong Tương Lai',
-                'excerpt' => 'Khám phá tương lai của ngành công nghiệp ô tô với sự phát triển mạnh mẽ của xe điện.',
-                'content' => '<h2>Lợi ích của xe điện</h2><p>Xe điện giúp giảm thiểu ô nhiễm môi trường và tiết kiệm chi phí nhiên liệu.</p><h2>Công nghệ pin mới</h2><p>Những tiến bộ trong công nghệ pin giúp xe điện có quãng đường di chuyển xa hơn.</p><h2>Hạ tầng sạc điện</h2><p>Hệ thống trạm sạc điện đang được phát triển mạnh mẽ trên toàn thế giới.</p>',
-                'category_id' => $categories->where('slug', 'technology')->first()->id,
-                'author_id' => $author->id,
-                'status' => 'published',
-                'published_at' => now()->subHours(12),
-                'featured' => true,
-                'views' => 234,
-                'reading_time' => 4
-            ]
+            // Mẹo lái xe
+            ['title' => '10 Mẹo Lái Xe An Toàn Trong Thành Phố', 'excerpt' => 'Hướng dẫn chi tiết 10 mẹo lái xe an toàn...', 'content' => 'Nội dung chi tiết về 10 mẹo lái xe an toàn...', 'category_slug' => 'meo-lai-xe', 'image' => 'images/posts/safe-driving-tips.jpg', 'featured' => true],
+            ['title' => 'Kỹ Năng Lái Xe Trong Điều Kiện Thời Tiết Xấu', 'excerpt' => 'Hướng dẫn kỹ năng lái xe an toàn trong các điều kiện...', 'content' => 'Nội dung chi tiết về lái xe thời tiết xấu...', 'category_slug' => 'meo-lai-xe', 'image' => 'images/posts/bad-weather-driving.jpg', 'featured' => true],
+            ['title' => 'Cách Xử Lý Tình Huống Khẩn Cấp Khi Lái Xe', 'excerpt' => 'Hướng dẫn chi tiết cách xử lý các tình huống khẩn cấp...', 'content' => 'Nội dung chi tiết về xử lý tình huống khẩn cấp...', 'category_slug' => 'meo-lai-xe', 'image' => 'images/posts/emergency-situations.jpg', 'featured' => false],
+            ['title' => 'Kinh Nghiệm Lái Xe Đường Dài Cho Người Mới', 'excerpt' => 'Những điều cần chuẩn bị và lưu ý khi lái xe đường dài...', 'content' => 'Nội dung chi tiết về kinh nghiệm lái xe đường dài...', 'category_slug' => 'meo-lai-xe', 'image' => 'images/posts/long-distance-driving.jpg', 'featured' => true],
+            ['title' => 'Mẹo Tiết Kiệm Xăng Hiệu Quả Cho Tài Xế', 'excerpt' => 'Áp dụng những thói quen đơn giản để giảm chi phí nhiên liệu...', 'content' => 'Nội dung chi tiết về mẹo tiết kiệm xăng...', 'category_slug' => 'meo-lai-xe', 'image' => 'images/posts/fuel-saving-tips.jpg', 'featured' => false],
+
+            // Quy định giao thông
+            ['title' => 'Quy Định Giao Thông Mới Nhất 2024', 'excerpt' => 'Tổng hợp các quy định giao thông mới nhất năm 2024...', 'content' => 'Nội dung chi tiết về quy định giao thông 2024...', 'category_slug' => 'quy-dinh-giao-thong', 'image' => 'images/posts/traffic-regulations-2024.jpg', 'featured' => true],
+            ['title' => 'Các Lỗi Vi Phạm Giao Thông Thường Gặp Và Mức Phạt', 'excerpt' => 'Danh sách các lỗi vi phạm phổ biến và mức phạt tương ứng...', 'content' => 'Nội dung chi tiết về các lỗi vi phạm và mức phạt...', 'category_slug' => 'quy-dinh-giao-thong', 'image' => 'images/posts/traffic-fines.jpg', 'featured' => false],
+            ['title' => 'Tìm Hiểu Về Biển Báo Giao Thông Đường Bộ Việt Nam', 'excerpt' => 'Ý nghĩa của các loại biển báo giao thông quan trọng...', 'content' => 'Nội dung chi tiết về các loại biển báo giao thông...', 'category_slug' => 'quy-dinh-giao-thong', 'image' => 'images/posts/traffic-signs.jpg', 'featured' => false],
+
+            // Dịch vụ thuê tài xế
+            ['title' => 'Lợi Ích Của Việc Thuê Tài Xế Riêng', 'excerpt' => 'Khám phá những lợi ích tuyệt vời khi sử dụng dịch vụ...', 'content' => 'Nội dung chi tiết về lợi ích thuê tài xế...', 'category_slug' => 'dich-vu-thue-tai-xe', 'image' => 'images/posts/private-driver-benefits.jpg', 'featured' => true],
+            ['title' => 'Cách Chọn Tài Xế Thuê Lái Uy Tín', 'excerpt' => 'Hướng dẫn chi tiết cách chọn tài xế thuê lái uy tín...', 'content' => 'Nội dung chi tiết về cách chọn tài xế...', 'category_slug' => 'dich-vu-thue-tai-xe', 'image' => 'images/posts/choose-reliable-driver.jpg', 'featured' => false],
+            ['title' => 'Bảng Giá Dịch Vụ Thuê Tài Xế Theo Giờ và Theo Ngày', 'excerpt' => 'Tham khảo bảng giá dịch vụ thuê tài xế mới nhất...', 'content' => 'Nội dung chi tiết về bảng giá dịch vụ...', 'category_slug' => 'dich-vu-thue-tai-xe', 'image' => 'images/posts/driver-pricing.jpg', 'featured' => true],
+
+            // Bảo dưỡng xe
+            ['title' => 'Bảo Dưỡng Xe Định Kỳ - Điều Cần Biết', 'excerpt' => 'Hướng dẫn toàn diện về bảo dưỡng xe định kỳ...', 'content' => 'Nội dung chi tiết về bảo dưỡng xe...', 'category_slug' => 'bao-duong-xe', 'image' => 'images/posts/car-maintenance.jpg', 'featured' => true],
+            ['title' => '5 Hạng Mục Cần Kiểm Tra Trước Mỗi Chuyến Đi Xa', 'excerpt' => 'Đảm bảo an toàn cho chuyến đi của bạn với 5 bước kiểm tra...', 'content' => 'Nội dung chi tiết về kiểm tra xe trước chuyến đi...', 'category_slug' => 'bao-duong-xe', 'image' => 'images/posts/pre-trip-check.jpg', 'featured' => false],
+            ['title' => 'Khi Nào Cần Thay Lốp Xe Ô Tô?', 'excerpt' => 'Dấu hiệu nhận biết lốp xe đã mòn và cần được thay thế...', 'content' => 'Nội dung chi tiết về thời điểm thay lốp xe...', 'category_slug' => 'bao-duong-xe', 'image' => 'images/posts/tire-replacement.jpg', 'featured' => false],
+
+            // Tin tức ngành
+            ['title' => 'Xu Hướng Dịch Vụ Thuê Tài Xế 2024', 'excerpt' => 'Phân tích xu hướng phát triển của thị trường dịch vụ...', 'content' => 'Nội dung chi tiết về xu hướng ngành...', 'category_slug' => 'tin-tuc-nganh', 'image' => 'images/posts/driver-service-trends.jpg', 'featured' => true],
+            ['title' => 'Top 5 Ứng Dụng Hữu Ích Cho Tài Xế Việt', 'excerpt' => 'Những ứng dụng không thể thiếu trên điện thoại của mỗi tài xế...', 'content' => 'Nội dung chi tiết về các ứng dụng hữu ích...', 'category_slug' => 'tin-tuc-nganh', 'image' => 'images/posts/driver-apps.jpg', 'featured' => false],
         ];
 
         foreach ($posts as $postData) {
-            $post = Post::create($postData);
-            
-            // Attach random tags
-            $randomTags = $tags->random(rand(2, 4));
-            $post->tags()->attach($randomTags->pluck('id'));
+            Post::create([
+                'title' => $postData['title'],
+                'slug' => Str::slug($postData['title']),
+                'excerpt' => $postData['excerpt'],
+                'content' => $postData['content'],
+                'image' => $postData['image'],
+                'category_id' => $createdCategories[$postData['category_slug']]->id,
+                'author_id' => $user->id,
+                'status' => 'published',
+                'featured' => $postData['featured'],
+                'views' => rand(100, 1000),
+                'published_at' => now()->subDays(rand(1, 365)),
+            ]);
         }
+
+        $this->command->info('Đã tạo ' . count($posts) . ' bài viết mẫu.');
     }
-} 
+}

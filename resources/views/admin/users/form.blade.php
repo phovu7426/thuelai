@@ -1,6 +1,11 @@
 {{-- Form cho Users Modal --}}
 @csrf
 
+@php
+    $statusValue = $status ?? old('status', 'active');
+    $genderValue = $gender ?? old('gender');
+@endphp
+
 <div class="row g-3">
     <div class="col-md-6">
         <div class="mb-3">
@@ -28,34 +33,32 @@
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="password" class="form-label">
-                <i class="bi bi-lock"></i> Mật khẩu
-            </label>
-            <input type="password" name="password" id="password" class="form-control" 
-                   placeholder="Nhập mật khẩu...">
-            <small class="form-text text-muted">
-                @if($isEdit)
-                    Để trống nếu không đổi mật khẩu
-                @else
+    @if(empty($isEdit) || !$isEdit)
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="password" class="form-label">
+                    <i class="bi bi-lock"></i> Mật khẩu
+                </label>
+                <input type="password" name="password" id="password" class="form-control" 
+                       placeholder="Nhập mật khẩu...">
+                <small class="form-text text-muted">
                     Mật khẩu phải có ít nhất 8 ký tự
-                @endif
-            </small>
-            <div class="invalid-feedback" id="passwordError"></div>
+                </small>
+                <div class="invalid-feedback" id="passwordError"></div>
+            </div>
         </div>
-    </div>
 
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="password_confirmation" class="form-label">
-                <i class="bi bi-lock-fill"></i> Xác nhận mật khẩu
-            </label>
-            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
-                   placeholder="Nhập lại mật khẩu...">
-            <div class="invalid-feedback" id="password_confirmationError"></div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">
+                    <i class="bi bi-lock-fill"></i> Xác nhận mật khẩu
+                </label>
+                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
+                       placeholder="Nhập lại mật khẩu...">
+                <div class="invalid-feedback" id="password_confirmationError"></div>
+            </div>
         </div>
-    </div>
+    @endif
 
     <div class="col-md-6">
         <div class="mb-3">
@@ -74,10 +77,9 @@
             <label for="status" class="form-label">
                 <i class="bi bi-toggle-on"></i> Trạng thái
             </label>
-            @php $statusVal = $status ?? 'active'; @endphp
             <select name="status" id="status" class="form-control">
-                <option value="active" {{ $statusVal === 'active' ? 'selected' : '' }}>Hoạt động</option>
-                <option value="inactive" {{ $statusVal === 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
+                <option value="active" {{ ($statusValue ?? '') === 'active' ? 'selected' : '' }}>Hoạt động</option>
+                <option value="inactive" {{ ($statusValue ?? '') === 'inactive' ? 'selected' : '' }}>Không hoạt động</option>
             </select>
             <div class="invalid-feedback" id="statusError"></div>
         </div>
@@ -97,10 +99,7 @@
 
     <div class="col-md-12">
         <div class="mb-3">
-            <label for="image" class="form-label">
-                <i class="bi bi-image"></i> Ảnh đại diện
-            </label>
-            <input type="file" name="image" id="image" class="form-control" accept="image/*">
+            <x-uploads.file-upload name="image" label="Ảnh đại diện" :value="$image ?? old('image')" />
             <div class="invalid-feedback" id="imageError"></div>
         </div>
     </div>
@@ -123,10 +122,9 @@
             </label>
             <select name="gender" id="gender" class="form-control">
                 <option value="">-- Chọn --</option>
-                @php $genderVal = $gender ?? '' @endphp
-                <option value="male" {{ $genderVal === 'male' ? 'selected' : '' }}>Nam</option>
-                <option value="female" {{ $genderVal === 'female' ? 'selected' : '' }}>Nữ</option>
-                <option value="other" {{ $genderVal === 'other' ? 'selected' : '' }}>Khác</option>
+                <option value="male" {{ ($genderValue ?? '') === 'male' ? 'selected' : '' }}>Nam</option>
+                <option value="female" {{ ($genderValue ?? '') === 'female' ? 'selected' : '' }}>Nữ</option>
+                <option value="other" {{ ($genderValue ?? '') === 'other' ? 'selected' : '' }}>Khác</option>
             </select>
             <div class="invalid-feedback" id="genderError"></div>
         </div>

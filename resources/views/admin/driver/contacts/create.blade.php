@@ -88,18 +88,18 @@
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="contact_type" class="form-label">
-                                            <i class="bi bi-tags"></i> Loại liên hệ
+                                        <label for="topic" class="form-label">
+                                            <i class="bi bi-tags"></i> Chủ đề <span class="text-danger">*</span>
                                         </label>
                                         <select class="form-control" 
-                                                id="contact_type" name="contact_type">
-                                            <option value="">🏷️ Chọn loại liên hệ</option>
-                                            <option value="general" {{ old('contact_type') == 'general' ? 'selected' : '' }}>Liên hệ chung</option>
-                                            <option value="support" {{ old('contact_type') == 'support' ? 'selected' : '' }}>Hỗ trợ</option>
-                                            <option value="complaint" {{ old('contact_type') == 'complaint' ? 'selected' : '' }}>Khiếu nại</option>
-                                            <option value="feedback" {{ old('contact_type') == 'feedback' ? 'selected' : '' }}>Phản hồi</option>
+                                                id="topic" name="topic" required>
+                                            <option value="">🏷️ Chọn chủ đề</option>
+                                            <option value="khiếu nại" {{ old('topic') == 'khiếu nại' ? 'selected' : '' }}>Khiếu nại</option>
+                                            <option value="tư vấn dịch vụ" {{ old('topic') == 'tư vấn dịch vụ' ? 'selected' : '' }}>Tư vấn dịch vụ</option>
+                                            <option value="phản hồi" {{ old('topic') == 'phản hồi' ? 'selected' : '' }}>Phản hồi</option>
+                                            <option value="khác" {{ old('topic') == 'khác' ? 'selected' : '' }}>Khác</option>
                                         </select>
-                                        <div class="invalid-feedback" id="contact_type-error"></div>
+                                        <div class="invalid-feedback" id="topic-error"></div>
                                     </div>
                                 </div>
                                 
@@ -146,20 +146,20 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Auto-fill subject based on contact type
-    $('#contact_type').on('change', function() {
-        const contactType = $(this).val();
+    // Auto-fill subject based on topic
+    $('#topic').on('change', function() {
+        const topic = $(this).val();
         const subject = $('#subject');
         
         if (!subject.val()) {
-            switch(contactType) {
-                case 'support':
-                    subject.val('Yêu cầu hỗ trợ');
-                    break;
-                case 'complaint':
+            switch(topic) {
+                case 'khiếu nại':
                     subject.val('Khiếu nại dịch vụ');
                     break;
-                case 'feedback':
+                case 'tư vấn dịch vụ':
+                    subject.val('Yêu cầu tư vấn dịch vụ');
+                    break;
+                case 'phản hồi':
                     subject.val('Phản hồi dịch vụ');
                     break;
                 default:
@@ -304,3 +304,4 @@ function showAlert(type, message) {
 }
 </style>
 @endpush
+

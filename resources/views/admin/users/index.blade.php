@@ -66,14 +66,15 @@
                                     <td>{{ $user->email ?? '' }}</td>
                                     <td>{{ $user->created_at->format('d/m/Y') }}</td>
                                     <td>
+                                        @php $isBlocked = ($user->status ?? 'active') === 'inactive'; @endphp
                                         <select class="form-select form-select-sm status-select" 
                                                 data-user-id="{{ $user->id }}" 
-                                                data-current-status="{{ $user->is_blocked ? '1' : '0' }}"
+                                                data-current-status="{{ $isBlocked ? '1' : '0' }}"
                                                 data-status-type="users">
-                                            <option value="0" {{ !$user->is_blocked ? 'selected' : '' }}>
+                                            <option value="0" {{ !$isBlocked ? 'selected' : '' }}>
                                                 Hoạt động
                                             </option>
-                                            <option value="1" {{ $user->is_blocked ? 'selected' : '' }}>
+                                            <option value="1" {{ $isBlocked ? 'selected' : '' }}>
                                                 Khóa
                                             </option>
                                         </select>
@@ -107,13 +108,10 @@
                                                 </button>
                                             @endcan
                                             @can('access_users')
-                                                <form action="{{ route('admin.users.delete', $user->id ?? '') }}" method="POST"
-                                                      style="display:inline;">
-                                                    @csrf
-                                                    <button type="submit" title="Xóa" class="btn-action btn-delete">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" 
+                                                        onclick="deleteData('/admin/users/delete/{{ $user->id }}')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             @endcan
                                         </div>
                                     </td>

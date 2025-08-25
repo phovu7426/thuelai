@@ -96,9 +96,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="image" class="form-label">Hình ảnh</label>
-                                            <input type="file" class="form-control" 
-                                                   id="image" name="image" accept="image/*">
+                                            <x-uploads.file-upload name="image" label="Hình ảnh" :value="old('image')" />
                                             <div class="invalid-feedback" id="image-error"></div>
                                             <small class="form-text text-muted">Định dạng: JPG, PNG, GIF. Kích thước tối đa: 2MB</small>
                                         </div>

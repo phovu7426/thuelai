@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
-use App\Models\ContactInfo;
+
 
 // Import các services mới
 use App\Services\Admin\Driver\DriverPricingRuleService;
@@ -18,7 +18,7 @@ use App\Services\Admin\Driver\DriverDistanceTierService;
 use App\Services\Admin\Driver\DriverPricingTierService;
 use App\Services\Admin\Driver\DriverDashboardService;
 use App\Services\Admin\Driver\TestimonialService;
-use App\Services\Admin\ContactInfoService;
+
 
 // Import các repositories
 use App\Repositories\Admin\Driver\DriverPricingRuleRepository;
@@ -68,9 +68,7 @@ class AppServiceProvider extends ServiceProvider
             return new TestimonialService(new TestimonialRepository(new Testimonial()));
         });
 
-        $this->app->bind(ContactInfoService::class, function ($app) {
-            return new ContactInfoService();
-        });
+
     }
 
     /**
@@ -80,11 +78,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Paginator::useBootstrap();
         Schema::defaultStringLength(191);
         
         try {
             // Chỉ thực hiện nếu kết nối thành công
-            if (DB::connection()->getPdo() && Schema::hasTable('contact_infos')) {
+            if (DB::connection()->getPdo()) {
                 // Stone layout composer removed - stone views no longer exist
             }
         } catch (\Exception $e) {

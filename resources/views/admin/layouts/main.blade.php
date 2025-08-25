@@ -129,8 +129,8 @@
 <!--begin::Script-->
 <!--begin::Third Party Plugin(OverlayScrollbars)-->
 <script src="{{ asset('js/toastr.min.js') }}"></script>
-<script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('js/select2.min.js') }}"></script>
+<script src="{{ asset('js/main.js') }}"></script>
 <script
     src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
     crossorigin="anonymous"
@@ -188,6 +188,75 @@
 
 
 <script src="{{ asset('js/admin-custom.js') }}"></script>
+
+<script>
+/**
+ * Hàm delete - gọi API để xóa dữ liệu
+ * @param {string} apiUrl - URL của API endpoint
+ * @param {function} successCallback - Callback khi thành công (optional)
+ * @param {function} errorCallback - Callback khi có lỗi (optional)
+ */
+function deleteData(apiUrl, method = 'POST', successCallback = null, errorCallback = null) {
+    // Hiển thị confirm dialog
+    if (!confirm('Bạn có chắc chắn muốn xóa không?')) {
+        return;
+    }
+
+    // Hiển thị loading
+    toastr.info('Đang xử lý...', '', {timeOut: 0, extendedTimeOut: 0});
+
+    $.ajax({
+        url: apiUrl,
+        type: method,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        success: function(response) {
+            // Ẩn loading
+            toastr.clear();
+            
+            // Hiển thị thông báo thành công
+            toastr.success(response.message || 'Xóa thành công!');
+            
+            // Gọi callback nếu có
+            if (successCallback && typeof successCallback === 'function') {
+                successCallback(response);
+            }
+            setTimeout(function() {
+                location.reload();
+            }, 1000);
+        },
+        error: function(xhr, status, error) {
+            // Ẩn loading
+            toastr.clear();
+            
+            let errorMessage = 'Có lỗi xảy ra khi xóa!';
+            
+            // Xử lý error message từ server
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            } else if (xhr.responseText) {
+                try {
+                    const errorData = JSON.parse(xhr.responseText);
+                    errorMessage = errorData.message || errorMessage;
+                } catch (e) {
+                    errorMessage = xhr.responseText;
+                }
+            }
+            
+            // Hiển thị thông báo lỗi
+            toastr.error(errorMessage);
+            
+            // Gọi callback nếu có
+            if (errorCallback && typeof errorCallback === 'function') {
+                errorCallback(xhr, status, error);
+            }
+        }
+    });
+}
+</script>
 
 @yield('scripts')
 <!--end::Script-->

@@ -14,17 +14,12 @@ class PostCategory extends Model
         'name',
         'slug',
         'description',
-        'image',
-        'color',
-        'sort_order',
-        'is_active',
-        'is_featured'
+        'parent_id',
+        'status'
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'is_featured' => 'boolean',
-        'sort_order' => 'integer'
+        'parent_id' => 'integer'
     ];
 
     // Relationships
@@ -33,15 +28,25 @@ class PostCategory extends Model
         return $this->hasMany(Post::class, 'category_id');
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(PostCategory::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(PostCategory::class, 'parent_id');
+    }
+
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
     }
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('sort_order', 'asc');
+        return $query->orderBy('name', 'asc');
     }
 
     // Accessors

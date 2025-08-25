@@ -56,9 +56,33 @@ class ViewController extends BaseController
                 $data = [];
             }
             
-            // Khởi tạo các biến cần thiết nếu không có
-            if (!isset($data['data'])) {
-                $data['data'] = [];
+            // Nếu có key 'data' (ví dụ dữ liệu bản ghi), làm phẳng để Blade dùng biến 1 cấp
+            if (isset($data['data']) && is_array($data['data'])) {
+                $record = $data['data'];
+                unset($data['data']);
+
+                // Nếu có profile lồng bên trong thì merge lên 1 cấp
+                if (isset($record['profile']) && is_array($record['profile'])) {
+                    $record = array_merge($record, $record['profile']);
+                    unset($record['profile']);
+                }
+
+                // Nếu có permissions (quan hệ) thì trích danh sách tên để dùng cho select2
+                if (isset($record['permissions']) && is_array($record['permissions'])) {
+                    $selectedPermissionNames = [];
+                    foreach ($record['permissions'] as $perm) {
+                        if (is_array($perm) && isset($perm['name'])) {
+                            $selectedPermissionNames[] = $perm['name'];
+                        } elseif (is_object($perm) && isset($perm->name)) {
+                            $selectedPermissionNames[] = $perm->name;
+                        }
+                    }
+                    $data['permissions_selected'] = $selectedPermissionNames;
+                    unset($record['permissions']);
+                }
+
+                // Merge các field của record lên $data để Blade nhận biến 1 cấp
+                $data = array_merge($data, $record);
             }
 
             // Render view với data

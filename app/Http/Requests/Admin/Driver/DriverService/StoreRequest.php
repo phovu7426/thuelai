@@ -28,8 +28,8 @@ class StoreRequest extends FormRequest
             'is_featured' => 'boolean',
             'status' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|string|max:500',
+            'icon' => 'nullable|string|max:500',
         ];
     }
 
@@ -44,12 +44,10 @@ class StoreRequest extends FormRequest
             'name.required' => 'Tên dịch vụ là bắt buộc.',
             'name.max' => 'Tên dịch vụ không được vượt quá 255 ký tự.',
             'short_description.max' => 'Mô tả ngắn không được vượt quá 500 ký tự.',
-            'image.image' => 'File phải là hình ảnh.',
-            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
-            'image.max' => 'Hình ảnh không được vượt quá 2MB.',
-            'icon.image' => 'File icon phải là hình ảnh.',
-            'icon.mimes' => 'Icon phải có định dạng: jpeg, png, jpg, gif.',
-            'icon.max' => 'Icon không được vượt quá 2MB.',
+            'image.string' => 'Đường dẫn ảnh phải là chuỗi.',
+            'image.max' => 'Đường dẫn ảnh không được vượt quá 500 ký tự.',
+            'icon.string' => 'Đường dẫn icon phải là chuỗi.',
+            'icon.max' => 'Đường dẫn icon không được vượt quá 500 ký tự.',
             'sort_order.integer' => 'Thứ tự sắp xếp phải là số nguyên.',
             'sort_order.min' => 'Thứ tự sắp xếp không được nhỏ hơn 0.',
         ];

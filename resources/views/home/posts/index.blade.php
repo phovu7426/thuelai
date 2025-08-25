@@ -19,7 +19,6 @@
             </div>
         </div>
 
-        <!-- Hiển thị kết quả tìm kiếm nếu có -->
         @if (request()->has('search') && request('search'))
             <div class="row mb-4">
                 <div class="col-md-12">
@@ -58,7 +57,6 @@
                 @foreach ($posts as $post)
                     <div class="col">
                         <div class="card post-card h-100">
-                            <!-- Login Required Badge -->
                             @if ($post->require_login)
                                 <div class="login-required-badge">
                                     <i class="fas fa-lock me-1"></i> Yêu cầu đăng nhập
@@ -83,7 +81,7 @@
 
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <a href="{{ route('home.posts.show', $post->id) }}"
+                                    <a href="{{ route('home.posts.show', $post->slug) }}"
                                         class="text-decoration-none stretched-link">
                                         {{ $post->name }}
                                     </a>
@@ -103,7 +101,7 @@
                                     <small class="text-muted">
                                         <i class="fas fa-user-circle me-1"></i> {{ $post->user->name }}
                                     </small>
-                                    <a href="{{ route('home.posts.show', $post->id) }}"
+                                    <a href="{{ route('home.posts.show', $post->slug) }}"
                                         class="btn btn-sm btn-outline-primary">
                                         Xem chi tiết <i class="fas fa-arrow-right ms-1"></i>
                                     </a>
@@ -114,7 +112,6 @@
                 @endforeach
             </div>
 
-            <!-- Phân trang -->
             <div class="row mt-5">
                 <div class="col-md-12 d-flex justify-content-center">
                     {{ $posts->withQueryString()->links('pagination::bootstrap-5') }}

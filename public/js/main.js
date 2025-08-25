@@ -1,8 +1,23 @@
 $(document).ready(function () {
     function initializeSelect2() {
+        // Kiểm tra xem Select2 đã được load chưa
+        if (typeof $.fn.select2 === 'undefined') {
+            console.error('Select2 is not loaded');
+            return;
+        }
+        
         $('.select2').each(function () {
             const selectElement = $(this);
             const url = selectElement.data('url'); // Lấy URL từ data-url
+            
+            // Chỉ khởi tạo Select2 cho elements có data-url (autocomplete)
+            if (!url) {
+                console.log('Skipping select2 init - no data-url:', selectElement.attr('id'));
+                return;
+            }
+            
+            console.log('Initializing Select2 for:', selectElement.attr('id'), 'with URL:', url);
+            
             const field = selectElement.data('field') || 'id'; // Trường lấy giá trị
             const displayField = selectElement.data('display-field') || 'name'; // Trường hiển thị
             const selectedData = selectElement.attr('data-selected'); // Dữ liệu đã chọn
@@ -16,7 +31,12 @@ $(document).ready(function () {
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
-                        return {term: params.term};
+                        const data = {term: params.term || ''};
+                        const excludeId = selectElement.data('exclude-id');
+                        if (excludeId) {
+                            data.exclude_id = excludeId;
+                        }
+                        return data;
                     },
                     processResults: function (data) {
                         return {
@@ -27,20 +47,42 @@ $(document).ready(function () {
                     },
                     cache: true
                 },
+                dropdownParent: selectElement.closest('.modal').length ? selectElement.closest('.modal') : $(document.body),
+                width: '100%',
+                minimumInputLength: 0,
                 placeholder: 'Chọn mục',
                 allowClear: true
             });
 
             // Nếu có dữ liệu đã chọn, đảm bảo option tồn tại rồi mới set giá trị
-            if (selectedValues && selectedValues.length > 0) {
+            const hasSelected = isMultiple
+                ? Array.isArray(selectedValues) && selectedValues.length > 0
+                : selectedValues !== null && selectedValues !== '' && typeof selectedValues !== 'undefined';
+
+            if (hasSelected) {
+                const selectedTextAttr = selectElement.attr('data-selected-text');
+                if (selectedTextAttr && !isMultiple) {
+                    // Nếu đã có sẵn text của option được chọn, không cần gọi server
+                    if (selectElement.find("option[value='" + selectedValues + "']").length === 0) {
+                        selectElement.append(new Option(selectedTextAttr, selectedValues, true, true));
+                    }
+                    selectElement.val(selectedValues).trigger('change');
+                    return;
+                }
+                // Ưu tiên yêu cầu theo id/ids để chắc chắn lấy được các item đã chọn
+                const requestData = isMultiple
+                    ? { ids: selectedValues }
+                    : { id: selectedValues };
+
                 $.ajax({
                     url: url,
+                    data: requestData,
                     dataType: 'json',
                     success: function (data) {
                         if (isMultiple) {
                             selectedValues.forEach(function(value) {
                                 if (selectElement.find("option[value='" + value + "']").length === 0) {
-                                    let item = data.find(item => item[field] == value);
+                                    let item = Array.isArray(data) ? data.find(item => item[field] == value) : null;
                                     let text = item ? item[displayField] : value;
                                     selectElement.append(new Option(text, value, true, true));
                                 }
@@ -49,7 +91,7 @@ $(document).ready(function () {
                         } else {
                             let value = selectedValues;
                             if (selectElement.find("option[value='" + value + "']").length === 0) {
-                                let item = data.find(item => item[field] == value);
+                                let item = Array.isArray(data) ? data.find(item => item[field] == value) : null;
                                 let text = item ? item[displayField] : value;
                                 selectElement.append(new Option(text, value, true, true));
                             }
@@ -60,6 +102,9 @@ $(document).ready(function () {
             }
         });
     }
+    // Expose for external calls (e.g., after modal loads)
+    window.initializeSelect2 = initializeSelect2;
+
     // Khởi tạo Select2 ban đầu
     initializeSelect2();
 
@@ -161,35 +206,59 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Xử lý upload ảnh và cập nhật URL vào input tương ứng
-    document.querySelectorAll('.upload-field').forEach((input) => {
-        input.addEventListener('change', function (event) {
-            let file = event.target.files[0]; // Lấy file đầu tiên
-            if (!file) return; // Nếu không chọn file, thoát luôn, không chạy tiếp
+    // Xử lý upload ảnh và cập nhật URL vào input tương ứng (event delegation)
+    function handleUploadChange(inputEl) {
+        const file = inputEl.files && inputEl.files[0];
+        if (!file) return;
 
-            let targetInput = document.getElementById(this.getAttribute('data-target'));
-            let formData = new FormData();
-            let uploadUrl = this.getAttribute('data-url'); // Lấy URL từ data-attribute
-            formData.append('file', file);
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+        const targetId = inputEl.getAttribute('data-target');
+        const targetInput = targetId ? document.getElementById(targetId) : null;
+        if (!targetInput) {
+            console.error('Không tìm thấy input đích để gán URL (data-target).');
+            return;
+        }
+        const uploadUrl = inputEl.getAttribute('data-url');
+        if (!uploadUrl) {
+            console.error('Thiếu data-url trên input upload-field.');
+            return;
+        }
 
-            fetch(uploadUrl, {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        targetInput.value = data.url; // Cập nhật đường dẫn file vào input
-                    } else {
-                        alert('Upload thất bại: ' + data.message);
+        const formData = new FormData();
+        formData.append('file', file);
+        const csrf = document.querySelector('meta[name="csrf-token"]');
+        if (csrf) formData.append('_token', csrf.content);
+
+        fetch(uploadUrl, { method: 'POST', body: formData })
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.success) {
+                    targetInput.value = data.url;
+                    const previewId = inputEl.getAttribute('data-preview');
+                    if (previewId) {
+                        const img = document.getElementById(previewId);
+                        if (img) { img.src = data.url; img.style.display = ''; }
                     }
-                })
-                .catch(error => console.error('Lỗi:', error));
-        });
-    });
+                } else {
+                    alert('Upload thất bại: ' + ((data && (data.message || data.messages)) || 'Không xác định'));
+                }
+            })
+            .catch(err => {
+                console.error('Upload error:', err);
+                alert('Không thể tải lên. Vui lòng thử lại.');
+            });
+    }
 
+    if (!window.__uploadHandlerRegistered) {
+        document.addEventListener('change', function(e) {
+            const target = e.target;
+            if (target && target.classList && target.classList.contains('upload-field')) {
+                handleUploadChange(target);
+            }
+        });
+        window.__uploadHandlerRegistered = true;
+    }
 });
+
 
 // tinymce.init({
 //     selector: "textarea[data-editor='true']", // Hoặc "#content"
@@ -229,5 +298,3 @@ document.addEventListener("DOMContentLoaded", function () {
 //         });
 //     });
 // });
-
-

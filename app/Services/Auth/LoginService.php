@@ -36,7 +36,16 @@ class LoginService
         }
         $data = ['email' => $credentials['email'], 'password' => $credentials['password']];
         if ($this->loginRepository->login($data, $remember)) {
-            $return = ['success' => true, 'message' => 'Đăng nhập thành công!'];
+            $user = auth()->user();
+            $redirectUrl = route('driver.home'); // Default redirect for non-admins
+            if ($user->hasRole('admin')) { // Assuming admin role is named 'admin'
+                $redirectUrl = route('admin.index');
+            }
+            $return = [
+                'success' => true,
+                'message' => 'Đăng nhập thành công!',
+                'redirect' => $redirectUrl
+            ];
         }
         return $return;
     }

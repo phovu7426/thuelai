@@ -465,7 +465,7 @@
         <div class="article-container">
             @if($post->image)
             <div class="article-image">
-                <img src="{{ $post->image_url }}" alt="{{ $post->title }}">
+                <img src="{{ $post->image }}" alt="{{ $post->title }}">
             </div>
             @endif
 
@@ -547,7 +547,7 @@
             @foreach($relatedPosts as $relatedPost)
             <article class="related-card">
                 <div class="related-image">
-                    <img src="{{ $relatedPost->image_url }}" alt="{{ $relatedPost->title }}">
+                    <img src="{{ $relatedPost->image }}" alt="{{ $relatedPost->title }}">
                 </div>
                 <div class="related-content">
                     <h4 class="related-title">

@@ -73,7 +73,7 @@
                                         <label for="image" class="form-label">
                                             <i class="bi bi-image"></i> Hình ảnh
                                         </label>
-                                        <input type="file" name="image" id="image" class="form-control" accept="image/*">
+                                        <x-uploads.file-upload name="image" label="Hình ảnh" :value="old('image')" />
                                         <small class="text-muted">Hỗ trợ: JPG, PNG, GIF (tối đa 2MB)</small>
                                         <div class="invalid-feedback" id="image-error"></div>
                                     </div>

@@ -63,28 +63,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="password" class="form-label">
-                                            <i class="bi bi-lock"></i> Mật khẩu mới (để trống nếu không đổi)
-                                        </label>
-                                        <input type="password" name="password" class="form-control" 
-                                               placeholder="🔒 Nhập mật khẩu mới...">
-                                        @error('password')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="password_confirmation" class="form-label">
-                                            <i class="bi bi-lock-fill"></i> Xác nhận mật khẩu mới
-                                        </label>
-                                        <input type="password" name="password_confirmation" class="form-control" 
-                                               placeholder="🔒 Nhập lại mật khẩu mới...">
-                                    </div>
-                                </div>
+                                
 
                                 <div class="col-md-6">
                                     <div class="mb-3">
@@ -143,15 +122,7 @@
                                 
                                 <div class="col-md-12">
                                     <div class="mb-3">
-                                        <label for="image" class="form-label">
-                                            <i class="bi bi-image"></i> Ảnh đại diện
-                                        </label>
-                                        <input type="file" name="image" class="form-control" accept="image/*">
-                                        @if($user->image)
-                                            <div class="mt-2">
-                                                <img src="{{ asset($user->image) }}" alt="avatar" style="max-height: 100px;">
-                                            </div>
-                                        @endif
+                                        <x-uploads.file-upload name="image" label="Ảnh đại diện" :value="$user->image" />
                                     </div>
                                 </div>
                             </div> <!-- row -->

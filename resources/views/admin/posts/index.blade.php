@@ -75,7 +75,7 @@
                                             <td>{{ $posts->firstItem() + $index }}</td>
                                             <td>
                                                 @if($post->image)
-                                                    <img src="{{ asset('storage/' . $post->image) }}" 
+                                                    <img src="{{ asset($post->image) }}" 
                                                          alt="{{ $post->title }}" 
                                                          class="img-thumbnail" style="max-width: 80px;">
                                                 @else
@@ -101,24 +101,19 @@
                                             <td>
                                                 <select class="form-select form-select-sm status-select" 
                                                         data-post-id="{{ $post->id }}" 
-                                                        data-current-status="{{ $post->status }}"
-                                                        data-status-type="posts">
+                                                        data-current-status="{{ $post->status }}">
                                                     <option value="draft" {{ $post->status == 'draft' ? 'selected' : '' }}>
                                                         Bản nháp
                                                     </option>
                                                     <option value="published" {{ $post->status == 'published' ? 'selected' : '' }}>
                                                         Đã xuất bản
                                                     </option>
-                                                    <option value="archived" {{ $post->status == 'archived' ? 'selected' : '' }}>
-                                                        Đã lưu trữ
-                                                    </option>
                                                 </select>
                                             </td>
                                             <td>
                                                 <select class="form-select form-select-sm featured-select" 
                                                         data-post-id="{{ $post->id }}" 
-                                                        data-current-featured="{{ $post->featured ? '1' : '0' }}"
-                                                        data-featured-type="posts">
+                                                        data-current-featured="{{ $post->featured ? '1' : '0' }}">
                                                     <option value="0" {{ !$post->featured ? 'selected' : '' }}>
                                                         Không nổi bật
                                                     </option>
@@ -134,12 +129,8 @@
                                                             onclick="openEditPostModal({{ $post->id }})">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    <a href="{{ route('admin.posts.show', $post->id) }}" 
-                                                       class="btn-action btn-view" title="Xem">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
                                                     <button type="button" class="btn-action btn-delete" title="Xóa"
-                                                            onclick="deletePost({{ $post->id }})">
+                                                            onclick="deleteData('/admin/posts/{{ $post->id }}', 'DELETE')">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </div>
@@ -175,6 +166,15 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/admin/universal-modal.css') }}">
+<style>
+/* Đảm bảo Select2 hiển thị đúng trong modal */
+.select2-container {
+    z-index: 9999;
+}
+.select2-dropdown {
+    z-index: 9999;
+}
+</style>
 @endsection
 
 @section('scripts')
@@ -252,18 +252,18 @@ function updatePostStatus(postId, status) {
             if (response.success) {
                 showAlert('success', response.message);
                 // Update current status
-                $(`select[data-post-id="${postId}"]`).data('current-status', status);
+                $(`.status-select[data-post-id="${postId}"]`).data('current-status', status);
             } else {
                 showAlert('danger', response.message);
                 // Revert select
-                const select = $(`select[data-post-id="${postId}"]`);
+                const select = $(`.status-select[data-post-id="${postId}"]`);
                 select.val(select.data('current-status'));
             }
         },
         error: function() {
             showAlert('danger', 'Có lỗi xảy ra khi cập nhật trạng thái');
             // Revert select
-            const select = $(`select[data-post-id="${postId}"]`);
+            const select = $(`.status-select[data-post-id="${postId}"]`);
             select.val(select.data('current-status'));
         }
     });
@@ -281,18 +281,18 @@ function updatePostFeatured(postId, featured) {
             if (response.success) {
                 showAlert('success', response.message);
                 // Update current featured
-                $(`select[data-post-id="${postId}"]`).data('current-featured', featured);
+                $(`.featured-select[data-post-id="${postId}"]`).data('current-featured', featured);
             } else {
                 showAlert('danger', response.message);
                 // Revert select
-                const select = $(`select[data-post-id="${postId}"]`);
+                const select = $(`.featured-select[data-post-id="${postId}"]`);
                 select.val(select.data('current-featured'));
             }
         },
         error: function() {
             showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
             // Revert select
-            const select = $(`select[data-post-id="${postId}"]`);
+            const select = $(`.featured-select[data-post-id="${postId}"]`);
             select.val(select.data('current-featured'));
         }
     });

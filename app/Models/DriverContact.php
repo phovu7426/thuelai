@@ -16,6 +16,7 @@ class DriverContact extends Model
         'name',
         'email',
         'phone',
+        'topic',
         'subject',
         'message',
         'status',
@@ -86,6 +87,36 @@ class DriverContact extends Model
         ];
 
         return $statusClasses[$this->status] ?? 'badge-light';
+    }
+
+    /**
+     * Lấy text hiển thị cho chủ đề
+     */
+    public function getTopicTextAttribute()
+    {
+        $topicLabels = [
+            'khiếu nại' => 'Khiếu nại',
+            'tư vấn dịch vụ' => 'Tư vấn dịch vụ',
+            'phản hồi' => 'Phản hồi',
+            'khác' => 'Khác'
+        ];
+
+        return $topicLabels[$this->topic] ?? ucfirst($this->topic);
+    }
+
+    /**
+     * Lấy class CSS cho chủ đề
+     */
+    public function getTopicClassAttribute()
+    {
+        $topicClasses = [
+            'khiếu nại' => 'badge-danger',
+            'tư vấn dịch vụ' => 'badge-info',
+            'phản hồi' => 'badge-success',
+            'khác' => 'badge-secondary'
+        ];
+
+        return $topicClasses[$this->topic] ?? 'badge-light';
     }
 }
 

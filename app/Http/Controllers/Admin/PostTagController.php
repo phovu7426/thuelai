@@ -31,13 +31,24 @@ class PostTagController extends BaseController
     /**
      * Hiển thị danh sách tags
      * @param Request $request
-     * @return View|Application|Factory
+     * @return View|Application|Factory|JsonResponse
      */
-    public function index(Request $request): View|Application|Factory
+    public function index(Request $request): View|Application|Factory|JsonResponse
     {
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $tags = $this->getService()->getList($filters, $options);
+        
+        // Nếu là AJAX request, trả về JSON
+        if ($request->ajax()) {
+            $html = view('admin.post-tags.partials.table', compact('tags'))->render();
+            $pagination = view('admin.post-tags.partials.pagination', compact('tags'))->render();
+            
+            return response()->json([
+                'html' => $html,
+                'pagination' => $pagination
+            ]);
+        }
         
         return view('admin.post-tags.index', compact('tags', 'filters', 'options'));
     }

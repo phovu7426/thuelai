@@ -62,9 +62,8 @@ class UpdateRequest extends FormRequest
             ],
             'image' => [
                 'nullable',
-                'image',
-                'mimes:jpeg,png,jpg,gif,webp',
-                'max:2048',
+                'string',
+                'max:500',
             ],
         ];
     }
@@ -93,9 +92,8 @@ class UpdateRequest extends FormRequest
             'birth_date.before' => 'Ngày sinh phải trước hôm nay.',
             'gender.in' => 'Giới tính phải là Nam, Nữ hoặc Khác.',
             'status.in' => 'Trạng thái không hợp lệ.',
-            'image.image' => 'Ảnh đại diện phải là tệp hình ảnh.',
-            'image.mimes' => 'Ảnh đại diện phải có định dạng: jpeg, png, jpg, gif, webp.',
-            'image.max' => 'Ảnh đại diện không được vượt quá 2MB.',
+            'image.string' => 'Đường dẫn ảnh đại diện phải là chuỗi.',
+            'image.max' => 'Đường dẫn ảnh đại diện không được vượt quá 500 ký tự.',
         ];
     }
 }

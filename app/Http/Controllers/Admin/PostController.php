@@ -41,8 +41,9 @@ class PostController extends BaseController
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $posts = $this->getService()->getList($filters, $options);
+        $categories = PostCategory::active()->ordered()->get();
         
-        return view('admin.posts.index', compact('posts', 'filters', 'options'));
+        return view('admin.posts.index', compact('posts', 'filters', 'options', 'categories'));
     }
 
     /**
@@ -64,7 +65,7 @@ class PostController extends BaseController
      */
     public function store(StoreRequest $request): JsonResponse
     {
-        $result = $this->getService()->create($request->validated());
+        $result = $this->getService()->create($request->all());
         
         return response()->json([
             'success' => $result['success'] ?? false,
@@ -110,7 +111,7 @@ class PostController extends BaseController
      */
     public function update(UpdateRequest $request, Post $post): JsonResponse
     {
-        $result = $this->getService()->update($post->id, $request->validated());
+        $result = $this->getService()->update($post->id, $request->all());
         
         return response()->json([
             'success' => $result['success'] ?? false,

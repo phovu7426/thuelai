@@ -12,18 +12,24 @@ class Testimonial extends Model
     protected $fillable = [
         'customer_name',
         'customer_title',
+        'title',
+        'customer_email',
+        'customer_phone',
         'content',
         'image',
         'rating',
         'is_featured',
         'status',
-        'sort_order'
+        'sort_order',
+        'review_token',
+        'reviewed_at',
     ];
 
     protected $casts = [
         'rating' => 'integer',
         'is_featured' => 'boolean',
-        'status' => 'boolean'
+        'status' => 'boolean',
+        'reviewed_at' => 'datetime',
     ];
 
     public function getImageUrlAttribute()

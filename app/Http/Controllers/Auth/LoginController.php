@@ -27,7 +27,11 @@ class LoginController extends BaseController
     public function index(): RedirectResponse|View
     {
         if (Auth::check()) {
-            return redirect()->route('admin.index');
+            $user = Auth::user();
+            if ($user->hasRole('admin')) { // Assuming admin role is named 'admin'
+                return redirect()->route('admin.index');
+            }
+            return redirect()->route('driver.home'); // Redirect non-admins to the home page
         }
         return view('auth.login');
     }

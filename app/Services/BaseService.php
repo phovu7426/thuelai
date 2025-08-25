@@ -71,13 +71,15 @@ class BaseService
 
     /**
      * Hàm dùng chung cho autocomplete
-     * @param string $term
+     * @param string|null $term
      * @param string $column
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'name', int $limit = 50): JsonResponse
+    public function autocomplete(?string $term = '', string $column = 'name', int $limit = 50): JsonResponse
     {
+        // Convert null to empty string
+        $term = $term ?? '';
         return $this->getRepository()->autocomplete($term, $column, $limit);
     }
 

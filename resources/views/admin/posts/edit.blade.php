@@ -99,8 +99,7 @@
                                                 <img src="{{ asset('storage/' . $post->featured_image) }}" alt="Ảnh hiện tại" class="img-thumbnail" style="max-width: 200px;">
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control @error('featured_image') is-invalid @enderror" 
-                                               id="featured_image" name="featured_image" accept="image/*">
+                                        <x-uploads.file-upload name="featured_image" label="Ảnh đại diện" :value="$post->featured_image" />
                                         @error('featured_image')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

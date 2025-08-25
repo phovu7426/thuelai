@@ -59,6 +59,7 @@
                                 <th>Tên quyền</th>
                                 <th>Quyền cha</th>
                                 <th>Mặc định</th>
+                                <th>Trạng thái</th>
                                 <th class="text-center">Hành động</th>
                             </tr>
                             </thead>
@@ -70,22 +71,31 @@
                                     <td>{{ $permission->name }}</td>
                                     <td>{{ $permission->parent->title ?? 'Không có' }}</td>
                                     <td>{{ $permission->is_default ? 'Có' : 'Không' }}</td>
+                                    <td>
+                                        @php $isInactive = ($permission->status ?? 'active') === 'inactive'; @endphp
+                                        <select class="form-select form-select-sm status-select" 
+                                                data-permission-id="{{ $permission->id }}" 
+                                                data-current-status="{{ $isInactive ? '1' : '0' }}"
+                                                data-status-type="permissions">
+                                            <option value="0" {{ !$isInactive ? 'selected' : '' }}>
+                                                Hoạt động
+                                            </option>
+                                            <option value="1" {{ $isInactive ? 'selected' : '' }}>
+                                                Không hoạt động
+                                            </option>
+                                        </select>
+                                    </td>
                                     <td class="text-center">
                                         <div class="action-buttons">
                                             @can('access_permissions')
                                                 <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
                                                         onclick="openEditPermissionModal({{ $permission->id }})">
-                                                    <i class="bi bi-edit"></i>
+                                                    <i class="fas fa-edit"></i>
                                                 </button>
-                                                <form action="{{ route('admin.permissions.delete', $permission->id) }}" method="POST"
-                                                      style="display:inline;"
-                                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn-action btn-delete" title="Xóa">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="btn-action btn-delete" title="Xóa" 
+                                                        onclick="deleteData('/admin/permissions/delete/{{ $permission->id }}', 'DELETE')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
                                             @endcan
                                         </div>
                                     </td>
@@ -164,9 +174,7 @@ waitForJQuery(function() {
             successMessage: 'Thao tác quyền hạn thành công',
             errorMessage: 'Có lỗi xảy ra khi xử lý quyền hạn',
             viewPath: 'admin.permissions.form',
-            viewData: {
-                permissions: @json($permissions ?? [])
-            },
+            viewData: {},
             onSuccess: function(response, isEdit, id) {
                 setTimeout(() => {
                     location.reload();
@@ -205,16 +213,18 @@ $(document).ready(function() {
         if (newStatus === currentStatus) return;
         
         $.ajax({
-            url: `/admin/permissions/${permissionId}/toggle-status`,
+            url: `{{ route('admin.permissions.toggle-status', ':id') }}`.replace(':id', permissionId),
             method: 'POST',
             data: {
-                _token: '{{ csrf_token() }}',
-                status: newStatus
+                _token: '{{ csrf_token() }}'
             },
             success: function(response) {
                 if (response.success) {
                     // Cập nhật current status
-                    $(this).data('current-status', newStatus);
+                    const select = $(this);
+                    const newStatus = response.data.status === 'active' ? '0' : '1';
+                    select.val(newStatus);
+                    select.data('current-status', newStatus);
                     showAlert('success', response.message);
                 } else {
                     showAlert('danger', response.message);
@@ -230,39 +240,7 @@ $(document).ready(function() {
         });
     });
 
-    // Featured select change
-    $('.featured-select').change(function() {
-        const permissionId = $(this).data('permission-id');
-        const newFeatured = $(this).val();
-        const currentFeatured = $(this).data('current-featured');
-        
-        if (newFeatured === currentFeatured) return;
-        
-        $.ajax({
-            url: `/admin/permissions/${permissionId}/toggle-featured`,
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',
-                is_featured: newFeatured
-            },
-            success: function(response) {
-                if (response.success) {
-                    // Cập nhật current featured
-                    $(this).data('current-featured', newFeatured);
-                    showAlert('success', response.message);
-                } else {
-                    showAlert('danger', response.message);
-                    // Revert select
-                    $(this).val(currentFeatured);
-                }
-            }.bind(this),
-            error: function() {
-                showAlert('danger', 'Có lỗi xảy ra khi cập nhật nổi bật');
-                // Revert select
-                $(this).val(currentFeatured);
-            }.bind(this)
-        });
-    });
+
 });
 
 function showAlert(type, message) {

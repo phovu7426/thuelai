@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Driver;
 
 use App\Http\Controllers\Controller;
+use App\Models\DriverContact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,7 @@ class ContactController extends Controller
             'name' => 'required|string|min:2|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|min:10|max:20',
+            'topic' => 'required|in:khiếu nại,tư vấn dịch vụ,phản hồi,khác',
             'subject' => 'nullable|string|max:255',
             'message' => 'required|string|min:10|max:2000',
         ], [
@@ -25,6 +27,8 @@ class ContactController extends Controller
             'email.email' => 'Email không hợp lệ',
             'phone.required' => 'Vui lòng nhập số điện thoại',
             'phone.min' => 'Số điện thoại phải có ít nhất 10 ký tự',
+            'topic.required' => 'Vui lòng chọn chủ đề',
+            'topic.in' => 'Chủ đề không hợp lệ',
             'message.required' => 'Vui lòng nhập nội dung tin nhắn',
             'message.min' => 'Nội dung tin nhắn phải có ít nhất 10 ký tự',
         ]);
@@ -39,10 +43,11 @@ class ContactController extends Controller
 
         try {
             // Save to database
-            $contact = \App\Models\DriverContact::create([
+            $contact = DriverContact::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'topic' => $request->topic,
                 'subject' => $request->subject ?: 'Liên hệ từ website',
                 'message' => $request->message,
                 'status' => 'unread',
@@ -53,6 +58,7 @@ class ContactController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'topic' => $request->topic,
                 'subject' => $request->subject ?: 'Liên hệ từ website',
                 'message' => $request->message,
                 'ip_address' => $request->ip(),

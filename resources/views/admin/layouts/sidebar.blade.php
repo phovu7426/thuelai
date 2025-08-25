@@ -142,7 +142,7 @@
             @can('access_driver_services')
             <li class="nav-item">
                 <a href="{{ route('admin.driver.distance-tiers.index') }}" class="nav-link {{ isActive('admin.driver.distance-tiers.*') }}">
-                    <i class="nav-icon bi bi-route"></i>
+                    <i class="nav-icon fa fa-route"></i>
                     <p>Khoảng cách</p>
                 </a>
             </li>
@@ -180,15 +180,7 @@
 
             {{-- ===== END DRIVER SERVICES SECTION ===== --}}
 
-            {{-- Cấu hình --}}
-            @can('access_contact-info')
-            <li class="nav-item">
-                <a href="{{ route('admin.contact-info.edit') }}" class="nav-link {{ isActive('admin.contact-info.*') }}">
-                    <i class="nav-icon bi bi-gear"></i>
-                    <p>Cấu hình hệ thống</p>
-                </a>
-            </li>
-            @endcan
+
         </ul>
         <!--end::Sidebar Menu-->
     </nav>

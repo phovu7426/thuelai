@@ -86,7 +86,7 @@
             
             const modalHtml = `
                 <div class="modal fade" id="${this.config.modalId}" tabindex="-1" aria-labelledby="${this.config.modalId}Label" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
+                    <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="${this.config.modalId}Label">
@@ -95,7 +95,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                             </div>
                             <form id="${this.config.formId}" method="POST">
-                                <div class="modal-body" id="${this.config.modalId}Body">
+                                <div class="modal-body" id="${this.config.modalId}Body" style="max-height:70vh; overflow-y:auto;">
                                     <div class="text-center">
                                         <div class="spinner-border" role="status">
                                             <span class="visually-hidden">Loading...</span>
@@ -138,6 +138,10 @@
                 success: (response) => {
                     if (response.success) {
                         modalBody.html(response.html);
+                        // Re-init common UI initializers for dynamically injected content
+                        if (typeof window.initializeSelect2 === 'function') {
+                            window.initializeSelect2();
+                        }
                     } else {
                         modalBody.html('<div class="alert alert-danger">Không thể tải giao diện</div>');
                     }
@@ -191,7 +195,7 @@
             $(`#${this.config.formId}`).attr('action', updateRoute);
             $(`#${this.config.formId}`).attr('method', 'POST');
             
-            // Thêm method PUT bằng _method parameter
+            // Thêm method PUT bằng _method parameter để khớp route update
             $(`#${this.config.formId} input[name="_method"]`).remove(); // Xóa nếu có
             $(`#${this.config.formId}`).append('<input type="hidden" name="_method" value="POST">');
             

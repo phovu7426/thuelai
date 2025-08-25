@@ -49,14 +49,14 @@
                                             <td>{{ $service->id }}</td>
                                             <td>
                                                 @if($service->image)
-                                                    <img src="/storage/{{ $service->image }}" class="img-thumbnail" width="60" height="60">
+                                                    <img src="{{ $service->image }}" class="img-thumbnail" width="60" height="60">
                                                 @else
                                                     <span class="text-muted">Không có ảnh</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if($service->icon)
-                                                    <img src="/storage/{{ $service->icon }}" width="40" height="40">
+                                                    <img src="{{ $service->icon }}" width="40" height="40">
                                                 @else
                                                     <i class="fas fa-image text-muted" style="font-size: 20px;"></i>
                                                 @endif
@@ -101,7 +101,7 @@
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <button type="button" class="btn-action btn-delete" title="Xóa"
-                                                            onclick="deleteService({{ $service->id }})">
+                                                            onclick="deleteData('/admin/driver/services/{{ $service->id }}', 'DELETE')">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </div>

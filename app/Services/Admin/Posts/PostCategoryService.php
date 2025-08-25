@@ -33,15 +33,17 @@ class PostCategoryService extends BaseService
         ];
 
         try {
-            $data['is_active'] = isset($data['is_active']);
-            $data['is_featured'] = isset($data['is_featured']);
-            
-            // Xử lý upload hình ảnh
-            if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
-                $data['image'] = $data['image']->store('categories', 'public');
+            // Tự động sinh slug từ name nếu không có
+            if (!empty($data['name']) && empty($data['slug'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
             }
             
-            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active', 'is_featured'];
+            // Xử lý parent_id
+            if (empty($data['parent_id'])) {
+                $data['parent_id'] = null;
+            }
+            
+            $keys = ['name', 'slug', 'description', 'parent_id', 'status'];
             $insertData = DataTable::getChangeData($data, $keys);
             
             if ($category = $this->getRepository()->create($insertData)) {
@@ -77,19 +79,17 @@ class PostCategoryService extends BaseService
                 return $return;
             }
 
-            $data['is_active'] = isset($data['is_active']);
-            $data['is_featured'] = isset($data['is_featured']);
-            
-            // Xử lý upload hình ảnh
-            if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
-                // Xóa ảnh cũ
-                if ($category->image) {
-                    Storage::disk('public')->delete($category->image);
-                }
-                $data['image'] = $data['image']->store('categories', 'public');
+            // Tự động sinh slug từ name nếu không có
+            if (!empty($data['name']) && empty($data['slug'])) {
+                $data['slug'] = \Illuminate\Support\Str::slug($data['name']);
             }
             
-            $keys = ['name', 'description', 'image', 'color', 'sort_order', 'is_active', 'is_featured'];
+            // Xử lý parent_id
+            if (empty($data['parent_id'])) {
+                $data['parent_id'] = null;
+            }
+            
+            $keys = ['name', 'slug', 'description', 'parent_id', 'status'];
             $updateData = DataTable::getChangeData($data, $keys);
             
             if ($this->getRepository()->update($category, $updateData)) {
@@ -129,11 +129,6 @@ class PostCategoryService extends BaseService
                 $return['message'] = 'Không thể xóa danh mục có bài viết!';
                 return $return;
             }
-
-            // Xóa ảnh
-            if ($category->image) {
-                Storage::disk('public')->delete($category->image);
-            }
             
             if ($this->getRepository()->delete($category)) {
                 $return['success'] = true;
@@ -166,14 +161,16 @@ class PostCategoryService extends BaseService
                 return $return;
             }
 
-            $category->update(['is_active' => !$category->is_active]);
+            $newStatus = $category->status === 'active' ? 'inactive' : 'active';
             
-            $status = $category->is_active ? 'kích hoạt' : 'vô hiệu hóa';
-            $message = "Danh mục đã được {$status} thành công!";
-            
-            $return['success'] = true;
-            $return['message'] = $message;
-            $return['data'] = ['status' => $category->is_active];
+            if ($this->getRepository()->update($category, ['status' => $newStatus])) {
+                $status = $newStatus === 'active' ? 'kích hoạt' : 'vô hiệu hóa';
+                $message = "Danh mục đã được {$status} thành công!";
+                
+                $return['success'] = true;
+                $return['message'] = $message;
+                $return['data'] = ['status' => $newStatus];
+            }
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }
@@ -182,7 +179,7 @@ class PostCategoryService extends BaseService
     }
 
     /**
-     * Hàm thay đổi trạng thái nổi bật của danh mục
+     * Hàm thay đổi trạng thái nổi bật của tag
      * @param int $id
      * @return array
      */
@@ -194,27 +191,29 @@ class PostCategoryService extends BaseService
         ];
 
         try {
-            $category = $this->getRepository()->findById($id);
+            $tag = $this->getRepository()->findById($id);
             
-            if (!$category) {
-                $return['message'] = 'Danh mục không tồn tại';
+            if (!$tag) {
+                $return['message'] = 'Tag không tồn tại';
                 return $return;
             }
 
-            $category->update(['is_featured' => !$category->is_featured]);
+            $tag->update(['is_featured' => !$tag->is_featured]);
             
-            $status = $category->is_featured ? 'nổi bật' : 'không nổi bật';
-            $message = "Danh mục đã được {$status} thành công!";
+            $status = $tag->is_featured ? 'nổi bật' : 'không nổi bật';
+            $message = "Tag đã được {$status} thành công!";
             
             $return['success'] = true;
             $return['message'] = $message;
-            $return['data'] = ['is_featured' => $category->is_featured];
+            $return['data'] = ['is_featured' => $tag->is_featured];
         } catch (\Exception $e) {
             $return['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
         }
         
         return $return;
     }
+
+
 
     /**
      * Hàm lấy ra danh sách danh mục theo từ khóa
@@ -223,9 +222,37 @@ class PostCategoryService extends BaseService
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'name', int $limit = 10): JsonResponse
+    public function autocomplete(?string $term = '', string $column = 'name', int $limit = 10, int $excludeId = null): JsonResponse
     {
-        return parent::autocomplete($term, $column, $limit);
+        try {
+            $query = $this->getRepository()->getModel()->select('id', 'name', 'slug')
+                ->where('status', 'active')
+                ->orderBy('name', 'asc');
+            
+            if (!empty($term)) {
+                $query->where('name', 'like', '%' . $term . '%');
+            }
+            
+            // Loại trừ category hiện tại nếu đang edit
+            if ($excludeId) {
+                $query->where('id', '!=', $excludeId);
+            }
+            
+            $categories = $query->limit($limit)->get();
+            
+            $results = $categories->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'text' => $category->name,
+                    'name' => $category->name,
+                    'slug' => $category->slug
+                ];
+            });
+            
+            return response()->json($results);
+        } catch (\Exception $e) {
+            return response()->json([]);
+        }
     }
 }
 

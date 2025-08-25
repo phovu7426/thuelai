@@ -234,4 +234,28 @@ class TestimonialController extends BaseController
             'data' => $result['data'] ?? null
         ]);
     }
+
+    /**
+     * Lấy thông tin đánh giá cho modal
+     * @param Testimonial $testimonial
+     * @return JsonResponse
+     */
+    public function getTestimonialInfo(Testimonial $testimonial): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $testimonial->id,
+                'customer_name' => $testimonial->customer_name,
+                'customer_position' => $testimonial->customer_position,
+                'rating' => $testimonial->rating,
+                'content' => $testimonial->content,
+                'image' => $testimonial->image,
+                'status' => $testimonial->status,
+                'featured' => $testimonial->featured,
+                'created_at' => $testimonial->created_at,
+                'updated_at' => $testimonial->updated_at
+            ]
+        ]);
+    }
 }

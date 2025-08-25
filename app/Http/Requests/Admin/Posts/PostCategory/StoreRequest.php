@@ -23,12 +23,11 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:post_categories,slug',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'color' => 'nullable|string|max:7',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
-            'is_featured' => 'boolean'
+            'parent_id' => 'nullable|exists:post_categories,id',
+            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|string|max:500'
         ];
     }
 
@@ -42,12 +41,13 @@ class StoreRequest extends FormRequest
         return [
             'name.required' => 'Tên danh mục là bắt buộc.',
             'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
-            'image.image' => 'File phải là hình ảnh.',
-            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
-            'image.max' => 'Hình ảnh không được vượt quá 2MB.',
-            'color.max' => 'Màu sắc không được vượt quá 7 ký tự.',
-            'sort_order.integer' => 'Thứ tự sắp xếp phải là số nguyên.',
-            'sort_order.min' => 'Thứ tự sắp xếp không được nhỏ hơn 0.',
+            'slug.unique' => 'Slug đã tồn tại.',
+            'slug.max' => 'Slug không được vượt quá 255 ký tự.',
+            'parent_id.exists' => 'Danh mục cha không tồn tại.',
+            'status.required' => 'Trạng thái là bắt buộc.',
+            'status.in' => 'Trạng thái không hợp lệ.',
+            'image.string' => 'Đường dẫn ảnh phải là chuỗi.',
+            'image.max' => 'Đường dẫn ảnh không được vượt quá 500 ký tự.',
         ];
     }
 }

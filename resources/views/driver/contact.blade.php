@@ -130,16 +130,62 @@
                                     Số điện thoại
                                 </label>
                                 <input type="tel" id="phone" name="phone" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="subject">
+                    </div>
+                    
+                    <div class="form-group">
+                                <label for="topic">
                                     <i class="fas fa-tag"></i>
                                     Tiêu đề
                                 </label>
-                                <input type="text" id="subject" name="subject" placeholder="Nhập tiêu đề liên hệ...">
-                            </div>
+                                <select id="topic" name="topic" required>
+                            <option value="">Chọn chủ đề</option>
+                                    <option value="tư vấn dịch vụ">Tư vấn dịch vụ</option>
+                                    <option value="phản hồi">Phản hồi</option>
+                                    <option value="khiếu nại">Khiếu nại</option>
+                                    <option value="khác">Khác</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                                <label for="subject">
+                                    <i class="fas fa-heading"></i>
+                                    Tiêu đề
+                                </label>
+                                <input type="text" id="subject" name="subject" placeholder="Nhập tiêu đề tin nhắn...">
+                    </div>
+                    
+                    <div class="form-group">
+                                <label for="pickup_location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Điểm đón
+                                </label>
+                                <input type="text" id="pickup_location" name="pickup_location" placeholder="Nhập điểm đón...">
+                    </div>
 
+                    <div class="form-group">
+                                <label for="dropoff_location">
+                                    <i class="fas fa-map-pin"></i>
+                                    Điểm đến
+                                </label>
+                                <input type="text" id="dropoff_location" name="dropoff_location" placeholder="Nhập điểm đến...">
+                    </div>
+
+                    <div class="form-group">
+                                <label for="pickup_date">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Ngày đón
+                                </label>
+                                <input type="datetime-local" id="pickup_date" name="pickup_date">
+                    </div>
+
+                    <div class="form-group">
+                                <label for="passengers">
+                                    <i class="fas fa-users"></i>
+                                    Số hành khách
+                                </label>
+                                <input type="number" id="passengers" name="passengers" placeholder="1" min="1" max="10" value="1">
+                    </div>
+                    
                             <div class="form-group full-width">
                                 <label for="message">
                                     <i class="fas fa-comment"></i>
@@ -155,6 +201,8 @@
                                 <i class="fas fa-paper-plane"></i>
                                 <span>Gửi tin nhắn</span>
                             </button>
+                            
+                            
                         </div>
                     </form>
                 </div>
@@ -258,6 +306,8 @@
     </section>
 @endsection
 
+ 
+
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -275,74 +325,99 @@
                 });
             }, observerOptions);
 
-            // Observe all elements with animate-in class
-            document.querySelectorAll('.animate-in').forEach(el => {
-                observer.observe(el);
+    // Observe all elements with animate-in class
+    document.querySelectorAll('.animate-in').forEach(el => {
+        observer.observe(el);
+    });
+
+    
+
+    // Handle contact form submission
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('.btn-submit');
+            const originalText = submitBtn.innerHTML;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang gửi...</span>';
+            
+            // Get form data
+            const formData = new FormData(this);
+            
+            // Send AJAX request
+            fetch('{{ route("driver.contact.submit") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                    contactForm.reset();
+                } else {
+                    showNotification(data.message || 'Có lỗi xảy ra, vui lòng thử lại.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+            })
+            .finally(() => {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             });
-
-            // Handle contact form submission
-            const contactForm = document.getElementById('contactForm');
-            if (contactForm) {
-                contactForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
-                    const submitBtn = this.querySelector('.btn-submit');
-                    const originalText = submitBtn.innerHTML;
-
-                    // Show loading state
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang gửi...</span>';
-
-                    // Get form data
-                    const formData = new FormData(contactForm);
-
-                    // Send AJAX request
-                    fetch('{{ route('driver.contact.submit') }}', {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                    .getAttribute('content')
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Show success notification
-                                showNotification(data.message, 'success');
-                                // Reset form
-                                contactForm.reset();
-                            } else {
-                                // Show error notification
-                                showNotification(data.message || 'Có lỗi xảy ra, vui lòng thử lại!',
-                                    'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            showNotification('Có lỗi xảy ra, vui lòng thử lại!', 'error');
-                        })
-                        .finally(() => {
-                            // Reset button
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = originalText;
-                        });
-                });
-            }
-
-            // Smooth scroll for scroll indicator
-            const scrollArrow = document.querySelector('.scroll-arrow');
-            if (scrollArrow) {
-                scrollArrow.addEventListener('click', function() {
-                    const contactSection = document.querySelector('.contact-section');
-                    if (contactSection) {
-                        contactSection.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
+        });
+        
+        // Auto-fill subject based on topic
+        const topicSelect = document.getElementById('topic');
+        const subjectInput = document.getElementById('subject');
+        
+        if (topicSelect && subjectInput) {
+            topicSelect.addEventListener('change', function() {
+                const topic = this.value;
+                
+                if (!subjectInput.value) {
+                    switch(topic) {
+                        case 'khiếu nại':
+                            subjectInput.value = 'Khiếu nại dịch vụ';
+                            break;
+                        case 'tư vấn dịch vụ':
+                            subjectInput.value = 'Yêu cầu tư vấn dịch vụ';
+                            break;
+                        case 'phản hồi':
+                            subjectInput.value = 'Phản hồi dịch vụ';
+                            break;
+                        default:
+                            subjectInput.value = 'Liên hệ chung';
                     }
+                }
+            });
+        }
+    }
+
+    // Smooth scroll for scroll indicator
+    const scrollArrow = document.querySelector('.scroll-arrow');
+    if (scrollArrow) {
+        scrollArrow.addEventListener('click', function() {
+            const contactSection = document.querySelector('.contact-section');
+            if (contactSection) {
+                contactSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             }
+        });
+    }
+
+    
 
             // Notification function
             function showNotification(message, type = 'success') {

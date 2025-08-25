@@ -84,7 +84,6 @@ class PostService extends BaseService
 
         try {
             $post = $this->getRepository()->findById($id);
-            
             if (!$post) {
                 $return['message'] = 'Bài viết không tồn tại';
                 return $return;
@@ -242,12 +241,12 @@ class PostService extends BaseService
 
     /**
      * Hàm lấy ra danh sách bài viết theo từ khóa
-     * @param string $term
+     * @param string|null $term
      * @param string $column
      * @param int $limit
      * @return JsonResponse
      */
-    public function autocomplete(string $term = '', string $column = 'title', int $limit = 10): JsonResponse
+    public function autocomplete(?string $term = '', string $column = 'title', int $limit = 10): JsonResponse
     {
         return parent::autocomplete($term, $column, $limit);
     }

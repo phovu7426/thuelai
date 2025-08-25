@@ -91,8 +91,7 @@
                                                 <img src="{{ asset('storage/' . $service->image) }}" alt="Ảnh hiện tại" class="img-thumbnail" style="max-width: 200px;">
                                             </div>
                                         @endif
-                                        <input type="file" class="form-control @error('image') is-invalid @enderror" 
-                                               id="image" name="image" accept="image/*">
+                                        <x-uploads.file-upload name="image" label="Ảnh dịch vụ" :value="$service->image" />
                                         @error('image')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
