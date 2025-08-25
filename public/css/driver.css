@@ -923,6 +923,11 @@ section:first-of-type {
     border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .pricing-table {
     margin: 0;
     border: none;

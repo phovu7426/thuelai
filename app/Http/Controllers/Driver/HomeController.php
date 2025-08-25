@@ -38,7 +38,11 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        return view('driver.home', compact('services', 'featuredServices', 'testimonials', 'posts'));
+        // Lấy dữ liệu bảng giá từ database
+        $pricingRules = DriverPricingRule::with(['pricingDistances.distanceTier'])->active()->ordered()->get();
+        $distanceTiers = DriverDistanceTier::active()->ordered()->get();
+
+        return view('driver.home', compact('services', 'featuredServices', 'testimonials', 'posts', 'pricingRules', 'distanceTiers'));
     }
 
     public function about()
@@ -83,7 +87,7 @@ class HomeController extends Controller
 
         // Get categories with post counts
         $categories = \App\Models\PostCategory::where('is_active', true)
-            ->withCount(['posts' => function($query) {
+            ->withCount(['posts' => function ($query) {
                 $query->where('status', 'published');
             }])
             ->orderBy('sort_order')
