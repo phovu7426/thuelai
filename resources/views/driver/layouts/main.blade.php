@@ -272,7 +272,7 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="{{ asset('bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <!-- Custom JS -->
     <script src="{{ asset('js/driver.js') }}"></script>
 
