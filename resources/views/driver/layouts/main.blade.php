@@ -10,7 +10,7 @@
     <!-- Bootstrap CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="{{ asset('css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('fontawesome-free-6.5.1-web/css/all.min.css') }}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ asset('css/driver.css') }}" rel="stylesheet">
 
