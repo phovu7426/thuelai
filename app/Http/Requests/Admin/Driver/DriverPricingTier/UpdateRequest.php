@@ -26,7 +26,7 @@ class UpdateRequest extends FormRequest
             'time_icon' => 'required|string|max:255',
             'time_color' => 'required|string|max:255',
             'to_distance' => 'nullable|numeric|min:0|gt:from_distance',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|string|max:255',
             'price_type' => 'required|in:fixed,per_km',
             'description' => 'nullable|string|max:500',
             'sort_order' => 'nullable|integer|min:0',
@@ -51,8 +51,8 @@ class UpdateRequest extends FormRequest
             'to_distance.min' => 'Khoảng cách đến không được nhỏ hơn 0.',
             'to_distance.gt' => 'Khoảng cách đến phải lớn hơn khoảng cách từ.',
             'price.required' => 'Giá là bắt buộc.',
-            'price.numeric' => 'Giá phải là số.',
-            'price.min' => 'Giá không được nhỏ hơn 0.',
+            'price.string' => 'Giá phải là chuỗi ký tự.',
+            'price.max' => 'Giá không được vượt quá 255 ký tự.',
             'price_type.required' => 'Loại giá là bắt buộc.',
             'price_type.in' => 'Loại giá không hợp lệ.',
             'description.max' => 'Mô tả không được vượt quá 500 ký tự.',
@@ -61,5 +61,3 @@ class UpdateRequest extends FormRequest
         ];
     }
 }
-
-

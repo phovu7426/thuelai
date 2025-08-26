@@ -141,87 +141,27 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Form submission
-            $('#create-distance-tier-form').on('submit', function(e) {
-                e.preventDefault();
+            // Form sẽ submit bình thường, không cần AJAX
+            // Chỉ giữ lại auto-generate functions
 
-                // Clear previous errors
-                clearErrors();
+            // Auto-generate display text from name
+            $('#name').on('input', function() {
+                const name = $(this).val();
+                if (name && !$('#display_text').val()) {
+                    $('#display_text').val(name);
+                }
+            });
 
-                // Show loading state
-                const submitBtn = $('#submit-btn');
-                const spinner = submitBtn.find('.spinner-border');
-                const icon = submitBtn.find('.fas');
+            // Auto-generate distance range from min/max
+            $('#min_distance, #max_distance').on('input', function() {
+                const minDistance = $('#min_distance').val();
+                const maxDistance = $('#max_distance').val();
 
-                submitBtn.prop('disabled', true);
-                spinner.removeClass('d-none');
-                icon.addClass('d-none');
-
-                $.ajax({
-                    url: '{{ route('admin.driver.distance-tiers.store') }}',
-                    method: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            showAlert('success', response.message);
-                            // Redirect after 1 second
-                            setTimeout(function() {
-                                window.location.href =
-                                    '{{ route('admin.driver.distance-tiers.index') }}';
-                            }, 1000);
-                        } else {
-                            showAlert('danger', response.message);
-                        }
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 422) {
-                            // Validation errors
-                            const errors = xhr.responseJSON.errors;
-                            displayErrors(errors);
-                            showAlert('danger', 'Vui lòng kiểm tra lại thông tin nhập vào');
-                        } else {
-                            showAlert('danger', 'Có lỗi xảy ra khi tạo khoảng cách');
-                        }
-                    },
-                    complete: function() {
-                        // Reset loading state
-                        submitBtn.prop('disabled', false);
-                        spinner.addClass('d-none');
-                        icon.removeClass('d-none');
-                    }
-                });
+                if (minDistance && maxDistance) {
+                    const range = `${minDistance}-${maxDistance}km`;
+                    $('#distance_range').val(range);
+                }
             });
         });
-
-        function clearErrors() {
-            $('.is-invalid').removeClass('is-invalid');
-            $('.invalid-feedback').text('');
-        }
-
-        function displayErrors(errors) {
-            $.each(errors, function(field, messages) {
-                const input = $(`[name="${field}"]`);
-                const errorDiv = $(`#${field}-error`);
-
-                input.addClass('is-invalid');
-                errorDiv.text(messages[0]);
-            });
-        }
-
-        function showAlert(type, message) {
-            const alertHtml = `
-        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    `;
-
-            $('#alert-container').html(alertHtml);
-
-            // Auto hide after 5 seconds
-            setTimeout(function() {
-                $('#alert-container .alert').fadeOut();
-            }, 5000);
-        }
     </script>
 @endpush

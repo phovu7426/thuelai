@@ -22,7 +22,6 @@ class DriverPricingTier extends Model
     protected $casts = [
         'from_distance' => 'decimal:2',
         'to_distance' => 'decimal:2',
-        'price' => 'decimal:2',
         'is_active' => 'boolean'
     ];
 
@@ -44,10 +43,10 @@ class DriverPricingTier extends Model
     public function scopeByDistance($query, $distance)
     {
         return $query->where('from_distance', '<=', $distance)
-                    ->where(function($q) use ($distance) {
-                        $q->where('to_distance', '>=', $distance)
-                          ->orWhereNull('to_distance');
-                    });
+            ->where(function ($q) use ($distance) {
+                $q->where('to_distance', '>=', $distance)
+                    ->orWhereNull('to_distance');
+            });
     }
 
     // Helper method để lấy mô tả khoảng cách

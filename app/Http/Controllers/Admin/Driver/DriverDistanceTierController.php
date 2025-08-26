@@ -38,7 +38,7 @@ class DriverDistanceTierController extends BaseController
         $filters = $this->getFilters($request->all());
         $options = $this->getOptions($request->all());
         $distanceTiers = $this->getService()->getList($filters, $options);
-        
+
         return view('admin.driver.distance-tiers.index', compact('distanceTiers', 'filters', 'options'));
     }
 
@@ -54,17 +54,20 @@ class DriverDistanceTierController extends BaseController
     /**
      * Xử lý tạo khoảng cách
      * @param StoreRequest $request
-     * @return JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreRequest $request): JsonResponse
+    public function store(StoreRequest $request)
     {
         $result = $this->getService()->create($request->validated());
-        
-        return response()->json([
-            'success' => $result['success'] ?? false,
-            'message' => $result['message'] ?? 'Tạo khoảng cách thất bại.',
-            'data' => $result['data'] ?? null
-        ]);
+
+        if ($result['success'] ?? false) {
+            return redirect()->route('admin.driver.distance-tiers.index')
+                ->with('success', $result['message'] ?? 'Tạo khoảng cách thành công.');
+        } else {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $result['message'] ?? 'Tạo khoảng cách thất bại.');
+        }
     }
 
     /**
@@ -75,7 +78,7 @@ class DriverDistanceTierController extends BaseController
     public function show(int $id): JsonResponse
     {
         $distanceTier = $this->getService()->findById($id);
-        
+
         if (!$distanceTier) {
             return response()->json([
                 'success' => false,
@@ -83,7 +86,7 @@ class DriverDistanceTierController extends BaseController
                 'data' => null
             ], 404);
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Lấy thông tin khoảng cách thành công.',
@@ -99,11 +102,11 @@ class DriverDistanceTierController extends BaseController
     public function edit(int $id): View|Application|Factory
     {
         $distanceTier = $this->getService()->findById($id);
-        
+
         if (!$distanceTier) {
             abort(404, 'Khoảng cách không tồn tại.');
         }
-        
+
         return view('admin.driver.distance-tiers.edit', compact('distanceTier'));
     }
 
@@ -116,7 +119,7 @@ class DriverDistanceTierController extends BaseController
     public function update(UpdateRequest $request, int $id): JsonResponse
     {
         $result = $this->getService()->update($id, $request->validated());
-        
+
         return response()->json([
             'success' => $result['success'] ?? false,
             'message' => $result['message'] ?? 'Cập nhật khoảng cách thất bại.',
@@ -132,7 +135,7 @@ class DriverDistanceTierController extends BaseController
     public function destroy(int $id): JsonResponse
     {
         $result = $this->getService()->delete($id);
-        
+
         return response()->json([
             'success' => $result['success'] ?? false,
             'message' => $result['message'] ?? 'Xóa khoảng cách thất bại.',
@@ -148,7 +151,7 @@ class DriverDistanceTierController extends BaseController
     public function toggleStatus(int $id): JsonResponse
     {
         $result = $this->getService()->toggleStatus($id);
-        
+
         return response()->json([
             'success' => $result['success'] ?? false,
             'message' => $result['message'] ?? 'Thay đổi trạng thái thất bại.',
@@ -164,7 +167,7 @@ class DriverDistanceTierController extends BaseController
     public function toggleFeatured(int $id): JsonResponse
     {
         $result = $this->getService()->toggleFeatured($id);
-        
+
         return response()->json([
             'success' => $result['success'] ?? false,
             'message' => $result['message'] ?? 'Thay đổi trạng thái nổi bật thất bại.',
@@ -172,4 +175,3 @@ class DriverDistanceTierController extends BaseController
         ]);
     }
 }
-

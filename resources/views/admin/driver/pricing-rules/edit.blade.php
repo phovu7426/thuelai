@@ -44,7 +44,6 @@
                         <form id="edit-pricing-rule-form"
                             action="{{ route('admin.driver.pricing-rules.update', $pricingRule->id) }}" method="POST">
                             @csrf
-                            @method('PUT')
 
                             <div class="row">
                                 <div class="col-md-8">
@@ -115,16 +114,19 @@
                                                         <i class="bi bi-graph-up"></i> Giá {{ $tier->display_text }} <span
                                                             class="text-danger">*</span>
                                                     </label>
-                                                    <input type="{{ $tier->to_distance === null ? 'text' : 'number' }}"
-                                                        class="form-control" id="price_{{ $tier->id }}"
-                                                        name="price_{{ $tier->id }}"
+                                                    <input type="text" class="form-control"
+                                                        id="price_{{ $tier->id }}" name="price_{{ $tier->id }}"
                                                         value="{{ old('price_' . $tier->id, $priceValue) }}"
-                                                        placeholder="💰 Nhập giá..."
-                                                        {{ $tier->to_distance === null ? '' : 'min="0" step="0.01"' }}
-                                                        required>
+                                                        placeholder="💰 Nhập giá (số hoặc text)..." required>
                                                     <div class="invalid-feedback" id="price_{{ $tier->id }}-error">
                                                     </div>
-                                                    <small class="form-text text-muted">{{ $tier->description }}</small>
+                                                    <small class="form-text text-muted">
+                                                        @if ($tier->to_distance === null)
+                                                            Có thể nhập "Thỏa thuận" hoặc giá cụ thể (số hoặc text)
+                                                        @else
+                                                            Có thể nhập số (VD: 50000) hoặc text (VD: "50k", "Thỏa thuận")
+                                                        @endif
+                                                    </small>
                                                 </div>
                                             </div>
                                         @endforeach

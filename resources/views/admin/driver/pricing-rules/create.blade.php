@@ -92,19 +92,17 @@
                                             <div class="form-group">
                                                 <label for="price_{{ $tier->id }}">Giá {{ $tier->display_text }} <span
                                                         class="text-danger">*</span></label>
-                                                <input type="{{ $tier->to_distance === null ? 'text' : 'number' }}"
-                                                    class="form-control" id="price_{{ $tier->id }}"
+                                                <input type="text" class="form-control" id="price_{{ $tier->id }}"
                                                     name="price_{{ $tier->id }}"
                                                     value="{{ old('price_' . $tier->id, $tier->to_distance === null ? 'Thỏa thuận' : '') }}"
-                                                    @if ($tier->to_distance !== null) min="0" step="1000" @endif
-                                                    placeholder="{{ $tier->to_distance === null ? 'Thỏa thuận' : '0' }}"
+                                                    placeholder="{{ $tier->to_distance === null ? 'Thỏa thuận' : 'Nhập giá (số hoặc text)' }}"
                                                     required>
                                                 <div class="invalid-feedback" id="price_{{ $tier->id }}-error"></div>
                                                 <small class="form-text text-muted">
                                                     @if ($tier->to_distance === null)
-                                                        Thường là "Thỏa thuận" hoặc giá cụ thể
+                                                        Có thể nhập "Thỏa thuận" hoặc giá cụ thể (số hoặc text)
                                                     @else
-                                                        {{ $tier->description ?: 'Giá cho khoảng cách này' }}
+                                                        Có thể nhập số (VD: 50000) hoặc text (VD: "50k", "Thỏa thuận")
                                                     @endif
                                                 </small>
                                             </div>

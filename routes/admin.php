@@ -218,6 +218,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'store'])->name('store');
             Route::get('/{id}/edit', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'edit'])->name('edit');
             Route::post('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'update'])->name('update');
+            Route::put('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'update'])->name('update-put');
             Route::delete('/{id}', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'destroy'])->name('destroy');
             Route::post('/{id}/delete', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'destroy'])->name('destroy-post');
             Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\Driver\DriverPricingRuleController::class, 'toggleStatus'])->name('toggle-status');
