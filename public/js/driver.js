@@ -371,13 +371,9 @@ function initFloatingSocial() {
     const socialCloseBtn = document.getElementById("socialCloseBtn");
     const phoneBtn = document.getElementById("phoneBtn");
 
-    // Get dynamic social buttons
-    const socialButtons = {};
-    if (window.contactData?.socialLinks) {
-        Object.keys(window.contactData.socialLinks).forEach((key) => {
-            socialButtons[key] = document.getElementById(key + "Btn");
-        });
-    }
+    // Get fixed social buttons
+    const zaloBtn = document.getElementById("zaloBtn");
+    const facebookBtn = document.getElementById("facebookBtn");
 
     if (!socialContainer || !socialToggle || !socialMenu) return;
 
@@ -491,23 +487,7 @@ function initFloatingSocial() {
         });
     }
 
-    // Handle dynamic social buttons
-    if (window.contactData?.socialLinks) {
-        Object.keys(window.contactData.socialLinks).forEach((key) => {
-            const button = socialButtons[key];
-            const socialData = window.contactData.socialLinks[key];
-
-            if (button && socialData?.url) {
-                button.addEventListener("click", () => {
-                    window.open(socialData.url, "_blank");
-
-                    // Ẩn menu sau khi click
-                    socialMenu.classList.remove("show");
-                    isMenuOpen = false;
-                });
-            }
-        });
-    }
+    // Handle fixed social buttons - không cần xử lý thêm vì đã có sẵn ở trên
 
     // Close menu when clicking outside
     document.addEventListener("click", (e) => {

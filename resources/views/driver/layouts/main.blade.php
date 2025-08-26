@@ -127,7 +127,23 @@
                 <i class="fas fa-times"></i>
             </div>
 
-            {{-- Phone/Zalo --}}
+            {{-- Zalo --}}
+            <div class="social-item" id="zaloBtn">
+                <div class="social-icon zalo">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <span class="social-label">Zalo</span>
+            </div>
+
+            {{-- Facebook --}}
+            <div class="social-item" id="facebookBtn">
+                <div class="social-icon facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </div>
+                <span class="social-label">Facebook</span>
+            </div>
+
+            {{-- Hotline --}}
             @if ($contactPhone)
                 <div class="social-item" id="phoneBtn">
                     <div class="social-icon phone">
@@ -135,26 +151,6 @@
                     </div>
                     <span class="social-label">Hotline</span>
                 </div>
-            @endif
-
-            {{-- Social Links --}}
-            @if (!empty($globalSocialLinks))
-                @foreach ($globalSocialLinks as $key => $social)
-                    <div class="social-item" id="{{ $key }}Btn">
-                        <div class="social-icon {{ $key }}">
-                            @if ($key == 'facebook')
-                                <i class="fab fa-facebook-f"></i>
-                            @elseif($key == 'instagram')
-                                <i class="fab fa-instagram"></i>
-                            @elseif($key == 'youtube')
-                                <i class="fab fa-youtube"></i>
-                            @elseif($key == 'linkedin')
-                                <i class="fab fa-linkedin"></i>
-                            @endif
-                        </div>
-                        <span class="social-label">{{ $social['name'] }}</span>
-                    </div>
-                @endforeach
             @endif
         </div>
     </div>
