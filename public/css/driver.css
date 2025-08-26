@@ -870,7 +870,7 @@ section:first-of-type {
 
 /* Pricing Table Styles - Specific for pricing page only */
 .pricing-section {
-    background: var(--gradient-dark);
+    background: #ffffff;
     position: relative;
     padding: 4rem 0;
     overflow: hidden;
@@ -883,12 +883,7 @@ section:first-of-type {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(99, 102, 241, 0.8) 0%,
-        rgba(139, 92, 246, 0.6) 50%,
-        rgba(168, 85, 247, 0.4) 100%
-    );
+    background: none;
     z-index: 1;
 }
 
@@ -899,11 +894,11 @@ section:first-of-type {
 
 .pricing-title {
     text-align: center;
-    color: white;
+    color: #333333;
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 3rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
     letter-spacing: 1px;
 }
 
@@ -1015,10 +1010,10 @@ section:first-of-type {
 .pricing-notes {
     text-align: center;
     margin-top: 2rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--gray-600);
     font-size: 1.1rem;
     font-weight: 500;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    
 }
 
 .pricing-cta {
@@ -1674,6 +1669,8 @@ section:first-of-type {
     font-size: 1.125rem;
     margin-bottom: 0.5rem;
     color: var(--white);
+     word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .method-info span {
@@ -2278,6 +2275,9 @@ section:first-of-type {
 .contact-value {
     color: var(--white);
     font-weight: 600;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 .footer-bottom {
@@ -2989,7 +2989,7 @@ section:first-of-type {
 }
 
 .service-card-new::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -3091,7 +3091,8 @@ section:first-of-type {
 
 .service-card-new:hover .service-card-icon img {
     transform: scale(1.05);
-    filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    filter: brightness(0) invert(1)
+        drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
 }
 
 .service-card-new:hover .service-card-icon i {
@@ -3183,7 +3184,8 @@ section:first-of-type {
 }
 
 @keyframes pulse-badge {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
         box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
     }
@@ -3198,7 +3200,8 @@ section:first-of-type {
 }
 
 @keyframes twinkle {
-    0%, 100% {
+    0%,
+    100% {
         opacity: 1;
         transform: scale(1);
     }
@@ -3224,48 +3227,48 @@ section:first-of-type {
     .service-card-new {
         min-height: 350px;
     }
-    
+
     .service-card-content {
         padding: 2rem;
     }
-    
+
     .service-card-icon {
         width: 70px;
         height: 70px;
         margin-bottom: 1.25rem;
     }
-    
+
     .service-card-icon img {
         width: 40px;
         height: 40px;
     }
-    
+
     .service-card-icon i {
         font-size: 2rem;
     }
-    
+
     .service-card-title {
         font-size: 1.5rem;
         margin-bottom: 0.75rem;
     }
-    
+
     .service-card-description {
         font-size: 1rem;
         margin-bottom: 1.5rem;
     }
-    
+
     .service-card-button {
         padding: 0.875rem 1.75rem;
         font-size: 0.95rem;
     }
-    
+
     .service-card-featured-badge {
         top: 1rem;
         right: 1rem;
         padding: 0.4rem 0.8rem;
         font-size: 0.8rem;
     }
-    
+
     .service-card-new:hover {
         transform: translateY(-8px);
     }
@@ -3275,36 +3278,36 @@ section:first-of-type {
     .service-card-new {
         min-height: 320px;
     }
-    
+
     .service-card-content {
         padding: 1.5rem;
     }
-    
+
     .service-card-icon {
         width: 60px;
         height: 60px;
         margin-bottom: 1rem;
     }
-    
+
     .service-card-icon img {
         width: 35px;
         height: 35px;
     }
-    
+
     .service-card-icon i {
         font-size: 1.75rem;
     }
-    
+
     .service-card-title {
         font-size: 1.375rem;
         margin-bottom: 0.75rem;
     }
-    
+
     .service-card-description {
         font-size: 0.95rem;
         margin-bottom: 1.25rem;
     }
-    
+
     .service-card-button {
         padding: 0.75rem 1.5rem;
         font-size: 0.9rem;
