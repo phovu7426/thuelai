@@ -13,9 +13,9 @@
                         <a href="{{ route('admin.driver.testimonials.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Quay lại
                         </a>
-                        <a href="{{ route('admin.driver.testimonials.edit', $testimonial) }}" class="btn btn-primary">
+                        <!-- <a href="{{ route('admin.driver.testimonials.edit', $testimonial) }}" class="btn btn-primary">
                             <i class="fas fa-edit"></i> Chỉnh sửa
-                        </a>
+                        </a> -->
                     </div>
                 </div>
                 <div class="card-body">

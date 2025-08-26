@@ -34,13 +34,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-3 d-flex justify-content-end">
+                            <!-- <div class="col-sm-3 d-flex justify-content-end">
                                 @can('access_driver_testimonials')
                                     <button type="button" class="btn btn-primary" onclick="openCreateModal()">
                                         <i class="bi bi-plus-circle"></i> Thêm đánh giá mới
                                     </button>
                                 @endcan
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -132,10 +132,10 @@
                                                            class="btn-action btn-view" title="Xem chi tiết">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
-                                                        <button type="button" class="btn-action btn-edit" title="Chỉnh sửa" 
+                                                        <!-- <button type="button" class="btn-action btn-edit" title="Chỉnh sửa" 
                                                                 onclick="openEditModal({{ $testimonial->id }})">
                                                             <i class="fas fa-edit"></i>
-                                                        </button>
+                                                        </button> -->
                                                     @endcan
                                                 </div>
                                             </td>
