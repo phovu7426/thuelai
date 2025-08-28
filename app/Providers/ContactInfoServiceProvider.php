@@ -23,6 +23,7 @@ class ContactInfoServiceProvider extends ServiceProvider
     {
         // Chia sẻ thông tin liên hệ cho tất cả các view
         View::composer('*', function ($view) {
+            
             // Thông tin liên hệ cơ bản
             $contactInfo = ContactInfoHelper::getContactInfoArray();
             $view->with('globalContactInfo', $contactInfo);
