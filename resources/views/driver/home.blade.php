@@ -196,10 +196,17 @@
 
                 <!-- CTA Button -->
                 <div class="pricing-cta">
-                    <a href="{{ route('driver.contact') }}" class="btn-contact-now">
-                        <i class="fas fa-phone"></i>
-                        Liên hệ ngay
-                    </a>
+                    @if ($contactPhone)
+                        <a href="tel:{{ preg_replace('/[^0-9]/', '', $contactPhone) }}" class="btn-contact-now">
+                            <i class="fas fa-phone"></i>
+                            Gọi ngay: {{ $contactPhone }}
+                        </a>
+                    @else
+                        <a href="{{ route('driver.contact') }}" class="btn-contact-now">
+                            <i class="fas fa-phone"></i>
+                            Liên hệ ngay
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

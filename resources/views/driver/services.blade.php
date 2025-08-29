@@ -391,12 +391,21 @@
                 </div>
 
                 <div class="hero-actions" style="margin-top: 3rem;">
-                    <a href="{{ route('driver.contact') }}" class="btn-primary-glow">
-                        <span class="btn-text">Liên hệ ngay</span>
-                        <span class="btn-icon">
-                            <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </a>
+                    @if ($contactPhone)
+                        <a href="tel:{{ preg_replace('/[^0-9]/', '', $contactPhone) }}" class="btn-primary-glow">
+                            <span class="btn-text">Gọi ngay: {{ $contactPhone }}</span>
+                            <span class="btn-icon">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                        </a>
+                    @else
+                        <a href="{{ route('driver.contact') }}" class="btn-primary-glow">
+                            <span class="btn-text">Liên hệ ngay</span>
+                            <span class="btn-icon">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </a>
+                    @endif
                     <a href="{{ route('driver.pricing') }}" class="btn-secondary">
                         <i class="fas fa-list"></i>
                         <span>Xem bảng giá</span>

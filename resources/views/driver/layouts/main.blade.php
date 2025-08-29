@@ -128,24 +128,28 @@
             </div>
 
             {{-- Zalo --}}
-            <div class="social-item" id="zaloBtn">
-                <div class="social-icon zalo">
-                    <i class="fas fa-phone-alt"></i>
+            @if ($contactPhone)
+                <div class="social-item" id="zaloBtn" onclick="openZalo()">
+                    <div class="social-icon zalo">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span class="social-label">Zalo</span>
                 </div>
-                <span class="social-label">Zalo</span>
-            </div>
+            @endif
 
             {{-- Facebook --}}
-            <div class="social-item" id="facebookBtn">
-                <div class="social-icon facebook">
-                    <i class="fab fa-facebook-f"></i>
+            @if (!empty($globalSocialLinks['facebook'] ?? ''))
+                <div class="social-item" id="facebookBtn" onclick="openFacebook()">
+                    <div class="social-icon facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <span class="social-label">Facebook</span>
                 </div>
-                <span class="social-label">Facebook</span>
-            </div>
+            @endif
 
             {{-- Hotline --}}
             @if ($contactPhone)
-                <div class="social-item" id="phoneBtn">
+                <div class="social-item" id="phoneBtn" onclick="openPhone()">
                     <div class="social-icon phone">
                         <i class="fas fa-phone-alt"></i>
                     </div>
@@ -308,6 +312,45 @@
 
     <!-- Custom JS -->
     <script src="{{ asset('js/driver.js') }}"></script>
+
+    <!-- Social Media Functions -->
+    <script>
+        // Function to open phone call
+        function openPhone() {
+            const phoneNumber = window.contactData?.phone || "{{ $contactPhone ?? '' }}";
+            if (phoneNumber) {
+                const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+                window.location.href = `tel:${cleanPhone}`;
+            }
+        }
+
+        // Function to open Zalo
+        function openZalo() {
+            const phoneNumber = window.contactData?.phone || "{{ $contactPhone ?? '' }}";
+            if (phoneNumber) {
+                const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+                // Try to open Zalo app first, fallback to web
+                const zaloUrl = `https://zalo.me/${cleanPhone}`;
+                window.open(zaloUrl, '_blank');
+            }
+        }
+
+        // Function to open Facebook
+        function openFacebook() {
+            const facebookUrl = window.contactData?.socialLinks?.facebook || "{{ $globalSocialLinks['facebook'] ?? '' }}";
+            if (facebookUrl && facebookUrl !== '#') {
+                // Try to open Facebook app first, fallback to web
+                const appUrl = facebookUrl.replace('https://www.facebook.com/', 'fb://profile/');
+                const webUrl = facebookUrl;
+                
+                // Try app first, then web
+                window.location.href = appUrl;
+                setTimeout(() => {
+                    window.location.href = webUrl;
+                }, 1000);
+            }
+        }
+    </script>
 
     <!-- Zalo SDK -->
     <script>
