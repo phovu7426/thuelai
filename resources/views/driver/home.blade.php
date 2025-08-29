@@ -99,6 +99,112 @@
         </div>
     </section>
 
+    <!-- Pricing Section -->
+    <section class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <span class="badge-modern">
+                        <i class="fas fa-tags"></i>
+                        Bảng giá
+                    </span>
+                </div>
+                <h2 class="section-title">BẢNG BÁO GIÁ LÁI XE HỖ THEO CHUYẾN</h2>
+                <p class="section-subtitle">
+                    Không phát sinh chi phí, giá cả rõ ràng và cạnh tranh
+                </p>
+            </div>
+
+            <div class="pricing-table-container">
+                <div class="pricing-table-modern">
+                    <div class="table-responsive">
+                        <table class="table table-bordered pricing-table">
+                            <thead>
+                                <tr class="table-header">
+                                    <th class="text-center"
+                                        style="width: {{ count($pricingRules) > 0 ? 100 / (count($pricingRules) + 1) : 20 }}%;">
+                                        Thời gian</th>
+                                    @foreach ($pricingRules as $rule)
+                                        <th class="text-center" style="width: {{ 100 / (count($pricingRules) + 1) }}%;">
+                                            <div class="time-info">
+                                                <i class="{{ $rule->time_icon }}"></i>
+                                                <span class="time-text">{{ $rule->time_slot }}</span>
+                                            </div>
+                                        </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($distanceTiers as $tier)
+                                    <tr class="pricing-row">
+                                        <td class="distance-slot">
+                                            <div class="distance-info">
+                                                <i class="fas fa-route"></i>
+                                                <span class="distance-text">{{ $tier->display_text }}</span>
+                                            </div>
+                                        </td>
+                                        @foreach ($pricingRules as $rule)
+                                            <td class="price-cell">
+                                                @php
+                                                    $pricingDistance = $rule->pricingDistances
+                                                        ->where('distance_tier_id', $tier->id)
+                                                        ->first();
+                                                @endphp
+                                                @if ($pricingDistance)
+                                                    @if ($pricingDistance->price_text)
+                                                        <span
+                                                            class="price-negotiable">{{ $pricingDistance->price_text }}</span>
+                                                    @else
+                                                        <span
+                                                            class="price-amount">{{ number_format($pricingDistance->price / 1000, 0) }}k</span>
+                                                        <small class="price-unit">
+                                                            @if ($tier->from_distance == 0 && $tier->to_distance)
+                                                                /chuyến
+                                                            @else
+                                                                /km
+                                                            @endif
+                                                        </small>
+                                                    @endif
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="{{ count($pricingRules) + 1 }}" class="text-center py-5">
+                                            <div class="empty-state">
+                                                <div class="empty-icon">
+                                                    <i class="fas fa-calculator"></i>
+                                                </div>
+                                                <h3>Chưa có bảng giá</h3>
+                                                <p>Vui lòng liên hệ với chúng tôi để được tư vấn về giá cả.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pricing Notes -->
+                <div class="pricing-notes">
+                    Lưu ý: Đặt xe trước 60 phút trở lên giảm 5% - Phụ thu phí phát sinh cho đợi 50k/h
+                </div>
+
+                <!-- CTA Button -->
+                <div class="pricing-cta">
+                    <a href="{{ route('driver.contact') }}" class="btn-contact-now">
+                        <i class="fas fa-phone"></i>
+                        Liên hệ ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Services Section -->
     <section id="services" class="services-section">
         <div class="container">
@@ -329,109 +435,6 @@
             </div>
         </section>
     @endif
-
-    <!-- Pricing Section -->
-    <section class="pricing-section">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-badge">
-                    <span class="badge-modern">
-                        <i class="fas fa-tags"></i>
-                        Bảng giá
-                    </span>
-                </div>
-                <h2 class="section-title">BẢNG BÁO GIÁ LÁI XE HỖ THEO CHUYẾN</h2>
-                <p class="section-subtitle">
-                    Không phát sinh chi phí, giá cả rõ ràng và cạnh tranh
-                </p>
-            </div>
-
-            <div class="pricing-table-container">
-                <div class="pricing-table-modern">
-                    <div class="table-responsive">
-                        <table class="table table-bordered pricing-table">
-                            <thead>
-                                <tr class="table-header">
-                                    <th class="text-center"
-                                        style="width: {{ count($distanceTiers) > 0 ? 100 / (count($distanceTiers) + 1) : 20 }}%;">
-                                        Thời gian</th>
-                                    @foreach ($distanceTiers as $tier)
-                                        <th class="text-center" style="width: {{ 100 / (count($distanceTiers) + 1) }}%;">
-                                            {{ $tier->display_text }}
-                                        </th>
-                                    @endforeach
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($pricingRules as $rule)
-                                    <tr class="pricing-row">
-                                        <td class="time-slot">
-                                            <div class="time-info">
-                                                <i class="{{ $rule->time_icon }}"></i>
-                                                <span class="time-text">{{ $rule->time_slot }}</span>
-                                            </div>
-                                        </td>
-                                        @foreach ($distanceTiers as $tier)
-                                            <td class="price-cell">
-                                                @php
-                                                    $pricingDistance = $rule->pricingDistances
-                                                        ->where('distance_tier_id', $tier->id)
-                                                        ->first();
-                                                @endphp
-                                                @if ($pricingDistance)
-                                                    @if ($pricingDistance->price_text)
-                                                        <span
-                                                            class="price-negotiable">{{ $pricingDistance->price_text }}</span>
-                                                    @else
-                                                        <span
-                                                            class="price-amount">{{ number_format($pricingDistance->price / 1000, 0) }}k</span>
-                                                        <small class="price-unit">
-                                                            @if ($tier->from_distance == 0 && $tier->to_distance)
-                                                                /chuyến
-                                                            @else
-                                                                /km
-                                                            @endif
-                                                        </small>
-                                                    @endif
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-                                        @endforeach
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="{{ count($distanceTiers) + 1 }}" class="text-center py-5">
-                                            <div class="empty-state">
-                                                <div class="empty-icon">
-                                                    <i class="fas fa-calculator"></i>
-                                                </div>
-                                                <h3>Chưa có bảng giá</h3>
-                                                <p>Vui lòng liên hệ với chúng tôi để được tư vấn về giá cả.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Pricing Notes -->
-                <div class="pricing-notes">
-                    Lưu ý: Đặt xe trước 60 phút trở lên giảm 5% - Phụ thu phí phát sinh cho đợi 50k/h
-                </div>
-
-                <!-- CTA Button -->
-                <div class="pricing-cta">
-                    <a href="{{ route('driver.contact') }}" class="btn-contact-now">
-                        <i class="fas fa-phone"></i>
-                        Liên hệ ngay
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Contact Section -->
     <section class="contact-section">

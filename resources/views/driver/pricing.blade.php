@@ -78,7 +78,7 @@
     </section>
 
     <!-- Pricing Table Section -->
-    <section class="services-section">
+    <section class="pricing-section">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Bảng giá chi tiết</h2>
@@ -93,22 +93,28 @@
                         <table class="table table-bordered pricing-table">
                             <thead>
                                 <tr class="table-header">
-                                    <th class="text-center" style="width: {{ 100 / (count($distanceTiers) + 1) }}%;">Thời gian</th>
-                                    @foreach($distanceTiers as $tier)
-                                    <th class="text-center" style="width: {{ 100 / (count($distanceTiers) + 1) }}%;">{{ $tier->display_text }}</th>
+                                    <th class="text-center" style="width: {{ count($pricingRules) > 0 ? 100 / (count($pricingRules) + 1) : 20 }}%;">
+                                        Thời gian</th>
+                                    @foreach($pricingRules as $rule)
+                                    <th class="text-center" style="width: {{ 100 / (count($pricingRules) + 1) }}%;">
+                                        <div class="time-info">
+                                            <i class="{{ $rule->time_icon }}"></i>
+                                            <span class="time-text">{{ $rule->time_slot }}</span>
+                                        </div>
+                                    </th>
                                     @endforeach
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($pricingRules as $rule)
+                                @forelse($distanceTiers as $tier)
                                 <tr class="pricing-row">
-                                    <td class="time-slot">
-                                        <div class="time-info">
-                                            <i class="{{ $rule->time_icon }}" style="color: {{ $rule->time_color }};"></i>
-                                            <span class="time-text">{{ $rule->time_slot }}</span>
+                                    <td class="distance-slot">
+                                        <div class="distance-info">
+                                            <i class="fas fa-route"></i>
+                                            <span class="distance-text">{{ $tier->display_text }}</span>
                                         </div>
                                     </td>
-                                    @foreach($distanceTiers as $tier)
+                                    @foreach($pricingRules as $rule)
                                     <td class="price-cell">
                                         @php
                                             $pricingDistance = $rule->pricingDistances->where('distance_tier_id', $tier->id)->first();
@@ -134,7 +140,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="{{ count($distanceTiers) + 1 }}" class="text-center py-5">
+                                    <td colspan="{{ count($pricingRules) + 1 }}" class="text-center py-5">
                                         <div class="empty-state">
                                             <div class="empty-icon">
                                                 <i class="fas fa-calculator"></i>
@@ -148,6 +154,19 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                <!-- Pricing Notes -->
+                <div class="pricing-notes">
+                    Lưu ý: Đặt xe trước 60 phút trở lên giảm 5% - Phụ thu phí phát sinh cho đợi 50k/h
+                </div>
+
+                <!-- CTA Button -->
+                <div class="pricing-cta">
+                    <a href="{{ route('driver.contact') }}" class="btn-contact-now">
+                        <i class="fas fa-phone"></i>
+                        Liên hệ ngay
+                    </a>
                 </div>
 
                 <!-- Additional Pricing Info -->
